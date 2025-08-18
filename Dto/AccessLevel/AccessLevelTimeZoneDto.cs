@@ -1,0 +1,70 @@
+﻿namespace HIDAeroService.Dto.AccessLevel
+{
+    public sealed class AccessLevelTimeZoneDto
+    {
+        public short tz1 { get; set; }
+        public short tz2 { get; set; }
+        public short tz3 { get; set; }
+        public short tz4 { get; set; }
+        public short tz5 { get; set; }
+        public short tz6 { get; set; }
+        public short tz7 { get; set; }
+        public short tz8 { get; set; }
+        public short tz9 { get; set; }
+        public short tz10 { get; set; }
+        public short tz11 { get; set; }
+        public short tz12 { get; set; }
+        public short tz13 { get; set; }
+        public short tz14 { get; set; }
+        public short tz15 { get; set; }
+        public short tz16 { get; set; }
+        public short tz17 { get; set; }
+        public short tz18 { get; set; }
+        public short tz19 { get; set; }
+        public short tz20 { get; set; }
+        public short tz21 { get; set; }
+        public short tz22 { get; set; }
+        public short tz23 { get; set; }
+        public short tz24 { get; set; }
+        public short tz25 { get; set; }
+        public short tz26 { get; set; }
+        public short tz27 { get; set; }
+        public short tz28 { get; set; }
+        public short tz29 { get; set; }
+        public short tz30 { get; set; }
+        public short tz31 { get; set; }
+        public short tz32 { get; set; }
+        public short tz33 { get; set; }
+        public short tz34 { get; set; }
+        public short tz35 { get; set; }
+        public short tz36 { get; set; }
+        public short tz37 { get; set; }
+        public short tz38 { get; set; }
+        public short tz39 { get; set; }
+        public short tz40 { get; set; }
+        public short tz41 { get; set; }
+        public short tz42 { get; set; }
+        public short tz43 { get; set; }
+        public short tz44 { get; set; }
+        public short tz45 { get; set; }
+        public short tz46 { get; set; }
+        public short tz47 { get; set; }
+        public short tz48 { get; set; }
+        public short tz49 { get; set; }
+        public short tz50 { get; set; }
+        public short tz51 { get; set; }
+        public short tz52 { get; set; }
+        public short tz53 { get; set; }
+        public short tz54 { get; set; }
+        public short tz55 { get; set; }
+        public short tz56 { get; set; }
+        public short tz57 { get; set; }
+        public short tz58 { get; set; }
+        public short tz59 { get; set; }
+        public short tz60 { get; set; }
+        public short tz61 { get; set; }
+        public short tz62 { get; set; }
+        public short tz63 { get; set; }
+        public short tz64 { get; set; }
+    }
+}
