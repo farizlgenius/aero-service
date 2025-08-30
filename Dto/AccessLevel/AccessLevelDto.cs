@@ -3,6 +3,6 @@
     public sealed class AccessLevelDto
     {
         public string Name { get; set; }
-        public short AccessLevelNumber { get; set; }
+        public short ElementNo { get; set; }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
+using HIDAeroService.Constants;
 using HIDAeroService.Dto.Scp;
 using HIDAeroService.Entity;
 using HIDAeroService.Service;
+using HIDAeroService.Service.Impl;
+using HIDAeroService.Service.Interface;
 using static HIDAeroService.AeroLibrary.Description;
 
 namespace HIDAeroService.AeroLibrary
@@ -17,11 +20,11 @@ namespace HIDAeroService.AeroLibrary
         private readonly CredentialService _credentialService;
         private readonly CmndService _cmndService;
         private readonly HelperService _helperService;
-        private readonly AlvlService _alvlService;
-        private readonly TZService _tzService;
-        public MessageHandler(EventService eventService,ScpService scpService,SioService sioService,CpService cpService,MpService mpService,AcrService acrService,CredentialService credentialService,CmndService cmndService,HelperService helperService,AlvlService alvlService,TZService tzService) 
+        private readonly IAccessLevelService _accessLevelService;
+        private readonly SysService _sysService;
+        public MessageHandler(EventService eventService,ScpService scpService,SioService sioService,CpService cpService,MpService mpService,AcrService acrService,CredentialService credentialService,CmndService cmndService,HelperService helperService, IAccessLevelService accessLevelService,SysService sysService) 
         {
-            _tzService = tzService;
+            _sysService = sysService;
             _helperService = helperService;
             _cmndService = cmndService;
             _credentialService = credentialService;
@@ -31,7 +34,7 @@ namespace HIDAeroService.AeroLibrary
             _eventService = eventService;
             _scpService = scpService;
             _sioService = sioService;
-            _alvlService = alvlService;
+            _accessLevelService = accessLevelService;
         }
 
         public void SCPReplyNAKHandler(SCPReplyMessage message)
@@ -138,10 +141,10 @@ namespace HIDAeroService.AeroLibrary
                             _sioService.TriggerDeviceStatus(message.SCPId,message.tran.source_number,message.tran.cos.status,0,0,0);
                             break;
                         case (short)tranSrc.tranSrcMP:
-                            _mpService.TriggerDeviceStatus(message.SCPId, message.tran.source_number, 1, [message.tran.cos.status]);
+                            _mpService.TriggerDeviceStatus(message.SCPId, message.tran.source_number, [message.tran.cos.status]);
                             break;
                         case (short)tranSrc.tranSrcCP:
-                            _cpService.TriggerDeviceStatus(message.SCPId, message.tran.source_number, 1, [message.tran.cos.status]);
+                            _cpService.TriggerDeviceStatus(_helperService.GetMacFromId((short)message.SCPId), message.tran.source_number, [message.tran.cos.status]);
                             break;
                         default:
                             break;
@@ -213,7 +216,6 @@ namespace HIDAeroService.AeroLibrary
         public void SCPReplyCommStatus(SCPReplyMessage message)
         {
             Console.WriteLine("###### SCPReplyCommStatus Detail ######");
-            _scpService.TriggerDeviceStatus(message.comm.status,message.SCPId);
             Console.WriteLine($"status: {message.comm.status}");
             Console.WriteLine($"status_desc: {Description.GetReplyStatusDesc(message.comm.status)}");
             Console.WriteLine($"error_code: {message.comm.error_code}");
@@ -288,7 +290,7 @@ namespace HIDAeroService.AeroLibrary
 
         public void SCPReplySrSio(SCPReplyMessage message)
         {
-            _sioService.TriggerDeviceStatus(message.SCPId, message.sts_sio.number, message.sts_sio.com_status, message.sts_sio.ip_stat[4], message.sts_sio.ip_stat[5], message.sts_sio.ip_stat[6]);
+            
             Console.WriteLine("###### SCPReplySrSio Detail ######");
             Console.WriteLine($"number: {message.sts_sio.number}");
             Console.WriteLine($"com_status: {message.sts_sio.com_status}");
@@ -383,7 +385,7 @@ namespace HIDAeroService.AeroLibrary
 
         public void SCPReplySrMp(SCPReplyMessage message)
         {
-            _mpService.TriggerDeviceStatus(message.SCPId, message.sts_mp.first, message.sts_mp.count, message.sts_mp.status);
+            
             Console.WriteLine("###### SCPReplySrMp Detail ######");
             Console.WriteLine($"first: {message.sts_mp.first}");
             Console.WriteLine($"count: {message.sts_mp.count}");
@@ -406,7 +408,7 @@ namespace HIDAeroService.AeroLibrary
 
         public void SCPReplySrCp(SCPReplyMessage message)
         {
-            _cpService.TriggerDeviceStatus(message.SCPId,message.sts_cp.first,message.sts_cp.count,message.sts_cp.status);
+            
             Console.WriteLine("###### SCPReplySrCp Detail ######");
             Console.WriteLine($"first: {message.sts_cp.first}");
             Console.WriteLine($"count: {message.sts_cp.count}");
@@ -430,7 +432,7 @@ namespace HIDAeroService.AeroLibrary
 
         public void SCPReplySrAcr(SCPReplyMessage message)
         {
-            _acrService.TriggerDeviceStatus(message.SCPId,message.sts_acr.number, Description.GetACRModeForStatus(message.sts_acr.door_status),Description.GetAccessPointStatusFlagResult((byte)message.sts_acr.ap_status));
+            
             Console.WriteLine("###### SCPReplySrAcr Detail ######");
             Console.WriteLine($"number: {message.sts_acr.number}");
             Console.WriteLine($"mode: {message.sts_acr.mode}");
@@ -552,161 +554,31 @@ namespace HIDAeroService.AeroLibrary
 
         public void SCPReplyStrStatus(SCPReplyMessage message)
         {
-            string ScpIp = _helperService.GetScpIpFromId((short)message.SCPId);
-            string ScpMac = _helperService.GetMacFromId((short)message.SCPId);
-            VerifyScpConfigDto rec = new VerifyScpConfigDto();
-            rec.Ip = ScpIp;
-            rec.Mac = ScpMac;
             Console.WriteLine("###### SCPReplyStrStatus Detail ######");
             Console.WriteLine(message.str_sts.nListLength);
             foreach(var i in message.str_sts.sStrSpec)
             {
-
-                switch ((ScpStructure)i.nStrType)
-                {
-                    case ScpStructure.SCPSID_TRAN:
-                        // Handle Transactions
-                        break;
-
-                    case ScpStructure.SCPSID_TZ:
-                        // Handle Time zones
-                        int ntz = _tzService.GetTzRecAlloc();
-                        rec.RecAllocTimezone = i.nActive < ntz ? 1 : i.nActive > ntz ? -1 : 0;
-                        break;
-
-                    case ScpStructure.SCPSID_HOL:
-                        // Handle Holidays
-                        break;
-
-                    case ScpStructure.SCPSID_MSP1:
-                        // Handle Msp1 ports (SIO drivers)
-                        break;
-
-                    case ScpStructure.SCPSID_SIO:
-                        // Handle SIOs
-                        
-                        int nsio = _sioService.GetRecAllocSio(ScpIp);
-                        rec.RecAllocSio = i.nActive < nsio ? 1 : i.nActive > nsio ? -1 : 0;
-                        break;
-
-                    case ScpStructure.SCPSID_MP:
-                        // Handle Monitor points
-                        int nmp = _mpService.GetMpRecAlloc(ScpIp);
-                        rec.RecAllocMp = i.nActive < nmp ? 1 : i.nActive > nmp ? -1 : 0;
-                        break;
-
-                    case ScpStructure.SCPSID_CP:
-                        int ncp = _cpService.GetCpRecAlloc(ScpIp);
-                        rec.RecAllocCp = i.nActive < ncp ? 1 : i.nActive > ncp ? -1 : 0;
-                        // Handle Control points
-                        break;
-
-                    case ScpStructure.SCPSID_ACR:
-                        // Handle Access control readers
-                        int nacr = _acrService.GetAcrRecAlloc(ScpIp);
-                        rec.RecAllocAcr = i.nActive < nacr ? 1 : i.nActive > nacr ? -1 : 0;
-                        break;
-
-                    case ScpStructure.SCPSID_ALVL:
-                        // Handle Access levels
-                        int nalvl = _alvlService.GetAlvlRecAlloc();
-                        rec.RecAllocAlvl = i.nActive < nalvl ? 1 : i.nActive > nalvl ? -1 : 0;
-                        break;
-
-                    case ScpStructure.SCPSID_TRIG:
-                        // Handle Triggers
-                        break;
-
-                    case ScpStructure.SCPSID_PROC:
-                        // Handle Procedures
-                        break;
-
-                    case ScpStructure.SCPSID_MPG:
-                        // Handle Monitor point groups
-                        break;
-
-                    case ScpStructure.SCPSID_AREA:
-                        // Handle Access areas
-                        break;
-
-                    case ScpStructure.SCPSID_EAL:
-                        // Handle Elevator access levels
-                        break;
-
-                    case ScpStructure.SCPSID_CRDB:
-                        // Handle Cardholder database
-                        int ncard = _credentialService.GetCredentialRecAlloc();
-                        rec.RecAllocCrdb = i.nRecords < ncard ? 1 : i.nRecords > ncard ? -1 : 0;
-                        int ncardac = _credentialService.GetActiveCredentialRecAlloc();
-                        rec.RecAllocCardActive = i.nActive < ncardac ? 1 : i.nActive > ncardac ? -1 : 0;
-                        break;
-
-                    case ScpStructure.SCPSID_FLASH:
-                        // Handle FLASH specs
-                        break;
-
-                    case ScpStructure.SCPSID_BSQN:
-                        // Handle Build sequence number
-                        break;
-
-                    case ScpStructure.SCPSID_SAVE_STAT:
-                        // Handle Flash save status
-                        break;
-
-                    case ScpStructure.SCPSID_MAB1_FREE:
-                        // Handle Memory alloc block 1 free memory
-                        break;
-
-                    case ScpStructure.SCPSID_MAB2_FREE:
-                        // Handle Memory alloc block 2 free memory
-                        break;
-
-                    case ScpStructure.SCPSID_ARQ_BUFFER:
-                        // Handle Access request buffers
-                        break;
-
-                    case ScpStructure.SCPSID_PART_FREE_CNT:
-                        // Handle Partition memory free info
-                        break;
-
-                    case ScpStructure.SCPSID_LOGIN_STANDARD:
-                        // Handle Web logins - standard
-                        break;
-                    case ScpStructure.SCPSID_FILE_SYSTEM:
-                        break;
-
-                    default:
-                        // Handle unknown/unsupported types
-                        break;
-                }
                 Console.WriteLine("nStrType: " + i.nStrType);
                 Console.WriteLine("nRecord: " + i.nRecords);
                 Console.WriteLine("nRecSize: " + i.nRecSize);
                 Console.WriteLine("nActive: " + i.nActive);
             }
             Console.WriteLine("###### SCPReplyStrStatus Detail End ######");
-            _cmndService.TriggerVerifyScpConfiguration(rec);
         }
 
         public void SCPReplyCmndStatus(SCPReplyMessage message,WriteAeroDriver write)
         {
             
-            _cmndService.TriggerCommandResponse(message.cmnd_sts.status,message.cmnd_sts.sequence_number,Description.GetNakReasonDescription(message.cmnd_sts.nak.reason), message.cmnd_sts.nak.description_code);
             Console.WriteLine("###### SCPReplyCmndStatus Detail ######");
             Console.WriteLine(message.cmnd_sts.status);
             Console.WriteLine(message.cmnd_sts.sequence_number);
             Console.WriteLine(message.cmnd_sts.nak);
-            Console.WriteLine("###############");
-            Console.WriteLine(message.cmnd_sts.status);
-            Console.WriteLine(message.cmnd_sts.sequence_number);
             Console.WriteLine(message.cmnd_sts.nak.reason);
             Console.WriteLine(write.TagNo);
-
-            if (message.cmnd_sts.status == 2 && message.cmnd_sts.sequence_number == write.TagNo && message.cmnd_sts.nak.reason == 4)
-            {
-                write.ResetSCP((short)message.SCPId);
-            }
+            Console.WriteLine(write.Command);
             Console.WriteLine("###### SCPReplyCmndStatus Detail End ######");
+
+
         }
 
         internal void SCPReplyWebConfigNetwork(SCPReplyMessage message)

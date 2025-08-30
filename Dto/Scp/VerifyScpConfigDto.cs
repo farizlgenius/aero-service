@@ -7,6 +7,7 @@
         public int RecAllocTransaction { get; set; }
         public int RecAllocTimezone { get; set; }
         public int RecAllocHoliday { get; set; }
+        public int RecAllocMsp1 { get; set; }
         public int RecAllocSio { get; set; }
         public int RecAllocSioPort { get; set; }
         public int RecAllocMp { get; set; }
@@ -20,5 +21,7 @@
         public int RecAllocEal { get; set; }
         public int RecAllocCrdb { get; set; }
         public int RecAllocCardActive { get; set; }
+        public bool IsReset { get; set; }
+        public bool IsUpload { get; set; }
     }
 }

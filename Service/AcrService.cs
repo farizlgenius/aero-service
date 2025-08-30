@@ -1,10 +1,12 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
 using HIDAeroService.Data;
 using HIDAeroService.Dto;
+using HIDAeroService.Dto.Acr;
 using HIDAeroService.Entity;
 using HIDAeroService.Hubs;
 using HIDAeroService.Mapper;
 using Microsoft.AspNetCore.SignalR;
+using Org.BouncyCastle.Crypto.Macs;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Xml.Linq;
@@ -15,11 +17,11 @@ namespace HIDAeroService.Service
     {
         private readonly ILogger<AcrService> _logger;
         private readonly AppDbContext _context;
-        private readonly AppConfigData _config;
+        private readonly AeroLibMiddleware _config;
         private readonly HelperService _helperService;
         private readonly IHubContext<AcrHub> _hub;
 
-        public AcrService(AppDbContext context, AppConfigData config,ILogger<AcrService> logger,HelperService helperService,IHubContext<AcrHub> hub)
+        public AcrService(AppDbContext context, AeroLibMiddleware config,ILogger<AcrService> logger,HelperService helperService,IHubContext<AcrHub> hub)
         {
             _hub = hub;
             _helperService = helperService;
@@ -28,9 +30,9 @@ namespace HIDAeroService.Service
             _config = config;
         }
 
-        public bool MomentaryUnlock(string ScpIp,short AcrNo)
+        public bool MomentaryUnlock(string ScpMac,short AcrNo)
         {
-            short ScpId = _helperService.GetScpIdFromIp(ScpIp);
+            short ScpId = _helperService.GetScpIdFromMac(ScpMac);
             if (!_config.write.MomentaryUnlock(ScpId, AcrNo))
             {
                 _logger.LogError("MomentaryUnlock : False");
@@ -39,30 +41,30 @@ namespace HIDAeroService.Service
             return true;
         }
 
-        public List<ACRDto> GetACRList()
+        public List<AcrDto> GetACRList()
         {
-            List<ACRDto> dtos = new List<ACRDto>();
-            List<ar_acr> datas = _context.ar_acrs.ToList();
+            List<AcrDto> dtos = new List<AcrDto>();
+            List<ArAcr> datas = _context.ArAcrs.ToList();
             int i = 1;
             foreach (var data in datas) 
             {
-                string sio_name = _context.ar_sios.Where(p => p.sio_number == data.rdr_sio).Select(p => p.name).First();
+                string sio_name = _context.ArSios.Where(p => p.SioNumber == data.RdrSio).Select(p => p.Name).First();
                 dtos.Add(MapperHelper.ACRToACRDto(data,i,sio_name));
                 i+=1;
             }
             return dtos;
         }
-        public List<ACRDto> GetACRListByIp(string ip)
+        public List<AcrDto> GetAcrListByMac(string ScpMac)
         {
             try
             {
-                List<ACRDto> dtos = new List<ACRDto>();
-                List<ar_acr> datas = _context.ar_acrs.Where(p => p.scp_ip == ip).ToList();
+                List<AcrDto> dtos = new List<AcrDto>();
+                List<ArAcr> datas = _context.ArAcrs.Where(p => p.ScpMac == ScpMac).ToList();
                 
                 int i = 1;
                 foreach (var data in datas)
                 {
-                    string sio_name = _context.ar_sios.Where(p => p.sio_number == data.rdr_sio).Select(p => p.name).First();
+                    string sio_name = _context.ArSios.Where(p => p.SioNumber == data.RdrSio).Select(p => p.Name).First();
                     dtos.Add(MapperHelper.ACRToACRDto(data, i,sio_name));
                     i += 1;
                 }
@@ -77,45 +79,45 @@ namespace HIDAeroService.Service
         }
 
 
-        public short GetUniqueAcrNo(string ScpIp)
+        public short GetUniqueAcrNo(string ScpMac)
         {
 
             short highestAcrNumber;
-            if (!_context.ar_acr_no.Any(p => p.scp_ip == ScpIp))
+            if (!_context.ArAcrNo.Any(p => p.ScpMac == ScpMac))
                 return 0;
 
-            if (_context.ar_acr_no.Any(p => p.is_available == true && p.scp_ip == ScpIp))
+            if (_context.ArAcrNo.Any(p => p.IsAvailable == true && p.ScpMac == ScpMac))
             {
-                highestAcrNumber = _context.ar_acr_no.Where(p => p.is_available == true && p.scp_ip == ScpIp).Select(p => p.acr_number).First();
+                highestAcrNumber = _context.ArAcrNo.Where(p => p.IsAvailable == true && p.ScpMac == ScpMac).Select(p => p.AcrNo).First();
                 return highestAcrNumber;
             }
             else
             {
-                highestAcrNumber = _context.ar_acr_no.Where(p => p.is_available == false && p.scp_ip == ScpIp).Max(p => p.acr_number);
+                highestAcrNumber = _context.ArAcrNo.Where(p => p.IsAvailable == false && p.ScpMac == ScpMac).Max(p => p.AcrNo);
                 highestAcrNumber += 1;
                 return highestAcrNumber;
             }
 
         }
 
-        public bool SaveAcrToDatabase(AddACRDto dto,short AcrNo)
+        public bool Save(AddAcrDto dto,short AcrNo)
         {
             
             try
             {
-                var isNewCpNo = _context.ar_acr_no.Where(p => p.acr_number == AcrNo).FirstOrDefault();
+                var isNewCpNo = _context.ArAcrNo.Where(p => p.AcrNo == AcrNo).FirstOrDefault();
                 if (isNewCpNo == null)
                 {
-                    ar_n_acr ncp = MapperHelper.ACRDtoTonACR(dto, AcrNo);
-                    _context.ar_acr_no.Add(ncp);
+                    ArAcrNo ncp = MapperHelper.ACRDtoTonACR(dto, AcrNo);
+                    _context.ArAcrNo.Add(ncp);
                 }
                 else
                 {
-                    isNewCpNo.is_available = false;
+                    isNewCpNo.IsAvailable = false;
                 }
                 
-                ar_acr ar = MapperHelper.ACRDtoToACR(dto,AcrNo);
-                _context.ar_acrs.Add(ar);
+                ArAcr ar = MapperHelper.ACRDtoToACR(dto,AcrNo);
+                _context.ArAcrs.Add(ar);
                 _context.SaveChanges();
                 return true;
             }
@@ -155,10 +157,10 @@ namespace HIDAeroService.Service
 
         #region Command Group
 
-        public bool CreateAccessControlReaderForCreate(AddACRDto dto)
+        public bool CreateAccessControlReaderForCreate(AddAcrDto dto)
         {
-            short ScpId = _helperService.GetScpIdFromIp(dto.ScpIp);
-            short AcrNo = GetUniqueAcrNo(dto.ScpIp);
+            short ScpId = _helperService.GetScpIdFromMac(dto.ScpMac);
+            short AcrNo = GetUniqueAcrNo(dto.ScpMac);
 
             byte readerInOsdpFlag = 0x00;
             short readerLedDriveMode = 0;
@@ -186,7 +188,7 @@ namespace HIDAeroService.Service
             }
 
             // Strike Output Config
-            if (!_config.write.OutputPointSpecification(ScpId, dto.StrikeSioNumber, dto.StrikeNumber, dto.RelayMode))
+            if (_config.write.OutputPointSpecification(ScpId, dto.StrikeSioNumber, dto.StrikeNumber, dto.RelayMode) == -1)
             {
                 Console.WriteLine($"Strike Output Specification : False");
                 return false;
@@ -268,7 +270,7 @@ namespace HIDAeroService.Service
             }
 
 
-            if (!SaveAcrToDatabase(dto,AcrNo))
+            if (!Save(dto,AcrNo))
             {
                 Console.WriteLine($"Save Monitor Point to Database : False");
                 return false;
@@ -279,7 +281,7 @@ namespace HIDAeroService.Service
 
         public List<AcsRdrModeDto> GetAcsRdrModeList()
         {
-            var datas = _context.ar_rdr_modes.ToList();
+            var datas = _context.ArReaderModes.ToList();
             List<AcsRdrModeDto> mode = new List<AcsRdrModeDto>();
             if(datas.Count > 0)
             {
@@ -295,9 +297,9 @@ namespace HIDAeroService.Service
 
         public List<short> GetAvailableReader(short sio)
         {
-            var reader = _context.ar_sios.Where(cp => cp.sio_number == sio).Select(cp => cp.n_readers).First();
-            var unavailable = _context.ar_acrs.Where(cp => cp.rdr_sio == sio).Select(cp => cp.reader_number).ToList();
-            var unavailable2 = _context.ar_acrs.Where(cp => cp.rdr_sio == sio).Select(cp => cp.altrdr_number).ToList();
+            var reader = _context.ArSios.Where(cp => cp.SioNumber == sio).Select(cp => cp.NReader).First();
+            var unavailable = _context.ArAcrs.Where(cp => cp.RdrSio == sio).Select(cp => cp.ReaderNo).ToList();
+            var unavailable2 = _context.ArAcrs.Where(cp => cp.RdrSio == sio).Select(cp => cp.AlternateReaderNo).ToList();
             unavailable.AddRange(unavailable2);
             List<short> all = Enumerable.Range(0, reader).Select(i => (short)i).ToList();
             return all.Except(unavailable).ToList();
@@ -306,7 +308,7 @@ namespace HIDAeroService.Service
         public List<StrikeModeDto> GetStrikeMode()
         {
             List<StrikeModeDto> res = new List<StrikeModeDto>();
-            var datas = _context.ar_strk_modes.ToList();
+            var datas = _context.ArStrikeModes.ToList();
             foreach(var d in datas)
             {
                 res.Add(MapperHelper.StrikeModeToStrikeModeDto(d));
@@ -314,10 +316,10 @@ namespace HIDAeroService.Service
             return res;
         }
 
-        public List<ACRModeDto> GetAcrModeList()
+        public List<AcrModeDto> GetAcrModeList()
         {
-            List<ACRModeDto> res = new List<ACRModeDto>();
-            var datas = _context.ar_acr_modes.ToList();
+            List<AcrModeDto> res = new List<AcrModeDto>();
+            var datas = _context.ArAcrModes.ToList();
             foreach (var d in datas)
             {
                 res.Add(MapperHelper.ACRModeToACRModeDto(d));
@@ -328,7 +330,7 @@ namespace HIDAeroService.Service
         public List<ApbModeDto> GetApbModeList()
         {
             List<ApbModeDto> res = new List<ApbModeDto>();
-            var datas = _context.ar_apb_modes.ToList();
+            var datas = _context.ArApbModes.ToList();
             foreach (var d in datas)
             {
                 res.Add(MapperHelper.ApbModeToApbModeDto(d));
@@ -339,15 +341,15 @@ namespace HIDAeroService.Service
 
         #endregion
 
-        public void TriggerDeviceStatus(int ScpId,short AcrNumber,string AcrMode,string AccessPointStatus)
+        public void TriggerDeviceStatus(int ScpId,short AcrNo, string AcrMode,string AccessPointStatus)
         {
-            string ScpIp = _helperService.GetScpIpFromId((short)ScpId);
-            _hub.Clients.All.SendAsync("AcrStatus", ScpIp, AcrNumber, AcrMode, AccessPointStatus);
+            string ScpMac = _helperService.GetMacFromId((short)ScpId);
+            _hub.Clients.All.SendAsync("AcrStatus", ScpMac, AcrNo, AcrMode, AccessPointStatus);
         }
 
-        public bool GetAcrStatus(string ScpIp, short AcrNo)
+        public bool GetAcrStatus(string ScpMac, short AcrNo)
         {
-            short ScpId = _helperService.GetScpIdFromIp(ScpIp);
+            short ScpId = _helperService.GetScpIdFromMac(ScpMac);
             if (!_config.write.GetAcrStatus(ScpId, AcrNo, 1))
             {
                 return false;
@@ -355,26 +357,48 @@ namespace HIDAeroService.Service
             return true;
         }
 
-        public bool ChangeACRMode(string ScpIp,short AcrNo,short Mode)
+        public bool ChangeACRMode(string ScpMac,short AcrNo,short Mode)
         {
-            short ScpId = _helperService.GetScpIdFromIp(ScpIp);
+            short ScpId = _helperService.GetScpIdFromMac(ScpMac);
             if (!_config.write.ACRMode(ScpId, AcrNo, Mode))
             {
                 return false;
             }
+
+            if (!UpdateAcrModeInDatabase(ScpMac, AcrNo, Mode))
+            {
+                return false;
+            }
+            
             return true;
         }
 
-        public bool RemoveAccessControlReader(string ScpIp,short AcrNo)
+        public bool UpdateAcrModeInDatabase(string ScpMac, short AcrNo, short Mode)
         {
             try
             {
-                var acr = _context.ar_acrs.Where(d => d.scp_ip == ScpIp && d.acr_number == AcrNo).FirstOrDefault();
-                _context.ar_acrs.Remove(acr);
-                var nacr = _context.ar_acr_no.Where(d => d.acr_number == AcrNo && d.scp_ip == ScpIp).FirstOrDefault();
+                var data = _context.ArAcrs.FirstOrDefault(p => p.ScpMac == ScpMac && p.AcrNo == AcrNo);
+                if (data != null) data.DoorMode = Mode;
+                _context.SaveChanges();
+                return true;
+            }catch(Exception e)
+            {
+                _logger.LogError(e.Message);
+                Console.WriteLine(e.Message);
+                return false;
+            }
+        }
+
+        public bool RemoveAccessControlReader(string ScpMac,short AcrNo)
+        {
+            try
+            {
+                var acr = _context.ArAcrs.Where(d => d.ScpMac == ScpMac && d.AcrNo == AcrNo).FirstOrDefault();
+                _context.ArAcrs.Remove(acr);
+                var nacr = _context.ArAcrNo.Where(d => d.AcrNo == AcrNo && d.ScpMac == ScpMac).FirstOrDefault();
                 if (nacr != null)
                 {
-                    nacr.is_available = true;
+                    nacr.IsAvailable = true;
                 }
                 _context.SaveChanges();
                 _logger.LogInformation("Delete ACR {0} Success",AcrNo);
@@ -387,9 +411,9 @@ namespace HIDAeroService.Service
             }
         }
 
-        public int GetAcrRecAlloc(string ScpIp)
+        public int GetAcrRecAlloc(string ScpMac)
         {
-            return _context.ar_acrs.Where(p => p.scp_ip == ScpIp).Count();
+            return _context.ArAcrs.Where(p => p.ScpMac == ScpMac).Count();
         }
 
     }

@@ -1,16 +1,10 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.AeroLibrary;
+using HIDAeroService.Constants;
 using HIDAeroService.Models;
 using HIDAeroService.Service;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
-using static HID.Aero.ScpdNet.Wrapper.SCPReplyMessage;
+using HIDAeroService.Service.Impl;
+using HIDAeroService.Service.Interface;
+
 
 namespace HIDAeroService.AeroLibrary
 {
@@ -23,7 +17,6 @@ namespace HIDAeroService.AeroLibrary
 
         public List<IDReport> iDReports { get; set; } = new List<IDReport>();
         public IDReport iDReport { get; set; }
-        public SIOStatusReport sIOStatusReport { get; set; }
         public bool isWaitingCardScan { private get; set; }
         public short ScanScpId { private get; set; }
         public short ScanAcrNo {private get; set;} 
@@ -66,89 +59,66 @@ namespace HIDAeroService.AeroLibrary
             using var scope = _scopeFactory.CreateScope();
             var handle = scope.ServiceProvider.GetRequiredService<MessageHandler>();
             var scp = scope.ServiceProvider.GetRequiredService<ScpService>();
+            var sio = scope.ServiceProvider.GetRequiredService<SioService>();
+            var acr = scope.ServiceProvider.GetRequiredService<AcrService>();
             var cp = scope.ServiceProvider.GetRequiredService<CpService>();
             var mp = scope.ServiceProvider.GetRequiredService<MpService>();
-            var tz = scope.ServiceProvider.GetRequiredService<TZService>();
-            var cfmt = scope.ServiceProvider.GetRequiredService<CardFormatService>();
-            var alvl = scope.ServiceProvider.GetRequiredService<AlvlService>();
+            var tz = scope.ServiceProvider.GetRequiredService<TimeZoneService>();
+            var cfmt = scope.ServiceProvider.GetRequiredService<ICardFormatService>();
+            var alvl = scope.ServiceProvider.GetRequiredService<IAccessLevelService>();
+            var helper = scope.ServiceProvider.GetRequiredService<HelperService>();
+            var sys = scope.ServiceProvider.GetRequiredService<SysService>();
+            var cmnd = scope.ServiceProvider.GetRequiredService<CmndService>();
             switch (message.ReplyType)
             {
                 // Occur when command to SCP not success
                 case (int)enSCPReplyType.enSCPReplyNAK:
-                    Console.WriteLine("SCPReplyNAK");
                     handle.SCPReplyNAKHandler(message);
                     break;
                 case (int)enSCPReplyType.enSCPReplyTransaction:
-                    Console.WriteLine("SCPReplyTransaction");
                     handle.SCPReplyTransactionHandler(message,isWaitingCardScan,ScanScpId,ScanAcrNo); 
                     break;
                 case (int)enSCPReplyType.enSCPReplyCommStatus:
-                    Console.WriteLine("SCPReplyCommStatus");
+                    scp.TriggerDeviceStatus(helper.GetMacFromId((short)message.SCPId),message.comm.status);
+                    if (message.comm.status != 2)
+                    {
+                        iDReports.RemoveAll(obj => obj.ScpID == message.SCPId);
+                        scp.TriggerIdReport(iDReports);
+                    }
                     handle.SCPReplyCommStatus(message);
                     break;
                 case (int)enSCPReplyType.enSCPReplyIDReport:
-                    Console.WriteLine("SCPReplyIDReport");
-                    _write.GetWebConfig(message.id.scp_id);
-                    handle.SCPReplyIDReport(message); 
-                    iDReport = new IDReport();
-                    iDReport.DeviceID = message.id.device_id;
-                    iDReport.DeviceVer = message.id.device_ver;
-                    iDReport.SoftwareRevMajor = message.id.sft_rev_major;
-                    iDReport.SoftwareRevMinor = message.id.sft_rev_minor;   
-                    iDReport.SerialNumber = message.id.serial_number;
-                    iDReport.RamSize = message.id.ram_size;
-                    iDReport.RamFree = message.id.ram_free;
-                    iDReport.ESec = Utility.UnixToDateTime(message.id.e_sec);
-                    iDReport.DatabaseMax = message.id.db_max;
-                    iDReport.DatabaseActive = message.id.db_active;
-                    iDReport.DipSwitchPowerUp = message.id.dip_switch_pwrup;
-                    iDReport.DipSwitchCurrent = message.id.dip_switch_current;
-                    iDReport.ScpID = message.id.scp_id;
-                    iDReport.FirmWareAdvisory = message.id.firmware_advisory;
-                    iDReport.ScpIn1 = message.id.scp_in_1;
-                    iDReport.ScpIn2 = message.id.scp_in_2;
-                    iDReport.NOemCode = message.id.nOemCode;
-                    iDReport.ConfigFlag = message.id.config_flags;
-                    iDReport.MacAddress = Utility.ByteToHexStr(message.id.mac_addr);
-                    iDReport.TlsStatus = message.id.tls_status;
-                    iDReport.OperMode = message.id.oper_mode;
-                    iDReport.ScpIn3 = message.id.scp_in_3;
-                    iDReport.CumulativeBldCnt = message.id.cumulative_bld_cnt;
-                    if ((message.id.config_flags & 1) != 0)
+                    handle.SCPReplyIDReport(message);
+                    // If Controller not register yet
+                    iDReport = scp.handleInCommingScp(message,tz,cfmt,alvl);
+                    if(iDReport != null)
                     {
-                        if (scp.ValidateSCPConnection(message.id.scp_id, tz, cfmt, alvl))
-                        {
-                            report.Add(iDReport);
-                        }
-
+                        iDReports.Add(iDReport);
                     }
                     break;
                 case (int)enSCPReplyType.enSCPReplyTranStatus:
-                    Console.WriteLine("SCPReplyTranStatus");
                     handle.SCPReplyTranStatus(message);
                     break;
                 case (int)enSCPReplyType.enSCPReplySrMsp1Drvr:
-                    Console.WriteLine("SCPReplySrMsp1Drvr");
                     handle.SCPReplySrMsp1Drvr(message);
                     break;
                 case (int)enSCPReplyType.enSCPReplySrSio:
-                    Console.WriteLine("SCPReplySrSio");
+                    sio.TriggerDeviceStatus(message.SCPId, message.sts_sio.number, message.sts_sio.com_status, message.sts_sio.ip_stat[4], message.sts_sio.ip_stat[5], message.sts_sio.ip_stat[6]);
                     handle.SCPReplySrSio(message);
                     break;
                 case (int)enSCPReplyType.enSCPReplySrMp:
-                    Console.WriteLine("SCPReplySrMp");
+                    mp.TriggerDeviceStatus(message.SCPId, message.sts_mp.first, message.sts_mp.status);
                     handle.SCPReplySrMp(message);
                     break;
                 case (int)enSCPReplyType.enSCPReplySrCp:
-                    Console.WriteLine("SCPReplySrCp");
                     handle.SCPReplySrCp(message);
+                    cp.TriggerDeviceStatus(helper.GetMacFromId((short)message.SCPId), message.sts_cp.first, message.sts_cp.status);
                     break;
                 case (int)enSCPReplyType.enSCPReplySrAcr:
-                    Console.WriteLine("SCPReplySrAcr");
                     handle.SCPReplySrAcr(message);
+                    acr.TriggerDeviceStatus(message.SCPId, message.sts_acr.number, Description.GetACRModeForStatus(message.sts_acr.door_status), Description.GetAccessPointStatusFlagResult((byte)message.sts_acr.ap_status));
                     break;
                 case (int)enSCPReplyType.enSCPReplySrTz:
-                    Console.WriteLine("SCPReplySrTz");
                     handle.SCPReplySrTz(message);
                     break;
                 case (int)enSCPReplyType.enSCPReplySrTv:
@@ -165,28 +135,19 @@ namespace HIDAeroService.AeroLibrary
                     break;
                 case (int)enSCPReplyType.enSCPReplyStrStatus:
                     handle.SCPReplyStrStatus(message);
-                    break;
+                    scp.VerifyScpConfiguration(message);
+                     break;
                 case (int)enSCPReplyType.enSCPReplyCmndStatus:
+                    // Save to DB if fail
+                    cmnd.HandleSaveFailCommand(_write,message);
+                    cmnd.HandleCommandResponse(message);
+                    scp.HandleUploadCommand(_write,message);
                     handle.SCPReplyCmndStatus(message,_write);
                         break;
                 case (int)enSCPReplyType.enSCPReplyWebConfigNetwork:
-                    foreach(var i in report)
-                    {
-                        if(i.ScpID == message.SCPId)
-                        {
-                            i.Ip = message.web_network.cIpAddr;
-                        }
-
-                        if (scp.IsIpRegister(Utility.IntegerToIp(i.Ip)))
-                        {
-                            scp.InitialScpConfiguration(i.ScpID, cp, mp,i.MacAddress);
-                        }
-                        else
-                        {
-                            iDReports.Add(iDReport);
-                        }
-                    }
                     handle.SCPReplyWebConfigNetwork(message);
+                    scp.AssignIpToIdReport(message, iDReports);
+                    
                     break;
                     
                 default:

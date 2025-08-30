@@ -22,1729 +22,2228 @@ namespace HIDAeroService.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("HIDAeroService.Entity.ar_access_lv", b =>
+            modelBuilder.Entity("HIDAeroService.Entity.ArAccessLevel", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<short>("access_lv_number")
+                    b.Property<short>("ComponentNo")
                         .HasColumnType("smallint");
 
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("tz_acr1")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr10")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr11")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr12")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr13")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr14")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr15")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr16")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr17")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr18")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr19")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr2")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr20")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr21")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr22")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr23")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr24")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr25")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr26")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr27")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr28")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr29")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr3")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr30")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr31")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr32")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr33")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr34")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr35")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr36")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr37")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr38")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr39")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr4")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr40")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr41")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr42")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr43")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr44")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr45")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr46")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr47")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr48")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr49")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr5")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr50")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr51")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr52")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr53")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr54")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr55")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr56")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr57")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr58")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr59")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr6")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr60")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr61")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr62")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr63")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr64")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr7")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr8")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_acr9")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_access_lvls");
-
-                    b.HasData(
-                        new
-                        {
-                            id = 1,
-                            access_lv_number = (short)0,
-                            name = "Full Access",
-                            tz_acr1 = (short)1,
-                            tz_acr10 = (short)1,
-                            tz_acr11 = (short)1,
-                            tz_acr12 = (short)1,
-                            tz_acr13 = (short)1,
-                            tz_acr14 = (short)1,
-                            tz_acr15 = (short)1,
-                            tz_acr16 = (short)1,
-                            tz_acr17 = (short)1,
-                            tz_acr18 = (short)1,
-                            tz_acr19 = (short)1,
-                            tz_acr2 = (short)1,
-                            tz_acr20 = (short)1,
-                            tz_acr21 = (short)1,
-                            tz_acr22 = (short)1,
-                            tz_acr23 = (short)1,
-                            tz_acr24 = (short)1,
-                            tz_acr25 = (short)1,
-                            tz_acr26 = (short)1,
-                            tz_acr27 = (short)1,
-                            tz_acr28 = (short)1,
-                            tz_acr29 = (short)1,
-                            tz_acr3 = (short)1,
-                            tz_acr30 = (short)1,
-                            tz_acr31 = (short)1,
-                            tz_acr32 = (short)1,
-                            tz_acr33 = (short)1,
-                            tz_acr34 = (short)1,
-                            tz_acr35 = (short)1,
-                            tz_acr36 = (short)1,
-                            tz_acr37 = (short)1,
-                            tz_acr38 = (short)1,
-                            tz_acr39 = (short)1,
-                            tz_acr4 = (short)1,
-                            tz_acr40 = (short)1,
-                            tz_acr41 = (short)1,
-                            tz_acr42 = (short)1,
-                            tz_acr43 = (short)1,
-                            tz_acr44 = (short)1,
-                            tz_acr45 = (short)1,
-                            tz_acr46 = (short)1,
-                            tz_acr47 = (short)1,
-                            tz_acr48 = (short)1,
-                            tz_acr49 = (short)1,
-                            tz_acr5 = (short)1,
-                            tz_acr50 = (short)1,
-                            tz_acr51 = (short)1,
-                            tz_acr52 = (short)1,
-                            tz_acr53 = (short)1,
-                            tz_acr54 = (short)1,
-                            tz_acr55 = (short)1,
-                            tz_acr56 = (short)1,
-                            tz_acr57 = (short)1,
-                            tz_acr58 = (short)1,
-                            tz_acr59 = (short)1,
-                            tz_acr6 = (short)1,
-                            tz_acr60 = (short)1,
-                            tz_acr61 = (short)1,
-                            tz_acr62 = (short)1,
-                            tz_acr63 = (short)1,
-                            tz_acr64 = (short)1,
-                            tz_acr7 = (short)1,
-                            tz_acr8 = (short)1,
-                            tz_acr9 = (short)1
-                        },
-                        new
-                        {
-                            id = 2,
-                            access_lv_number = (short)1,
-                            name = "No Access",
-                            tz_acr1 = (short)0,
-                            tz_acr10 = (short)0,
-                            tz_acr11 = (short)0,
-                            tz_acr12 = (short)0,
-                            tz_acr13 = (short)0,
-                            tz_acr14 = (short)0,
-                            tz_acr15 = (short)0,
-                            tz_acr16 = (short)0,
-                            tz_acr17 = (short)0,
-                            tz_acr18 = (short)0,
-                            tz_acr19 = (short)0,
-                            tz_acr2 = (short)0,
-                            tz_acr20 = (short)0,
-                            tz_acr21 = (short)0,
-                            tz_acr22 = (short)0,
-                            tz_acr23 = (short)0,
-                            tz_acr24 = (short)0,
-                            tz_acr25 = (short)0,
-                            tz_acr26 = (short)0,
-                            tz_acr27 = (short)0,
-                            tz_acr28 = (short)0,
-                            tz_acr29 = (short)0,
-                            tz_acr3 = (short)0,
-                            tz_acr30 = (short)0,
-                            tz_acr31 = (short)0,
-                            tz_acr32 = (short)0,
-                            tz_acr33 = (short)0,
-                            tz_acr34 = (short)0,
-                            tz_acr35 = (short)0,
-                            tz_acr36 = (short)0,
-                            tz_acr37 = (short)0,
-                            tz_acr38 = (short)0,
-                            tz_acr39 = (short)0,
-                            tz_acr4 = (short)0,
-                            tz_acr40 = (short)0,
-                            tz_acr41 = (short)0,
-                            tz_acr42 = (short)0,
-                            tz_acr43 = (short)0,
-                            tz_acr44 = (short)0,
-                            tz_acr45 = (short)0,
-                            tz_acr46 = (short)0,
-                            tz_acr47 = (short)0,
-                            tz_acr48 = (short)0,
-                            tz_acr49 = (short)0,
-                            tz_acr5 = (short)0,
-                            tz_acr50 = (short)0,
-                            tz_acr51 = (short)0,
-                            tz_acr52 = (short)0,
-                            tz_acr53 = (short)0,
-                            tz_acr54 = (short)0,
-                            tz_acr55 = (short)0,
-                            tz_acr56 = (short)0,
-                            tz_acr57 = (short)0,
-                            tz_acr58 = (short)0,
-                            tz_acr59 = (short)0,
-                            tz_acr6 = (short)0,
-                            tz_acr60 = (short)0,
-                            tz_acr61 = (short)0,
-                            tz_acr62 = (short)0,
-                            tz_acr63 = (short)0,
-                            tz_acr64 = (short)0,
-                            tz_acr7 = (short)0,
-                            tz_acr8 = (short)0,
-                            tz_acr9 = (short)0
-                        });
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_acr", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<short>("access_cfg")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("acr_number")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("altrdr_number")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("altrdr_sio")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("altrdr_spec")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("apb_delay")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("apb_mode")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("cd_format")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("dc_held")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("dc_held2")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("default_led_mode")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("default_mode")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("dfofFilterTime")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("ilPB_long_press")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("ilPB_number")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("ilPB_out_num")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("ilPB_out_sio")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("ilPB_sio")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("nExtFeatureType")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("offline_mode")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("pre_alarm")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("rdr_sio")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("reader_number")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("rex1_number")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("rex1_sio")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("rex1_tzmask")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("rex2_number")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("rex2_sio")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("rex2_tzmask")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("scp_ip")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("sensor_number")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("sensor_sio")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("strike_mode")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("strike_t_max")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("strike_t_min")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("strk_follow_delay")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("strk_follow_pulse")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("strk_number")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("strk_sio")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("strk_t2")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_acrs");
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_acr_mode", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<string>("description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("value")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_acr_modes");
-
-                    b.HasData(
-                        new
-                        {
-                            id = 1,
-                            description = "Disable the ACR, no REX",
-                            name = "Disable",
-                            value = (short)1
-                        },
-                        new
-                        {
-                            id = 2,
-                            description = "Unlock (unlimited access)",
-                            name = "Unlock",
-                            value = (short)2
-                        },
-                        new
-                        {
-                            id = 3,
-                            description = "Locked (no access, REX active)",
-                            name = "Locked",
-                            value = (short)3
-                        },
-                        new
-                        {
-                            id = 4,
-                            description = "Facility code only",
-                            name = "Facility code only",
-                            value = (short)4
-                        },
-                        new
-                        {
-                            id = 5,
-                            description = "Card only",
-                            name = "Card only",
-                            value = (short)5
-                        },
-                        new
-                        {
-                            id = 6,
-                            description = "PIN only",
-                            name = "PIN only",
-                            value = (short)6
-                        },
-                        new
-                        {
-                            id = 7,
-                            description = "Card and PIN required",
-                            name = "Card and PIN",
-                            value = (short)7
-                        },
-                        new
-                        {
-                            id = 8,
-                            description = "Card or PIN required",
-                            name = "Card or PIN",
-                            value = (short)8
-                        });
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_apb_mode", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<string>("description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("value")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_apb_modes");
-
-                    b.HasData(
-                        new
-                        {
-                            id = 1,
-                            description = "Do not check or alter anti-passback location. No antipassback rules.",
-                            name = "None",
-                            value = (short)0
-                        },
-                        new
-                        {
-                            id = 2,
-                            description = "Soft anti-passback: Accept any new location, change the user’s location to current reader, and generate an antipassback violation for an invalid entry.",
-                            name = "Soft anti-passback",
-                            value = (short)1
-                        },
-                        new
-                        {
-                            id = 3,
-                            description = "Hard anti-passback: Check user location, if a valid entry is made, change user’s location to new location. If an invalid entry is attempted, do not grant access.",
-                            name = "Hard anti-passback",
-                            value = (short)2
-                        });
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_card_format", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<short>("bits")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("ch_ln")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("ch_loc")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("facility")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("fc_ln")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("fc_loc")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("flags")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("function_id")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("ic_ln")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("ic_loc")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("number")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("offset")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("pe_ln")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("pe_loc")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("po_ln")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("po_loc")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_card_formats");
-
-                    b.HasData(
-                        new
-                        {
-                            id = 1,
-                            bits = (short)26,
-                            ch_ln = (short)16,
-                            ch_loc = (short)9,
-                            facility = (short)-1,
-                            fc_ln = (short)0,
-                            fc_loc = (short)0,
-                            flags = (short)0,
-                            function_id = (short)1,
-                            ic_ln = (short)0,
-                            ic_loc = (short)0,
-                            number = (short)0,
-                            offset = (short)0,
-                            pe_ln = (short)13,
-                            pe_loc = (short)0,
-                            po_ln = (short)13,
-                            po_loc = (short)13
-                        });
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_card_holder", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<string>("card_holder_id")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("card_holder_refenrence_number")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("created_date")
+                    b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("description")
-                        .HasColumnType("text");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
 
-                    b.Property<string>("email")
-                        .HasColumnType("text");
-
-                    b.Property<string>("holder_status")
-                        .HasColumnType("text");
-
-                    b.Property<int>("issue_code_running_number")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("name")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("phone")
-                        .HasColumnType("text");
+                    b.Property<short>("TzAcr1")
+                        .HasColumnType("smallint");
 
-                    b.Property<string>("sex")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<short>("TzAcr10")
+                        .HasColumnType("smallint");
 
-                    b.Property<string>("title")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<short>("TzAcr11")
+                        .HasColumnType("smallint");
 
-                    b.Property<DateTime>("updated_date")
+                    b.Property<short>("TzAcr12")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr13")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr14")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr15")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr16")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr17")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr18")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr19")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr2")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr20")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr21")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr22")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr23")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr24")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr25")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr26")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr27")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr28")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr29")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr3")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr30")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr31")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr32")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr33")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr34")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr35")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr36")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr37")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr38")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr39")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr4")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr40")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr41")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr42")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr43")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr44")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr45")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr46")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr47")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr48")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr49")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr5")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr50")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr51")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr52")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr53")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr54")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr55")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr56")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr57")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr58")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr59")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr6")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr60")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr61")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr62")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr63")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr64")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr7")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr8")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TzAcr9")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
-                    b.ToTable("ar_card_holders");
+                    b.ToTable("ArAcccessLevels");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 2,
+                            ComponentNo = (short)0,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Name = "No Access",
+                            TzAcr1 = (short)0,
+                            TzAcr10 = (short)0,
+                            TzAcr11 = (short)0,
+                            TzAcr12 = (short)0,
+                            TzAcr13 = (short)0,
+                            TzAcr14 = (short)0,
+                            TzAcr15 = (short)0,
+                            TzAcr16 = (short)0,
+                            TzAcr17 = (short)0,
+                            TzAcr18 = (short)0,
+                            TzAcr19 = (short)0,
+                            TzAcr2 = (short)0,
+                            TzAcr20 = (short)0,
+                            TzAcr21 = (short)0,
+                            TzAcr22 = (short)0,
+                            TzAcr23 = (short)0,
+                            TzAcr24 = (short)0,
+                            TzAcr25 = (short)0,
+                            TzAcr26 = (short)0,
+                            TzAcr27 = (short)0,
+                            TzAcr28 = (short)0,
+                            TzAcr29 = (short)0,
+                            TzAcr3 = (short)0,
+                            TzAcr30 = (short)0,
+                            TzAcr31 = (short)0,
+                            TzAcr32 = (short)0,
+                            TzAcr33 = (short)0,
+                            TzAcr34 = (short)0,
+                            TzAcr35 = (short)0,
+                            TzAcr36 = (short)0,
+                            TzAcr37 = (short)0,
+                            TzAcr38 = (short)0,
+                            TzAcr39 = (short)0,
+                            TzAcr4 = (short)0,
+                            TzAcr40 = (short)0,
+                            TzAcr41 = (short)0,
+                            TzAcr42 = (short)0,
+                            TzAcr43 = (short)0,
+                            TzAcr44 = (short)0,
+                            TzAcr45 = (short)0,
+                            TzAcr46 = (short)0,
+                            TzAcr47 = (short)0,
+                            TzAcr48 = (short)0,
+                            TzAcr49 = (short)0,
+                            TzAcr5 = (short)0,
+                            TzAcr50 = (short)0,
+                            TzAcr51 = (short)0,
+                            TzAcr52 = (short)0,
+                            TzAcr53 = (short)0,
+                            TzAcr54 = (short)0,
+                            TzAcr55 = (short)0,
+                            TzAcr56 = (short)0,
+                            TzAcr57 = (short)0,
+                            TzAcr58 = (short)0,
+                            TzAcr59 = (short)0,
+                            TzAcr6 = (short)0,
+                            TzAcr60 = (short)0,
+                            TzAcr61 = (short)0,
+                            TzAcr62 = (short)0,
+                            TzAcr63 = (short)0,
+                            TzAcr64 = (short)0,
+                            TzAcr7 = (short)0,
+                            TzAcr8 = (short)0,
+                            TzAcr9 = (short)0,
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 1,
+                            ComponentNo = (short)1,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Name = "Full Access",
+                            TzAcr1 = (short)1,
+                            TzAcr10 = (short)1,
+                            TzAcr11 = (short)1,
+                            TzAcr12 = (short)1,
+                            TzAcr13 = (short)1,
+                            TzAcr14 = (short)1,
+                            TzAcr15 = (short)1,
+                            TzAcr16 = (short)1,
+                            TzAcr17 = (short)1,
+                            TzAcr18 = (short)1,
+                            TzAcr19 = (short)1,
+                            TzAcr2 = (short)1,
+                            TzAcr20 = (short)1,
+                            TzAcr21 = (short)1,
+                            TzAcr22 = (short)1,
+                            TzAcr23 = (short)1,
+                            TzAcr24 = (short)1,
+                            TzAcr25 = (short)1,
+                            TzAcr26 = (short)1,
+                            TzAcr27 = (short)1,
+                            TzAcr28 = (short)1,
+                            TzAcr29 = (short)1,
+                            TzAcr3 = (short)1,
+                            TzAcr30 = (short)1,
+                            TzAcr31 = (short)1,
+                            TzAcr32 = (short)1,
+                            TzAcr33 = (short)1,
+                            TzAcr34 = (short)1,
+                            TzAcr35 = (short)1,
+                            TzAcr36 = (short)1,
+                            TzAcr37 = (short)1,
+                            TzAcr38 = (short)1,
+                            TzAcr39 = (short)1,
+                            TzAcr4 = (short)1,
+                            TzAcr40 = (short)1,
+                            TzAcr41 = (short)1,
+                            TzAcr42 = (short)1,
+                            TzAcr43 = (short)1,
+                            TzAcr44 = (short)1,
+                            TzAcr45 = (short)1,
+                            TzAcr46 = (short)1,
+                            TzAcr47 = (short)1,
+                            TzAcr48 = (short)1,
+                            TzAcr49 = (short)1,
+                            TzAcr5 = (short)1,
+                            TzAcr50 = (short)1,
+                            TzAcr51 = (short)1,
+                            TzAcr52 = (short)1,
+                            TzAcr53 = (short)1,
+                            TzAcr54 = (short)1,
+                            TzAcr55 = (short)1,
+                            TzAcr56 = (short)1,
+                            TzAcr57 = (short)1,
+                            TzAcr58 = (short)1,
+                            TzAcr59 = (short)1,
+                            TzAcr6 = (short)1,
+                            TzAcr60 = (short)1,
+                            TzAcr61 = (short)1,
+                            TzAcr62 = (short)1,
+                            TzAcr63 = (short)1,
+                            TzAcr64 = (short)1,
+                            TzAcr7 = (short)1,
+                            TzAcr8 = (short)1,
+                            TzAcr9 = (short)1,
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.ar_control_point", b =>
+            modelBuilder.Entity("HIDAeroService.Entity.ArAcr", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<short>("cp_number")
+                    b.Property<short>("AccessCfg")
                         .HasColumnType("smallint");
 
-                    b.Property<short>("mode")
+                    b.Property<short>("AcrNo")
                         .HasColumnType("smallint");
 
-                    b.Property<string>("name")
+                    b.Property<short>("AlternateReaderNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("AlternateReaderSio")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("AlternateReaderSpec")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("ApbDelay")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("ApbMode")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("CdFormat")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<short>("DcHeld")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("DcHeld2")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("DefaultLEDMode")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("DefaultMode")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("DfOfFilterTime")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("DoorMode")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("IlPBLongPress")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("IlPBNumber")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("IlPBOutNum")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("IlPBOutSio")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("IlPBSio")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NExtFeatureType")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<short>("op_number")
+                    b.Property<short>("OfflineMode")
                         .HasColumnType("smallint");
 
-                    b.Property<string>("scp_ip")
+                    b.Property<short>("PreAlarm")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("RdrSio")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("ReaderNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("Rex1No")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("Rex1Sio")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("Rex1TzMask")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("Rex2No")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("Rex2Sio")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("Rex2TzMask")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("ScpMac")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<short>("sio_number")
+                    b.Property<short>("SensorNo")
                         .HasColumnType("smallint");
 
-                    b.HasKey("id");
+                    b.Property<short>("SensorSio")
+                        .HasColumnType("smallint");
 
-                    b.ToTable("ar_control_point");
+                    b.Property<short>("StrkFollowDelay")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("StrkFollowPulse")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("StrkMax")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("StrkMin")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("StrkMode")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("StrkNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("StrkSio")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("StrkT2")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArAcrs");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.ar_credentials", b =>
+            modelBuilder.Entity("HIDAeroService.Entity.ArAcrMode", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<short>("access_level")
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<short>("Value")
                         .HasColumnType("smallint");
 
-                    b.Property<int>("act_time")
+                    b.HasKey("Id");
+
+                    b.ToTable("ArAcrModes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Disable the ACR, no REX",
+                            Name = "Disable",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Unlock (unlimited access)",
+                            Name = "Unlock",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Locked (no access, REX active)",
+                            Name = "Locked",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Facility code only",
+                            Name = "Facility code only",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Card only",
+                            Name = "Card only",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)5
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "PIN only",
+                            Name = "PIN only",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)6
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Card and PIN required",
+                            Name = "Card and PIN",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)7
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Card or PIN required",
+                            Name = "Card or PIN",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)8
+                        });
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArAcrNo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    b.Property<int>("bits")
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<short>("AcrNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ScpMac")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("SioNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArAcrNo");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArApbMode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("card_holder_refenrence_number")
-                        .HasColumnType("uuid");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<long>("card_number")
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<short>("Value")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArApbModes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Do not check or alter anti-passback location. No antipassback rules.",
+                            Name = "None",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Soft anti-passback: Accept any new location, change the user’s location to current reader, and generate an antipassback violation for an invalId entry.",
+                            Name = "Soft anti-passback",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Hard anti-passback: Check user location, if a valid entry is made, change user’s location to new location. If an invalid entry is attempted, do not grant access.",
+                            Name = "Hard anti-passback",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)2
+                        });
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArCardFormat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<short>("Bits")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("CardFormatName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("ChLn")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("ChLoc")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("CommandId")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("ComponentNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<short>("Facility")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("FcLn")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("FcLoc")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("Flags")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("FunctionId")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("IcLn")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("IcLoc")
+                        .HasColumnType("smallint");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<short>("Offset")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("PeLn")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("PeLoc")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("PoLn")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("PoLoc")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArCardFormats");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Bits = (short)26,
+                            CardFormatName = "26 Bits No Fac",
+                            ChLn = (short)16,
+                            ChLoc = (short)9,
+                            CommandId = (short)0,
+                            ComponentNo = (short)0,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Facility = (short)-1,
+                            FcLn = (short)0,
+                            FcLoc = (short)0,
+                            Flags = (short)0,
+                            FunctionId = (short)1,
+                            IcLn = (short)0,
+                            IcLoc = (short)0,
+                            IsActive = true,
+                            Offset = (short)0,
+                            PeLn = (short)13,
+                            PeLoc = (short)0,
+                            PoLn = (short)13,
+                            PoLoc = (short)13,
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArCardHolder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CardHolderId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CardHolderRefNo")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("HolderStatus")
+                        .HasColumnType("text");
+
+                    b.Property<int>("IssueCodeRunningNo")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("MiddleName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Sex")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArCardHolders");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArCommandStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Command")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<char>("CommandStatus")
+                        .HasColumnType("character(1)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("NakDescCode")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("NakReason")
+                        .HasColumnType("text");
+
+                    b.Property<int>("ScpId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ScpMac")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("TagNo")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArCommandStatuses");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArControlPoint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<short>("CpNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<short>("DefaultPulseTime")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("Mode")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("OpNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("ScpMac")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("SioNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArControlPoints");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArCpNo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<short>("CpNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ScpMac")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("SioNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArCpNo");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArCredential", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<short>("AccessLevel")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("ActTime")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Bits")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CardHolderRefNo")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("CardNo")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("created_date")
+                    b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("deact_time")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("facility_code")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("image")
+                    b.Property<string>("DeactTime")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool>("is_active")
+                    b.Property<int>("FacilityCode")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("issue_code")
+                    b.Property<int>("IssueCode")
                         .HasColumnType("integer");
 
-                    b.Property<string>("pin")
+                    b.Property<string>("Pin")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("updated_date")
+                    b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
-                    b.ToTable("ar_credentials");
+                    b.ToTable("ArCredentials");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.ar_ip_mode", b =>
+            modelBuilder.Entity("HIDAeroService.Entity.ArEvent", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("description")
+                    b.Property<string>("Additional")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("value")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_ip_modes");
-
-                    b.HasData(
-                        new
-                        {
-                            id = 1,
-                            description = "Normally closed, no End-Of-Line (EOL)",
-                            name = "Normally closed",
-                            value = (short)0
-                        },
-                        new
-                        {
-                            id = 2,
-                            description = "Normally open, no EOL",
-                            name = "Normally open",
-                            value = (short)1
-                        });
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_monitor_point", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<short>("delay_entry")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("delay_exit")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("icvt_num")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("ip_number")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("lf_code")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("mp_number")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("scp_ip")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("sio_number")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_monitor_point");
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_n_acr", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<short>("acr_number")
-                        .HasColumnType("smallint");
-
-                    b.Property<bool>("is_available")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("scp_ip")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("sio_number")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_acr_no");
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_n_alvl", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<short>("alvl_number")
-                        .HasColumnType("smallint");
-
-                    b.Property<bool>("is_available")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_alvl_no");
-
-                    b.HasData(
-                        new
-                        {
-                            id = 1,
-                            alvl_number = (short)0,
-                            is_available = false
-                        },
-                        new
-                        {
-                            id = 2,
-                            alvl_number = (short)1,
-                            is_available = false
-                        });
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_n_cp", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<short>("cp_number")
-                        .HasColumnType("smallint");
-
-                    b.Property<bool>("is_available")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("scp_ip")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("sio_number")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_cp_no");
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_n_mp", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<short>("ip_number")
-                        .HasColumnType("smallint");
-
-                    b.Property<bool>("is_available")
-                        .HasColumnType("boolean");
-
-                    b.Property<short>("mp_number")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("scp_ip")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("sio_number")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_mp_no");
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_n_sio", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<bool>("is_available")
-                        .HasColumnType("boolean");
-
-                    b.Property<short>("port")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("scp_ip")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("sio_number")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_sio_no");
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_n_tz", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<bool>("is_available")
-                        .HasColumnType("boolean");
-
-                    b.Property<short>("tz_number")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_tz_no");
-
-                    b.HasData(
-                        new
-                        {
-                            id = 1,
-                            is_available = false,
-                            tz_number = (short)1
-                        });
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_nak", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<DateTime>("created_date")
+                    b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("nak_desc")
+                    b.Property<string>("Date")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("nak_desc_code")
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Serialnumber")
                         .HasColumnType("integer");
 
-                    b.Property<string>("nak_reason")
-                        .HasColumnType("text");
-
-                    b.Property<int>("tag_no")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("updated_date")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_naks");
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_op_mode", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<string>("description")
+                    b.Property<string>("Source")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<short>("value")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_op_modes");
-
-                    b.HasData(
-                        new
-                        {
-                            id = 1,
-                            description = "Normal Mode with Offline: No change",
-                            value = (short)0
-                        },
-                        new
-                        {
-                            id = 2,
-                            description = "Inverted Mode Offline: No change",
-                            value = (short)1
-                        },
-                        new
-                        {
-                            id = 3,
-                            description = "Normal Mode Offline: Inactive",
-                            value = (short)16
-                        },
-                        new
-                        {
-                            id = 4,
-                            description = "Inverted Mode Offline: Inactive",
-                            value = (short)17
-                        },
-                        new
-                        {
-                            id = 5,
-                            description = "Normal Mode Offline: Active",
-                            value = (short)32
-                        },
-                        new
-                        {
-                            id = 6,
-                            description = "Inverted Mode Offline: Inactive",
-                            value = (short)33
-                        });
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_operator", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<DateTime>("created_date")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("email")
+                    b.Property<string>("SourceNo")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("first_name")
+                    b.Property<string>("Time")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("last_name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("middle_name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("password")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("phone")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("photo")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("role")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("updated_date")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("user_id")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("user_name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_users");
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_rdr_cfg_mode", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<string>("description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("value")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_rdr_modes");
-
-                    b.HasData(
-                        new
-                        {
-                            id = 1,
-                            description = "Single reader, controlling the door",
-                            name = "Single Reader",
-                            value = (short)0
-                        },
-                        new
-                        {
-                            id = 2,
-                            description = "Paired readers, Master - this reader controls the door",
-                            name = "Paired readers, Master",
-                            value = (short)1
-                        },
-                        new
-                        {
-                            id = 3,
-                            description = "Paired readers, Slave - this reader does not control door",
-                            name = "Paired readers, Slave",
-                            value = (short)2
-                        },
-                        new
-                        {
-                            id = 4,
-                            description = "Turnstile Reader. Two modes selected by: n strike_t_min != strike_t_max (original implementation - an access grant pulses the strike output for 1 second) n strike_t_min == strike_t_max (pulses the strike output after a door open/close signal for each additional access grant if several grants are waiting)",
-                            name = "Turnstile Reader",
-                            value = (short)3
-                        },
-                        new
-                        {
-                            id = 5,
-                            description = "Elevator, no floor select feedback",
-                            name = "Elevator, no floor",
-                            value = (short)4
-                        },
-                        new
-                        {
-                            id = 6,
-                            description = "Elevator with floor select feedback",
-                            name = "Elevator with floor",
-                            value = (short)5
-                        });
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_reader", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<DateTime>("created_date")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<short>("led_drive_mode")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("osdp_flag")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("reader_number")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("scp_mac")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("sio_number")
-                        .HasColumnType("smallint");
-
-                    b.Property<DateTime>("updated_date")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_readers");
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_scp", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<string>("ip_address")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("mac")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("model")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("n_acr")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("n_alvl")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("n_cp")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("n_hol")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("n_mp")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("n_mpg")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("n_proc")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("n_sio")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("n_trgr")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("n_tz")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("scp_id")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("serial_number")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_scps");
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_scp_structure_status", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<string>("ip")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("mac")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("rec_alloc_acr")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("rec_alloc_alvl")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("rec_alloc_area")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("rec_alloc_card_active")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("rec_alloc_cp")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("rec_alloc_crdb")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("rec_alloc_eal")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("rec_alloc_holiday")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("rec_alloc_mp")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("rec_alloc_mpg")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("rec_alloc_proc")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("rec_alloc_sio_port")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("rec_alloc_timezone")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("rec_alloc_transaction")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("rec_alloc_trig")
-                        .HasColumnType("integer");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_scp_structure_statuses");
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_sio", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<short>("address")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("baud_rate")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("model")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("model_desc")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("msp1_number")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("n_dialect")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("n_inputs")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("n_outputs")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("n_protocol")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("n_readers")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("port_number")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("scp_ip")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("scp_name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("sio_number")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_sios");
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_strk_mode", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<string>("description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("value")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_strk_modes");
-
-                    b.HasData(
-                        new
-                        {
-                            id = 1,
-                            description = "Do not use! This would allow the strike to stay active for the entire strike time allowing the door to be opened multiple times.",
-                            name = "Normal",
-                            value = (short)0
-                        },
-                        new
-                        {
-                            id = 2,
-                            description = "Deactivate strike when door opens",
-                            name = "Deactivate On Open",
-                            value = (short)1
-                        },
-                        new
-                        {
-                            id = 3,
-                            description = "Deactivate strike on door close or strike_t_max expires",
-                            name = "Deactivate On Close",
-                            value = (short)2
-                        },
-                        new
-                        {
-                            id = 4,
-                            description = "Used with ACR_S_OPEN or ACR_S_CLOSE, to select tailgate mode: pulse (strk_sio:strk_number+1) relay for each user expected to enter",
-                            name = "Tailgate",
-                            value = (short)16
-                        });
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_tz", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<short>("act_time")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("deact_time")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("intervals")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("mode")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("tz_number")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_tzs");
-
-                    b.HasData(
-                        new
-                        {
-                            id = 1,
-                            act_time = (short)0,
-                            deact_time = (short)0,
-                            intervals = (short)0,
-                            mode = (short)1,
-                            name = "Always",
-                            tz_number = (short)1
-                        });
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.ar_tz_interval", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<short>("i_days")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("i_end")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("i_start")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("intervals_number")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("tz_number")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ar_tz_intervals");
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.event_transction", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<string>("additional")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("created_date")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("date")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("serial_number")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("source")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("source_number")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("time")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<double>("transaction_code")
+                    b.Property<double>("TransactionCode")
                         .HasColumnType("double precision");
 
-                    b.Property<string>("type")
+                    b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("updated_date")
+                    b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
-                    b.ToTable("ar_events");
+                    b.ToTable("ArEvents");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArHoliday", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<short>("ComponentNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<short>("Day")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("Extend")
+                        .HasColumnType("smallint");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<short>("Month")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TypeMask")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<short>("Year")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArHolidays");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArInterval", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<short>("ComponentNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Days")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Endtime")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("IDays")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("IEnd")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("IStart")
+                        .HasColumnType("smallint");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("StartTime")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArIntervals");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArIpMode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<short>("Value")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArIpModes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Normally closed, no End-Of-Line (EOL)",
+                            Name = "Normally closed",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Normally open, no EOL",
+                            Name = "Normally open",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)1
+                        });
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArMonitorPoint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<short>("DelayEntry")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("DelayExit")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("IcvtNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("IpNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("LfCode")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("MpNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ScpIp")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ScpMac")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("SioNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArMonitorPoints");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArMpNo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("boolean");
+
+                    b.Property<short>("MpNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("ScpMac")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("SioNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArMpNo");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArOpMode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<short>("Value")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArOpModes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Normal Mode with Offline: No change",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Inverted Mode Offline: No change",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Normal Mode Offline: Inactive",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)16
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Inverted Mode Offline: Inactive",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)17
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Normal Mode Offline: Active",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)32
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Inverted Mode Offline: Inactive",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)33
+                        });
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArOperator", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("MiddleName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArOperators");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArReader", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<short>("LedDriveMode")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("OsdpFlag")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("ReaderNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("ScpMac")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("SioNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArReaders");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArReaderConfigMode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<short>("Value")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArReaderModes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Single reader, controlling the door",
+                            Name = "Single Reader",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Paired readers, Master - this reader controls the door",
+                            Name = "Paired readers, Master",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Paired readers, Slave - this reader does not control door",
+                            Name = "Paired readers, Slave",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Turnstile Reader. Two modes selected by: n strike_t_min != strike_t_max (original implementation - an access grant pulses the strike output for 1 second) n strike_t_min == strike_t_max (pulses the strike output after a door open/close signal for each additional access grant if several grants are waiting)",
+                            Name = "Turnstile Reader",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Elevator, no floor select feedback",
+                            Name = "Elevator, no floor",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Elevator with floor select feedback",
+                            Name = "Elevator with floor",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)5
+                        });
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArScp", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Ip")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsReset")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsUpload")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("LastSync")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Mac")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Model")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("NAcr")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NAlvl")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NCp")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NHol")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NMp")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NMpg")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NSio")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NTz")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("Nproc")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("Ntrgr")
+                        .HasColumnType("smallint");
+
+                    b.Property<int>("Port")
+                        .HasColumnType("integer");
+
+                    b.Property<short>("ScpId")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("SerialNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArScps");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArScpComponent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<short>("ModelNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NInput")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NOutput")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NReader")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArScpComponents");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ModelNo = (short)196,
+                            NInput = (short)7,
+                            NOutput = (short)4,
+                            NReader = (short)4,
+                            Name = "HID Aero X1100",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ModelNo = (short)193,
+                            NInput = (short)7,
+                            NOutput = (short)4,
+                            NReader = (short)4,
+                            Name = "HID Aero X100",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ModelNo = (short)194,
+                            NInput = (short)19,
+                            NOutput = (short)2,
+                            NReader = (short)0,
+                            Name = "HID Aero X200",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ModelNo = (short)195,
+                            NInput = (short)5,
+                            NOutput = (short)12,
+                            NReader = (short)0,
+                            Name = "HID Aero X300",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ModelNo = (short)190,
+                            NInput = (short)7,
+                            NOutput = (short)4,
+                            NReader = (short)2,
+                            Name = "VertX V100",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ModelNo = (short)191,
+                            NInput = (short)19,
+                            NOutput = (short)2,
+                            NReader = (short)0,
+                            Name = "VertX V200",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ModelNo = (short)192,
+                            NInput = (short)5,
+                            NOutput = (short)12,
+                            NReader = (short)0,
+                            Name = "VertX V300",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArScpSetting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<short>("GmtOffset")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NAcr")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NAlvl")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NCard")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NCp")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NHol")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NMp")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NMpg")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NMsp1Port")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NProc")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NSio")
+                        .HasColumnType("smallint");
+
+                    b.Property<int>("NTransaction")
+                        .HasColumnType("integer");
+
+                    b.Property<short>("NTrgr")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NTz")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArScpSettings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            GmtOffset = (short)-25200,
+                            NAcr = (short)64,
+                            NAlvl = (short)32000,
+                            NCard = (short)200,
+                            NCp = (short)388,
+                            NHol = (short)255,
+                            NMp = (short)615,
+                            NMpg = (short)128,
+                            NMsp1Port = (short)3,
+                            NProc = (short)1024,
+                            NSio = (short)16,
+                            NTransaction = 60000,
+                            NTrgr = (short)1024,
+                            NTz = (short)255,
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArScpStructureStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Ip")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Mac")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("RecAllocAcr")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RecAllocAlvl")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RecAllocArea")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RecAllocCardActive")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RecAllocCp")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RecAllocCrdb")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RecAllocEal")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RecAllocHoliday")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RecAllocMp")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RecAllocMpg")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RecAllocProc")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RecAllocSioPort")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RecAllocTimezone")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RecAllocTransaction")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RecAllocTrig")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArScpStructureStatuses");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArSio", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<short>("Address")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("BaudRate")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("ModeDescription")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("Model")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("Msp1No")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NDialect")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NInput")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NOutput")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NProtocol")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NReader")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("PortNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("ScpIp")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ScpMac")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ScpName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("SioNumber")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArSios");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArSioNo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("boolean");
+
+                    b.Property<short>("Port")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("ScpIp")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ScpMac")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("SioNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArSioNo");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArStrkMode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<short>("Value")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArStrikeModes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Do not use! This would allow the strike to stay active for the entire strike time allowing the door to be opened multiple times.",
+                            Name = "Normal",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Deactivate strike when door opens",
+                            Name = "Deactivate On Open",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Deactivate strike on door close or strike_t_max expires",
+                            Name = "Deactivate On Close",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Used with ACR_S_OPEN or ACR_S_CLOSE, to select tailgate mode: pulse (strk_sio:strk_number+1) relay for each user expected to enter",
+                            Name = "Tailgate",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Value = (short)16
+                        });
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArSystemConfig", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<short>("CPort")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("CType")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<short>("NChannelId")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NPorts")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("NScp")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArSystemConfigs");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CPort = (short)3333,
+                            CType = (short)7,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NChannelId = (short)1,
+                            NPorts = (short)1,
+                            NScp = (short)100,
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.ArTimeZone", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ActiveTime")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("ComponentNo")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("DeactiveTime")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("Intervals")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("IntervalsNoList")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<short>("Mode")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArTimeZones");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ActiveTime = "",
+                            ComponentNo = (short)1,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DeactiveTime = "",
+                            Intervals = (short)0,
+                            IntervalsNoList = "",
+                            IsActive = true,
+                            Mode = (short)1,
+                            Name = "Always",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 #pragma warning restore 612, 618
         }

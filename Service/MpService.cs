@@ -1,11 +1,15 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
 using HIDAeroService.Data;
 using HIDAeroService.Dto;
+using HIDAeroService.Dto.Cp;
+using HIDAeroService.Dto.Mp;
 using HIDAeroService.Entity;
 using HIDAeroService.Hubs;
 using HIDAeroService.Mapper;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.X509;
+using Org.BouncyCastle.Crypto.Macs;
 
 namespace HIDAeroService.Service
 {
@@ -13,10 +17,10 @@ namespace HIDAeroService.Service
     {
         private readonly AppDbContext _context;
         private readonly HelperService _helperService;
-        private readonly AppConfigData _config;
+        private readonly AeroLibMiddleware _config;
         private readonly IHubContext<MpHub> _hub;
         private readonly ILogger<MpService> _logger;
-        public MpService(HelperService helperService,AppConfigData config,AppDbContext context,IHubContext<MpHub> hub,ILogger<MpService> logger) 
+        public MpService(HelperService helperService,AeroLibMiddleware config,AppDbContext context,IHubContext<MpHub> hub,ILogger<MpService> logger) 
         {
             _logger = logger;
             _hub = hub;
@@ -25,50 +29,64 @@ namespace HIDAeroService.Service
             _helperService = helperService;
         }
 
-        public short GetUniqueMpNo(string ScpIp)
+        public short GetUniqueMpNo(string scpMac)
         {
 
             short highestMpNumber;
-            if (!_context.ar_mp_no.Any(p => p.scp_ip == ScpIp))
+            if (!_context.ArMpNo.Any(p => p.ScpMac == scpMac))
                 return 0;
 
-            if (_context.ar_mp_no.Any(p => p.is_available == true && p.scp_ip == ScpIp))
+            if (_context.ArMpNo.Any(p => p.IsAvailable == true && p.ScpMac == scpMac))
             {
-                highestMpNumber = _context.ar_mp_no.Where(p => p.is_available == true && p.scp_ip == ScpIp).Select(p => p.mp_number).First();
+                highestMpNumber = _context.ArMpNo.Where(p => p.IsAvailable == true && p.ScpMac == scpMac).Select(p => p.MpNo).First();
                 return highestMpNumber;
             }
             else
             {
-                highestMpNumber = _context.ar_mp_no.Where(p => p.is_available == false && p.scp_ip == ScpIp).Max(p => p.mp_number);
+                highestMpNumber = _context.ArMpNo.Where(p => p.IsAvailable == false && p.ScpMac == scpMac).Max(p => p.MpNo);
                 highestMpNumber += 1;
                 return highestMpNumber;
             }
 
+
         }
 
-        public bool SaveMpToDb(string name,short scp_id,short sio_number,short mp_number,short ip_number,short icvt_mode,short lf_code,short delay_entry,short delay_exit)
+
+
+        public bool Save(string name,string scpIp,string scpMac,short sio_number,short mp_number,short ip_number,short icvt_mode,short lf_code,short delay_entry,short delay_exit)
         {
             try
             {
-                ar_monitor_point m = new ar_monitor_point();
-                m.name = name;
-                m.scp_ip = _helperService.GetScpIpFromId(scp_id); 
-                m.sio_number = sio_number;
-                m.mp_number = mp_number;
-                m.ip_number = ip_number;
-                m.icvt_num = icvt_mode;
-                m.lf_code = lf_code;
-                m.delay_entry = delay_entry;
-                m.delay_exit = delay_exit;
-                _context.ar_monitor_point.Add(m);
+                ArMonitorPoint m = new ArMonitorPoint();
+                m.Name = name;
+                m.ScpIp = scpIp; 
+                m.ScpMac = scpMac;
+                m.SioNo = sio_number;
+                m.MpNo = mp_number;
+                m.IpNo = ip_number;
+                m.IcvtNo = icvt_mode;
+                m.LfCode = lf_code;
+                m.DelayEntry = delay_entry;
+                m.DelayExit = delay_exit;
+                m.CreatedDate = DateTime.Now;
+                m.UpdatedDate = DateTime.Now;
+                _context.ArMonitorPoints.Add(m);
 
-                ar_n_mp n = new ar_n_mp();
-                n.scp_ip = _helperService.GetScpIpFromId(scp_id);
-                n.sio_number = sio_number;
-                n.mp_number = mp_number;
-                n.ip_number = ip_number;
-                n.is_available = false;
-                _context.ar_mp_no.Add(n);
+                var isNewMpNo = _context.ArMpNo.Where(p => p.MpNo == mp_number).FirstOrDefault();
+                if(isNewMpNo == null)
+                {
+                    ArMpNo n = new ArMpNo();
+                    n.ScpMac = scpMac;
+                    n.SioNo = sio_number;
+                    n.MpNo = mp_number;
+                    n.IsAvailable = false;
+                    _context.ArMpNo.Add(n);
+                }
+                else
+                {
+                    isNewMpNo.IsAvailable = false;
+                }
+
                 return _context.SaveChanges() > 0;
 
             }
@@ -81,8 +99,8 @@ namespace HIDAeroService.Service
 
         public List<short> GetAvailableIp(short sio)
         {
-            var input = _context.ar_sios.Where(mp => mp.sio_number == sio).Select(mp => mp.n_inputs).First();
-            var unavailable = _context.ar_monitor_point.Where(mp => mp.sio_number == sio).Select(mp => mp.ip_number).ToList();
+            var input = _context.ArSios.Where(mp => mp.SioNumber == sio).Select(mp => mp.NInput).First();
+            var unavailable = _context.ArMonitorPoints.Where(mp => mp.SioNo == sio).Select(mp => mp.IpNo).ToList();
             List<short> all = Enumerable.Range(0, input-3).Select(i => (short)i).ToList();
             return all.Except(unavailable).ToList();
         }
@@ -97,26 +115,26 @@ namespace HIDAeroService.Service
             return true;
         }
 
-        public bool GetMpStatus(string ScpIp, short MpNo)
+        public bool GetMpStatus(GetMpStatusDto dto)
         {
-            short ScpId = _helperService.GetScpIdFromIp(ScpIp);
-            if (!_config.write.GetMpStatus(ScpId, MpNo, 1))
+            short ScpId = _helperService.GetScpIdFromMac(dto.ScpMac);
+            if (!_config.write.GetMpStatus(ScpId, (short)dto.MpNo, 1))
             {
                 return false;
             }
             return true;
         }
 
-        public bool RemoveMonitorPoint(string ScpIp, short MpNo)
+        public bool RemoveMonitorPoint(RemoveMpDto dto)
         {
             try
             {
-                var mp = _context.ar_monitor_point.Where(d => d.scp_ip == ScpIp && d.mp_number == MpNo).FirstOrDefault();
-                _context.ar_monitor_point.Remove(mp);
-                var nmp = _context.ar_mp_no.Where(d => d.mp_number == MpNo && d.scp_ip == ScpIp).FirstOrDefault();
+                var mp = _context.ArMonitorPoints.Where(d => d.ScpMac == dto.ScpMac && d.MpNo == dto.MpNo).FirstOrDefault();
+                _context.ArMonitorPoints.Remove(mp);
+                var nmp = _context.ArMpNo.Where(d => d.MpNo == dto.MpNo && d.ScpMac == dto.ScpMac).FirstOrDefault();
                 if (nmp != null)
                 {
-                    nmp.is_available = true;
+                    nmp.IsAvailable = true;
                 }
                 _context.SaveChanges();
                 return true;
@@ -133,21 +151,21 @@ namespace HIDAeroService.Service
         public List<MpDto> GetMonitorPointList()
         {
             List<MpDto> dtos = new List<MpDto>();
-            var mps = _context.ar_monitor_point.Join(
-                _context.ar_sios,
-                mp => mp.sio_number,
-                s => s.sio_number,
+            var mps = _context.ArMonitorPoints.Join(
+                _context.ArSios,
+                mp => mp.SioNo,
+                s => s.SioNumber,
                 (mp, s) => new
                 {
                     mp,
-                    s.model_desc,
-                    s.name
+                    s.ModeDescription,
+                    s.Name
                 }
                 ).ToList();
             int i = 1;
             foreach (var c in mps)
             {
-                dtos.Add(MapperHelper.MpToMpDto(i, c.mp, c.model_desc, c.name));
+                dtos.Add(MapperHelper.MpToMpDto(i, c.mp, c.ModeDescription, c.Name));
                 i++;
             }
             return dtos;
@@ -156,23 +174,23 @@ namespace HIDAeroService.Service
 
 
 
-        public bool CreateMonitorPoint(string name,string ScpIp, short SioNo, short InputNo, short IcvtMode,short Debounce,short HoldTime,short LfCode,short Mode,short DelayEntry,short DelayExit,MpService mp)
+        public bool CreateMonitorPoint(AddMpDto dto)
         {
-            short ScpID = _helperService.GetScpIdFromIp(ScpIp);
-            short nmp = mp.GetUniqueMpNo(ScpIp);
-            if (!_config.write.InputPointSpecification(ScpID, SioNo, InputNo, IcvtMode, Debounce, HoldTime))
+            short ScpId = _helperService.GetScpIdFromMac(dto.ScpMac);
+            short nmp = GetUniqueMpNo(dto.ScpMac);
+            if (!_config.write.InputPointSpecification(ScpId, dto.SioNo, dto.IpNo, dto.LcvtMode, dto.Debounce, dto.HoldTime))
             {
                 Console.WriteLine($"InputPointSpecification : False");
                 return false;
             }
 
-            if (!_config.write.MonitorPointConfiguration(ScpID, SioNo, InputNo,LfCode,Mode,DelayEntry,DelayExit,nmp))
+            if (!_config.write.MonitorPointConfiguration(ScpId, dto.SioNo, dto.IpNo, dto.LfCode,dto.Mode,dto.DelayEntry,dto.DelayExit,nmp))
             {
                 Console.WriteLine($"MonitorPointConfiguration : False");
                 return false;
             }
 
-            if (!SaveMpToDb(name,ScpID,SioNo,nmp,InputNo, IcvtMode,LfCode,DelayEntry,DelayExit))
+            if (!Save(dto.Name, _helperService.GetScpIpFromId(ScpId), dto.ScpMac, dto.SioNo, nmp,dto.IpNo, dto.LcvtMode, dto.LfCode, dto.DelayEntry, dto.DelayExit))
             {
                 Console.WriteLine($"Save Monitor Point to Database : False");
                 return false;
@@ -182,17 +200,17 @@ namespace HIDAeroService.Service
 
         }
 
-        public void TriggerDeviceStatus(int ScpId, short first, short count, short[] status)
+        public void TriggerDeviceStatus(int ScpId, short first, short[] status)
         {
-            string ScpIp = _helperService.GetScpIpFromId((short)ScpId);
+            string ScpMac = _helperService.GetMacFromId((short)ScpId);
             //GetOnlineStatus()
-            var result = _hub.Clients.All.SendAsync("MpStatus", ScpIp, first, count, status);
+            var result = _hub.Clients.All.SendAsync("MpStatus", ScpMac, first, status);
         }
 
         public List<IpModeDto> GetIpModeList()
         {
             List<IpModeDto> dtos = new List<IpModeDto>();
-            var datas = _context.ar_ip_modes.ToList();
+            var datas = _context.ArIpModes.ToList();
             foreach (var data in datas) 
             {
                 dtos.Add(MapperHelper.IpModeToIpModeDto(data));
@@ -202,7 +220,7 @@ namespace HIDAeroService.Service
 
         public int GetMpRecAlloc(string ScpIp)
         {
-            return _context.ar_monitor_point.Where(p => p.scp_ip == ScpIp).Count();
+            return _context.ArMonitorPoints.Where(p => p.ScpIp == ScpIp).Count();
         }
 
 

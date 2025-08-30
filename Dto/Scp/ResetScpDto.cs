@@ -2,6 +2,6 @@
 {
     public sealed class ResetScpDto
     {
-        public string ScpIp { get; set; }
+        public string ScpMac { get; set; }
     }
 }

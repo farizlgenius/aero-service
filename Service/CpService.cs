@@ -1,6 +1,6 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
 using HIDAeroService.Data;
-using HIDAeroService.Dto;
+using HIDAeroService.Dto.Cp;
 using HIDAeroService.Entity;
 using HIDAeroService.Hubs;
 using HIDAeroService.Mapper;
@@ -15,10 +15,10 @@ namespace HIDAeroService.Service
         private readonly ILogger<CpService> _logger;
         private readonly AppDbContext _context;
         private readonly HelperService _helperService;
-        private readonly AppConfigData _config;
+        private readonly AeroLibMiddleware _config;
         private readonly IHubContext<CpHub> _hub;
 
-        public CpService(AppDbContext context, AppConfigData config,HelperService helperService,ILogger<CpService> logger,IHubContext<CpHub> hub)
+        public CpService(AppDbContext context, AeroLibMiddleware config,HelperService helperService,ILogger<CpService> logger,IHubContext<CpHub> hub)
         {
             _hub = hub;
             _logger = logger;
@@ -30,21 +30,21 @@ namespace HIDAeroService.Service
         public List<CpDto> GetControlPointList()
         {
             List<CpDto> dtos = new List<CpDto>();
-            var cps = _context.ar_control_point.Join(
-                _context.ar_sios,
-                cp => cp.sio_number,
-                s => s.sio_number,
+            var cps = _context.ArControlPoints.Join(
+                _context.ArSios,
+                cp => cp.SioNo,
+                s => s.SioNumber,
                 (cp,s) =>new
                 {
                     cp,
-                    s.model_desc,
-                    s.name
+                    s.ModeDescription,
+                    s.Name
                 }
                 ).ToList(); 
             int i = 1;
             foreach(var c in cps)
             {
-                dtos.Add(MapperHelper.CpToCpDto(i,c.cp,c.model_desc,c.name));
+                dtos.Add(MapperHelper.CpToCpDto(i,c.cp,c.ModeDescription,c.Name));
                 i++;
             }
             return dtos;
@@ -52,23 +52,23 @@ namespace HIDAeroService.Service
 
 
   
-        public bool SaveToDatabase(AddCpDto cpDto,short cp_number)
+        public bool Save(AddCpDto cpDto,short cp_number)
         {
             try
             {
-                var isNewCpNo = _context.ar_cp_no.Where(p => p.cp_number == cp_number).FirstOrDefault();
+                var isNewCpNo = _context.ArCpNo.Where(p => p.CpNo == cp_number).FirstOrDefault();
                 if (isNewCpNo == null)
                 {
-                    ar_n_cp ncp = MapperHelper.AddCpDtoTonCp(cpDto, cp_number);
-                    _context.ar_cp_no.Add(ncp);
+                    ArCpNo ncp = MapperHelper.AddCpDtoTonCp(cpDto, cp_number);
+                    _context.ArCpNo.Add(ncp);
                 }
                 else
                 {
-                    isNewCpNo.is_available = false;
+                    isNewCpNo.IsAvailable = false;
                 }
                 
-                ar_control_point cp = MapperHelper.AddCpDtoToCp(cpDto, cp_number);
-                _context.ar_control_point.Add(cp);
+                ArControlPoint cp = MapperHelper.AddCpDtoToCp(cpDto, cp_number);
+                _context.ArControlPoints.Add(cp);
                 _context.SaveChanges();
                 return true;
             }
@@ -82,8 +82,8 @@ namespace HIDAeroService.Service
 
         public bool TriggerCP(CpTriggerDto cpTriggerDto)
         {
-            short scp_id = _helperService.GetScpIdFromIp(cpTriggerDto.ScpIp);
-            if (!TriggerControlPoint(scp_id, cpTriggerDto.CpNumber, cpTriggerDto.Command))
+            short _scpId = _helperService.GetScpIdFromMac(cpTriggerDto.ScpMac);
+            if (!TriggerControlPoint(_scpId, cpTriggerDto.CpNo, cpTriggerDto.Command))
             {
                 return false;
             }
@@ -92,7 +92,7 @@ namespace HIDAeroService.Service
 
         public List<OpModeDto> GetOpModeList()
         {
-            var op = _context.ar_op_modes.ToList();
+            var op = _context.ArOpModes.ToList();
             List < OpModeDto > dtos = new List<OpModeDto> ();
             foreach (var o in op)
             {
@@ -103,38 +103,38 @@ namespace HIDAeroService.Service
 
         public List<short> GetAvailableOp(short sio)
         {
-            var output = _context.ar_sios.Where(cp => cp.sio_number == sio).Select(cp => cp.n_outputs).First();
-            var unavailable = _context.ar_control_point.Where(cp => cp.sio_number == sio).Select(cp => cp.op_number).ToList();
+            var output = _context.ArSios.Where(cp => cp.SioNumber == sio).Select(cp => cp.NOutput).First();
+            var unavailable = _context.ArControlPoints.Where(cp => cp.SioNo == sio).Select(cp => cp.OpNo).ToList();
             List<short> all = Enumerable.Range(0, output).Select(i => (short)i).ToList();
             return all.Except(unavailable).ToList();
         }
 
 
-        public short GetUniqueCpNo(string ScpIp)
+        public short GetUniqueCpNo(string ScpMac)
         {
 
             short highestCpNumber;
-            if (!_context.ar_cp_no.Any(p => p.scp_ip == ScpIp))
+            if (!_context.ArCpNo.Any(p => p.ScpMac == ScpMac))
                 return 0;
 
-            if (_context.ar_cp_no.Any(p => p.is_available == true && p.scp_ip == ScpIp))
+            if (_context.ArCpNo.Any(p => p.IsAvailable == true && p.ScpMac == ScpMac))
             {
-                highestCpNumber = _context.ar_cp_no.Where(p => p.is_available == true && p.scp_ip == ScpIp).Select(p => p.cp_number).First();
+                highestCpNumber = _context.ArCpNo.Where(p => p.IsAvailable == true && p.ScpMac == ScpMac).Select(p => p.CpNo).First();
                 return highestCpNumber;
             }
             else
             {
-                highestCpNumber = _context.ar_cp_no.Where(p => p.is_available == false && p.scp_ip == ScpIp).Max(p => p.cp_number);
+                highestCpNumber = _context.ArCpNo.Where(p => p.IsAvailable == false && p.ScpMac == ScpMac).Max(p => p.CpNo);
                 highestCpNumber+=1;
                 return highestCpNumber;
             }
 
         }
 
-        public bool GetCpStatus(string ScpIp,short CpNo)
+        public bool GetCpStatus(GetCpStatusDto dto)
         {
-            short ScpId = _helperService.GetScpIdFromIp(ScpIp);
-            if (!_config.write.GetCpStatus(ScpId, CpNo,1))
+            short _scpId = _helperService.GetScpIdFromMac(dto.ScpMac);
+            if (!_config.write.GetCpStatus(_scpId, dto.CpNo,1))
             {
                 return false;
             }
@@ -142,11 +142,10 @@ namespace HIDAeroService.Service
         }
 
 
-        public void TriggerDeviceStatus(int ScpId,short first,short count, short[] status)
+        public void TriggerDeviceStatus(string ScpMac,short first, short[] status)
         {
-            string ScpIp = _helperService.GetScpIpFromId((short)ScpId);
             //GetOnlineStatus()
-            var result = _hub.Clients.All.SendAsync("CpStatus", ScpIp,first,count,status);
+            var result = _hub.Clients.All.SendAsync("CpStatus", ScpMac, first,status);
         }
 
 
@@ -156,20 +155,20 @@ namespace HIDAeroService.Service
 
         public bool CreateControlPoint(AddCpDto cpDto)
         {
-            short scp_id = _helperService.GetScpIdFromIp(cpDto.ScpIp);
-            short cp_number = GetUniqueCpNo(cpDto.ScpIp);
+            short ScpId = _helperService.GetScpIdFromMac(cpDto.ScpMac);
+            short cp_number = GetUniqueCpNo(cpDto.ScpMac);
 
-            if (!_config.write.OutputPointSpecification(scp_id, cpDto.SioNumber, cpDto.OpNumber, cpDto.Mode))
+            if (_config.write.OutputPointSpecification(ScpId, cpDto.SioNumber, cpDto.OpNumber, cpDto.Mode) == -1)
             {
                 return false;
             }
 
-            if (!_config.write.ControlPointConfiguration(scp_id, cpDto.SioNumber, cp_number, cpDto.OpNumber,cpDto.DefaultPulseTime))
+            if (_config.write.ControlPointConfiguration(ScpId, cpDto.SioNumber, cp_number, cpDto.OpNumber,cpDto.DefaultPulseTime) == -1)
             {
                 return false;
             }
 
-            if (!SaveToDatabase(cpDto, cp_number))
+            if (!Save(cpDto, cp_number))
             {
                 _logger.LogError("Save Cp to database : False");
                 return false;
@@ -178,16 +177,16 @@ namespace HIDAeroService.Service
             return true;
         }
 
-        public bool RemoveControlPoint(string ScpIp,short CpNo)
+        public bool RemoveControlPoint(RemoveCpDto dto)
         {
             try
             {
-                var cp = _context.ar_control_point.Where(d => d.scp_ip == ScpIp && d.cp_number == CpNo).FirstOrDefault();
-                _context.ar_control_point.Remove(cp);
-                var ncp = _context.ar_cp_no.Where(d => d.cp_number == CpNo && d.scp_ip == ScpIp).FirstOrDefault();
+                var cp = _context.ArControlPoints.Where(d => d.ScpMac == dto.ScpMac && d.CpNo == dto.CpNo).FirstOrDefault();
+                _context.ArControlPoints.Remove(cp);
+                var ncp = _context.ArCpNo.Where(d => d.CpNo == dto.CpNo && d.ScpMac == dto.ScpMac).FirstOrDefault();
                 if(ncp != null)
                 {
-                    ncp.is_available = true;
+                    ncp.IsAvailable = true;
                 }
                 _context.SaveChanges();
                 return true;
@@ -211,9 +210,9 @@ namespace HIDAeroService.Service
             return true;
         }
 
-        public int GetCpRecAlloc(string ScpIp)
+        public int GetCpRecAlloc(string ScpMac)
         {
-            return _context.ar_control_point.Where(p => p.scp_ip == ScpIp).Count();
+            return _context.ArControlPoints.Where(p => p.ScpMac == ScpMac).Count();
         }
 
         #endregion

@@ -25,8 +25,8 @@
         public byte OperMode { get; set; }
         public short ScpIn3 { get; set; }
         public int CumulativeBldCnt { get; set; }
-
         public int Ip { get; set; }
+        public int Port { get; set; }
 
     }
 }

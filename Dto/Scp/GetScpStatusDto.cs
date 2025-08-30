@@ -2,6 +2,6 @@
 {
     public sealed class GetScpStatusDto
     {
-        public short ScpId { get; set; }
+        public string ScpMac { get; set; }
     }
 }

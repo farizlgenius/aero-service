@@ -1,26 +1,25 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.Dto;
 using HIDAeroService.Dto.AccessLevel;
-using HIDAeroService.Dto.Time;
+using HIDAeroService.Dto.Acr;
+using HIDAeroService.Dto.Holiday;
+using HIDAeroService.Dto.TimeZone;
 using HIDAeroService.Entity;
 using HIDAeroService.Models;
 using HIDAeroService.Service;
 using MiNET.Entities.Passive;
+using Newtonsoft.Json.Linq;
 
 
 namespace HIDAeroService.AeroLibrary
 {
     public sealed class WriteAeroDriver
     {
-        private readonly IServiceScopeFactory _scopeFactory;
         public int TagNo { get; private set; } = 0;
-        public WriteAeroDriver() 
-        {
-        }
+        public List<int> UploadCommandTags { get; private set; } = new List<int>();
+        public string UploadMessage { get; set; } = "";
+        public string Command { get; private set; } = "";
 
-
-
-        #region Initial Driver
+        #region Configure the driver
 
         //////
         // Method: SendCommand to Driver
@@ -54,11 +53,11 @@ namespace HIDAeroService.AeroLibrary
         // port: Port number of driver that Controller need to set
         // controllerReplyTimeout: maximum controller Reply Waiting Before Timeout Default 3000ms
         //////
-        public bool CreateChannel(short cPort)
+        public bool CreateChannel(short cPort,short nChannelId,short cType)
         {
             CC_CHANNEL cc_channel = new CC_CHANNEL();
-            cc_channel.nChannelId = 1;
-            cc_channel.cType = 7;
+            cc_channel.nChannelId = nChannelId;
+            cc_channel.cType = cType;
             cc_channel.cPort = cPort;
             cc_channel.baud_rate = 0;
             cc_channel.timer1 = 3000;
@@ -73,13 +72,13 @@ namespace HIDAeroService.AeroLibrary
         }
 
 
-
         #endregion
 
-        #region Validate SCP Connection
+        #region Configuring the intelligent controller: pre-connection
 
-        public bool SCPDeviceSpecification(short ScpId)
+        public bool SCPDeviceSpecification(short ScpId,ArScpSetting setting)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcScpScp;
             CC_SCP_SCP cc_scp_scp = new CC_SCP_SCP();
             cc_scp_scp.lastModified = 0;
             cc_scp_scp.number = ScpId;
@@ -87,29 +86,30 @@ namespace HIDAeroService.AeroLibrary
             cc_scp_scp.ser_num_high = 0;
             cc_scp_scp.rev_major = 0;
             cc_scp_scp.rev_minor = 0;
-            cc_scp_scp.nMsp1Port = 3;
-            cc_scp_scp.nTransactions = 60000;
-            cc_scp_scp.nSio = 16;
-            cc_scp_scp.nMp = 615;
-            cc_scp_scp.nCp = 388;
-            cc_scp_scp.nAcr = 64;
-            cc_scp_scp.nAlvl = 32000;
-            cc_scp_scp.nTrgr = 1024;
-            cc_scp_scp.nProc = 1024;
-            cc_scp_scp.gmt_offset = -25200;
+            cc_scp_scp.nMsp1Port = setting.NMsp1Port;
+            cc_scp_scp.nTransactions = setting.NTransaction;
+            cc_scp_scp.nSio = setting.NSio;
+            cc_scp_scp.nMp = setting.NMp;
+            cc_scp_scp.nCp = setting.NCp;
+            cc_scp_scp.nAcr = setting.NAcr;
+            cc_scp_scp.nAlvl = setting.NAlvl;
+            cc_scp_scp.nTrgr = setting.NTrgr;
+            cc_scp_scp.nProc = setting.NProc;
+            cc_scp_scp.gmt_offset = setting.GmtOffset;
             cc_scp_scp.nDstID = 0;
-            cc_scp_scp.nTz = 255;
-            cc_scp_scp.nHol = 255;
-            cc_scp_scp.nMpg = 128;
+            cc_scp_scp.nTz = setting.NTz;
+            cc_scp_scp.nHol = setting.NHol;
+            cc_scp_scp.nMpg = setting.NMpg;
             cc_scp_scp.nTranLimit = 60000;
             cc_scp_scp.nAuthModType = 0;
             cc_scp_scp.nOperModes = 0;
             cc_scp_scp.oper_type = 1;
             cc_scp_scp.nLanguages = 0;
             cc_scp_scp.nSrvcType = 0;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcScpScp, cc_scp_scp);
+            bool flag = SendCommand(_commandValue, cc_scp_scp);
             if(flag) {
                 TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -118,12 +118,13 @@ namespace HIDAeroService.AeroLibrary
             return flag;
         }
 
-        public bool AccessDatabaseSpecification(short ScpID)
+        public bool AccessDatabaseSpecification(short ScpID,ArScpSetting setting)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcScpAdbSpec;
             CC_SCP_ADBS cc_scp_adbs = new CC_SCP_ADBS();
             cc_scp_adbs.lastModified = 0;
             cc_scp_adbs.nScpID = ScpID;
-            cc_scp_adbs.nCards = 200;
+            cc_scp_adbs.nCards = setting.NCard;
             //cc_scp_adbs.nCards = 100;
             cc_scp_adbs.nAlvl = 32;
             // Pin Constant = 1
@@ -148,10 +149,11 @@ namespace HIDAeroService.AeroLibrary
             cc_scp_adbs.nAssetTimeout = 0;
             cc_scp_adbs.bAccExceptionList = 0;
             cc_scp_adbs.adbFlags = 1;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcScpAdbSpec, cc_scp_adbs);
+            bool flag = SendCommand(_commandValue, cc_scp_adbs);
             if (flag)
             {
                 TagNo = SCPDLL.scpGetTagLastPosted(ScpID);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -160,18 +162,38 @@ namespace HIDAeroService.AeroLibrary
             return flag;
         }
 
+        //public bool ElevatorAccessLevelSpecification(short ScpId,short MaxElvAvl,short MaxFloor)
+        //{
+        //    CC_ELALVLSPC cc = new CC_ELALVLSPC();
+        //    cc.scp_number = ScpId;
+        //    cc.max_elalvl = MaxElvAvl;
+        //    cc.max_floors = MaxFloor;
+        //    bool flage = SendCommand((Int16)enCfgCmnd.enCcElAlvlSpc, cc);
+        //    if (flag)
+        //    {
+        //        TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+        //        Console.WriteLine("Command Tag : " + TagNo);
+        //        //insert code to store the command tag and associated cmnd struct.
+        //        //cmnd struct and tag can be deleted upon receipt of
+        //        //successful command delivery notification
+        //    }
+        //    return flag;
+        //}
+
         #endregion
 
         #region SCP
 
         public bool DeleteScp(short ScpId)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcDeleteScp;
             CC_NEWSCP c = new CC_NEWSCP();
             c.nSCPId = ScpId;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcDeleteScp,c);
+            bool flag = SendCommand(_commandValue, c);
             if (flag)
             {
                 TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -182,13 +204,15 @@ namespace HIDAeroService.AeroLibrary
 
         public bool DetachScp(short ScpId)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcDetachScp;
             CC_ATTACHSCP c = new CC_ATTACHSCP();
             c.nSCPId = ScpId;
             c.nChannelId = 0;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcDetachScp, c);
+            bool flag = SendCommand(_commandValue, c);
             if (flag)
             {
                 TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -199,6 +223,7 @@ namespace HIDAeroService.AeroLibrary
 
         public bool ReadStructureStatus(short ScpId)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcStrSRq;
             CC_STRSRQ cc_strsq = new CC_STRSRQ();
             cc_strsq.nScpID = ScpId;
             cc_strsq.nListLength = 24;
@@ -226,10 +251,11 @@ namespace HIDAeroService.AeroLibrary
                         break;
                 }
             }
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcStrSRq, cc_strsq);
+            bool flag = SendCommand(_commandValue, cc_strsq);
             if (flag)
             {
                 TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -244,13 +270,15 @@ namespace HIDAeroService.AeroLibrary
 
         public bool SetTransactionLogIndex(short scpID, bool isEnable)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcTranIndex;
             CC_TRANINDEX cc_tranindex = new CC_TRANINDEX();
             cc_tranindex.scp_number = scpID;
             cc_tranindex.tran_index = isEnable ? -2 : -1;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcTranIndex, cc_tranindex);
+            bool flag = SendCommand(_commandValue, cc_tranindex);
             if (flag)
             {
                 TagNo = SCPDLL.scpGetTagLastPosted(scpID);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -263,33 +291,66 @@ namespace HIDAeroService.AeroLibrary
 
         #region Time Zone
 
-        public bool ExtendedTimeZoneActSpecification(short ScpId, short TzNumber, short mode, short actTime, short deactTime, short intervals, List<TimeZoneInterval> interval)
+        public bool ExtendedTimeZoneActSpecification(short scpId,TimeZoneDto dto, List<ArInterval> intervals,int activeTime,int deactiveTime)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcScpTimezoneExAct;
             CC_SCP_TZEX_ACT cc = new CC_SCP_TZEX_ACT();
             cc.lastModified = 0;
-            cc.nScpID = ScpId;
-            cc.number = TzNumber;
-            cc.mode = mode;
-            cc.actTime = actTime;
-            cc.deactTime = deactTime;
-            cc.intervals = intervals;
-            if(intervals > 0)
+            cc.nScpID = scpId;
+            cc.number = dto.ComponentNo;
+            cc.mode = dto.Mode;
+            cc.actTime = activeTime;
+            cc.deactTime = deactiveTime;
+            cc.intervals = dto.Intervals;
+            if(intervals.Count > 0)
             {
                 int i = 0;
-                foreach(var dto in interval)
+                foreach(var interval in intervals)
                 {
-                    cc.i[i].i_days = dto.IDays;
-                    cc.i[i].i_start = dto.IStart;
-                    cc.i[i].i_end = dto.IEnd;
+                    cc.i[i].i_days = interval.IDays;
+                    cc.i[i].i_start = interval.IStart;
+                    cc.i[i].i_end = interval.IEnd;
                     i++;
                 }
   
             }
 
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcScpTimezoneExAct, cc);
+            bool flag = SendCommand(_commandValue, cc);
+            if (flag)
+            {
+                TagNo = SCPDLL.scpGetTagLastPosted(scpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
+                Console.WriteLine("Command Tag : " + TagNo);
+                //insert code to store the command tag and associated cmnd struct.
+                //cmnd struct and tag can be deleted upon receipt of
+                //successful command delivery notification
+            }
+
+            return flag;
+        }
+
+        #endregion
+
+        #region Holiday
+
+        public bool HolidayConfiguration(HolidayDto dto,short ScpId)
+        {
+            var _commandValue = (Int16)enCfgCmnd.enCcScpHoliday;
+            CC_SCP_HOL cc = new CC_SCP_HOL()
+            {
+                nScpID = ScpId,
+                number = -1,
+                year = dto.Year,
+                month = dto.Month,
+                day = dto.Day,
+                //extend = dto.Extend,
+                type_mask = dto.TypeMask
+            };
+            bool flag = SendCommand(_commandValue, cc);
             if (flag)
             {
                 TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -303,53 +364,24 @@ namespace HIDAeroService.AeroLibrary
 
         #region Access Level
 
-        public bool AccessLevelConfigurationExtended(short ScpId, short number)
+        public bool AccessLevelConfigurationExtended(short ScpId, short number,short TzAcr)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcAlvlEx;
             CC_ALVL_EX cc = new CC_ALVL_EX();
             cc.lastModified = 0;
             cc.scp_number = ScpId;
             cc.alvl_number = number;
             for (int i = 0; i < cc.tz.Length; i++)
             {
-                cc.tz[i] = 1;
+                
+                cc.tz[i] = TzAcr;
 
             }
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcAlvlEx, cc);
-            return flag;
-        }
-
-        public bool CreateAccessLevel(short ScpId, short Number,List<CreateAccessLevelDoor> Doors)
-        {
-            CC_ALVL_EX cc = new CC_ALVL_EX();
-            cc.lastModified = 0;
-            cc.scp_number = ScpId;
-            cc.alvl_number = Number;
-            for (int i = 0; i < cc.tz.Length; i++)
-                cc.tz[i] = Doors.FirstOrDefault(d => d.AcrNumber == i)?.TzNumber ?? cc.tz[i];
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcAlvlEx, cc);
-            return flag;
-        }
-
-
-        #endregion
-
-        #region SIO
-
-        public bool SIODriverConfiguration(short ScpID, short SIODriverNo, short IOModulePort, int BaudRate, short ProtocolType)
-        {
-            CC_MSP1 cc_msp1 = new CC_MSP1();
-            cc_msp1.lastModified = 0;
-            cc_msp1.scp_number = ScpID;
-            cc_msp1.msp1_number = SIODriverNo;
-            cc_msp1.port_number = IOModulePort;
-            cc_msp1.baud_rate = BaudRate;
-            cc_msp1.reply_time = 90;
-            cc_msp1.nProtocol = ProtocolType;
-            cc_msp1.nDialect = 0;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcMsp1, cc_msp1);
+            bool flag = SendCommand(_commandValue, cc);
             if (flag)
             {
-                TagNo = SCPDLL.scpGetTagLastPosted(ScpID);
+                TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -358,8 +390,71 @@ namespace HIDAeroService.AeroLibrary
             return flag;
         }
 
-        public bool SIOPanelConfiguration(short ScpID, short SioNo, short ModelNo, short ModuleAddress, short SIODriverPort, bool isEnable)
+        public bool AccessLevelConfigurationExtendedCreate(short ScpId,short Number, List<CreateAccessLevelDoor> Doors)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcAlvlEx;
+            CC_ALVL_EX cc = new CC_ALVL_EX();
+            cc.lastModified = 0;
+            cc.scp_number = ScpId;
+            cc.alvl_number = Number;
+            for (int i = 0; i < cc.tz.Length; i++)
+            {
+                if(i < Doors.Count)
+                {
+                    cc.tz[Doors[i].AcrNo] = Doors[i].TzNo;
+                }
+                else
+                {
+                    cc.tz[i] = 0;
+                }   
+
+            }
+            bool flag = SendCommand(_commandValue, cc);
+            if (flag)
+            {
+                TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
+                Console.WriteLine("Command Tag : " + TagNo);
+                //insert code to store the command tag and associated cmnd struct.
+                //cmnd struct and tag can be deleted upon receipt of
+                //successful command delivery notification
+            }
+            return flag;
+        }
+
+
+        #endregion
+
+        #region SIO
+
+        public bool SioDriverConfiguration(short ScpId, short SIODriverNo, short IOModulePort, int BaudRate, short ProtocolType)
+        {
+            var _commandValue = (Int16)enCfgCmnd.enCcMsp1;
+            CC_MSP1 cc_msp1 = new CC_MSP1();
+            cc_msp1.lastModified = 0;
+            cc_msp1.scp_number = ScpId;
+            cc_msp1.msp1_number = SIODriverNo;
+            cc_msp1.port_number = IOModulePort;
+            cc_msp1.baud_rate = BaudRate;
+            cc_msp1.reply_time = 90;
+            cc_msp1.nProtocol = ProtocolType;
+            cc_msp1.nDialect = 0;
+            bool flag = SendCommand(_commandValue, cc_msp1);
+            if (flag)
+            {
+                TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
+                Console.WriteLine("Command Tag : " + TagNo);
+                //insert code to store the command tag and associated cmnd struct.
+                //cmnd struct and tag can be deleted upon receipt of
+                //successful command delivery notification
+            }
+            return flag;
+        }
+
+        public bool SioPanelConfiguration(short ScpId, short SioNo, short ModelNo, short ModuleAddress, short SIODriverPort, bool isEnable)
+        {
+            var _commandValue = (Int16)enCfgCmnd.enCcSio;
             short nInput, nOutput, nReaders;
             short[] n = Utility.GetSCPComponent(ModelNo);
             nInput = n[0];
@@ -368,7 +463,7 @@ namespace HIDAeroService.AeroLibrary
 
             CC_SIO cc_sio = new CC_SIO();
             cc_sio.lastModified = 0;
-            cc_sio.scp_number = ScpID;
+            cc_sio.scp_number = ScpId;
             cc_sio.sio_number = SioNo;
             cc_sio.nInputs = nInput;
             cc_sio.nOutputs = nOutput;
@@ -390,10 +485,11 @@ namespace HIDAeroService.AeroLibrary
             cc_sio.nSioConnectTest = 0;
             cc_sio.nSioOemCode = 0;
             cc_sio.nSioOemMask = 0;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcSio, cc_sio);
+            bool flag = SendCommand(_commandValue, cc_sio);
             if (flag)
             {
-                TagNo = SCPDLL.scpGetTagLastPosted(ScpID);
+                TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -406,60 +502,75 @@ namespace HIDAeroService.AeroLibrary
 
         #region Control Point
 
-        public bool OutputPointSpecification(short ScpID, short SioNo, short OutputNo, short OutputMode)
+        public int OutputPointSpecification(short ScpId, short SioNo, short OutputNo, short OutputMode)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcOutput;
             CC_OP cc_op = new CC_OP();
             cc_op.lastModified = 0;
-            cc_op.scp_number = ScpID;
+            cc_op.scp_number = ScpId;
             cc_op.sio_number = SioNo;
             cc_op.output = OutputNo;
             cc_op.mode = OutputMode;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcOutput, cc_op);
+            bool flag = SendCommand(_commandValue, cc_op);
             if (flag)
             {
-                TagNo = SCPDLL.scpGetTagLastPosted(ScpID);
+                TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
                 //successful command delivery notification
+                return TagNo;
             }
-            return flag;
+            else
+            {
+                return -1;
+            }
         }
 
-        public bool ControlPointConfiguration(short ScpID, short SioNo, short CpNo, short OutputNo,short DefaultPulseTime)
+        public int ControlPointConfiguration(short ScpId, short SioNo, short CpNo, short OutputNo,short DefaultPulseTime)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcCP;
             CC_CP cc_cp = new CC_CP();
             cc_cp.lastModified = 0;
-            cc_cp.scp_number = ScpID;
+            cc_cp.scp_number = ScpId;
             cc_cp.sio_number = SioNo;
             cc_cp.cp_number = CpNo;
             cc_cp.op_number = OutputNo;
             cc_cp.dflt_pulse = DefaultPulseTime;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcCP, cc_cp);
+            bool flag = SendCommand(_commandValue, cc_cp);
             if (flag)
             {
-                TagNo = SCPDLL.scpGetTagLastPosted(ScpID);
+                TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
                 //successful command delivery notification
+                return TagNo;
             }
-            return flag;
+            else
+            {
+                return -1;
+            }
+            
         }
 
-        public bool ControlPointCommand(short ScpID, short c, short command)
+        public bool ControlPointCommand(short ScpId, short c, short command)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcCpCtl;
             CC_CPCTL cc_cpctl = new CC_CPCTL();
-            cc_cpctl.scp_number = ScpID;
+            cc_cpctl.scp_number = ScpId;
             cc_cpctl.cp_number = c;
             cc_cpctl.command = command;
             cc_cpctl.on_time = 0;
             cc_cpctl.off_time = 0;
             cc_cpctl.repeat = 0;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcCpCtl, cc_cpctl);
+            bool flag = SendCommand(_commandValue, cc_cpctl);
             if (flag)
             {
-                TagNo = SCPDLL.scpGetTagLastPosted(ScpID);
+                TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -474,7 +585,16 @@ namespace HIDAeroService.AeroLibrary
             cc.scp_number = ScpId;
             cc.first = CpNo;
             cc.count = Count;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcCpSrq,cc);
+            bool flag = SendCommand((Int16)enCfgCmnd.enCcCpSrq, cc);
+            //if (flag)
+            //{
+            //    TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+            //    Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
+            //    Console.WriteLine("Command Tag : " + TagNo);
+            //    //insert code to store the command tag and associated cmnd struct.
+            //    //cmnd struct and tag can be deleted upon receipt of
+            //    //successful command delivery notification
+            //}
             return flag;
         }
 
@@ -482,20 +602,22 @@ namespace HIDAeroService.AeroLibrary
 
         #region Monitor Point
 
-        public bool InputPointSpecification(short ScpID, short SioNo, short InputNo, short InputMode,short Debounce,short HoldTime)
+        public bool InputPointSpecification(short ScpId, short SioNo, short InputNo, short InputMode,short Debounce,short HoldTime)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcInput;
             CC_IP cc_ip = new CC_IP();
             cc_ip.lastModified = 0;
-            cc_ip.scp_number = ScpID;
+            cc_ip.scp_number = ScpId;
             cc_ip.sio_number = SioNo;
             cc_ip.input = InputNo;
             cc_ip.icvt_num = InputMode;
             cc_ip.debounce = Debounce;
             cc_ip.hold_time = HoldTime;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcInput, cc_ip);
+            bool flag = SendCommand(_commandValue, cc_ip);
             if (flag)
             {
-                TagNo = SCPDLL.scpGetTagLastPosted(ScpID);
+                TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -504,11 +626,12 @@ namespace HIDAeroService.AeroLibrary
             return flag;
         }
 
-        public bool MonitorPointConfiguration(short ScpID, short SioNo, short InputNo,short LfCode,short Mode,short DelayEntry,short DelayExit,short nMp)
+        public bool MonitorPointConfiguration(short ScpId, short SioNo, short InputNo,short LfCode,short Mode,short DelayEntry,short DelayExit,short nMp)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcMP;
             CC_MP cc_mp = new CC_MP();
             cc_mp.lastModified = 0;
-            cc_mp.scp_number = ScpID;
+            cc_mp.scp_number = ScpId;
             cc_mp.sio_number = SioNo;
             cc_mp.mp_number = nMp;
             cc_mp.ip_number = InputNo;
@@ -516,10 +639,11 @@ namespace HIDAeroService.AeroLibrary
             cc_mp.mode = Mode;
             cc_mp.delay_entry = DelayEntry;
             cc_mp.delay_exit = DelayExit;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcMP, cc_mp);
+            bool flag = SendCommand(_commandValue, cc_mp);
             if (flag)
             {
-                TagNo = SCPDLL.scpGetTagLastPosted(ScpID);
+                TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -530,11 +654,21 @@ namespace HIDAeroService.AeroLibrary
 
         public bool GetMpStatus(short ScpId, short MpNo, short Count)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcMpSrq;
             CC_MPSRQ cc = new CC_MPSRQ();
             cc.scp_number = ScpId;
             cc.first = MpNo;
             cc.count = Count;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcMpSrq, cc);
+            bool flag = SendCommand(_commandValue, cc);
+            //if (flag)
+            //{
+            //    TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+            //    Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
+            //    Console.WriteLine("Command Tag : " + TagNo);
+            //    //insert code to store the command tag and associated cmnd struct.
+            //    //cmnd struct and tag can be deleted upon receipt of
+            //    //successful command delivery notification
+            //}
             return flag;
         }
 
@@ -543,11 +677,12 @@ namespace HIDAeroService.AeroLibrary
 
         #region Reader
 
-        public bool ReaderSpecification(short ScpID, short SioNo, short ReaderNo,short DataFormat,short KeyPadMode,short LedDriveMode,short OsdpFlag)
+        public bool ReaderSpecification(short ScpId, short SioNo, short ReaderNo,short DataFormat,short KeyPadMode,short LedDriveMode,short OsdpFlag)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcReader;
             CC_RDR cc_rdr = new CC_RDR();
             cc_rdr.lastModified = 0;
-            cc_rdr.scp_number = ScpID;
+            cc_rdr.scp_number = ScpId;
             cc_rdr.sio_number = SioNo;
             cc_rdr.reader = ReaderNo;
             cc_rdr.dt_fmt = DataFormat;
@@ -555,10 +690,11 @@ namespace HIDAeroService.AeroLibrary
             cc_rdr.led_drive_mode = LedDriveMode;
             cc_rdr.osdp_flags = OsdpFlag;
             //cc_rdr.device_id
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcReader, cc_rdr);
+            bool flag = SendCommand(_commandValue, cc_rdr);
             if (flag)
             {
-                TagNo = SCPDLL.scpGetTagLastPosted(ScpID);
+                TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -571,68 +707,9 @@ namespace HIDAeroService.AeroLibrary
 
         #region Access Control Reader (ACR)
 
-        public bool AccessControlReaderConfiguration(short ScpID, short SIONo, short ReaderNo, short OutputNo, short InputNo, short ReqExNo,short nAcr)
+        public bool AccessControlReaderConfigurationForCreate(short ScpId,short AcrNo,AddAcrDto dto)
         {
-            CC_ACR cc_acr = new CC_ACR();
-            cc_acr.lastModified = 0;
-            cc_acr.scp_number = ScpID;
-            cc_acr.acr_number = nAcr;
-            cc_acr.access_cfg = 0;
-            cc_acr.pair_acr_number = -1;
-            cc_acr.rdr_sio = SIONo;
-            cc_acr.rdr_number = ReaderNo;
-            cc_acr.strk_sio = SIONo;
-            cc_acr.strk_number = OutputNo;
-            cc_acr.strike_t_min = 1;
-            cc_acr.strike_t_max = 10;
-            cc_acr.strike_mode = 2;
-            cc_acr.door_sio = SIONo;
-            cc_acr.door_number = InputNo;
-            cc_acr.dc_held = 10;
-            cc_acr.rex0_sio = SIONo;
-            cc_acr.rex0_number = ReqExNo;
-            cc_acr.rex1_sio = -1;
-            cc_acr.rex1_number = -1;
-            for (short i = 0; i < cc_acr.rex_tzmask.Length; i++)
-            {
-                cc_acr.rex_tzmask[i] = 0;
-            }
-            cc_acr.altrdr_sio = -1;
-            cc_acr.altrdr_number = -1;
-            cc_acr.altrdr_spec = 0;
-            cc_acr.cd_format = 255;
-            cc_acr.apb_mode = 0;
-            cc_acr.apb_in = -1;
-            cc_acr.apb_to = 1;
-            //cc_acr.spare
-            //cc_acr.actl_flags
-            cc_acr.offline_mode = 2;
-            cc_acr.default_mode = 5;
-            cc_acr.default_led_mode = 0;
-            cc_acr.pre_alarm = 0;
-            cc_acr.apb_delay = 0;
-            //cc_acr.strk_t2
-            //cc_acr.dc_held2
-            cc_acr.strk_follow_pulse = 0;
-            cc_acr.strk_follow_delay = 0;
-            cc_acr.nAuthModFlags = 0;
-            cc_acr.nExtFeatureType = 0;
-            cc_acr.dfofFilterTime = 0;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcACR, cc_acr);
-            if (flag)
-            {
-                TagNo = SCPDLL.scpGetTagLastPosted(ScpID);
-                Console.WriteLine("Command Tag : " + TagNo);
-                //insert code to store the command tag and associated cmnd struct.
-                //cmnd struct and tag can be deleted upon receipt of
-                //successful command delivery notification
-            }
-            return flag;
-
-        }
-
-        public bool AccessControlReaderConfigurationForCreate(short ScpId,short AcrNo,AddACRDto dto)
-        {
+            var _commandValue = (Int16)enCfgCmnd.enCcACR;
             CC_ACR cc_acr = new CC_ACR();
             cc_acr.lastModified = 0;
             cc_acr.scp_number = ScpId;
@@ -676,10 +753,11 @@ namespace HIDAeroService.AeroLibrary
             cc_acr.nAuthModFlags = 0;
             cc_acr.nExtFeatureType = 0;
             cc_acr.dfofFilterTime = 0;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcACR, cc_acr);
+            bool flag = SendCommand(_commandValue, cc_acr);
             if (flag)
             {
                 TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -689,15 +767,17 @@ namespace HIDAeroService.AeroLibrary
 
         }
 
-        public bool MomentaryUnlock(short ScpID, short AcrNo)
+        public bool MomentaryUnlock(short ScpId, short AcrNo)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcUnlock;
             CC_UNLOCK cc_unlock = new CC_UNLOCK();
-            cc_unlock.scp_number = ScpID;
+            cc_unlock.scp_number = ScpId;
             cc_unlock.acr_number = AcrNo;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcUnlock, cc_unlock);
+            bool flag = SendCommand(_commandValue, cc_unlock);
             if (flag)
             {
-                TagNo = SCPDLL.scpGetTagLastPosted(ScpID);
+                TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -709,26 +789,38 @@ namespace HIDAeroService.AeroLibrary
 
         public bool GetAcrStatus(short ScpId, short AcrNo, short Count)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcAcrSrq;
             CC_ACRSRQ cc = new CC_ACRSRQ();
             cc.scp_number = ScpId;
             cc.first = AcrNo;
             cc.count = Count;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcAcrSrq, cc);
+            bool flag = SendCommand(_commandValue, cc);
+            //if (flag)
+            //{
+            //    TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+            //    Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
+            //    Console.WriteLine("Command Tag : " + TagNo);
+            //    //insert code to store the command tag and associated cmnd struct.
+            //    //cmnd struct and tag can be deleted upon receipt of
+            //    //successful command delivery notification
+            //}
             return flag;
         }
 
         public bool ACRMode(short ScpId,short AcrNo,short Mode)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcAcrMode;
             CC_ACRMODE cc = new CC_ACRMODE();
             cc.scp_number= ScpId;
             cc.acr_number= AcrNo;
             cc.acr_mode= Mode;
             cc.nAuthModFlags = 0;
             //cc.nExtFeatureType
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcAcrMode,cc);
+            bool flag = SendCommand(_commandValue, cc);
             if (flag)
             {
                 TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -741,11 +833,12 @@ namespace HIDAeroService.AeroLibrary
 
         #region Card Formatter
 
-        public bool CardFormatterConfiguration(short scpID, short FormatNo, short facility, short offset, short function_id, short flags, short bits, short pe_ln, short pe_loc, short po_ln, short po_loc, short fc_ln, short fc_loc, short ch_ln, short ch_loc, short ic_ln, short ic_loc)
+        public bool CardFormatterConfiguration(short ScpId, short FormatNo, short facility, short offset, short function_id, short flags, short bits, short pe_ln, short pe_loc, short po_ln, short po_loc, short fc_ln, short fc_loc, short ch_ln, short ch_loc, short ic_ln, short ic_loc)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcScpCfmt;
             CC_SCP_CFMT cc = new CC_SCP_CFMT();
             cc.lastModified = 0;
-            cc.nScpID = scpID;
+            cc.nScpID = ScpId;
             cc.number = FormatNo;
             cc.facility = facility;
             cc.offset = offset;
@@ -760,10 +853,11 @@ namespace HIDAeroService.AeroLibrary
             cc.arg.sensor.ch_loc = ch_loc;
             cc.arg.sensor.ic_ln = ic_ln;
             cc.arg.sensor.ic_loc = ic_loc;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcScpCfmt, cc);
+            bool flag = SendCommand(_commandValue, cc);
             if (flag)
             {
-                TagNo = SCPDLL.scpGetTagLastPosted(scpID);
+                TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -780,6 +874,7 @@ namespace HIDAeroService.AeroLibrary
 
         public bool AccessDatabaseCardRecord(short ScpId,short Flags,long CardNumber,int IssueCode,string Pin,List<short> AccessLevel,int Active,int Deactive = 2085970000)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcAdbCardI64DTic32;
             CC_ADBC_I64DTIC32 cc = new CC_ADBC_I64DTIC32();
             cc.lastModified = 0;
             cc.scp_number = ScpId;
@@ -798,12 +893,13 @@ namespace HIDAeroService.AeroLibrary
             {
                 cc.alvl[i] = AccessLevel[i];
             }
-            cc.act_time = Active;
-            cc.dact_time = Deactive;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcAdbCardI64DTic32, cc);
+            cc.act_time = (int)Active;
+            cc.dact_time = (int)Deactive;
+            bool flag = SendCommand(_commandValue, cc);
             if (flag)
             {
                 TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -813,19 +909,41 @@ namespace HIDAeroService.AeroLibrary
 
         }
 
+        public bool CardDelete(short ScpId,long CardNo)
+        {
+            var _commandValue = (Int16)enCfgCmnd.enCcCardDeleteI64;
+            CC_CARDDELETEI64 cc = new CC_CARDDELETEI64();
+            cc.scp_number = ScpId;
+            cc.cardholder_id = CardNo;
+            bool flag = SendCommand(_commandValue, cc);
+            if (flag)
+            {
+                TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
+                Console.WriteLine("Command Tag : " + TagNo);
+                //insert code to store the command tag and associated cmnd struct.
+                //cmnd struct and tag can be deleted upon receipt of
+                //successful command delivery notification
+            }
+            return flag;
+        }
+
+
         #endregion
 
         #region Time
 
-        public bool TimeSet(short ScpID)
+        public bool TimeSet(short ScpId)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcTime;
             CC_TIME cc_time = new CC_TIME();
-            cc_time.scp_number = ScpID;
+            cc_time.scp_number = ScpId;
             cc_time.custom_time = 0;
             bool flag = SendCommand((Int16)enCfgCmnd.enCcTime, cc_time);
             if (flag)
             {
-                TagNo = SCPDLL.scpGetTagLastPosted(ScpID);
+                TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -899,14 +1017,16 @@ namespace HIDAeroService.AeroLibrary
             return SCPDLL.scpCheckOnline(scpID);
         }
 
-        public bool ResetSCP(short scpID)
+        public bool ResetSCP(short ScpId)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcReset;
             CC_RESET cc_reset = new CC_RESET();
-            cc_reset.scp_number = scpID;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcReset, cc_reset);
+            cc_reset.scp_number = ScpId;
+            bool flag = SendCommand(_commandValue, cc_reset);
             if (flag)
             {
-                TagNo = SCPDLL.scpGetTagLastPosted(scpID);
+                TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -915,71 +1035,97 @@ namespace HIDAeroService.AeroLibrary
             return flag;
         }
 
-        public bool GetIDReport(short ScpID)
+        public bool GetIDReport(short ScpId)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcIDRequest;
             CC_IDREQUEST cc_idrequest = new CC_IDREQUEST();
-            cc_idrequest.scp_number = ScpID;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcIDRequest, cc_idrequest);
-            if (flag)
-            {
-                TagNo = SCPDLL.scpGetTagLastPosted(ScpID);
-                Console.WriteLine("Command Tag : " + TagNo);
-                //insert code to store the command tag and associated cmnd struct.
-                //cmnd struct and tag can be deleted upon receipt of
-                //successful command delivery notification
-            }
+            cc_idrequest.scp_number = ScpId;
+            bool flag = SendCommand(_commandValue, cc_idrequest);
+            //if (flag)
+            //{
+            //    TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+            //    Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
+            //    Console.WriteLine("Command Tag : " + TagNo);
+            //    //insert code to store the command tag and associated cmnd struct.
+            //    //cmnd struct and tag can be deleted upon receipt of
+            //    //successful command delivery notification
+            //}
             return flag;
         }
 
-        public bool GetWebConfig(short ScpID)
+        public bool GetWebConfig(short ScpId)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcWebConfigRead;
             CC_WEB_CONFIG_READ cc = new CC_WEB_CONFIG_READ();
-            cc.scp_number = ScpID;
+            cc.scp_number = ScpId;
             cc.read_type = 2;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcWebConfigRead, cc);
-            if (flag)
-            {
-                TagNo = SCPDLL.scpGetTagLastPosted(ScpID);
-                Console.WriteLine("Command Tag : " + TagNo);
-                //insert code to store the command tag and associated cmnd struct.
-                //cmnd struct and tag can be deleted upon receipt of
-                //successful command delivery notification
-            }
+            bool flag = SendCommand(_commandValue, cc);
+            //if (flag)
+            //{
+            //    TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+            //    Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
+            //    Console.WriteLine("Command Tag : " + TagNo);
+            //    //insert code to store the command tag and associated cmnd struct.
+            //    //cmnd struct and tag can be deleted upon receipt of
+            //    //successful command delivery notification
+            //}
             return flag;
         }
 
-        public bool GetCpSrq(short scpID)
+        public bool GetCpSrq(short ScpId)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcCpSrq;
             CC_CPSRQ cc_cpsrq = new CC_CPSRQ();
-            cc_cpsrq.scp_number = scpID;
+            cc_cpsrq.scp_number = ScpId;
             cc_cpsrq.first = 0;
             cc_cpsrq.count = 1;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcCpSrq, cc_cpsrq);
+            bool flag = SendCommand(_commandValue, cc_cpsrq);
+            //if (flag)
+            //{
+            //    TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+            //    Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
+            //    Console.WriteLine("Command Tag : " + TagNo);
+            //    //insert code to store the command tag and associated cmnd struct.
+            //    //cmnd struct and tag can be deleted upon receipt of
+            //    //successful command delivery notification
+            //}
             return flag;
         }
 
         public bool GetSioStatus(short ScpId, short SioNo)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcSioSrq;
             CC_SIOSRQ cc_siosrq = new CC_SIOSRQ();
             cc_siosrq.scp_number = ScpId;
             cc_siosrq.first = SioNo;
             cc_siosrq.count = 1;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcSioSrq, cc_siosrq);
+            bool flag = SendCommand(_commandValue, cc_siosrq);
+            //if (flag)
+            //{
+            //    TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+            //    Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
+            //    Console.WriteLine("Command Tag : " + TagNo);
+            //    //insert code to store the command tag and associated cmnd struct.
+            //    //cmnd struct and tag can be deleted upon receipt of
+            //    //successful command delivery notification
+            //}
             return flag;
         }
 
 
 
-        public bool ReadMemoryStorage(short ScpID)
+        public bool ReadMemoryStorage(short ScpId)
         {
+            var _commandValue = (Int16)enCfgCmnd.enCcMemRead;
             CC_READ cc_read = new CC_READ();
-            cc_read.nScpID = ScpID;
+            cc_read.nScpID = ScpId;
             cc_read.nFirst = 0;
             cc_read.nCount = 1;
-            bool flag = SendCommand((Int16)enCfgCmnd.enCcMemRead, cc_read);
+            bool flag = SendCommand(_commandValue, cc_read);
             if (flag)
             {
-                TagNo = SCPDLL.scpGetTagLastPosted(ScpID);
+                TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
+                Command = Enum.GetName(typeof(enCfgCmnd), _commandValue) ?? "";
                 Console.WriteLine("Command Tag : " + TagNo);
                 //insert code to store the command tag and associated cmnd struct.
                 //cmnd struct and tag can be deleted upon receipt of
@@ -988,23 +1134,14 @@ namespace HIDAeroService.AeroLibrary
             return flag;
         }
 
-        public bool UploadScpConfig(short scpId)
-        {
-            throw new NotImplementedException();
-        }
+        //public bool UploadScpConfig(short scpId)
+        //{
+            
+        //}
 
 
 
         #endregion
-
-
-
-
-
-
-
-
-
 
 
 

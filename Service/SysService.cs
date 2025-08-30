@@ -1,41 +1,69 @@
-﻿using HIDAeroService.Data;
+﻿using HIDAeroService.Constants;
+using HIDAeroService.Data;
+using HIDAeroService.Entity;
 
 namespace HIDAeroService.Service
 {
     public class SysService
     {
         private readonly AppDbContext _context;
-        private readonly AppConfigData _config;
+        private readonly AeroLibMiddleware _config;
+        private readonly ILogger<SysService> _logger;
 
-        public SysService(AppDbContext context,AppConfigData config)
+        public SysService(AppDbContext context,AeroLibMiddleware config,ILogger<SysService> logger)
         {
+            _logger = logger;
             _config = config;
             _context = context;
         }
 
         #region Command Group
 
-        public bool InitialDriver(short cPort)
+        public string ConfigureDriver()
         {
-
-            if (!_config.write.SystemLevelSpecification(1, 100))
+            var data = _context.ArSystemConfigs.First();
+            if(data == null)
             {
-                Console.WriteLine("SystemLevelSpecification : False");
-                return false;
+                _logger.LogError(Constants.ConstantsHelper.NO_SYSTEM_CONFIG_IN_DB);
+                Console.WriteLine(Constants.ConstantsHelper.NO_SYSTEM_CONFIG_IN_DB);
+                return Constants.ConstantsHelper.NO_SYSTEM_CONFIG_IN_DB;
             }
-            Console.WriteLine("SystemLevelSpecification : True");
-
-            if (!_config.write.CreateChannel(cPort))
+            if (!_config.write.SystemLevelSpecification(data.NPorts, data.NScp))
             {
-                Console.WriteLine("CreateChannel : False");
-                return false;
+                _logger.LogError(Constants.ConstantsHelper.SYSTEM_LEVEL_SPEC_COMMAND_UNSUCCESS);
+                Console.WriteLine(Constants.ConstantsHelper.SYSTEM_LEVEL_SPEC_COMMAND_UNSUCCESS);
+                return Constants.ConstantsHelper.SYSTEM_LEVEL_SPEC_COMMAND_UNSUCCESS;
             }
-            Console.WriteLine("CreateChannel : True");
-            return true;
+            _logger.LogInformation(Constants.ConstantsHelper.SYSTEM_LEVEL_SPEC_COMMAND_SUCCESS);
+            Console.WriteLine(Constants.ConstantsHelper.SYSTEM_LEVEL_SPEC_COMMAND_SUCCESS);
+
+            if (!_config.write.CreateChannel(data.CPort,data.NChannelId,data.CType))
+            {
+                _logger.LogError(Constants.ConstantsHelper.CREATE_CHANNEL_COMMAND_UNSUCCESS);
+                Console.WriteLine(Constants.ConstantsHelper.CREATE_CHANNEL_COMMAND_UNSUCCESS);
+                return Constants.ConstantsHelper.CREATE_CHANNEL_COMMAND_UNSUCCESS;
+            }
+            _logger.LogInformation(Constants.ConstantsHelper.CREATE_CHANNEL_COMMAND_SUCCESS);
+            Console.WriteLine(Constants.ConstantsHelper.CREATE_CHANNEL_COMMAND_SUCCESS);
+
+            return Constants.ConstantsHelper.INITIAL_DRIVER_SUCCESS;
 
         }
 
         #endregion
+
+        public ArScpSetting GetScpSetting()
+        {
+            try
+            {
+                return _context.ArScpSettings.First();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return new ArScpSetting();
+            }
+        }
 
 
 

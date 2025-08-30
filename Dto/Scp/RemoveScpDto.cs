@@ -2,6 +2,6 @@
 {
     public sealed class RemoveScpDto
     {
-        public string ScpIp { get; set; }
+        public string ScpMac { get; set; }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using HIDAeroService.Data;
+using HIDAeroService.Entity.Interface;
+using LibNoise.Combiner;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
@@ -12,46 +14,59 @@ namespace HIDAeroService.Service
             _context = context;
         }
 
+        public async Task<short> GetAvailableComponentNoAsync<TEntity>(short max) where TEntity : class,IActivatable,IComponentNo
+        {
+            var dbSet = _context.Set<TEntity>();
+            var ids = await dbSet
+                .Select(e => e.ComponentNo)
+                .OrderBy(id => id)
+                .ToListAsync();
+
+            if (ids.Count == 0)
+                return 1; // First available when table is empty
+
+            int missingId = ids
+                .Select((id, index) => new { id, expected = index + 1 })
+                .FirstOrDefault(x => x.id != x.expected)?.expected
+            ?? ids.Last() + 1;
+
+            if (max > 0 && missingId > max)
+                return -1;
+
+            return (short)missingId;
+        }
+
         public string GetMacFromId(short scpid)
         {
-            return _context.ar_scps.Where(d => d.scp_id == scpid).Select(d => d.mac).First();
+            return _context.ArScps.Where(d => d.ScpId == scpid).Select(d => d.Mac).FirstOrDefault() ?? "";
         }
 
         public short GetScpIdFromMac(string scp_mac)
         {
-            return _context.ar_scps.Where(d => d.mac == scp_mac).Select(d => d.scp_id).First();
+            return _context.ArScps.Where(d => d.Mac == scp_mac).Select(d => d.ScpId).FirstOrDefault();
         }
 
         public short GetScpIdFromIp(string ip)
         {
-            return _context.ar_scps.Where(d => d.ip_address == ip).Select(d => d.scp_id).First();
+            short scpId = _context.ArScps.Where(d => d.Ip == ip).Select(d => d.ScpId).FirstOrDefault();
+
+            return scpId != 0 ? scpId : (short)1;
         }
 
         public string GetScpIpFromId(short id)
         {
-            return _context.ar_scps.Where(d => d.scp_id == id).Select(d => d.ip_address).First();
+            return _context.ArScps.Where(d => d.ScpId == id).Select(d => d.Ip).FirstOrDefault();
         }
 
-        public short DateTimeToElapeSecond(string date)
+        public long DateTimeToElapeSecond(string date)
         {
-            string isoDate = "2025-08-05T12:00:00+07:00";
+            if(date.Equals("") || date.Equals(null)) return 0;
 
-            // Parse as DateTimeOffset to get exact date and time
-            DateTimeOffset dto = DateTimeOffset.Parse(isoDate, null, DateTimeStyles.RoundtripKind);
+            DateTimeOffset dto = DateTimeOffset.Parse(date);
 
-            // Convert to DateTime in local time, ignoring offset
-            DateTime localDateTime = dto.DateTime;
-
-            // Get Unix epoch start in local time (midnight Jan 1 1970 local)
-            DateTime epochLocal = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Local);
-
-            // Calculate elapsed seconds (difference)
-            TimeSpan elapsed = localDateTime - epochLocal;
-
-            short secondsElapsed = (short)elapsed.TotalSeconds;
-
-            return secondsElapsed;
+            return dto.ToUnixTimeSeconds();
         }
+
 
         public string SecondToDateTime(short s)
         {
@@ -64,5 +79,6 @@ namespace HIDAeroService.Service
 
             return localDateTime.ToString();// prints local date/time
         }
+
     }
 }

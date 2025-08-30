@@ -13,7 +13,7 @@ public sealed class Utility
     public static string ByteToHexStr(byte[] data)
     {
         var reversed = data.Reverse().ToArray(); // Reverse the byte array
-        return BitConverter.ToString(reversed).Replace("-", ":");
+        return BitConverter.ToString(reversed).Replace("-", "_");
     }
 
     public static string ByteToHex(byte[] data)
@@ -130,11 +130,11 @@ public sealed class Utility
         return [nInput, nOutput, nReaders];
     }
 
-    public static void SetAllTz(ar_access_lv entity, short value)
+    public static void SetAllTz(ArAccessLevel entity, short value)
     {
         for (int i = 1; i <= 64; i++)
         {
-            var prop = typeof(ar_access_lv).GetProperty($"tz_acr{i}");
+            var prop = typeof(ArAccessLevel).GetProperty($"TzAcr{i}");
             if (prop != null && prop.CanWrite)
                 prop.SetValue(entity, value);
         }

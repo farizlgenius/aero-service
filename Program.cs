@@ -1,17 +1,30 @@
 using HIDAeroService.AeroLibrary;
+using HIDAeroService.Constants;
 using HIDAeroService.Data;
 using HIDAeroService.Hubs;
 using HIDAeroService.Service;
+using HIDAeroService.Service.Impl;
+using HIDAeroService.Service.Interface;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
+using HIDAeroService.Mapper;
+using Serilog;
+using HIDAeroService.Logging;
 
 namespace HIDAeroService
 {
     public class Program
     {
-
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // Bind AppSettings section
+            // Bind AppSettings section to AppSettings class
+            builder.Services.Configure<AppConfigSettings>(
+                builder.Configuration.GetSection("AppSettings")
+                );
 
             // Add services to the container.
 
@@ -22,6 +35,26 @@ namespace HIDAeroService
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            // AutoMapper
+            builder.Services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile<CardFormatProfile>();
+                cfg.AddProfile<AccessLevelProfile>();
+                cfg.AddProfile<TimeZoneProfile>();
+                cfg.AddProfile<IntervalProfile>();
+                // Add more profiles here if needed
+            });
+
+            // SeriLog
+            // Read Serilog config from appsettings.json
+            Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration)
+                .Enrich.With<CustomLogging>()
+                .Enrich.FromLogContext()        // important
+                .CreateLogger();
+
+            // Replace default logging with Serilog
+            builder.Host.UseSerilog();
+
             // DI for custom service
             builder.Services.AddScoped<ScpService>();
             builder.Services.AddScoped<EventService>();
@@ -30,24 +63,27 @@ namespace HIDAeroService
             builder.Services.AddScoped<SioService>();
             builder.Services.AddScoped<AcrService>();
             builder.Services.AddScoped<SysService>();
-            builder.Services.AddScoped<TZService>();
-            builder.Services.AddScoped<CardFormatService>();
-            builder.Services.AddScoped<AlvlService>();
+            builder.Services.AddScoped<ITimeZoneService,TimeZoneService>();
+            builder.Services.AddScoped<IIntervalService,IntervalService>();
+            builder.Services.AddScoped<IAccessLevelService, AccessLevelService>();
+            builder.Services.AddScoped<IHolidayService, HolidayService>();
             builder.Services.AddScoped<MpService>();
             builder.Services.AddScoped<HelperService>();
             builder.Services.AddScoped<CredentialService>();
             builder.Services.AddScoped<CmndService>();
+            builder.Services.AddScoped<ICardFormatService,CardFormatService>();
             builder.Services.AddSignalR();
+
 
             // Register AeroDriver
             builder.Services.AddSingleton<WriteAeroDriver>();
             builder.Services.AddSingleton<ReadAeroDriver>();
 
-            builder.Services.AddSingleton<AppConfigData>(provider =>
+            builder.Services.AddSingleton<AeroLibMiddleware>(provider =>
             {
                 var read = provider.GetRequiredService<ReadAeroDriver>();
                 var write = provider.GetRequiredService<WriteAeroDriver>();
-                return new AppConfigData
+                return new AeroLibMiddleware
                 {
                     read = read,
                     write = write
@@ -71,8 +107,12 @@ namespace HIDAeroService
             var writeDriver = app.Services.GetRequiredService<WriteAeroDriver>();
             var readDriver = app.Services.GetRequiredService<ReadAeroDriver>();
 
+            // Logging
+            var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
             // Initial Driver
 
+            logger.LogInformation("Application starting at {time}", DateTime.Now);
             writeDriver.TurnOnDebug();
 
             using (var scope = app.Services.CreateScope())
@@ -81,7 +121,11 @@ namespace HIDAeroService
                 var sys = scopedServices.GetRequiredService<SysService>();
 
                 // Now you can safely use sys here
-                sys.InitialDriver(3333);
+                if(sys.ConfigureDriver() != Constants.ConstantsHelper.INITIAL_DRIVER_SUCCESS)
+                {
+                    logger.LogError("Initial driver failed. Shutting down app...");
+                    app.Lifetime.StopApplication(); // graceful shutdown
+                }
             }
 
 
@@ -106,19 +150,21 @@ namespace HIDAeroService
 
             app.UseCors("AllowSpecificOrigins");
             app.UseHttpsRedirection();
+            // This logs every HTTP request automatically
+            app.UseSerilogRequestLogging();
 
             app.UseAuthorization();
 
 
             app.MapControllers();
-            app.MapHub<EventHub>("/eventHub");
-            app.MapHub<ScpHub>("/scpHub");
-            app.MapHub<SioHub>("/sioHub");
-            app.MapHub<CpHub>("/cpHub");
-            app.MapHub<MpHub>("/mpHub");
-            app.MapHub<AcrHub>("/acrHub");
-            app.MapHub<CredentialHub>("/credentialHub");
-            app.MapHub<CmndHub>("/cmndHub");
+            app.MapHub<EventHub>(Constants.ConstantsHelper.EVENT_HUB);
+            app.MapHub<ScpHub>(Constants.ConstantsHelper.SCP_HUB);
+            app.MapHub<SioHub>(Constants.ConstantsHelper.SIO_HUB);
+            app.MapHub<CpHub>(Constants.ConstantsHelper.CP_HUB);
+            app.MapHub<MpHub>(Constants.ConstantsHelper.MP_HUB);
+            app.MapHub<AcrHub>(Constants.ConstantsHelper.ACR_HUB);
+            app.MapHub<CredentialHub>(Constants.ConstantsHelper.CREDENTIAL_HUB);
+            app.MapHub<CmndHub>(Constants.ConstantsHelper.CMND_HUB);
 
             app.Run();
 

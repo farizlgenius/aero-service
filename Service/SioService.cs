@@ -1,6 +1,6 @@
 ﻿using HIDAeroService.AeroLibrary;
 using HIDAeroService.Data;
-using HIDAeroService.Dto;
+using HIDAeroService.Dto.Sio;
 using HIDAeroService.Entity;
 using HIDAeroService.Hubs;
 using HIDAeroService.Mapper;
@@ -11,10 +11,10 @@ namespace HIDAeroService.Service
     public class SioService
     {
         private AppDbContext _context;
-        private AppConfigData _config;
+        private AeroLibMiddleware _config;
         private HelperService _helperService;
         private IHubContext<SioHub> _hub;
-        public SioService(AppDbContext context,AppConfigData config,IHubContext<SioHub> hub,HelperService helperService) 
+        public SioService(AppDbContext context,AeroLibMiddleware config,IHubContext<SioHub> hub,HelperService helperService) 
         {
             _helperService = helperService;
             _hub = hub;
@@ -25,7 +25,7 @@ namespace HIDAeroService.Service
         public List<SioDto> GetSioList()
         {
             List<SioDto> dtos = new List<SioDto>();
-            var sios = _context.ar_sios.ToList();
+            var sios = _context.ArSios.ToList();
             int i = 1;
             foreach (var sio in sios) 
             {
@@ -47,7 +47,7 @@ namespace HIDAeroService.Service
         }
 
 
-        public bool SaveToDataBase(string scp_name,string sio_name,string scp_ip,short sio_number,short model,short address,short msp1_number,short port_number,short baud_rate,short n_protocol,short n_dialect)
+        public bool Save(string ScpMac,string scp_name,string sio_name,string scp_ip,short sio_number,short model,short address,short msp1_number,short port_number,short baud_rate,short n_protocol,short n_dialect)
         {
             short nInput, nOutput, nReaders;
             switch (model)
@@ -96,29 +96,33 @@ namespace HIDAeroService.Service
 
             try
             {
-                ar_n_sio a = new ar_n_sio();
-                a.scp_ip = scp_ip;
-                a.sio_number = sio_number;
-                a.port = 0;
-                a.is_available = false;
-                _context.ar_sio_no.Add(a);
-                ar_sio s = new ar_sio();
-                s.name = sio_name;
-                s.scp_name = scp_name;
-                s.scp_ip = scp_ip;
-                s.sio_number = sio_number;
-                s.n_inputs = nInput;
-                s.n_outputs = nOutput;
-                s.n_readers = nReaders;
-                s.model = model;
-                s.model_desc = Description.GetSioModelDesc(model);
-                s.address = address;
-                s.msp1_number = msp1_number;
-                s.port_number = port_number;
-                s.baud_rate = baud_rate;
-                s.n_protocol = n_protocol;
-                s.n_dialect = n_dialect;
-                _context.ar_sios.Add(s);
+                ArSioNo a = new ArSioNo();
+                a.ScpIp = scp_ip;
+                a.SioNo = sio_number;
+                a.ScpMac = ScpMac;
+                a.Port = 0;
+                a.IsAvailable = false;
+                _context.ArSioNo.Add(a);
+                ArSio s = new ArSio();
+                s.Name = sio_name;
+                s.ScpName = scp_name;
+                s.ScpIp = scp_ip;
+                s.SioNumber = sio_number;
+                s.NInput = nInput;
+                s.NOutput = nOutput;
+                s.NReader = nReaders;
+                s.Model = model;
+                s.ModeDescription = Description.GetSioModelDesc(model);
+                s.Address = address;
+                s.Msp1No = msp1_number;
+                s.PortNo = port_number;
+                s.BaudRate = baud_rate;
+                s.NProtocol = n_protocol;
+                s.NDialect = n_dialect;
+                s.ScpMac = ScpMac;
+                s.CreatedDate = DateTime.Now;
+                s.UpdatedDate = DateTime.Now;
+                _context.ArSios.Add(s);
                 _context.SaveChanges();
                 return true;
             }
@@ -137,10 +141,10 @@ namespace HIDAeroService.Service
             var result = _hub.Clients.All.SendAsync("SioStatus",ScpIp,SioNo,Status, Tamper, Ac, Batt);
         }
 
-        public List<SioDto> GetSioListFromIp(string ip)
+        public List<SioDto> GetSioListFromMac(string mac)
         {
             List<SioDto> d = new List<SioDto>();
-            var datas = _context.ar_sios.Where(p => p.scp_ip == ip).ToList();
+            var datas = _context.ArSios.Where(p => p.ScpMac == mac).ToList();
             int i = 1;
             foreach (var data in datas) 
             {
@@ -152,7 +156,7 @@ namespace HIDAeroService.Service
 
         public int GetRecAllocSio(string ScpIp)
         {
-            return _context.ar_sios.Where(p => p.scp_ip == ScpIp).Count();
+            return _context.ArSios.Where(p => p.ScpIp == ScpIp).Count();
         }
     }
 }

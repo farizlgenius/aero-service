@@ -2,7 +2,13 @@
 using HIDAeroService.AeroLibrary;
 using HIDAeroService.Dto;
 using HIDAeroService.Dto.AccessLevel;
+using HIDAeroService.Dto.Acr;
+using HIDAeroService.Dto.Cp;
 using HIDAeroService.Dto.Credential;
+using HIDAeroService.Dto.Mp;
+using HIDAeroService.Dto.Scp;
+using HIDAeroService.Dto.Sio;
+using HIDAeroService.Dto.TimeZone;
 using HIDAeroService.Entity;
 using HIDAeroService.Models;
 using HIDAeroService.Service;
@@ -26,345 +32,341 @@ namespace HIDAeroService.Mapper
             dto.ScpID = idReport.ScpID;
             dto.Model = "HID Aero x1100";
             dto.Ip = Utility.IntegerToIp(idReport.Ip);
+            dto.Port = (short)idReport.Port;
             return dto;
         }
 
-        public static ar_scp ScpRegisDtoToSCP(ScpRegisDto dto)
+        public static ArScp ScpRegisDtoToSCP(ScpRegisDto dto)
         {
-            ar_scp scp = new ar_scp();
-            scp.scp_id = dto.ScpId;
-            scp.ip_address = dto.Ip;
-            scp.serial_number = dto.SerialNumber;
-            scp.name = dto.Name;
-            scp.mac = dto.Mac;
-            scp.model = dto.Model;
-            scp.n_sio = 16;
-            scp.n_mp = 615;
-            scp.n_cp = 388;
-            scp.n_acr = 64;
-            scp.n_alvl = 32000;
-            scp.n_trgr = 1024;
-            scp.n_proc = 1024;
-            scp.n_tz = 255;
-            scp.n_hol = 255;
-            scp.n_mpg = 128;
+            ArScp scp = new ArScp();
+            scp.ScpId = dto.ScpId;
+            scp.Ip = dto.Ip;
+            scp.SerialNumber = dto.SerialNumber;
+            scp.Name = dto.Name;
+            scp.Mac = dto.Mac;
+            scp.Model = dto.Model;
+            scp.NSio = 16;
+            scp.NMp = 615;
+            scp.NCp = 388;
+            scp.NAcr = 64;
+            scp.NAlvl = 32000;
+            scp.Ntrgr = 1024;
+            scp.Nproc = 1024;
+            scp.NTz = 255;
+            scp.NHol = 255;
+            scp.NMpg = 128;
+            scp.Port = dto.Port;
+            scp.LastSync = DateTime.Now;
+            scp.CreatedDate = DateTime.Now;
+            scp.UpdatedDate = DateTime.Now;
             return scp;
 
         }
 
-        public static ScpDto SCPToScpDto(int No,ar_scp scp,short status)
+        public static ScpDto SCPToScpDto(int No, ArScp scp,short status)
         {
             ScpDto dto = new ScpDto();
             dto.No = No;
-            dto.ScpId = scp.scp_id;
-            dto.IpAddress = scp.ip_address;
-            dto.SerialNumber = scp.serial_number;
-            dto.Mac = scp.mac;
-            dto.Name = scp.name;
-            dto.Model = scp.model;
+            dto.ScpId = scp.ScpId;
+            dto.IpAddress = scp.Ip;
+            dto.SerialNumber = scp.SerialNumber;
+            dto.Mac = scp.Mac;
+            dto.Name = scp.Name;
+            dto.Model = scp.Model;
             dto.Status = status;
+            dto.IsReset = scp.IsReset;
+            dto.IsUpload = scp.IsUpload;
             return dto;
 
         }
 
-        public static EventDto EventToEventDto(event_transction even) 
+        public static EventDto EventToEventDto(ArEvent even) 
         {
             EventDto dto = new EventDto();
-            dto.Date = even.date;
-            dto.Time = even.time;
+            dto.Date = even.Date;
+            dto.Time = even.Time;
             //dto.SerialNumber = even.serial_number;
-            dto.Source = even.source;
-            dto.SourceNumber = even.source_number;
+            dto.Source = even.Source;
+            dto.SourceNumber = even.SourceNo;
             //dto.Type = even.type;
-            dto.Description = even.description;
-            dto.Additional = even.additional;
+            dto.Description = even.Description;
+            dto.Additional = even.Additional;
             return dto;
 
         }
 
-        public static ar_control_point AddCpDtoToCp(AddCpDto cpDto,short cp_number) 
+        public static ArControlPoint AddCpDtoToCp(AddCpDto cpDto,short cp_number) 
         {
-            ar_control_point cp = new ar_control_point();
-            cp.name = cpDto.Name;
-            cp.sio_number = cpDto.SioNumber;
-            cp.cp_number = cp_number;
-            cp.op_number = cpDto.OpNumber;
-            cp.mode = cpDto.Mode;
-            cp.scp_ip = cpDto.ScpIp;
+            ArControlPoint cp = new ArControlPoint();
+            cp.Name = cpDto.Name;
+            cp.SioNo = cpDto.SioNumber;
+            cp.CpNo = cp_number;
+            cp.OpNo = cpDto.OpNumber;
+            cp.Mode = cpDto.Mode;
+            cp.ScpMac = cpDto.ScpMac;
+            cp.DefaultPulseTime = cpDto.DefaultPulseTime;
+            cp.CreatedDate = DateTime.Now;
+            cp.UpdatedDate = DateTime.Now;
             return cp;
         }
 
-        public static CpDto CpToCpDto(int No,ar_control_point cp,string model_desc,string sio_name)  
+        public static CpDto CpToCpDto(int No,ArControlPoint cp,string model_desc,string sio_Name)  
         {
 
-        CpDto dto = new CpDto();
+            CpDto dto = new CpDto();
             dto.No = No;
-            dto.Name = cp.name;
-            dto.SioName = sio_name;
+            dto.Name = cp.Name;
+            dto.SioName = sio_Name;
             dto.SioModel = model_desc;
-            dto.SioNumber = cp.sio_number;
-            dto.CpNumber = cp.cp_number;
-            dto.OpNumber = cp.op_number;
-            dto.Mode = cp.mode == 0 || cp.mode == 16 || cp.mode == 32 ? "Normal" : "Inverted";
-            dto.ScpIp = cp.scp_ip;
+            dto.SioNumber = cp.SioNo;
+            dto.CpNumber = cp.CpNo;
+            dto.OpNumber = cp.OpNo;
+            dto.Mode = cp.Mode == 0 || cp.Mode == 16 || cp.Mode == 32 ? "Normal" : "Inverted";
+            dto.ScpMac = cp.ScpMac;
             return dto;
         }
 
-        public static SioDto SioToSioDto(int No,ar_sio s)
+        public static SioDto SioToSioDto(int No,ArSio s)
         {
             SioDto dto = new SioDto();
             dto.No = No;
-            dto.Name = s.name;
-            dto.ScpName = s.scp_name;
-            dto.ScpIp = s.scp_ip;
-            dto.SioNumber = s.sio_number;
-            dto.Model = s.model_desc;
-            dto.Address = s.address;
-            dto.BaudRate = s.baud_rate;
-            dto.ProtoCol = s.n_protocol;
+            dto.Name = s.Name;
+            dto.ScpName = s.ScpName;
+            dto.ScpMac = s.ScpMac;
+            dto.SioNumber = s.SioNumber;
+            dto.Model = s.ModeDescription;
+            dto.Address = s.Address;
+            dto.BaudRate = s.BaudRate;
+            dto.ProtoCol = s.NProtocol;
             
             return dto;
         }
 
-        public static OpModeDto OpModeToOpModeDto(ar_op_mode op) 
+        public static OpModeDto OpModeToOpModeDto(ArOpMode op) 
         {
             OpModeDto dtos = new OpModeDto();
-            dtos.Description = op.description;
-            dtos.Value = op.value;
+            dtos.Description = op.Description;
+            dtos.Value = op.Value;
             return dtos;
         }
 
-        public static ar_n_cp ACRDtoToACR(AddCpDto dto,short cp_number)
+        public static ArCpNo ACRDtoToACR(AddCpDto dto,short cp_number)
         {
-            ar_n_cp cp = new ar_n_cp();
-            cp.scp_ip = dto.ScpIp;
-            cp.cp_number = cp_number;
-            cp.sio_number = dto.SioNumber;
-            cp.is_available = false;
+            ArCpNo cp = new ArCpNo();
+            cp.ScpMac = dto.ScpMac;
+            cp.CpNo = cp_number;
+            cp.SioNo = dto.SioNumber;
+            cp.IsAvailable = false;
             return cp;
         }
 
-        public static AccessLevelDto AccessLevelToAccessLevelDto(ar_access_lv a)
+        public static AccessLevelDto AccessLevelToAccessLevelDto(ArAccessLevel a)
         {
             AccessLevelDto dtos = new AccessLevelDto();
-            dtos.Name = a.name;
-            dtos.AccessLevelNumber = a.access_lv_number;
+            dtos.Name = a.Name;
+            dtos.ElementNo = a.ComponentNo;
             return dtos;
         }
 
-        public static MpDto MpToMpDto(int No,ar_monitor_point mp,string model_desc, string sioName)
+        public static MpDto MpToMpDto(int No,ArMonitorPoint mp,string model_desc, string sioName)
         {
 
             MpDto dtos = new MpDto();
             dtos.No = No;
-            dtos.Name = mp.name;
-            dtos.SioNumber = mp.sio_number;
+            dtos.Name = mp.Name;
+            dtos.SioNumber = mp.SioNo;
             dtos.SioName = sioName;
             dtos.SioModel = model_desc;
-            dtos.MpNumber = mp.mp_number;
-            dtos.IpNumber = mp.ip_number;
-            dtos.Mode = mp.icvt_num == 0 ? "Normally closed" : "Normally open";
-            dtos.DelayEntry = mp.delay_entry;
-            dtos.DelayExit = mp.delay_exit;
-            dtos.ScpIp = mp.scp_ip;
+            dtos.MpNumber = mp.MpNo;
+            dtos.IpNumber = mp.IpNo;
+            dtos.Mode = mp.IcvtNo == 0 ? "Normally closed" : "Normally open";
+            dtos.DelayEntry = mp.DelayEntry;
+            dtos.DelayExit = mp.DelayExit;
+            dtos.ScpMac = mp.ScpMac;
             return dtos;
             
         }
 
-        public static TZDto TzToTzDto(ar_tz tz,int no,string active, string deactive)
-        {
-            TZDto dto = new TZDto();
-            dto.No = no;
-            dto.TzNumber = tz.tz_number;
-            dto.Intervals = tz.intervals;
-            dto.Name = tz.name;
-            dto.ActiveDate = active;
-            dto.DeactiveDate = deactive;
-            dto.Mode = tz.mode;
-            return dto;
 
-        }
 
-        public static ACRDto ACRToACRDto(ar_acr data,int no,string sio_name)
+        public static AcrDto ACRToACRDto(ArAcr data,int no,string sio_Name)
         {
-            ACRDto dto = new ACRDto();
+            AcrDto dto = new AcrDto();
             dto.No = no;
-            dto.Name = data.name;
-            dto.AcrNumber = data.acr_number;
-            dto.SioNumber = data.rdr_sio;
-            dto.SioName = sio_name;
-            dto.ScpIp = data.scp_ip;
-            dto.AcrMode = data.default_mode;
-            dto.AcrModeDesc = Description.GetACRModeForStatus(data.default_mode);
+            dto.Name = data.Name;
+            dto.AcrNo = data.AcrNo;
+            dto.SioNumber = data.RdrSio;
+            dto.SioName = sio_Name;
+            dto.ScpMac = data.ScpMac;
+            dto.AcrMode = data.DoorMode;
+            dto.AcrModeDesc = Description.GetACRModeForStatus(data.DoorMode);
+            dto.AcrDefaultMode = data.DefaultMode;
+            dto.AcrDefaultModeDesc = Description.GetACRModeForStatus(data.DefaultMode);
             return dto;
         }
 
-        public static ar_acr ACRDtoToACR(AddACRDto dto,short AcrNo)
+        public static ArAcr ACRDtoToACR(AddAcrDto dto,short AcrNo)
         {
-           ar_acr data = new ar_acr();
-            data.name = dto.Name;
-            data.scp_ip = dto.ScpIp;
-            data.acr_number = AcrNo;
-            data.access_cfg = dto.AccessConfig;
-            data.rdr_sio = dto.ReaderSioNumber;
-            data.reader_number = dto.ReaderNumber;
-            data.strk_sio = dto.StrikeSioNumber;
-            data.strk_number = dto.StrikeNumber;
-            data.strike_t_min = dto.StrikeMinActiveTime;
-            data.strike_t_max = dto.StrikeMaxActiveTime;
-            data.strike_mode = dto.StrikeMode;
-            data.sensor_sio = dto.SensorSioNumber;
-            data.sensor_number = dto.SensorNumber;
-            data.dc_held = dto.HeldOpenDelay;
-            data.rex1_sio = dto.REX0SioNumber;
-            data.rex1_number = dto.REX0Number;
-            data.rex2_sio = dto.REX1SioNumber;
-            data.rex2_number = dto.REX1Number;
-            data.rex1_tzmask = dto.REX0TimeZone;
-            data.rex2_tzmask = dto.REX1TimeZone;
-            data.altrdr_sio = dto.AlternateReaderSioNumber;
-            data.altrdr_number = dto.AlternateReaderNumber;
-            data.altrdr_spec = dto.AlternateReaderConfig;
-            data.cd_format = dto.CardFormat;
-            data.apb_mode = dto.AntiPassbackMode;
-            data.offline_mode = dto.OfflineMode;
-            data.default_mode = dto.DefaultMode;
-            data.default_led_mode = dto.DefaultLEDMode;
-            data.pre_alarm = dto.PreAlarm;
-            data.apb_delay = dto.AntiPassbackDelay;
+           ArAcr data = new ArAcr();
+            data.Name = dto.Name;
+            data.ScpMac = dto.ScpMac;
+            data.AcrNo = AcrNo;
+            data.AccessCfg = dto.AccessConfig;
+            data.RdrSio = dto.ReaderSioNumber;
+            data.ReaderNo = dto.ReaderNumber;
+            data.StrkSio = dto.StrikeSioNumber;
+            data.StrkNo = dto.StrikeNumber;
+            data.StrkMin = dto.StrikeMinActiveTime;
+            data.StrkMax = dto.StrikeMaxActiveTime;
+            data.StrkMode = dto.StrikeMode;
+            data.SensorSio = dto.SensorSioNumber;
+            data.SensorNo = dto.SensorNumber;
+            data.DcHeld = dto.HeldOpenDelay;
+            data.Rex1Sio = dto.REX0SioNumber;
+            data.Rex1No = dto.REX0Number;
+            data.Rex2Sio = dto.REX1SioNumber;
+            data.Rex2No = dto.REX1Number;
+            data.Rex1TzMask = dto.REX0TimeZone;
+            data.Rex2TzMask = dto.REX1TimeZone;
+            data.AlternateReaderSio = dto.AlternateReaderSioNumber;
+            data.AlternateReaderNo = dto.AlternateReaderNumber;
+            data.AlternateReaderSpec = dto.AlternateReaderConfig;
+            data.CdFormat = dto.CardFormat;
+            data.ApbMode = dto.AntiPassbackMode;
+            data.OfflineMode = dto.OfflineMode;
+            data.DefaultMode = dto.DefaultMode;
+            data.DoorMode = dto.DefaultMode;
+            data.DefaultLEDMode = dto.DefaultLEDMode;
+            data.PreAlarm = dto.PreAlarm;
+            data.ApbDelay = dto.AntiPassbackDelay;
+            data.UpdatedDate = DateTime.Now;
+            data.CreatedDate = DateTime.Now;    
             return data;
 
         }
 
-        public static AcsRdrModeDto AcsRdrModeToAcsRdrModeDto(ar_rdr_cfg_mode d)
+        public static AcsRdrModeDto AcsRdrModeToAcsRdrModeDto(ArReaderConfigMode d)
         {
             AcsRdrModeDto dto = new AcsRdrModeDto();
-            dto.Name = d.name;
-            dto.Description = d.description;
-            dto.Value = d.value;
+            dto.Name = d.Name;
+            dto.Description = d.Description;
+            dto.Value = d.Value;
             return dto;
         }
 
-        public static StrikeModeDto StrikeModeToStrikeModeDto(ar_strk_mode d)
+        public static StrikeModeDto StrikeModeToStrikeModeDto(ArStrkMode d)
         {
             StrikeModeDto dto = new StrikeModeDto();
-            dto.Name = d.name;
-            dto.Description = d.description;
-            dto.Value = d.value;
+            dto.Name = d.Name;
+            dto.Description = d.Description;
+            dto.Value = d.Value;
             return dto;
         }
 
-        public static ACRModeDto ACRModeToACRModeDto(ar_acr_mode d)
+        public static AcrModeDto ACRModeToACRModeDto(ArAcrMode d)
         {
-            ACRModeDto dto = new ACRModeDto();
-            dto.Name = d.name;
-            dto.Description = d.description;
-            dto.Value = d.value;
+            AcrModeDto dto = new AcrModeDto();
+            dto.Name = d.Name;
+            dto.Description = d.Description;
+            dto.Value = d.Value;
             return dto;
         }
 
-        public static ApbModeDto ApbModeToApbModeDto(ar_apb_mode d)
+        public static ApbModeDto ApbModeToApbModeDto(ArApbMode d)
         {
             ApbModeDto dto = new ApbModeDto();
-            dto.Name = d.name;
-            dto.Description = d.description;
-            dto.Value = d.value;
+            dto.Name = d.Name;
+            dto.Description = d.Description;
+            dto.Value = d.Value;
             return dto;
         }
 
-        public static ar_n_acr ACRDtoTonACR(AddACRDto dto, short acrNo)
+        public static ArAcrNo ACRDtoTonACR(AddAcrDto dto, short acrNo)
         {
-            ar_n_acr cp = new ar_n_acr();
-            cp.scp_ip = dto.ScpIp;
-            cp.acr_number = acrNo;
-            cp.sio_number = dto.ReaderSioNumber;
-            cp.is_available = false;
+            ArAcrNo cp = new ArAcrNo();
+            cp.ScpMac = dto.ScpMac;
+            cp.AcrNo = acrNo;
+            cp.SioNo = dto.ReaderSioNumber;
+            cp.IsAvailable = false;
             return cp;
         }
 
-        public static ar_n_cp AddCpDtoTonCp(AddCpDto cpDto, short cp_number)
+        public static ArCpNo AddCpDtoTonCp(AddCpDto cpDto, short cp_number)
         {
-            ar_n_cp cp = new ar_n_cp();
-            cp.scp_ip = cpDto.ScpIp;
-            cp.cp_number = cp_number;
-            cp.sio_number = cpDto.SioNumber;
-            cp.is_available = false;
+            ArCpNo cp = new ArCpNo();
+            cp.ScpMac = cpDto.ScpMac;
+            cp.CpNo = cp_number;
+            cp.SioNo = cpDto.SioNumber;
+            cp.IsAvailable = false;
             return cp;
         }
 
-        public static IpModeDto IpModeToIpModeDto(ar_ip_mode data)
+        public static IpModeDto IpModeToIpModeDto(ArIpMode data)
         {
             IpModeDto dto = new IpModeDto();
-            dto.Description = data.description;
-            dto.Value = data.value;
-            dto.Name = data.name;
+            dto.Description = data.Description;
+            dto.Value = data.Value;
+            dto.Name = data.Name;
             return dto;
         }
 
-        public static ar_card_holder CreateCardHolderDtoToCardHolder(CreateCardHolderDto dto)
+        public static ArCardHolder CreateCardHolderDtoToCardHolder(CreateCardHolderDto dto)
         {
-            ar_card_holder data = new ar_card_holder();
-            data.card_holder_id = dto.CardHolderId;
-            data.card_holder_refenrence_number = Guid.NewGuid();
-            data.title = dto.Title;
-            data.name = dto.Name;
-            data.email = dto.Email;
-            data.phone = dto.Phone;
-            data.description = dto.Description;
-            data.holder_status = "Active";
-            data.sex = dto.Sex;
-            data.created_date = DateTime.Now;
-            data.updated_date = DateTime.Now;
+            ArCardHolder data = new ArCardHolder();
+            data.CardHolderId = dto.CardHolderId;
+            data.CardHolderRefNo = dto.CardHolderReferenceNumber;
+            data.Title = dto.Title;
+            data.FirstName = dto.FirstName;
+            data.MiddleName = dto.MiddleName;
+            data.LastName = dto.LastName;
+            data.Email = dto.Email;
+            data.Phone = dto.Phone;
+            data.Description = dto.Description;
+            data.HolderStatus = "Active";
+            data.Sex = dto.Sex;
+            data.CreatedDate = DateTime.Now;
+            data.UpdatedDate = DateTime.Now;
 
             return data;
         }
 
-        public static ar_credentials CreateCredentialDtoToCreateCredential(CreateCredentialDto dto)
+        public static ArCredential CreateCredentialDtoToCreateCredential(CreateCredentialDto dto, string cardHolderReferenceNumber)
         {
-            ar_credentials data = new ar_credentials();
-            data.card_holder_refenrence_number = dto.CardHolderReferenceNumber;
-            data.bits = dto.Bits;
-            data.issue_code = dto.IssueCode;
-            data.facility_code = dto.FacilityCode;
-            data.card_number = dto.CardNumber;
-            data.pin = dto.Pin;
-            data.act_time = dto.ActiveDate;
-            data.deact_time = dto.DeactiveDate;
-            data.access_level = dto.AccessLevel;
-            data.image = dto.Image;
-            data.created_date = DateTime.Now;
-            data.updated_date = DateTime.Now;
+            ArCredential data = new ArCredential();
+            data.CardHolderRefNo = cardHolderReferenceNumber;
+            data.Bits = dto.Bits;
+            data.IssueCode = dto.IssueCode;
+            data.FacilityCode = dto.FacilityCode;
+            data.CardNo = dto.CardNumber;
+            data.Pin = dto.Pin;
+            data.ActTime = dto.ActiveDate;
+            data.DeactTime = dto.DeactiveDate;
+            data.AccessLevel = dto.AccessLevel;
+            data.Image = dto.Image;
+            data.IsActive = true;
+            data.CreatedDate = DateTime.Now;
+            data.UpdatedDate = DateTime.Now;
             return data;
         }
 
-        public static CardHolderDto CardHolderToCardHolderDto(ar_card_holder d)
+        public static CardHolderDto CardHolderToCardHolderDto(ArCardHolder d,int i)
         {
             CardHolderDto dto = new CardHolderDto();
-            dto.CardHolderId = d.card_holder_id;
-            dto.CardHolderReferenceNumber = d.card_holder_refenrence_number;
-            dto.Title = d.title;
-            dto.Name = d.name;
-            dto.Sex = d.sex;
-            dto.Email = d.email;
-            dto.Phone = d.phone;
-            dto.Description = d.description;
-            dto.HolderStatus = d.holder_status;
-            dto.IssueCodeRunningNumber = d.issue_code_running_number;
+            dto.No = i;
+            dto.CardHolderId = d.CardHolderId;
+            dto.CardHolderReferenceNumber = d.CardHolderRefNo;
+            dto.Title = d.Title;
+            dto.FirstName = d.FirstName;
+            dto.MiddleName = d.MiddleName;
+            dto.LastName = d.LastName;
+            dto.Sex = d.Sex;
+            dto.Email = d.Email;
+            dto.Phone = d.Phone;
+            dto.Description = d.Description;
+            dto.HolderStatus = d.HolderStatus;
+            dto.IssueCodeRunningNumber = d.IssueCodeRunningNo;
             return dto;
         }
 
-        public static ar_access_lv AccessLevelDtoToAccessLevel(CreateAccessLevelDto dto,short alvlNumber)
-        {
-            ar_access_lv data = new ar_access_lv();
-            data.name = dto.Name;
-            data.access_lv_number = alvlNumber;
-            foreach(var d in dto.Doors)
-            {
-                var prop = typeof(ar_access_lv).GetProperty($"tz_acr{d.AcrNumber}");
-                if (prop != null && prop.CanWrite)
-                    prop.SetValue(data,d.TzNumber);
-            }
-            return data;
-        }
     }
 }
