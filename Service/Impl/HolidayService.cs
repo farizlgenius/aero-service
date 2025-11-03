@@ -1,139 +1,198 @@
 ﻿using AutoMapper;
+using HIDAeroService.AeroLibrary;
+using HIDAeroService.Constant;
 using HIDAeroService.Constants;
 using HIDAeroService.Data;
-using HIDAeroService.Dto;
-using HIDAeroService.Dto.Holiday;
+using HIDAeroService.DTO;
+using HIDAeroService.DTO.Holiday;
 using HIDAeroService.Entity;
 using HIDAeroService.Helpers;
-using HIDAeroService.Service.Interface;
+using HIDAeroService.Utility;
 using Microsoft.EntityFrameworkCore;
+using MiNET.Blocks;
+using MiNET.Entities;
+using MiNET.Worlds;
 using System.Net;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HIDAeroService.Service.Impl
 {
-    public class HolidayService : IHolidayService
+    public class HolidayService(AeroCommand command, AppDbContext context, IMapper mapper, IHelperService<Holiday> helperService) : IHolidayService
     {
-        private readonly AppDbContext _context;
-        private readonly AeroLibMiddleware _middleware;
-        private readonly IMapper _mapper;
-        private readonly ILogger<IHolidayService> _logger;
-        private readonly HelperService _helperService;
-        public HolidayService(AeroLibMiddleware middleware,AppDbContext context,IMapper mapper,ILogger<IHolidayService> logger,HelperService helperService) 
-        {
-            _helperService = helperService;
-            _logger = logger;
-            _mapper = mapper;
-            _context = context;
-            _middleware = middleware;
-        }
 
-        // New
-
-        public async Task<Response<IEnumerable<HolidayDto>>> GetAsync()
+        public async Task<ResponseDto<IEnumerable<HolidayDto>>> GetAsync()
         {
-            _logger.LogInformation("Hello From Hol");
-            List<string> errors = new List<string>();
-            try
-            {
-                List<HolidayDto> dtos = new List<HolidayDto>(); 
-                var entities = await _context.ArHolidays.AsNoTracking().ToArrayAsync();
-                if (entities.Length == 0) return Helper.ResponseBuilder<IEnumerable<HolidayDto>>(HttpStatusCode.OK, Enumerable.Empty<HolidayDto>(),ConstantsHelper.NOT_FOUND_RECORD, errors);
-                foreach (var entity in entities) 
+            var dtos = await context.Holidays.AsNoTracking()
+                .Select(p => new HolidayDto
                 {
-                    dtos.Add(_mapper.Map<HolidayDto>(entity));
-                }
-                return Helper.ResponseBuilder<IEnumerable<HolidayDto>>(HttpStatusCode.OK, dtos, ConstantsHelper.SUCCESS, errors);
-            }
-            catch (Exception ex) 
-            {
-                _logger.LogError(ex.Message);
-                errors.Add(ex.Message);
-                return Helper.ResponseBuilder<IEnumerable<HolidayDto>>(HttpStatusCode.InternalServerError,Enumerable.Empty<HolidayDto>(),ConstantsHelper.INTERNAL_ERROR, errors);
-            }
+                    // Base
+                    Uuid = p.Uuid,
+                    LocationId = p.LocationId,
+                    LocationName = p.LocationName,
+                    IsActive = p.IsActive,
+
+                    // Detail
+                    ComponentId = p.ComponentId,
+                    Day = p.Day,
+                    Month = p.Month,
+                    Year = p.Year,
+                    Extend = p.Extend,
+                    TypeMask = p.TypeMask
+
+                }).ToArrayAsync();
+            if (dtos.Count() == 0) return ResponseHelper.NotFoundBuilder<IEnumerable<HolidayDto>>();
+            return ResponseHelper.SuccessBuilder<IEnumerable<HolidayDto>>(dtos);
         }
 
-        public async Task<Response<HolidayDto>> CreateAsync(HolidayDto dto)
+        public async Task<ResponseDto<bool>> ClearAsync()
         {
             List<string> errors = new List<string>();
-            try
+            var macs = await context.Hardwares.Select(x => x.MacAddress).ToArrayAsync();
+            foreach (var mac in macs)
             {
-                // Send command 
-                List<short> scpIds = await _context.ArScps.Select(p => p.ScpId).ToListAsync();
-                foreach (var id in scpIds) 
+                short ScpId = await helperService.GetIdFromMacAsync(mac);
+                if (!await command.ClearHolidayConfigurationAsync(ScpId))
                 {
-                    if (!_middleware.write.HolidayConfiguration(dto,id))
-                    {
-                        _logger.LogError(Helper.ResponseCommandUnsuccessMessageBuilder(id));
-                        errors.Add(Helper.ResponseCommandUnsuccessMessageBuilder(id));
-                    }
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C1104));
                 }
-
-                var componentNo = await _helperService.GetAvailableComponentNoAsync<ArHoliday>(255);
-                var entity = _mapper.Map<ArHoliday>(dto);
-                entity.ComponentNo = componentNo;
-                entity.IsActive = true;
-                await _context.ArHolidays.AddAsync(entity);
-                await _context.SaveChangesAsync();
-                var ent = await _context.ArHolidays.FirstOrDefaultAsync(p => p.ComponentNo == componentNo);
-                return Helper.ResponseBuilder<HolidayDto>(HttpStatusCode.InternalServerError, _mapper.Map<HolidayDto>(ent), ConstantsHelper.INTERNAL_ERROR, errors);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                errors.Add(ex.Message);
-                return Helper.ResponseBuilder<HolidayDto>(HttpStatusCode.InternalServerError, null, ConstantsHelper.INTERNAL_ERROR, errors);
-            }
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
+            var holidays = await context.Holidays.ToArrayAsync();
+            context.Holidays.RemoveRange(holidays);
+            await context.SaveChangesAsync();
+            return ResponseHelper.SuccessBuilder(true);
         }
 
-        public async Task<Response<HolidayDto>> UpdateAsync(HolidayDto dto)
+        public async Task<ResponseDto<HolidayDto>> GetByComponentIdAsync(short component)
+        {
+            var dto = await context.Holidays.AsNoTracking().Where(p => p.ComponentId == component).Select(p => new HolidayDto 
+            {
+                // Base
+                Uuid = p.Uuid,
+                LocationId = p.LocationId,
+                LocationName = p.LocationName,
+                IsActive = p.IsActive,
+
+                // Detail
+                Day = p.Day,
+                Month = p.Month,
+                Year = p.Year,
+                Extend = p.Extend,
+                TypeMask = p.TypeMask
+
+            }).FirstOrDefaultAsync();
+            if (dto == null) return ResponseHelper.NotFoundBuilder<HolidayDto>();
+            return ResponseHelper.SuccessBuilder(dto);
+        }
+
+
+
+        public async Task<ResponseDto<bool>> CreateAsync(CreateHolidayDto dto)
         {
             List<string> errors = new List<string>();
-            try
+
+            if (await context.Holidays.AnyAsync(u => u.Day == dto.Day && u.Month == dto.Month && u.Year == dto.Year)) return ResponseHelper.Duplicate<bool>();
+
+            var ComponentId = await helperService.GetLowestUnassignedNumberNoLimitAsync<Holiday>(context);
+            if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
+
+            // Send command 
+            List<short> ids = await context.Hardwares.AsNoTracking().Select(p => p.ComponentId).ToListAsync();
+
+            var holiday = new Holiday
             {
-                var entity = await _context.ArHolidays.FirstOrDefaultAsync(p => p.ComponentNo == dto.ComponentNo);
-                if (entity == null) return Helper.ResponseBuilder<HolidayDto>(HttpStatusCode.OK, null, ConstantsHelper.NOT_FOUND_RECORD, errors);
-                _mapper.Map(dto,entity);
-                return Helper.ResponseBuilder<HolidayDto>(HttpStatusCode.OK, null, ConstantsHelper.NOT_FOUND_RECORD, errors);
+                // Base
+                LocationId = dto.LocationId,
+                LocationName = dto.LocationName,
+                CreatedDate = DateTime.Now,
+                UpdatedDate = DateTime.Now,
+                IsActive = true,
 
 
-            }
-            catch (Exception ex)
+                // Detail
+                ComponentId = ComponentId,
+                Day = dto.Day,
+                Month = dto.Month,
+                Year = dto.Year,
+                Extend = 0,
+                TypeMask = dto.TypeMask,
+
+            };
+
+            foreach (var id in ids)
             {
-                _logger.LogError(ex.Message);
-                errors.Add(ex.Message);
-                return Helper.ResponseBuilder<HolidayDto>(HttpStatusCode.InternalServerError, null, ConstantsHelper.INTERNAL_ERROR, errors);
+                string mac = await helperService.GetMacFromIdAsync(id);
+                if (!await command.HolidayConfigurationAsync(holiday, id))
+                {
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C1104));
+
+                }
             }
+
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, errors);
+
+
+            await context.Holidays.AddAsync(holiday);
+            await context.SaveChangesAsync();
+            return ResponseHelper.SuccessBuilder(true);
         }
 
-        public async Task<Response<HolidayDto>> DeleteAsync(short id)
+        public async Task<ResponseDto<bool>> DeleteAsync(short component)
         {
             List<string> errors = new List<string>();
-            try
+            var entity = await context.Holidays.FirstOrDefaultAsync(x => x.ComponentId == component);
+            if (entity is null) return ResponseHelper.NotFoundBuilder<bool>();
+            // Send command 
+            List<short> ids = await context.Hardwares.Select(p => p.ComponentId).ToListAsync();
+
+
+            foreach (var id in ids)
             {
-                return Helper.ResponseBuilder<HolidayDto>(HttpStatusCode.OK, null, ConstantsHelper.NOT_FOUND_RECORD, errors);
+                string mac = await helperService.GetMacFromIdAsync(id);
+                if (!await command.DeleteHolidayConfigurationAsync(entity, id))
+                {
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C1104));
+                }
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                errors.Add(ex.Message);
-                return Helper.ResponseBuilder<HolidayDto>(HttpStatusCode.InternalServerError, null, ConstantsHelper.INTERNAL_ERROR, errors);
-            }
+
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
+            context.Holidays.Remove(entity);
+            await context.SaveChangesAsync();
+            return ResponseHelper.SuccessBuilder(true);
         }
 
-        public async Task<Response<HolidayDto>> GetByIdAsync(short id)
+        public async Task<ResponseDto<HolidayDto>> UpdateAsync(HolidayDto dto)
         {
             List<string> errors = new List<string>();
-            try
+            var entity = await context.Holidays.FirstOrDefaultAsync(p => p.ComponentId == dto.ComponentId);
+            if (entity is null) return ResponseHelper.NotFoundBuilder<HolidayDto>();
+
+            if (await context.Holidays.AnyAsync(u => u.Day == dto.Day && u.Month == dto.Month && u.Year == dto.Year)) return ResponseHelper.Duplicate<HolidayDto>();
+
+            // Send command 
+            List<short> ids = await context.Hardwares.Select(p => p.ComponentId).ToListAsync();
+
+            entity.Day = dto.Day;
+            entity.Month = dto.Month;
+            entity.Year = dto.Year;
+            entity.TypeMask = dto.TypeMask;
+            entity.Extend = 0;
+            entity.UpdatedDate = DateTime.Now;
+
+            foreach (var id in ids)
             {
-                return Helper.ResponseBuilder<HolidayDto>(HttpStatusCode.OK, null, ConstantsHelper.NOT_FOUND_RECORD, errors);
+                string mac = await helperService.GetMacFromIdAsync(id);
+                if (!await command.HolidayConfigurationAsync(entity, id))
+                {
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C1104));
+                }
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                errors.Add(ex.Message);
-                return Helper.ResponseBuilder<HolidayDto>(HttpStatusCode.InternalServerError, null, ConstantsHelper.INTERNAL_ERROR, errors);
-            }
+
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<HolidayDto>(ResponseMessage.COMMAND_UNSUCCESS,errors);
+
+            context.Holidays.Update(entity);
+            await context.SaveChangesAsync();
+            return ResponseHelper.SuccessBuilder(dto);
         }
+
     }
 }

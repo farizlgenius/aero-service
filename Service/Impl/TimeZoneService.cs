@@ -1,12 +1,6 @@
 ﻿using AutoMapper;
 using HIDAeroService.Data;
-using HIDAeroService.Dto;
-using HIDAeroService.Dto.TimeZone;
 using HIDAeroService.Entity;
-using HIDAeroService.Helpers;
-using HIDAeroService.Mapper;
-using HIDAeroService.Models;
-using HIDAeroService.Service.Interface;
 using Microsoft.EntityFrameworkCore;
 using HIDAeroService.Constants;
 using System.Linq;
@@ -14,181 +8,176 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Net;
 using System.Runtime.CompilerServices;
 using HIDAeroService.Logging;
+using HIDAeroService.AeroLibrary;
+using HIDAeroService.Utility;
+using MiNET.Worlds;
+using HIDAeroService.Helpers;
+using HIDAeroService.Constant;
+using MiNET.Entities;
+using System.ComponentModel;
+using HIDAeroService.DTO;
+using HIDAeroService.DTO.TimeZone;
+using HIDAeroService.DTO.Interval;
+using HIDAeroService.Mapper;
 
 namespace HIDAeroService.Service.Impl
 {
-    public class TimeZoneService : ITimeZoneService
+    public class TimeZoneService(AppDbContext context, IHelperService<Entity.TimeZone> helperService, AeroCommand command, IMapper mapper, ILogger<TimeZoneService> logger) : ITimeZoneService
     {
-        private readonly AppDbContext _context;
-        private readonly HelperService _helperService;
-        private readonly IMapper _mapper;
-        private readonly ILogger<TimeZoneService> _logger;
-        private readonly AeroLibMiddleware _middleware;
-        public TimeZoneService(AppDbContext context, HelperService helperService, AeroLibMiddleware config,IMapper mapper, ILogger<TimeZoneService> logger,AeroLibMiddleware middleware)
+        public async Task<ResponseDto<IEnumerable<TimeZoneDto>>> GetAsync()
         {
-            _middleware = middleware;
-            _mapper = mapper;
-            _helperService = helperService;
-            _context = context;
-            _logger = logger;
+            var dtos = await context.TimeZones
+                .AsNoTracking()
+                .Include(c => c.TimeZoneIntervals)
+                .ThenInclude(x => x.Interval)
+                .ThenInclude(x => x.Days)
+                .Select(x => MapperHelper.TimeZoneToDto(x))
+                .ToArrayAsync();
+
+            if (dtos.Count() == 0) return ResponseHelper.NotFoundBuilder<IEnumerable<TimeZoneDto>>();
+            return ResponseHelper.SuccessBuilder<IEnumerable<TimeZoneDto>>(dtos);
         }
 
-        public async Task<Response<TimeZoneDto>> CreateAsync(TimeZoneDto dto)
+        public async Task<ResponseDto<TimeZoneDto>> GetByComponentIdAsync(short component)
+        {
+            var dto = await context.TimeZones
+                .AsNoTracking()
+                .Include(s => s.TimeZoneIntervals)
+                .ThenInclude(x => x.Interval)
+                .ThenInclude(x => x.Days)
+                .Where(a => a.ComponentId == component)
+                .Select(x => MapperHelper.TimeZoneToDto(x))
+                .FirstOrDefaultAsync();
+
+            if (dto is null) return ResponseHelper.NotFoundBuilder<TimeZoneDto>();
+            return ResponseHelper.SuccessBuilder<TimeZoneDto>(dto);
+        }
+
+        public async Task<ResponseDto<bool>> CreateAsync(CreateTimeZoneDto dto)
         {
             List<string> errors = new List<string>();
-            try
+            var max = await context.SystemSettings.AsNoTracking().Select(x => x.nTz).FirstOrDefaultAsync();
+            var ComponentId = await helperService.GetLowestUnassignedNumberAsync<Entity.TimeZone>(context,max);
+            if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
+
+            var timezone = MapperHelper.CreateTimeZoneDtoToTimeZone(dto,ComponentId);
+            List<Interval> intervals = new List<Interval>();
+            foreach(var interval in dto.Intervals)
             {
-                var componentNo = await _helperService.GetAvailableComponentNoAsync<ArTimeZone>(255);  
-                List<short> Ids = await _context.ArScps.AsNoTracking().Select(x => x.ScpId).ToListAsync();
-                foreach(var Id in Ids)
+                intervals.Add(MapperHelper.IntervalDtoToInterval(interval));
+            }
+            
+
+            List<string> macs = await context.Hardwares.AsNoTracking().Select(x => x.MacAddress).ToListAsync();
+
+            foreach (var mac in macs)
+            {
+                short id = await helperService.GetIdFromMacAsync(mac);
+                long active = helperService.DateTimeToElapeSecond(dto.ActiveTime);
+                long deactive = helperService.DateTimeToElapeSecond(dto.DeactiveTime);
+                if (!await command.ExtendedTimeZoneActSpecificationAsync(id, timezone,intervals, (int)active, (int)deactive))
                 {
-                    List<short> intervalIds = dto.IntervalsNoList.Split(",",StringSplitOptions.RemoveEmptyEntries).Select(x => short.Parse(x.Trim())).ToList();
-                    long active = _helperService.DateTimeToElapeSecond(dto.ActiveTime);
-                    long deactive = _helperService.DateTimeToElapeSecond(dto.DeactiveTime);
-                    List<ArInterval> intervals = await _context.ArIntervals.AsNoTracking().Where(x => intervalIds.Contains(x.ComponentNo)).ToListAsync();
-                    if (!_middleware.write.ExtendedTimeZoneActSpecification(Id, dto, intervals, (int)active, (int)deactive))
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C3103));
+                }
+            }
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
+
+            await context.TimeZones.AddAsync(timezone);
+            await context.SaveChangesAsync();
+
+            List<TimeZoneInterval> links = new List<TimeZoneInterval>();
+            foreach (var interval in dto.Intervals)
+            {
+                links.Add(
+                    new TimeZoneInterval
                     {
-                        CustomLogging.LogErr<TimeZoneService>(_logger, Helper.ResponseCommandUnsuccessMessageBuilder(Id), "ExtendedTimeZoneActSpecification");
-                        errors.Add(Helper.ResponseCommandUnsuccessMessageBuilder(Id));
+                        Uuid = dto.Uuid,
+                        LocationId = dto.LocationId,
+                        LocationName = dto.LocationName,
+                        IsActive = dto.IsActive,
+
+                        IntervalId = interval.ComponentId,
+                        TimeZoneId = ComponentId
                     }
-                }
-
-                dto.ComponentNo = componentNo;
-                await _context.ArTimeZones.AddAsync(_mapper.Map<ArTimeZone>(dto));
-                await _context.SaveChangesAsync();
-
-                CustomLogging.LogInfo<TimeZoneService>(_logger, "Create TimeZone", "CreateAsync");
-                return Helper.ResponseBuilder<TimeZoneDto>(HttpStatusCode.Created,dto,ConstantsHelper.CREATED,errors);
-
-            } catch (Exception e) 
-            {
-                errors.Add(e.Message);
-                _logger.LogError(e.Message);
-                return Helper.ResponseBuilder<TimeZoneDto>(HttpStatusCode.InternalServerError,null,ConstantsHelper.INTERNAL_ERROR,errors);
+                );
             }
 
+            await context.TimeZoneIntervals.AddRangeAsync(links);
+            await context.SaveChangesAsync();
+
+            return ResponseHelper.SuccessBuilder(true);
         }
 
-        public async Task<Response<TimeZoneDto>> DeleteAsync(short id)
+        public async Task<ResponseDto<bool>> DeleteAsync(short component)
         {
-            CustomLogging.LogInfo<TimeZoneService>(_logger, $"DELETE TimeZone with Component no: {id}", "DeleteAsync");
+            var entity = await context.TimeZones.Include(s => s.TimeZoneIntervals).FirstOrDefaultAsync(x => x.ComponentId == component);
+            if (entity is null) return ResponseHelper.NotFoundBuilder<bool>();
+
+            context.TimeZones.Remove(entity);
+            await context.SaveChangesAsync();
+
+            return ResponseHelper.SuccessBuilder<bool>(true);
+        }
+
+        public async Task<ResponseDto<TimeZoneDto>> UpdateAsync(TimeZoneDto dto)
+        {
             List<string> errors = new List<string>();
-            try
+            var entity = await context.TimeZones
+                .Include(x => x.TimeZoneIntervals)
+                .ThenInclude(x => x.Interval)
+                .FirstOrDefaultAsync(p => p.ComponentId == dto.ComponentId);
+            if (entity is null) return ResponseHelper.NotFoundBuilder<TimeZoneDto>();
+
+            entity = MapperHelper.TimeZoneDtoMapTimeZone(dto,entity);
+            var intervals = dto.Intervals.Select(s => MapperHelper.IntervalDtoToInterval(s)).ToList();
+
+            List<string> macs = await context.Hardwares.AsNoTracking().Select(x => x.MacAddress).ToListAsync();
+            foreach (var mac in macs)
             {
-                var entity = await _context.ArTimeZones.FirstOrDefaultAsync(x => x.ComponentNo == id);
-                if (entity == null) return Helper.ResponseBuilder<TimeZoneDto>(HttpStatusCode.OK,null, ConstantsHelper.NOT_FOUND_RECORD, errors);
-
-                _context.ArTimeZones.Remove(entity);
-                await _context.SaveChangesAsync();
-                return Helper.ResponseBuilder<TimeZoneDto>(HttpStatusCode.OK,_mapper.Map<TimeZoneDto>(entity), ConstantsHelper.REMOVE_SUCCESS, errors);
-
-            }
-            catch(Exception e)
-            {
-                errors.Add(e.Message);
-                _logger.LogError(e.Message);
-                return Helper.ResponseBuilder<TimeZoneDto>(HttpStatusCode.InternalServerError,null, ConstantsHelper.INTERNAL_ERROR, errors);
-            }
-        }
-
-        public IEnumerable<ArTimeZone> GetAllSetting()
-        {
-            try
-            {
-
-                return _context.ArTimeZones.ToArray();
-            }
-            catch (Exception ex) 
-            {
-                _logger.LogError(ex.Message);
-                return Enumerable.Empty<ArTimeZone>();
-            }
-        }
-
-        public async Task<Response<IEnumerable<TimeZoneDto>>> GetAsync()
-        {
-            List<string> errors = new List<string>(); 
-            try
-            {
-                CustomLogging.LogInfo<TimeZoneService>(_logger, $"GET TimeZones", "GetAsync");
-
-                var entities = await _context.ArTimeZones.ToArrayAsync();
-                List<TimeZoneDto> dtos = new List<TimeZoneDto>();
-                if(entities.Count() == 0) return Helper.ResponseBuilder<IEnumerable<TimeZoneDto>>(HttpStatusCode.OK,dtos, ConstantsHelper.NOT_FOUND_RECORD, errors);
-                foreach (var entity in entities) 
+                short id = await helperService.GetIdFromMacAsync(mac);
+                long active = helperService.DateTimeToElapeSecond(dto.ActiveTime);
+                long deactive = helperService.DateTimeToElapeSecond(dto.DeactiveTime);
+                if (!await command.ExtendedTimeZoneActSpecificationAsync(id, entity, intervals, (int)active, (int)deactive))
                 {
-                    dtos.Add(_mapper.Map<TimeZoneDto>(entity));
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C3103));
                 }
-                return Helper.ResponseBuilder<IEnumerable<TimeZoneDto>>(HttpStatusCode.OK,dtos,ConstantsHelper.SUCCESS , errors);
-
             }
-            catch(Exception e)
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<TimeZoneDto>(ResponseMessage.COMMAND_UNSUCCESS,errors);
+
+            context.TimeZones.Update(entity);
+            await context.SaveChangesAsync();
+
+            var linked = await context.TimeZoneIntervals.Where(x => x.TimeZoneId == dto.ComponentId).ToListAsync();
+
+            context.TimeZoneIntervals.RemoveRange(linked);
+
+            var newLinked = intervals.Select(s => new TimeZoneInterval 
             {
-                errors.Add(e.Message);
-                _logger.LogError(e.Message);
-                return Helper.ResponseBuilder<IEnumerable<TimeZoneDto>>(HttpStatusCode.InternalServerError, Enumerable.Empty<TimeZoneDto>(),ConstantsHelper.INTERNAL_ERROR,errors );
+                TimeZoneId = dto.ComponentId,
+                IntervalId = s.ComponentId,
+                
+                CreatedDate = DateTime.Now,
+                UpdatedDate = DateTime.Now,
 
-            }
+            }).ToList();
+            context.TimeZoneIntervals.UpdateRange(newLinked);
+            await context.SaveChangesAsync();
+
+            return ResponseHelper.SuccessBuilder(dto);
         }
 
-        public async Task<Response<TimeZoneDto>> GetByIdAsync(short id)
+
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param)
         {
-            List<string> errors = new List<string>();
-            try
+            var dtos = await context.TimeZoneModes.AsNoTracking().Select(s => new ModeDto
             {
-                CustomLogging.LogInfo<TimeZoneService>(_logger, $"GET TimeZone By Component No: {id}", "GetByIdAsync");
+                Name = s.Name,
+                Value = s.Value,
+                Description = s.Description,
 
-                var entity = await _context.ArTimeZones.AsNoTracking().FirstOrDefaultAsync(p => p.ComponentNo == id);
-                if (entity == null) return Helper.ResponseBuilder<TimeZoneDto>(HttpStatusCode.OK, null,  ConstantsHelper.NOT_FOUND_RECORD,errors);
-                return Helper.ResponseBuilder<TimeZoneDto>(HttpStatusCode.OK,_mapper.Map<TimeZoneDto>(entity), ConstantsHelper.SUCCESS, errors);
-
-            }
-            catch (Exception e)
-            {
-                errors.Add(e.Message);
-                _logger.LogError(e.Message);
-                return Helper.ResponseBuilder<TimeZoneDto>(HttpStatusCode.InternalServerError, null, ConstantsHelper.INTERNAL_ERROR, errors);
-
-            }
+            }).ToArrayAsync();
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
-        public async Task<Response<TimeZoneDto>> UpdateAsync(TimeZoneDto dto)
-        {
-            List<string> errors = new List<string>();
-            try
-            {
-                CustomLogging.LogInfo<TimeZoneService>(_logger, $"UPDATE TimeZone Component no: {dto.ComponentNo}", "UpdateAsync");
-
-                var entity = await _context.ArTimeZones.FirstOrDefaultAsync(p => p.ComponentNo == dto.ComponentNo);
-                if (entity == null) return Helper.ResponseBuilder<TimeZoneDto>(HttpStatusCode.OK, null, ConstantsHelper.NOT_FOUND_RECORD, errors);
-                List<short> Ids = await _context.ArScps.AsNoTracking().Select(x => x.ScpId).ToListAsync();
-                foreach (var Id in Ids)
-                {
-                    List<short> intervalIds = dto.IntervalsNoList.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(x => short.Parse(x.Trim())).ToList();
-                    long active = _helperService.DateTimeToElapeSecond(dto.ActiveTime);
-                    long deactive = _helperService.DateTimeToElapeSecond(dto.DeactiveTime);
-                    List<ArInterval> intervals = await _context.ArIntervals.AsNoTracking().Where(x => intervalIds.Contains(x.ComponentNo)).ToListAsync();
-                    if (!_middleware.write.ExtendedTimeZoneActSpecification(Id, dto, intervals, (int)active, (int)deactive))
-                    {
-                        _logger.LogError($"SCP {Id} : " + ConstantsHelper.COMMAND_UNSUCCESS);
-                        errors.Add($"SCP {Id} : " + ConstantsHelper.COMMAND_UNSUCCESS);
-                    }
-                }
-                _mapper.Map(dto,entity);
-                _context.ArTimeZones.Update(entity);
-                await _context.SaveChangesAsync();
-
-                return Helper.ResponseBuilder<TimeZoneDto>(HttpStatusCode.OK, _mapper.Map<TimeZoneDto>(entity), ConstantsHelper.SUCCESS, errors);
-
-            }
-            catch (Exception e)
-            {
-                errors.Add(e.Message);
-                _logger.LogError(e.Message);
-                return Helper.ResponseBuilder<TimeZoneDto>(HttpStatusCode.InternalServerError, null,ConstantsHelper.INTERNAL_ERROR,errors);
-
-            }
-        }
-
 
 
     }

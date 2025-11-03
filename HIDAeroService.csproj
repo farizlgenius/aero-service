@@ -27,24 +27,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="HIDAeroWrap64">
-      <HintPath>AeroLibrary\HIDAeroWrap64.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="HIDAeroNet.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="HIDAeroNet64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="HIDAeroWrap.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="HIDAeroWrap64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="logs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="HIDAeroWrap64">
+      <HintPath>HIDAeroWrap64.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

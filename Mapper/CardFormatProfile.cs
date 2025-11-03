@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using HIDAeroService.Dto.CardFormat;
+using HIDAeroService.DTO.CardFormat;
 using HIDAeroService.Entity;
 
 namespace HIDAeroService.Mapper
@@ -8,11 +8,9 @@ namespace HIDAeroService.Mapper
     {
         public CardFormatProfile()
         {
-            CreateMap<ArCardFormat, CardFormatDto>();
-            CreateMap<CardFormatDto, ArCardFormat>();
+            CreateMap<CardFormat, CardFormatDto>();
+            CreateMap<CardFormatDto, CardFormat>();
 
-            // Create
-            CreateMap<CreateCardFormatDto, ArCardFormat>();
         }
 
     }

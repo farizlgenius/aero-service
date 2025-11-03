@@ -2,181 +2,109 @@
 using HID.Aero.ScpdNet.Wrapper;
 using HIDAeroService.Constants;
 using HIDAeroService.Data;
-using HIDAeroService.Dto.CardFormat;
 using HIDAeroService.Entity;
-using HIDAeroService.Service.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using MiNET.Entities;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Net;
+using HIDAeroService.AeroLibrary;
+using HIDAeroService.Utility;
+using HIDAeroService.Helpers;
+using HIDAeroService.Constant;
+using HIDAeroService.DTO;
+using HIDAeroService.DTO.CardFormat;
+using HIDAeroService.Mapper;
 
 namespace HIDAeroService.Service.Impl
 {
 
-    public class CardFormatService : ICardFormatService
+    public class CardFormatService(AppDbContext context, IMapper mapper, ILogger<CardFormatService> logger, AeroCommand command, IHelperService<CardFormat> helperService) : ICardFormatService
     {
-        private readonly ILogger<CardFormatService> _logger;
-        private readonly IMapper _mapper;
-        private readonly AppDbContext _context;
-        private readonly AeroLibMiddleware _config;
-        private readonly AppConfigSettings _configSettings;
 
-        public CardFormatService(AppDbContext context, IMapper mapper, ILogger<CardFormatService> logger,AeroLibMiddleware config,IOptions<AppConfigSettings> configSettings)
+        public virtual async Task<ResponseDto<IEnumerable<CardFormatDto>>> GetAsync()
         {
-            _configSettings = configSettings.Value;
-            _config = config;
-            _logger = logger;
-            _mapper = mapper;
-            _context = context;
+            var dtos = await context.CardFormats
+                .AsNoTracking()
+                .Select(x => MapperHelper.CardFormatToDto(x))
+                .ToArrayAsync();
+            
+            return ResponseHelper.SuccessBuilder<IEnumerable<CardFormatDto>>(dtos);
         }
 
-        public async Task<CardFormatDto> Add(CreateCardFormatDto dto)
+        public async Task<ResponseDto<CardFormatDto>> GetByComponentIdAsync(short ComponentId)
         {
-            try
-            {
-                var _maxCardFormat = _configSettings.MaxCardFormat;
-                if (_maxCardFormat == 0) _maxCardFormat = 7;
-                List<short> _errorScpList = new List<short>();
-                List<short> ScpIds = await _context.ArScps.Select(p => p.ScpId).ToListAsync();
-                short _cardFormatNo = 0;
-
-
-                // Check that there're available 0-7 or not
-                if (_context.ArCardFormats.Any(p => p.IsActive == false))
-                {
-                    _cardFormatNo = await _context.ArCardFormats.Where(p => p.IsActive == false).Select(p => p.ComponentNo).FirstOrDefaultAsync();
-                }
-                else 
-                {
-                    _cardFormatNo = _context.ArCardFormats.Max(p => p.ComponentNo);
-                    if (_cardFormatNo > _maxCardFormat) return null;
-                    _cardFormatNo++;
-                }
-
-
-                foreach (var id in ScpIds)
-                {
-                    if (!_config.write.CardFormatterConfiguration(id, _cardFormatNo, dto.Facility, 0, 1, 0, dto.Bits, dto.PeLn, dto.PeLoc, dto.PoLn, dto.PoLoc, dto.FcLn, dto.FcLoc, dto.ChLn, dto.ChLoc, dto.IcLn, dto.IcLoc))
-                    {
-                        _errorScpList.Add(id);
-                    }
-
-                }
-
-                if(_errorScpList.Count > 0) return null;
-
-                if (!await Save(dto,_cardFormatNo))
-                {
-                    _logger.LogError("Can't Save to DB");
-                    return null;
-                }
-
-                var data = _context.ArCardFormats.FirstOrDefaultAsync(p => p.ComponentNo == _cardFormatNo);
-                if (data == null) return null;
-                return _mapper.Map<CardFormatDto>(data);
-
-            }catch(Exception e)
-            {
-                _logger.LogError(e.Message);
-                Console.WriteLine(e.Message);
-                return null;
-            }
-        }
-
-        public async Task<CardFormatDto> Delete(short cardFormatNo)
-        {
-            try
-            {
-                List<short> _errorScpList = new List<short>();
-                List<short> ScpIds = await _context.ArScps.Select(p => p.ScpId).ToListAsync();
-                var entity = await _context.ArCardFormats.Where(p => p.ComponentNo == cardFormatNo).FirstOrDefaultAsync();
-                entity.FunctionId = 0;
-
-                foreach (var id in ScpIds)
-                {
-                    if (!_config.write.CardFormatterConfiguration(id, entity.ComponentNo, entity.Facility, 0, entity.FunctionId, 0, entity.Bits, entity.PeLn, entity.PeLoc, entity.PoLn, entity.PoLoc, entity.FcLn, entity.FcLoc, entity.ChLn, entity.ChLoc, entity.IcLn, entity.IcLoc))
-                    {
-                        _errorScpList.Add(id);
-                    }
-
-                }
-
-                if (_errorScpList.Count > 0) return null;
-
-                entity.IsActive = false;
-                await _context.SaveChangesAsync();
-                return _mapper.Map<CardFormatDto>(entity);
-            }
-            catch (Exception e) 
-            {
-                _logger.LogError(e.Message);
-                return null;
-            }
-        }
-
-        public async Task<IEnumerable<CardFormatDto>> GetAll()
-        {
-            try
-            {
-                List<CardFormatDto> data = new List<CardFormatDto>();
-                var entity = await _context.ArCardFormats.Where(p => p.IsActive == true).ToArrayAsync();
-                foreach (var e in entity)
-                {
-                    data.Add(_mapper.Map<CardFormatDto>(e));
-                }
-                return data;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-                Console.WriteLine(e.Message);
-                return Enumerable.Empty<CardFormatDto>();
-            }
+            var dto = await context.CardFormats
+                .Where(x => x.ComponentId == ComponentId)
+                .Select(x => MapperHelper.CardFormatToDto(x))
+                .FirstOrDefaultAsync();
+            return ResponseHelper.SuccessBuilder(dto);
 
         }
 
-        public IEnumerable<ArCardFormat> GetAllSetting()
+        public async Task<ResponseDto<bool>> CreateAsync(CardFormatDto dto)
         {
-            try
-            {
-                return _context.ArCardFormats.Where(p => p.IsActive == true).ToArray();
-            }catch(Exception e)
-            {
-                _logger.LogError(e.Message);
-                Console.WriteLine(e.Message);
-                return Enumerable.Empty<ArCardFormat>();
-            }
+            List<string> errors = new List<string>();
+            var componentNo = await helperService.GetLowestUnassignedNumberNoLimitAsync<CardFormat>(context);
+            if (componentNo == -1) return ResponseHelper.ExceedLimit<bool>();
+            List<short> ScpIds = await context.Hardwares.Select(x => x.ComponentId).ToListAsync();
+            //foreach (var id in ScpIds)
+            //{
+            //    string mac = await helperService.GetMacFromIdAsync(id);
+            //    if (!await command.CardFormatterConfigurationAsync(id, dto, 1))
+            //    {
+            //        errors.Add(MessageBuilder.Unsuccess(mac,Command.C1102));
+            //    }
+            //}
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
+            var entity = MapperHelper.DtoToCardFormat(dto,componentNo,DateTime.Now); 
+            await context.CardFormats.AddAsync(entity);
+            await context.SaveChangesAsync();
+            return ResponseHelper.SuccessBuilder(true);
         }
 
-
-        public async Task<bool> Save(CreateCardFormatDto dto,short ElementNo)
+        public async Task<ResponseDto<bool>> DeleteAsync(short component)
         {
-            try
+            List<string> errors = new List<string>();
+            var entity = await context.CardFormats.Where(x => x.ComponentId == component).FirstOrDefaultAsync();
+            if (entity is null) return ResponseHelper.NotFoundBuilder<bool>();
+            var dto = MapperHelper.CardFormatToDto(entity);
+            List<short> scpIds = await context.Hardwares.Select(x => x.ComponentId).ToListAsync();
+            //foreach (var id in scpIds)
+            //{
+            //    string mac = await helperService.GetMacFromIdAsync(id);
+            //    if (!await command.CardFormatterConfigurationAsync(id, dto, 0))
+            //    {
+            //        errors.Add(MessageBuilder.Unsuccess(mac,Command.C1102));
+            //    }
+
+            //}
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>( ResponseMessage.COMMAND_UNSUCCESS, errors);
+            context.CardFormats.Remove(entity);
+            await context.SaveChangesAsync();
+            return ResponseHelper.SuccessBuilder(true);
+        }
+
+        public async Task<ResponseDto<CardFormatDto>> UpdateAsync(CardFormatDto dto)
+        {
+            List<string> errors = new List<string>();
+            var entity = await context.CardFormats.Where(x => x.ComponentId == dto.ComponentId).FirstOrDefaultAsync();
+            if (entity is null) return ResponseHelper.NotFoundBuilder<CardFormatDto>();
+            List<short> ids = await context.Hardwares.Select(x => x.ComponentId).ToListAsync();
+            foreach (var id in ids)
             {
-                if(_context.ArCardFormats.Any(p => p.ComponentNo == ElementNo))
+                string mac = await helperService.GetMacFromIdAsync(id);
+                if (!await command.CardFormatterConfigurationAsync(id, dto, 1))
                 {
-                    var entity = await _context.ArCardFormats.FirstOrDefaultAsync(p => p.ComponentNo == ElementNo);
-                    entity = _mapper.Map(dto,entity);
-                    entity.IsActive = true;
-                    entity.FunctionId = 1;
-                    await _context.SaveChangesAsync();
-                    return true;
+                    errors.Add(MessageBuilder.Unsuccess(mac,Command.C1102));
                 }
-                else
-                {
-                    var entity = _mapper.Map<ArCardFormat>(dto);
-                    entity.ComponentNo = ElementNo;
-                    entity.IsActive = true;
-                    entity.FunctionId = 1;
-                    _context.ArCardFormats.Add(entity);
-                    await _context.SaveChangesAsync();
-                    return true;
-                }
+
             }
-            catch (Exception e) 
-            {
-                _logger.LogError(e.Message);
-                return false;
-            }
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<CardFormatDto>(ResponseMessage.COMMAND_UNSUCCESS,errors);
+            MapperHelper.UpdateCardFormat(entity,dto);
+            context.CardFormats.Update(entity);
+            await context.SaveChangesAsync();
+
+            return ResponseHelper.SuccessBuilder(dto);
         }
 
     }

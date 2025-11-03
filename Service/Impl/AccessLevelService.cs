@@ -1,124 +1,168 @@
 ﻿using AutoMapper;
+using HIDAeroService.AeroLibrary;
+using HIDAeroService.Constant;
 using HIDAeroService.Constants;
 using HIDAeroService.Data;
-using HIDAeroService.Dto.AccessLevel;
+using HIDAeroService.DTO;
+using HIDAeroService.DTO.AccessLevel;
 using HIDAeroService.Entity;
+using HIDAeroService.Helpers;
 using HIDAeroService.Mapper;
-using HIDAeroService.Service.Interface;
+using HIDAeroService.Utility;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
+using MiNET.Entities;
+using System.Net;
+
 
 namespace HIDAeroService.Service.Impl
 {
-    public class AccessLevelService : IAccessLevelService
+    public sealed class AccessLevelService(AeroCommand command, AppDbContext context, IHelperService<AccessLevel> helperService, IMapper mapper) : IAccessLevelService
     {
-        private IMapper _mapper;   
-        private ILogger<AccessLevelService> _logger;
-        private readonly AppDbContext _context;
-        private readonly AeroLibMiddleware _config;
-        private readonly HelperService _helperService;
-        public AccessLevelService(AppDbContext context, ILogger<AccessLevelService> logger, AeroLibMiddleware config, HelperService helperService,IMapper mapper)
+
+        public async Task<ResponseDto<IEnumerable<AccessLevelDto>>> GetAsync()
         {
-            _mapper = mapper;
-            _helperService = helperService;
-            _config = config;
-            _logger = logger;
-            _context = context;
+            var dtos = await context.AccessLevels
+                .AsNoTracking()
+                .Include(x => x.AccessLevelDoorTimeZones)
+                .ThenInclude(x => x.AccessLevel)
+                .Include(x => x.AccessLevelDoorTimeZones)
+                .ThenInclude(x => x.TimeZone)
+                .Include(x => x.AccessLevelDoorTimeZones)
+                .ThenInclude(x => x.Door)
+                .Select(x => MapperHelper.AccessLevelToDto(x))
+                .ToArrayAsync();
+            return ResponseHelper.SuccessBuilder<IEnumerable<AccessLevelDto>>(dtos);
         }
 
-        public IEnumerable<ArAccessLevel> GetAllSetting()
+
+
+        public async Task<ResponseDto<AccessLevelDto>> GetByComponentIdAsync(short component)
         {
-            _logger.LogInformation("Get Access Level List");
-            return _context.ArAcccessLevels.ToArray();
+            var dtos = await context.AccessLevels
+                .AsNoTracking()
+                .Include(x => x.AccessLevelDoorTimeZones)
+                .ThenInclude(x => x.AccessLevel)
+                .Include(x => x.AccessLevelDoorTimeZones)
+                .ThenInclude(x => x.TimeZone)
+                .Include(x => x.AccessLevelDoorTimeZones)
+                .ThenInclude(x => x.Door)
+                .Where(x => x.ComponentId == component)
+                .Select(x => MapperHelper.AccessLevelToDto(x))
+                .FirstOrDefaultAsync();
+            return ResponseHelper.SuccessBuilder<AccessLevelDto>(dtos);
         }
 
-        public async Task<IEnumerable<AccessLevelDto>> GetAll()
+
+
+        public async Task<ResponseDto<bool>> CreateAsync(AccessLevelDto dto)
         {
-            IEnumerable<ArAccessLevel> acs = await _context.ArAcccessLevels.ToArrayAsync();
-            List<AccessLevelDto> b = new List<AccessLevelDto>();
-            foreach (var a in acs)
-            {
-                b.Add(_mapper.Map<AccessLevelDto>(a));
-            }
-            return b;
-        }
+            List<string> errors = new List<string>();
+            var max = await context.SystemSettings.Select(x => x.nAlvl).FirstOrDefaultAsync();
+            var ComponentId = await helperService.GetLowestUnassignedNumberAsync<AccessLevel>(context,max);
+            if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
-        public async Task<AccessLevelTimeZoneDto> GetTimeZone(short ElementNo)
-        {
-            try
-            {
-                AccessLevelTimeZoneDto dto = new AccessLevelTimeZoneDto();
-                ArAccessLevel entity = await _context.ArAcccessLevels.AsNoTracking().Where(p => p.ComponentNo == ElementNo).FirstAsync();
-                return _mapper.Map(entity,dto);
+            var macs = dto.AccessLevelDoorTimeZoneDto
+                .Select(x => x.Doors)
+                .Select(x => x.MacAddress)
+                .Distinct()
+                .ToList();
 
-            }
-            catch (Exception e)
-            {
-                _logger.LogError("Not Found Access Level");
-                return null;
-            }
 
-        }
-
-        public async Task<AccessLevelDto> Create(CreateAccessLevelDto dto)
-        {
-            try
+            foreach (var mac in macs)
             {
-                short AccessLevelNo = await _helperService.GetAvailableComponentNoAsync<ArAccessLevel>(32000);
-                List<short> ScpIds = _context.ArScps.Select(p => p.ScpId).ToList();
-                foreach (var sp in ScpIds)
+                var id = await helperService.GetIdFromMacAsync(mac);
+                if(id == 0) errors.Add(MessageBuilder.Notfound());
+                if (!await command.AccessLevelConfigurationExtendedCreateAsync(id, ComponentId, dto.AccessLevelDoorTimeZoneDto.Where(x => x.Doors.MacAddress == mac).ToList()))
                 {
-                    if (!_config.write.AccessLevelConfigurationExtendedCreate(sp, AccessLevelNo, dto.Doors))
-                    {
-                        _logger.LogError(ConstantsHelper.COMMAND_UNSUCCESS);
-                        return null;
-                    }
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C2116));
+
                 }
 
-                return await Save(dto, AccessLevelNo); 
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                _logger.LogError(e.Message);
-                return null;
             }
 
 
-
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, errors);
+            var entity = MapperHelper.DtoToAccessLevel(dto,ComponentId,DateTime.Now);
+            await context.AccessLevels.AddAsync(entity);
+            await context.SaveChangesAsync();
+            return ResponseHelper.SuccessBuilder(true);
         }
 
-        public async Task<AccessLevelDto> Save(CreateAccessLevelDto dto, short ElementNo)
+        public async Task<ResponseDto<bool>> DeleteAsync(short ComponentId)
         {
-            dto.ElementNo = ElementNo;
-            _context.ArAcccessLevels.Add(_mapper.Map<ArAccessLevel>(dto));
-            await _context.SaveChangesAsync();
-            return _mapper.Map<AccessLevelDto>(await _context.ArAcccessLevels.AsNoTracking().Where(p => p.ComponentNo == ElementNo).FirstOrDefaultAsync());
-        }
-
-        public async Task<AccessLevelDto> Remove(short ElementNo)
-        {
-            try
+            List<string> errors = new List<string>();
+            var entity = await context.AccessLevels
+                .Include(x => x.AccessLevelDoorTimeZones)
+                .ThenInclude(x => x.AccessLevel)
+                .Include(x => x.AccessLevelDoorTimeZones)
+                .ThenInclude(x => x.TimeZone)
+                .Include(x => x.AccessLevelDoorTimeZones)
+                .ThenInclude(x => x.Door)
+                .FirstOrDefaultAsync(x => x.ComponentId == ComponentId);
+            if (entity is null) return ResponseHelper.NotFoundBuilder<bool>();
+            foreach (var d in entity.AccessLevelDoorTimeZones)
             {
-                var data = await _context.ArAcccessLevels.Where(p => p.ComponentNo == ElementNo).FirstOrDefaultAsync();
-                if (data != null) _context.ArAcccessLevels.Remove(data);
-                await _context.SaveChangesAsync();
-                return _mapper.Map<AccessLevelDto>(data);
+                var ScpId = await helperService.GetIdFromMacAsync(d.Door.MacAddress);
+                if (!await command.AccessLevelConfigurationExtendedAsync(ScpId,ComponentId, 0))
+                {
+                    errors.Add(MessageBuilder.Unsuccess(d.Door.MacAddress,Command.C2116));
+                }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                _logger.LogError(e.Message);
-                return null;
-            }
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
+            context.AccessLevels.Remove(entity);
+            await context.SaveChangesAsync();
+            return ResponseHelper.SuccessBuilder(true);
         }
 
-
-        public int GetAlvlRecAlloc()
+        public async Task<ResponseDto<AccessLevelDto>> UpdateAsync(AccessLevelDto dto)
         {
-            return _context.ArAcccessLevels.Count();
+
+            var entity = await context.AccessLevels
+                .Include(x => x.AccessLevelDoorTimeZones)
+                .ThenInclude(x => x.AccessLevel)
+                .Include(x => x.AccessLevelDoorTimeZones)
+                .ThenInclude(x => x.TimeZone)
+                .Include(x => x.AccessLevelDoorTimeZones)
+                .ThenInclude(x => x.Door)
+                .FirstOrDefaultAsync(x => x.ComponentId == dto.ComponentId);
+
+            if (entity is null) return ResponseHelper.NotFoundBuilder<AccessLevelDto>();
+            List<string> errors = new List<string>();
+            var macs = dto.AccessLevelDoorTimeZoneDto
+                .Select(x => x.Doors)
+                .Select(x => x.MacAddress)
+                .Distinct()
+                .ToList();
+
+
+            foreach (var mac in macs)
+            {
+                var id = await helperService.GetIdFromMacAsync(mac);
+                if (id == 0) errors.Add(MessageBuilder.Notfound());
+                if (!await command.AccessLevelConfigurationExtendedCreateAsync(id, dto.ComponentId, dto.AccessLevelDoorTimeZoneDto.Where(x => x.Doors.MacAddress == mac).ToList()))
+                {
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C2116));
+
+                }
+
+            }
+
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<AccessLevelDto>(ResponseMessage.COMMAND_UNSUCCESS, errors);
+            MapperHelper.DtoToAccessLevel(dto, dto.ComponentId, DateTime.Now);
+            context.AccessLevels.Update(entity);
+            await context.SaveChangesAsync();
+            return ResponseHelper.SuccessBuilder(dto);
         }
 
 
+        public string GetAcrName(string mac, short component)
+        {
+            return context.Doors.Where(x => x.MacAddress == mac && x.ComponentId == component).Select(x => x.Name).FirstOrDefault() ?? "";
+        }
+
+        public string GetTzName(short component)
+        {
+            return context.TimeZones.Where(x => x.ComponentId == component).Select(x => x.Name).FirstOrDefault() ?? "";
+        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace HIDAeroService.Entity
 {
-    public class ArScpStructureStatus : ArBaseEntity
+    public class ArScpStructureStatus : BaseEntity
     {
         public string Ip { get; set; }
         public string Mac { get; set; }

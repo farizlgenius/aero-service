@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.Dto
+﻿namespace HIDAeroService.DTO
 {
     public sealed class HealthDto
     {

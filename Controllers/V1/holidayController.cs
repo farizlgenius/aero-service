@@ -1,54 +1,62 @@
-﻿using HIDAeroService.Constants;
-using HIDAeroService.Data;
-using HIDAeroService.Dto.Holiday;
-using HIDAeroService.Helpers;
-using HIDAeroService.Service.Interface;
+﻿using HIDAeroService.DTO;
+using HIDAeroService.DTO.Holiday;
+using HIDAeroService.Entity;
+using HIDAeroService.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
 using System.Net;
 
 namespace HIDAeroService.Controllers.V1
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
-    public class holidayController : ControllerBase
+    public class HolidayController(IHolidayService holService) : ControllerBase
     {
-        private readonly IHolidayService _holidayService;
-        private readonly AppDbContext _context;
-        public holidayController(AppDbContext context,IHolidayService holidayService) 
-        {
-            _context = context;
-            _holidayService = holidayService;
-        }
+
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<HolidayDto>>> GetAll()
+        public async Task<ActionResult<ResponseDto<IEnumerable<HolidayDto>>>> GetAsync()
         {
-            var res = await _holidayService.GetAsync();
-            return StatusCode((int)res.Code, res);
+            var res = await holService.GetAsync();
+            return Ok(res);
+        }
+
+        [HttpGet("{component}")]
+        public async Task<ActionResult<ResponseDto<HolidayDto>>> GetByComponentAsync(short component)
+        {
+            var res = await holService.GetByComponentIdAsync(component);
+            return  Ok(res);
+        }
+
+        [HttpPost("/clear")]
+        public async Task<ActionResult<ResponseDto<HolidayDto>>> ClearAsync()
+        {
+            var res = await holService.ClearAsync();
+            return Ok(res);
         }
 
         [HttpPost]
-        public async Task<ActionResult<HolidayDto>> CreateAsync([FromBody] HolidayDto dto)
+        public async Task<ActionResult<ResponseDto<HolidayDto>>> CreateAsync([FromBody] CreateHolidayDto dto)
         {
-            var res = await _holidayService.CreateAsync(dto);
-            return StatusCode((int)res.Code, res);
+            var res = await holService.CreateAsync(dto);
+            return Ok(res);
         }
 
         [HttpPut]
-        public async Task<ActionResult<HolidayDto>> Update([FromBody] HolidayDto dto)
+        public async Task<ActionResult<ResponseDto<HolidayDto>>> UpdateAsync([FromBody] HolidayDto dto)
         {
-            var res = await _holidayService.UpdateAsync(dto);
-            return StatusCode((int)res.Code, res);
+            var res = await holService.UpdateAsync(dto);
+            return Ok(res);
         }
 
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<HolidayDto>> RemoveAsync(short id)
+        [HttpDelete("{component}")]
+        public async Task<ActionResult<ResponseDto<HolidayDto>>> DeleteByIdAsync(short component)
         {
-            var res = await _holidayService.DeleteAsync(id);
-            return StatusCode((int)res.Code, res);
+            var res = await holService.DeleteAsync(component);
+            return Ok(res);
         }
+
 
     }
 }

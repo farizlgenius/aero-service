@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.Dto.CardFormat
+﻿namespace HIDAeroService.DTO.CardFormat
 {
     public sealed class CreateCardFormatDto
     {

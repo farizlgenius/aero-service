@@ -1,9 +1,12 @@
-﻿namespace HIDAeroService.Dto.CardFormat
+﻿using HIDAeroService.DTO.Acr;
+using HIDAeroService.Entity.Interface;
+
+namespace HIDAeroService.DTO.CardFormat
 {
-    public sealed class CardFormatDto
+    public sealed class CardFormatDto : NoMacBaseDto
     {
-        public required string CardFormatName { get; set; }
-        public short CardFormatNo { get; set; }
+        public required string Name { get; set; }
+        public short ComponentId { get; set; }
         public short Facility { get; set; }
         public short Bits { get; set; }
         public short PeLn { get; set; }

@@ -1,70 +1,54 @@
-﻿using HIDAeroService.Dto;
-using HIDAeroService.Dto.AccessLevel;
-using HIDAeroService.Entity;
+﻿using HIDAeroService.Entity;
 using HIDAeroService.Service.Impl;
-using HIDAeroService.Service.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using HIDAeroService.Helpers;
 using HIDAeroService.Constants;
+using HIDAeroService.Service;
+using HIDAeroService.DTO;
+using HIDAeroService.DTO.AccessLevel;
 
 
 namespace HIDAeroService.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public sealed class accessLevelController : ControllerBase
+    public sealed class AccessLevelController(IAccessLevelService accesslevelService) : ControllerBase
     {
-        private readonly IAccessLevelService _accessLevelService;
-        public accessLevelController(IAccessLevelService accessLevelService)
+
+        [HttpGet]
+        public async Task<ActionResult<ResponseDto<IEnumerable<AccessLevelDto>>>> GetAsync()
         {
-            _accessLevelService = accessLevelService;
+            var res = await accesslevelService.GetAsync();
+            return Ok(res);
         }
 
-        [HttpGet("all")]
-        public async Task<ActionResult<BaseResponse<IEnumerable<AccessLevelDto>>>> GetAll()
+        [HttpGet("{component}")]
+        public async Task<ActionResult<ResponseDto<AccessLevelDto>>> GetByComponentAsync(short component)
         {
-            IEnumerable<AccessLevelDto> list = await _accessLevelService.GetAll();
-            if (list.Count() > 0)
-            {
-                return Ok(Helper.ResponseBuilder<IEnumerable<AccessLevelDto>>(HttpStatusCode.OK,ConstantsHelper.SUCCESS,list));
-            }
-            return NotFound(Helper.ResponseBuilder(HttpStatusCode.NotFound, ConstantsHelper.SUCCESS));
+            var  res = await accesslevelService.GetByComponentIdAsync(component);
+            return Ok(res);
         }
 
-        [HttpPost("tz/{id}")]
-        public async Task<ActionResult<BaseResponse<AccessLevelTimeZoneDto>>> GetById(short id)
+        [HttpPost]
+        public async Task<ActionResult<ResponseDto<AccessLevelDto>>> CreateAsync([FromBody] AccessLevelDto dto)
         {
-            AccessLevelTimeZoneDto data = await _accessLevelService.GetTimeZone(id);
-            if (data == null)
-            {
-                return NotFound(Helper.ResponseBuilder(HttpStatusCode.NotFound,ConstantsHelper.NOT_FOUND));
-            }
-            return Ok(Helper.ResponseBuilder<AccessLevelTimeZoneDto>(HttpStatusCode.OK,ConstantsHelper.SUCCESS,data));
+            var res = await accesslevelService.CreateAsync(dto);
+            return Ok(res);
         }
 
-        [HttpPost("add")]
-        public async Task<ActionResult<BaseResponse<AccessLevelDto>>> Create(CreateAccessLevelDto dto)
+        [HttpDelete("{component}")]
+        public async Task<ActionResult<ResponseDto<AccessLevelDto>>> DeleteAsync(short component)
         {
-            var data = await _accessLevelService.Create(dto);
-            if (data == null)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, Helper.ResponseBuilder(HttpStatusCode.InternalServerError, ConstantsHelper.INTERNAL_ERROR));
-            }
-            return StatusCode((int)HttpStatusCode.Created,Helper.ResponseBuilder<AccessLevelDto>(HttpStatusCode.Created, ConstantsHelper.CREATED,data));
+            var res = await accesslevelService.DeleteAsync(component);
+            return Ok(res);
         }
 
-        [HttpPost("delete/{accessLevelNo}")]
-        public async Task<ActionResult<BaseResponse<AccessLevelDto>>> Remove(short accessLevelNo)
+        [HttpPut]
+        public async Task<ActionResult<ResponseDto<AccessLevelDto>>> UpdateAsync([FromBody] AccessLevelDto dto)
         {
-            var data = await _accessLevelService.Remove(accessLevelNo);
-            if (data == null)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, Helper.ResponseBuilder(HttpStatusCode.InternalServerError, ConstantsHelper.INTERNAL_ERROR));
-            }
-            return Ok(Helper.ResponseBuilder<AccessLevelDto>(HttpStatusCode.OK, ConstantsHelper.REMOVE_SUCCESS, data));
+            var res = await accesslevelService.UpdateAsync(dto);
+            return Ok(res);
         }
-
     }
 }

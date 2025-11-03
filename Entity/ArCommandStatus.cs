@@ -2,12 +2,12 @@
 
 namespace HIDAeroService.Entity
 {
-    public sealed class ArCommandStatus : ArBaseEntity
+    public sealed class ArCommandStatus : BaseEntity
     {
         public int TagNo { get; set; }
         public int ScpId { get; set; }
-        public string ScpMac { get; set; }
-        public string Command { get; set; }
+        public string? ScpMac { get; set; } = string.Empty;
+        public string? Command { get; set; } = string.Empty;
         public char CommandStatus { get; set; }
         
         public string? NakReason { get; set; }

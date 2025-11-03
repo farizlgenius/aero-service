@@ -1,8 +1,12 @@
-﻿namespace HIDAeroService.Dto.AccessLevel
+﻿using HIDAeroService.Entity.Interface;
+
+namespace HIDAeroService.DTO.AccessLevel
 {
-    public sealed class AccessLevelDto
+    public sealed class AccessLevelDto : NoMacBaseDto,IComponentId
     {
         public string Name { get; set; }
-        public short ElementNo { get; set; }
+        public short ComponentId { get; set; }
+        public List<AccessLevelDoorTimeZoneDto> AccessLevelDoorTimeZoneDto { get; set; }
+
     }
 }

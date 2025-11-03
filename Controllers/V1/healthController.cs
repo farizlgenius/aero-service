@@ -1,22 +1,23 @@
-﻿using HIDAeroService.Dto;
+﻿using HIDAeroService.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace HIDAeroService.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public sealed class healthController : ControllerBase
+    public sealed class HealthController : ControllerBase
     {
         [HttpGet]
-        public ActionResult<BaseDto<HealthDto>> GetHealth()
+        public ActionResult<ResponseDto<HealthDto>> GetHealth()
         {
-            BaseDto<HealthDto> dto = new BaseDto<HealthDto>()
+            ResponseDto<HealthDto> dto = new ResponseDto<HealthDto>()
             {
-                StatusCode = 200,
-                StatusDesc = "Success",
-                Time = DateTime.Now.ToLocalTime(),
-                Content = new HealthDto { ServerStatus = "UP" }
+                Code = HttpStatusCode.OK,
+                Message = "Success",
+                TimeStamp = DateTime.Now.ToLocalTime(),
+                Data = new HealthDto { ServerStatus = "UP" }
             };
             return Ok(dto);
         }

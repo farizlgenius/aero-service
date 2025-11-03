@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.Dto.AccessLevel
+﻿namespace HIDAeroService.DTO.AccessLevel
 {
     public sealed class AccessLevelTimeZoneDto
     {

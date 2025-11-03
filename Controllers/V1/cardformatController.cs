@@ -1,56 +1,54 @@
 ﻿using HIDAeroService.Constants;
-using HIDAeroService.Dto;
-using HIDAeroService.Dto.CardFormat;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using HIDAeroService.Helpers;
-using HIDAeroService.Service.Interface;
 using System.Net;
+using HIDAeroService.Entity;
+using HIDAeroService.Service;
+using HIDAeroService.DTO;
+using HIDAeroService.DTO.CardFormat;
 
 namespace HIDAeroService.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class cardformatController : ControllerBase
+    public class CardFormatController(ICardFormatService cardFormatService) : ControllerBase
     {
-        private readonly ICardFormatService _cardFormatService;
 
-        public cardformatController(ICardFormatService cardFormatService)
+
+        [HttpGet]
+        public async Task<ActionResult<ResponseDto<IEnumerable<CardFormatDto>>>> GetAsync()
         {
-            _cardFormatService = cardFormatService;
+            var res = await cardFormatService.GetAsync();
+            return Ok(res);
         }
 
-        [HttpGet("all")]
-        public async Task<ActionResult<BaseResponse<IEnumerable<CardFormatDto>>>> GetAll()
+        [HttpGet("{component}")]
+        public async Task<ActionResult<ResponseDto<CardFormatDto>>> GetByComponentAsync(short component)
         {
-            var data = await _cardFormatService.GetAll();
-            if (data.Count() > 0)
-            {
-                return Helper.ResponseBuilder<IEnumerable<CardFormatDto>>(HttpStatusCode.OK,Constants.ConstantsHelper.SUCCESS, data);
-            }
-            return Helper.ResponseBuilder<IEnumerable<CardFormatDto>>(HttpStatusCode.NoContent, Constants.ConstantsHelper.NOT_FOUND_RECORD,Enumerable.Empty<CardFormatDto>());
+            var res = await cardFormatService.GetByComponentIdAsync(component);
+            return Ok(res);
         }
 
-        [HttpPost("add")]
-        public async Task<ActionResult<BaseResponse<CardFormatDto>>> Create([FromBody] CreateCardFormatDto dto ) 
+        [HttpPost]
+        public async Task<ActionResult<ResponseDto<bool>>> CreateAsync([FromBody] CardFormatDto dto)
         {
-            var data = await _cardFormatService.Add(dto);
-            if (data == null)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError,Helper.ResponseBuilder(HttpStatusCode.InternalServerError,ConstantsHelper.INTERNAL_ERROR));
-            }
-            return Ok(Helper.ResponseBuilder<CardFormatDto>(HttpStatusCode.Created,ConstantsHelper.CREATED,data));
+            var res = await cardFormatService.CreateAsync(dto);
+            return Ok(res);
         }
 
-        [HttpDelete("remove/{cardFormatNo}")]
-        public async Task<ActionResult<BaseDto<CardFormatDto>>> Delete(short cardFormatNo) 
+        [HttpPut]
+        public async Task<ActionResult<ResponseDto<CardFormatDto>>> UpdateAsync([FromBody] CardFormatDto dto)
         {
-            var content = await _cardFormatService.Delete(cardFormatNo);
-            if (content == null)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, Helper.ResponseBuilder(HttpStatusCode.InternalServerError,ConstantsHelper.INTERNAL_ERROR));
-            }
-            return Ok(Helper.ResponseBuilder<CardFormatDto>(HttpStatusCode.OK,ConstantsHelper.SUCCESS, content));
+            var res = await cardFormatService.UpdateAsync(dto);
+            return Ok(res);
         }
+
+        [HttpDelete("{component}")]
+        public async Task<ActionResult<ResponseDto<bool>>> DeleteAsync(short component)
+        {
+            var res = await cardFormatService.DeleteAsync(component);
+            return Ok(res);
+        }
+
     }
 }
