@@ -41,11 +41,10 @@ namespace HIDAeroService.Data
         public DbSet<InputMode> InputModes { get; set; }
         public DbSet<ReaderConfigurationMode> ReaderConfigurationModes { get; set; }
         public DbSet<AntipassbackMode> AntipassbackModes { get; set; }
-        public DbSet<AccessLevelDoorTimeZone> DoorTimeZones { get; set; }
+        public DbSet<AccessLevelDoorTimeZone> AccessLevelDoorTimeZones { get; set; }
         public DbSet<CardHolder> CardHolders { get; set; }
         public DbSet<Credential> Credentials { get; set; }
         public DbSet<AccessArea> AccessAreas { get; set; }
-        public DbSet<AccessLevelCredential> AccessLevelCredentials { get; set; }
         public DbSet<TimeZoneInterval> TimeZoneIntervals { get; set; }
         public DbSet<ReaderOutConfiguration> ReaderOutConfigurations { get; set; }
         public DbSet<MonitorPointMode> MonitorPointModes { get; set; }
@@ -257,9 +256,12 @@ namespace HIDAeroService.Data
 
             #region Access Level
 
-            modelBuilder.Entity<AccessLevel>()
-                .HasMany(s => s.AccessLevelDoorTimeZones)
-                .WithOne(s => s.AccessLevel)
+            modelBuilder.Entity<AccessLevelDoorTimeZone>()
+                .HasKey(p => new { p.AccessLevelId,p.TimeZoneId,p.DoorId });
+
+            modelBuilder.Entity<AccessLevelDoorTimeZone>()
+                .HasOne(s => s.AccessLevel)
+                .WithMany(s => s.AccessLevelDoorTimeZones)
                 .HasForeignKey(p => p.AccessLevelId)
                 .HasPrincipalKey(p => p.ComponentId)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -287,21 +289,6 @@ namespace HIDAeroService.Data
                NoAccess,
                FullAccess
             );
-
-            modelBuilder.Entity<AccessLevelCredential>()
-                .HasKey(e => new { e.CredentialId, e.AccessLevelId });
-
-            modelBuilder.Entity<AccessLevelCredential>()
-                .HasOne(e => e.AccessLevel)
-                .WithMany(s => s.AccessLevelCredentials)
-                .HasForeignKey(e => e.AccessLevelId)
-                .HasPrincipalKey(e => e.ComponentId);
-
-            modelBuilder.Entity<AccessLevelCredential>()
-                .HasOne(e => e.Credential)
-                .WithMany(s => s.AccessLevelCredentials)
-                .HasForeignKey(e => e.CredentialId)
-                .HasPrincipalKey(e => e.ComponentId);
 
 
             #endregion
@@ -415,6 +402,23 @@ namespace HIDAeroService.Data
 
             #region User & Credentials
 
+            modelBuilder.Entity<CardHolderAccessLevel>()
+                .HasKey(x => new { x.AccessLevelId, x.CardHolderId });
+
+            modelBuilder.Entity<CardHolderAccessLevel>()
+                .HasOne(e => e.CardHolder)
+                .WithMany(e => e.CardHolderAccessLevels)
+                .HasForeignKey(e => e.CardHolderId)
+                .HasPrincipalKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<CardHolderAccessLevel>()
+                .HasOne(e => e.AccessLevel)
+                .WithMany(e => e.CardHolderAccessLevels)
+                .HasForeignKey(e => e.AccessLevelId)
+                .HasPrincipalKey(e => e.ComponentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<CardHolder>()
                 .HasMany(e => e.Credentials)
                 .WithOne(e => e.CardHolder)
@@ -466,8 +470,6 @@ namespace HIDAeroService.Data
              );
 
             #endregion
-
-
 
 
 

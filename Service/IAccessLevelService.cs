@@ -7,9 +7,9 @@ namespace HIDAeroService.Service
     {
         Task<ResponseDto<IEnumerable<AccessLevelDto>>> GetAsync();
         Task<ResponseDto<AccessLevelDto>> GetByComponentIdAsync(short component);
-        Task<ResponseDto<bool>> CreateAsync(AccessLevelDto dto);
+        Task<ResponseDto<bool>> CreateAsync(CreateUpdateAccessLevelDto dto);
         Task<ResponseDto<bool>> DeleteAsync(short component);
-        Task<ResponseDto<AccessLevelDto>> UpdateAsync(AccessLevelDto dto);
+        Task<ResponseDto<AccessLevelDto>> UpdateAsync(CreateUpdateAccessLevelDto dto);
 
         string GetAcrName(string mac, short component);
         string GetTzName(short component);

@@ -15,8 +15,7 @@ namespace HIDAeroService.DTO.Credential
         public long CardNo { get; set; }
         public string? Pin { get; set; }
         public string ActiveDate { get; set; }
-        public string DeactiveDate { get; set; }
-        public CardHolderDto CardHolder { get; set; }
-        public List<AccessLevelDto> AccessLevels { get; set; }
+        public string? DeactiveDate { get; set; }
+        //public CardHolderDto? CardHolder { get; set; }
     }
 }

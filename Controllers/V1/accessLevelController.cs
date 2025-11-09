@@ -31,7 +31,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpPost]
-        public async Task<ActionResult<ResponseDto<AccessLevelDto>>> CreateAsync([FromBody] AccessLevelDto dto)
+        public async Task<ActionResult<ResponseDto<AccessLevelDto>>> CreateAsync([FromBody] CreateUpdateAccessLevelDto dto)
         {
             var res = await accesslevelService.CreateAsync(dto);
             return Ok(res);
@@ -45,7 +45,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpPut]
-        public async Task<ActionResult<ResponseDto<AccessLevelDto>>> UpdateAsync([FromBody] AccessLevelDto dto)
+        public async Task<ActionResult<ResponseDto<AccessLevelDto>>> UpdateAsync([FromBody] CreateUpdateAccessLevelDto dto)
         {
             var res = await accesslevelService.UpdateAsync(dto);
             return Ok(res);

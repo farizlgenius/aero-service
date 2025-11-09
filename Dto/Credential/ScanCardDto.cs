@@ -2,7 +2,7 @@
 {
     public sealed class ScanCardDto
     {
-        public string ScpMac { get; set; }
-        public short AcrNo { get; set; }
+        public string MacAddress { get; set; }
+        public short DoorId { get; set; }
     }
 }

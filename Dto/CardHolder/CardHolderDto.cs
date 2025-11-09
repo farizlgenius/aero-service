@@ -1,4 +1,5 @@
-﻿using HIDAeroService.DTO.Credential;
+﻿using HIDAeroService.DTO.AccessLevel;
+using HIDAeroService.DTO.Credential;
 using HIDAeroService.Entity;
 
 namespace HIDAeroService.DTO.CardHolder
@@ -19,6 +20,7 @@ namespace HIDAeroService.DTO.CardHolder
         public string ImagePath { get; set; } = string.Empty;
         public List<string> Additionals { get; set; }
         public List<CredentialDto> Credentials { get; set; }
+        public List<AccessLevelDto>? AccessLevels { get; set; }
 
     }
 }

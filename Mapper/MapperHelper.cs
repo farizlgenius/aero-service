@@ -576,21 +576,21 @@ namespace HIDAeroService.Mapper
                 PairDoorNo = x.PairDoorNo,
 
                 // Reader
-                Readers = x.Readers
+                Readers = x.Readers is null ? new List<ReaderDto>() : x.Readers
                 .Select(x => ReaderToDto(x))
                 .ToList(),
                 ReaderOutConfiguration = x.ReaderOutConfiguration,
 
                 // Strike
                 StrkComponentId = x.StrkComponentId,
-                Strk = StrikeToDto(x.Strk),
+                Strk = x.Strk is null ? null : StrikeToDto(x.Strk),
 
                 // Sensor
                 SensorComponentId = x.SensorComponentId,
-                Sensor = SensorToDto(x.Sensor),
+                Sensor = x.Sensor is null ? null : SensorToDto(x.Sensor),
 
                 // Request Exit
-                RequestExits = x.RequestExits
+                RequestExits = x.RequestExits is null ? new List<RequestExitDto>() :  x.RequestExits
                 .Select(x => RequestExitToDto(x))
                 .ToList(),
 
@@ -658,7 +658,7 @@ namespace HIDAeroService.Mapper
 
                 Strk = DtotoStrike(dto.Strk,Create),
                 Sensor = DtoToSensor(dto.Sensor,Create),
-                RequestExits = dto.RequestExits
+                RequestExits =  dto.RequestExits is null ? new List<RequestExit>() : dto.RequestExits
                 .Where(x => !string.IsNullOrEmpty(x.MacAddress))
                 .Select(x => DtoToRequestExit(x,Create))
                 .ToList(),
@@ -783,13 +783,14 @@ namespace HIDAeroService.Mapper
                 .Where(x => x.HolderId == entity.UserId)
                 .Select(x => x.Additional).ToList(),
                 Credentials = entity.Credentials
-                .Select(x => CredentialToDto(x)).ToList()
+                .Select(x => CredentialToDto(x)).ToList(),
+                
             };
         }
 
         public static CardHolder DtoToCardHolder(CardHolderDto dto,List<short> ComponentIds,DateTime Create)
         {
-            return new CardHolder 
+            return new CardHolder
             {
                 // Base
                 LocationId = dto.LocationId,
@@ -799,7 +800,7 @@ namespace HIDAeroService.Mapper
                 UpdatedDate = Create,
 
                 // Detail
-                UserId= dto.UserId,
+                UserId = dto.UserId,
                 Title = dto.Title,
                 FirstName = dto.FirstName,
                 MiddleName = dto.MiddleName,
@@ -812,9 +813,19 @@ namespace HIDAeroService.Mapper
                 Department = dto.Department,
                 ImagePath = dto.ImagePath,
                 Additional = dto.Additionals
-                .Select(x => DtoToAdditional(dto.UserId,x))
+                .Select(x => DtoToAdditional(dto.UserId, x))
                 .ToList(),
-                Credentials = dto.Credentials.Select((x,i) => DtoToCredential(x, ComponentIds[i], Create)).ToList(),
+                Credentials = dto.Credentials.Select((x, i) => DtoToCredential(x, ComponentIds[i], Create)).ToList(),
+                CardHolderAccessLevels = dto.AccessLevels is not null ? dto.AccessLevels.Select(x => DtoToCardHolderAccessLevel(x.ComponentId, dto.UserId)).ToList() : new List<CardHolderAccessLevel>()
+            };
+        }
+
+        public static CardHolderAccessLevel DtoToCardHolderAccessLevel(short AccessLevelId,string UserId)
+        {
+            return new CardHolderAccessLevel
+            {
+                AccessLevelId = AccessLevelId,
+                CardHolderId = UserId
             };
         }
 
@@ -880,8 +891,7 @@ namespace HIDAeroService.Mapper
                 Pin = entity.Pin,
                 ActiveDate = entity.ActiveDate,
                 DeactiveDate = entity.DeactiveDate,
-                CardHolder = entity.CardHolder is not null ? CardHolderToDto(entity.CardHolder) : null,
-                AccessLevels = entity.AccessLevelCredentials is not null ? entity.AccessLevelCredentials.Where(x => x.CredentialId == entity.Id).Select(x => MapperHelper.AccessLevelToDto(x.AccessLevel)).ToList() : null,
+                //CardHolder = entity.CardHolder is not null ? CardHolderToDto(entity.CardHolder) : null,
 
             };
         }
@@ -907,13 +917,6 @@ namespace HIDAeroService.Mapper
                 Pin = dto.Pin,
                 ActiveDate = dto.ActiveDate,
                 DeactiveDate = dto.DeactiveDate,
-                AccessLevelCredentials = dto.AccessLevels
-                .Select(x => new AccessLevelCredential 
-                {
-                    AccessLevelId = x.ComponentId,
-                    CredentialId = ComponentId
-                })
-                .ToArray()
             };
         }
 
@@ -921,7 +924,7 @@ namespace HIDAeroService.Mapper
 
         #endregion
 
-        #region AccessLeve
+        #region AccessLevel
 
         public static AccessLevelDto AccessLevelToDto(AccessLevel entity)
         {
@@ -934,12 +937,16 @@ namespace HIDAeroService.Mapper
                 IsActive = entity.IsActive,
 
                 // Detail
-
+                Name = entity.Name,
+                ComponentId = entity.ComponentId,
+                AccessLevelDoorTimeZoneDto = entity.AccessLevelDoorTimeZones
+                .Select(x => AccessLevelDoorTimeZoneToDto(x))
+                .ToList()
 
             };
         }
 
-        public static AccessLevel DtoToAccessLevel(AccessLevelDto dto,short ComponentId,DateTime Create)
+        public static AccessLevel DtoToAccessLevel(CreateUpdateAccessLevelDto dto,short ComponentId,DateTime Create)
         {
             return new AccessLevel 
             {
@@ -953,13 +960,13 @@ namespace HIDAeroService.Mapper
                 // Detail
                 ComponentId= ComponentId,
                 Name= dto.Name,
-                AccessLevelDoorTimeZones=dto.AccessLevelDoorTimeZoneDto
+                AccessLevelDoorTimeZones=dto.CreateUpdateAccessLevelDoorTimeZoneDto
                 .Select(x => DtoToAccessLevelDoorTimeZone(x,ComponentId))
                 .ToArray()
             };
         }
 
-        public static void UpdateAccessLeve(AccessLevel entity,AccessLevelDto dto)
+        public static void UpdateAccessLeve(AccessLevel entity,CreateUpdateAccessLevelDto dto)
         {
             // Base
             entity.LocationId = dto.LocationId;
@@ -969,18 +976,18 @@ namespace HIDAeroService.Mapper
 
             // Detail
             entity.Name = dto.Name;
-            entity.AccessLevelDoorTimeZones = dto.AccessLevelDoorTimeZoneDto
+            entity.AccessLevelDoorTimeZones = dto.CreateUpdateAccessLevelDoorTimeZoneDto
                 .Select(x => DtoToAccessLevelDoorTimeZone(x,dto.ComponentId))
                 .ToArray();
         }
 
-        public static AccessLevelDoorTimeZone DtoToAccessLevelDoorTimeZone(AccessLevelDoorTimeZoneDto dto,short ComponentId) 
+        public static AccessLevelDoorTimeZone DtoToAccessLevelDoorTimeZone(CreateUpdateAccessLevelDoorTimeZoneDto dto,short ComponentId) 
         {
             return new AccessLevelDoorTimeZone
             {
                 AccessLevelId = ComponentId,
-                TimeZoneId = dto.TimeZone.ComponentId,
-                DoorId=dto.Doors.ComponentId
+                TimeZoneId = dto.TimeZoneId,
+                DoorId=dto.DoorId
             };
         }
 
@@ -1012,7 +1019,7 @@ namespace HIDAeroService.Mapper
                 Mode = t.Mode,
                 ActiveTime = t.ActiveTime,
                 DeactiveTime = t.DeactiveTime,
-                Intervals = t.TimeZoneIntervals
+                Intervals = t.TimeZoneIntervals is null ? null : t.TimeZoneIntervals
                 .Select(s => s.Interval)
                 .Select(s => IntervalToIntervalDto(s))
                 .ToList(),

@@ -10,8 +10,6 @@ using HIDAeroService.Helpers;
 using HIDAeroService.Mapper;
 using HIDAeroService.Utility;
 using Microsoft.EntityFrameworkCore;
-using MiNET.Entities;
-using System.Net;
 
 
 namespace HIDAeroService.Service.Impl
@@ -24,11 +22,9 @@ namespace HIDAeroService.Service.Impl
             var dtos = await context.AccessLevels
                 .AsNoTracking()
                 .Include(x => x.AccessLevelDoorTimeZones)
-                .ThenInclude(x => x.AccessLevel)
+                    .ThenInclude(x => x.TimeZone)
                 .Include(x => x.AccessLevelDoorTimeZones)
-                .ThenInclude(x => x.TimeZone)
-                .Include(x => x.AccessLevelDoorTimeZones)
-                .ThenInclude(x => x.Door)
+                    .ThenInclude(x => x.Door)
                 .Select(x => MapperHelper.AccessLevelToDto(x))
                 .ToArrayAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<AccessLevelDto>>(dtos);
@@ -54,16 +50,15 @@ namespace HIDAeroService.Service.Impl
 
 
 
-        public async Task<ResponseDto<bool>> CreateAsync(AccessLevelDto dto)
+        public async Task<ResponseDto<bool>> CreateAsync(CreateUpdateAccessLevelDto dto)
         {
             List<string> errors = new List<string>();
             var max = await context.SystemSettings.Select(x => x.nAlvl).FirstOrDefaultAsync();
             var ComponentId = await helperService.GetLowestUnassignedNumberAsync<AccessLevel>(context,max);
             if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
-            var macs = dto.AccessLevelDoorTimeZoneDto
-                .Select(x => x.Doors)
-                .Select(x => x.MacAddress)
+            var macs = dto.CreateUpdateAccessLevelDoorTimeZoneDto
+                .Select(x => x.DoorMacAddress)
                 .Distinct()
                 .ToList();
 
@@ -72,11 +67,11 @@ namespace HIDAeroService.Service.Impl
             {
                 var id = await helperService.GetIdFromMacAsync(mac);
                 if(id == 0) errors.Add(MessageBuilder.Notfound());
-                if (!await command.AccessLevelConfigurationExtendedCreateAsync(id, ComponentId, dto.AccessLevelDoorTimeZoneDto.Where(x => x.Doors.MacAddress == mac).ToList()))
-                {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C2116));
+                //if (!await command.AccessLevelConfigurationExtendedCreateAsync(id, ComponentId, dto.CreateUpdateAccessLevelDoorTimeZoneDto.Where(x => x.DoorMacAddress == mac).ToList()))
+                //{
+                //    errors.Add(MessageBuilder.Unsuccess(mac, Command.C2116));
 
-                }
+                //}
 
             }
 
@@ -92,10 +87,6 @@ namespace HIDAeroService.Service.Impl
         {
             List<string> errors = new List<string>();
             var entity = await context.AccessLevels
-                .Include(x => x.AccessLevelDoorTimeZones)
-                .ThenInclude(x => x.AccessLevel)
-                .Include(x => x.AccessLevelDoorTimeZones)
-                .ThenInclude(x => x.TimeZone)
                 .Include(x => x.AccessLevelDoorTimeZones)
                 .ThenInclude(x => x.Door)
                 .FirstOrDefaultAsync(x => x.ComponentId == ComponentId);
@@ -114,7 +105,7 @@ namespace HIDAeroService.Service.Impl
             return ResponseHelper.SuccessBuilder(true);
         }
 
-        public async Task<ResponseDto<AccessLevelDto>> UpdateAsync(AccessLevelDto dto)
+        public async Task<ResponseDto<AccessLevelDto>> UpdateAsync(CreateUpdateAccessLevelDto dto)
         {
 
             var entity = await context.AccessLevels
@@ -128,9 +119,8 @@ namespace HIDAeroService.Service.Impl
 
             if (entity is null) return ResponseHelper.NotFoundBuilder<AccessLevelDto>();
             List<string> errors = new List<string>();
-            var macs = dto.AccessLevelDoorTimeZoneDto
-                .Select(x => x.Doors)
-                .Select(x => x.MacAddress)
+            var macs = dto.CreateUpdateAccessLevelDoorTimeZoneDto
+                .Select(x => x.DoorMacAddress)
                 .Distinct()
                 .ToList();
 
@@ -139,7 +129,8 @@ namespace HIDAeroService.Service.Impl
             {
                 var id = await helperService.GetIdFromMacAsync(mac);
                 if (id == 0) errors.Add(MessageBuilder.Notfound());
-                if (!await command.AccessLevelConfigurationExtendedCreateAsync(id, dto.ComponentId, dto.AccessLevelDoorTimeZoneDto.Where(x => x.Doors.MacAddress == mac).ToList()))
+                if (!await command.AccessLevelConfigurationExtendedCreateAsync(id, dto.ComponentId, dto.CreateUpdateAccessLevelDoorTimeZoneDto
+                    .Where(x => x.DoorMacAddress == mac).ToList()))
                 {
                     errors.Add(MessageBuilder.Unsuccess(mac, Command.C2116));
 
@@ -151,13 +142,25 @@ namespace HIDAeroService.Service.Impl
             MapperHelper.DtoToAccessLevel(dto, dto.ComponentId, DateTime.Now);
             context.AccessLevels.Update(entity);
             await context.SaveChangesAsync();
-            return ResponseHelper.SuccessBuilder(dto);
+
+            var res = await context.AccessLevels
+                .AsNoTracking()
+                .Include(x => x.AccessLevelDoorTimeZones)
+                .ThenInclude(x => x.TimeZone)
+                .Include(x => x.AccessLevelDoorTimeZones)
+                .ThenInclude(x => x.Door)
+                .Where(x => x.ComponentId == dto.ComponentId)
+                .Select(x => MapperHelper.AccessLevelToDto(x))
+                .FirstOrDefaultAsync();
+
+            return ResponseHelper.SuccessBuilder(res);
         }
 
 
         public string GetAcrName(string mac, short component)
         {
-            return context.Doors.Where(x => x.MacAddress == mac && x.ComponentId == component).Select(x => x.Name).FirstOrDefault() ?? "";
+            return context.Doors
+                .Where(x => x.MacAddress == mac && x.ComponentId == component).Select(x => x.Name).FirstOrDefault() ?? "";
         }
 
         public string GetTzName(short component)

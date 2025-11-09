@@ -619,7 +619,7 @@ namespace HIDAeroService.AeroLibrary
         }
 
 
-        public async Task<bool> AccessLevelConfigurationExtendedCreateAsync(short ScpId, short Number, List<AccessLevelDoorTimeZoneDto> AccessLevelDoorTimeZoneDto)
+        public async Task<bool> AccessLevelConfigurationExtendedCreateAsync(short ScpId, short Number, List<CreateUpdateAccessLevelDoorTimeZoneDto> AccessLevelDoorTimeZoneDto)
         {
             CC_ALVL_EX cc = new CC_ALVL_EX();
             cc.lastModified = 0;
@@ -627,7 +627,7 @@ namespace HIDAeroService.AeroLibrary
             cc.alvl_number = Number;
             foreach(var d in AccessLevelDoorTimeZoneDto)
             {
-                cc.tz[d.Doors.ComponentId] = d.TimeZone.ComponentId;
+                cc.tz[d.DoorId] = d.TimeZoneId;
             }
             bool flag = SendCommand((short)enCfgCmnd.enCcAlvlEx, cc);
             if (flag)

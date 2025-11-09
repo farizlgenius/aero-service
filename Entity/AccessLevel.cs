@@ -8,6 +8,6 @@ namespace HIDAeroService.Entity
         public short ComponentId { get; set; }
         public string Name { get; set; } = string.Empty;
         public ICollection<AccessLevelDoorTimeZone> AccessLevelDoorTimeZones { get; set; }
-        public ICollection<AccessLevelCredential> AccessLevelCredentials { get; set; }
+        public ICollection<CardHolderAccessLevel> CardHolderAccessLevels { get; set; }
     }
 }

@@ -209,7 +209,7 @@ namespace HIDAeroService.Service.Impl
 
 
             // Create Access Level All
-            //IEnumerable<AccessLevel> acls = alvlService.GetAllSetting();
+            //IEnumerable<AccessLevels> acls = alvlService.GetAllSetting();
             //foreach (var a in acls)
             //{
             //    if (!command.AccessLevelConfigurationExtended(ScpId, a.ComponentNo,a))

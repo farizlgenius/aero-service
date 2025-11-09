@@ -47,14 +47,14 @@ namespace HIDAeroService.Service.Impl
             var componentNo = await helperService.GetLowestUnassignedNumberNoLimitAsync<CardFormat>(context);
             if (componentNo == -1) return ResponseHelper.ExceedLimit<bool>();
             List<short> ScpIds = await context.Hardwares.Select(x => x.ComponentId).ToListAsync();
-            //foreach (var id in ScpIds)
-            //{
-            //    string mac = await helperService.GetMacFromIdAsync(id);
-            //    if (!await command.CardFormatterConfigurationAsync(id, dto, 1))
-            //    {
-            //        errors.Add(MessageBuilder.Unsuccess(mac,Command.C1102));
-            //    }
-            //}
+            foreach (var id in ScpIds)
+            {
+                string mac = await helperService.GetMacFromIdAsync(id);
+                if (!await command.CardFormatterConfigurationAsync(id, dto, 1))
+                {
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C1102));
+                }
+            }
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
             var entity = MapperHelper.DtoToCardFormat(dto,componentNo,DateTime.Now); 
             await context.CardFormats.AddAsync(entity);
@@ -69,15 +69,15 @@ namespace HIDAeroService.Service.Impl
             if (entity is null) return ResponseHelper.NotFoundBuilder<bool>();
             var dto = MapperHelper.CardFormatToDto(entity);
             List<short> scpIds = await context.Hardwares.Select(x => x.ComponentId).ToListAsync();
-            //foreach (var id in scpIds)
-            //{
-            //    string mac = await helperService.GetMacFromIdAsync(id);
-            //    if (!await command.CardFormatterConfigurationAsync(id, dto, 0))
-            //    {
-            //        errors.Add(MessageBuilder.Unsuccess(mac,Command.C1102));
-            //    }
+            foreach (var id in scpIds)
+            {
+                string mac = await helperService.GetMacFromIdAsync(id);
+                if (!await command.CardFormatterConfigurationAsync(id, dto, 0))
+                {
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C1102));
+                }
 
-            //}
+            }
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>( ResponseMessage.COMMAND_UNSUCCESS, errors);
             context.CardFormats.Remove(entity);
             await context.SaveChangesAsync();

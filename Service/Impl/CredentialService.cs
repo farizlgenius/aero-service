@@ -30,10 +30,10 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<bool> ScanCardTrigger(ScanCardDto dto)
         {
-            var ScpId = await helperService.GetIdFromMacAsync(dto.ScpMac);
+            var ScpId = await helperService.GetIdFromMacAsync(dto.MacAddress);
             read.isWaitingCardScan = true;
             read.ScanScpId = ScpId;
-            read.ScanAcrNo = dto.AcrNo;
+            read.ScanAcrNo = dto.DoorId;
             return true;
         }
 
@@ -141,6 +141,16 @@ namespace HIDAeroService.Service.Impl
             // If none missing in sequence, return next number
             if(expected > max) return -1;
             return expected;
+        }
+
+        public async Task<ResponseDto<bool>> DeleteCardAsync(DeleteCardDto dto)
+        {
+            var ScpId = await helperService.GetIdFromMacAsync(dto.MacAddress);
+            if(!await command.CardDeleteAsync(ScpId,dto.CardNo))
+            {
+                ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, "Delete Card Fail");
+            }
+            return ResponseHelper.SuccessBuilder<bool>(true);
         }
 
     }

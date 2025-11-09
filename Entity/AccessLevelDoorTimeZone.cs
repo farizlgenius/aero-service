@@ -15,7 +15,7 @@ namespace HIDAeroService.Entity
         public Door Door { get; set; }
 
 
-        //public AccessLevel AccessLevel { get; set; }
+        //public AccessLevels AccessLevels { get; set; }
         //public short TzAcr1 { get; set; }
         //public short TzAcr2 { get; set; }
         //public short TzAcr3 { get; set; }

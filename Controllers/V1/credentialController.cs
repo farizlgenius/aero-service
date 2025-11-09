@@ -18,6 +18,13 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
+        [HttpPost("scan")]
+        public async Task<ActionResult<bool>> ScanCardAsync([FromBody] ScanCardDto dto) 
+        {
+            var res = await credentialService.ScanCardTrigger(dto);
+            return Ok(res);
+        }
+
         [HttpGet("{UserId}")]
         public async Task<ActionResult<ResponseDto<CredentialDto>>> GetByComponentAsync(string UserId)
         {
@@ -43,6 +50,13 @@ namespace HIDAeroService.Controllers.V1
         public async Task<ActionResult<ResponseDto<CredentialDto>>> DeleteAsync([FromBody] CredentialDto dto)
         {
             var res = await credentialService.DeleteAsync(dto);
+            return Ok(res);
+        }
+
+        [HttpDelete("card")]
+        public async Task<ActionResult<ResponseDto<bool>>> DeleteCardAsync([FromBody] DeleteCardDto dto) 
+        {
+            var res = await credentialService.DeleteCardAsync(dto);
             return Ok(res);
         }
     }

@@ -3,6 +3,7 @@ using HIDAeroService.Constant;
 using HIDAeroService.Constants;
 using HIDAeroService.Data;
 using HIDAeroService.DTO;
+using HIDAeroService.DTO.AccessLevel;
 using HIDAeroService.DTO.CardHolder;
 using HIDAeroService.Entity;
 using HIDAeroService.Helpers;
@@ -29,7 +30,7 @@ namespace HIDAeroService.Service.Impl
 
                 foreach (var id in ScpIds)
                 {
-                    if (!await command.AccessDatabaseCardRecordAsync(id.ComponentId,cred.Flag,cred.CardNo,cred.IssueCode,cred.Pin,cred.AccessLevels, (int)helperService.DateTimeToElapeSecond(cred.ActiveDate), (int)helperService.DateTimeToElapeSecond(cred.DeactiveDate)))
+                    if (!await command.AccessDatabaseCardRecordAsync(id.ComponentId,cred.Flag,cred.CardNo,cred.IssueCode,cred.Pin,dto.AccessLevels, (int)helperService.DateTimeToElapeSecond(cred.ActiveDate), (int)helperService.DateTimeToElapeSecond(cred.DeactiveDate)))
                     {
                         errors.Add(MessageBuilder.Unsuccess(id.MacAddress, Command.C8304));
                     }
@@ -91,8 +92,9 @@ namespace HIDAeroService.Service.Impl
         public async Task<ResponseDto<IEnumerable<CardHolderDto>>> GetAsync()
         {
             var dtos = await context.CardHolders
+                .Include(x => x.Additional)
                 .Include(x => x.Credentials)
-                .ThenInclude(x => x.AccessLevelCredentials)
+                .Include(x => x.CardHolderAccessLevels)
                 .ThenInclude(x => x.AccessLevel)
                 .Select(x => MapperHelper.CardHolderToDto(x))
                 .ToArrayAsync();
@@ -104,8 +106,9 @@ namespace HIDAeroService.Service.Impl
         public async Task<ResponseDto<CardHolderDto>> GetByUserIdAsync(string UserId)
         {
             var dto = await context.CardHolders
+                .Include(x => x.Additional)
                 .Include(x => x.Credentials)
-                .ThenInclude(x => x.AccessLevelCredentials)
+                .Include(x => x.CardHolderAccessLevels)
                 .ThenInclude(x => x.AccessLevel)
                 .Select(x => MapperHelper.CardHolderToDto(x))
                 .FirstOrDefaultAsync();
@@ -144,7 +147,7 @@ namespace HIDAeroService.Service.Impl
                 CredentialComponentId.Add(await helperService.GetLowestUnassignedNumberNoLimitAsync<Credential>(context));
                 foreach (var id in ScpIds)
                 {
-                    if (!await command.AccessDatabaseCardRecordAsync(id.ComponentId, cred.Flag, cred.CardNo, cred.IssueCode, cred.Pin, cred.AccessLevels, (int)helperService.DateTimeToElapeSecond(cred.ActiveDate), (int)helperService.DateTimeToElapeSecond(cred.DeactiveDate)))
+                    if (!await command.AccessDatabaseCardRecordAsync(id.ComponentId, cred.Flag, cred.CardNo, cred.IssueCode,string.IsNullOrEmpty(cred.Pin) ? "" : cred.Pin, dto.AccessLevels is null ? new List<AccessLevelDto>() : dto.AccessLevels, (int)helperService.DateTimeToElapeSecond(cred.ActiveDate), (int)helperService.DateTimeToElapeSecond(cred.DeactiveDate)))
                     {
                         errors.Add(MessageBuilder.Unsuccess(id.MacAddress, Command.C8304));
                     }
