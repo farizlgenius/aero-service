@@ -33,7 +33,7 @@ namespace HIDAeroService.AeroLibrary
         {
             while (_shutdownFlag == false)
             {
-                // Get Transaction here
+                // GetAsync Transaction here
                 GetTransaction();
             }
         }

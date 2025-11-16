@@ -21,7 +21,7 @@ namespace HIDAeroService.Service.Impl
     public class CardFormatService(AppDbContext context, IMapper mapper, ILogger<CardFormatService> logger, AeroCommand command, IHelperService<CardFormat> helperService) : ICardFormatService
     {
 
-        public virtual async Task<ResponseDto<IEnumerable<CardFormatDto>>> GetAsync()
+        public async Task<ResponseDto<IEnumerable<CardFormatDto>>> GetAsync()
         {
             var dtos = await context.CardFormats
                 .AsNoTracking()

@@ -50,7 +50,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -64,7 +64,7 @@ namespace HIDAeroService.Migrations
                     b.Property<short>("MultiOccupancy")
                         .HasColumnType("smallint");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -116,14 +116,14 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -202,7 +202,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -304,7 +304,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -375,7 +375,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -445,7 +445,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -568,14 +568,14 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -677,7 +677,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -777,7 +777,7 @@ namespace HIDAeroService.Migrations
                     b.Property<short>("ModelNo")
                         .HasColumnType("smallint");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -882,7 +882,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -896,7 +896,7 @@ namespace HIDAeroService.Migrations
                     b.Property<short>("ModuleId")
                         .HasColumnType("smallint");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -971,7 +971,7 @@ namespace HIDAeroService.Migrations
                     b.Property<int>("IssueCode")
                         .HasColumnType("integer");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -1009,7 +1009,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -1080,7 +1080,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -1193,7 +1193,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -1217,7 +1217,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -1290,7 +1290,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -1400,7 +1400,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -1482,7 +1482,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -1626,7 +1626,7 @@ namespace HIDAeroService.Migrations
                     b.Property<DateTime>("LastSync")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -1641,7 +1641,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -1738,7 +1738,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -1780,7 +1780,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -1849,7 +1849,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -1902,7 +1902,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -1994,7 +1994,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsMask")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -2014,7 +2014,7 @@ namespace HIDAeroService.Migrations
                     b.Property<short>("MonitorPointMode")
                         .HasColumnType("smallint");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -2046,7 +2046,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -2116,7 +2116,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -2181,7 +2181,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -2235,7 +2235,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -2379,7 +2379,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -2445,7 +2445,7 @@ namespace HIDAeroService.Migrations
                     b.Property<short>("LedDriveMode")
                         .HasColumnType("smallint");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -2510,7 +2510,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -2578,7 +2578,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -2618,7 +2618,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -2677,7 +2677,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -2746,7 +2746,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -2795,7 +2795,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -2855,7 +2855,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -3042,7 +3042,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -3052,7 +3052,7 @@ namespace HIDAeroService.Migrations
                     b.Property<short>("Mode")
                         .HasColumnType("smallint");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -3106,7 +3106,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("ComponentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -3141,7 +3141,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 

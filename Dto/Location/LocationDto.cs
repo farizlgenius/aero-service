@@ -2,13 +2,8 @@
 
 namespace HIDAeroService.DTO.Location
 {
-    public class LocationDto
+    public class LocationDto : NoMacBaseDto
     {
-        public int Id { get; set; }
-        public string Uuid { get; set; } = string.Empty;
-        public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public DateTime CreatedDate { get; set; }
-        public DateTime UpdatedDate { get; set; }
     }
 }

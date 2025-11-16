@@ -4,6 +4,7 @@ using HIDAeroService.DTO.AccessLevel;
 using HIDAeroService.DTO.Acr;
 using HIDAeroService.DTO.CardFormat;
 using HIDAeroService.DTO.Interval;
+using HIDAeroService.DTO.Trigger;
 using HIDAeroService.Entity;
 using HIDAeroService.Model;
 using HIDAeroService.Service;
@@ -43,8 +44,7 @@ namespace HIDAeroService.AeroLibrary
 
 
         private Task<bool> SendCommandAsync(int tag,int timeout)
-        {
-          
+        { 
             TimeSpan span = TimeSpan.FromSeconds(timeout);
             var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
@@ -99,7 +99,7 @@ namespace HIDAeroService.AeroLibrary
 
         //////
         // Method: SendCommand to Driver
-        // Target: For Create Channel
+        // Target: For CreateAsync Channel
         // channelId: Channel ComponentId to create
         // commuType: Communication Type ip-client / ip-server
         // port: Port number of driver that Controller need to set
@@ -1581,6 +1581,79 @@ namespace HIDAeroService.AeroLibrary
 
         //}
 
+
+
+        #endregion
+
+        #region Trigger
+
+        public async Task<bool> TriggerSpecification(short scpId, TriggerDto dto,short ComponentId)
+        {
+            CC_TRGR cc = new CC_TRGR();
+            cc.scp_number = scpId;
+            cc.trgr_number = ComponentId;
+            cc.command = dto.Command;
+            cc.proc_num = dto.ProcedureId;
+            cc.src_type = dto.SourceType;
+            cc.src_number = dto.SourceId;
+            cc.tran_type = dto.TransactionType;
+            cc.code_map = dto.CodeMap;
+            cc.timezone = dto.TimeZoneId;
+            switch (dto.TransactionType)
+            {
+                case (short)tranType.tranTypeCardFull:
+                    break;
+                case (short)tranType.tranTypeCardID:
+                    break;
+                case (short)tranType.tranTypeCoS:
+                    break;
+                case (short)tranType.tranTypeCoSDoor:
+                    break;
+                case (short)tranType.tranTypeUserCmnd:
+                    break;
+                case (short)tranType.tranTypeOperatingMode:
+                    break;
+                case (short)tranType.tranTypeAcrExtFeatureCoS:
+                    break;
+                default:
+                    break;
+            }
+
+            // Trigger Variable
+            //cc.trig_var[0] = 0;
+
+            // Transaction Type Arg
+            //cc.arg[0] = 0;
+
+            
+
+            bool flag = SendCommand((short)enCfgCmnd.enCcTrgr, cc);
+            if (flag)
+            {
+                return await SendCommandAsync(SCPDLL.scpGetTagLastPosted(scpId), _commandTimeout);
+            }
+
+            return false;
+        }
+
+        #endregion
+
+        #region Procedure
+
+        public async Task<bool> ActionSpecification(short scpId,ProcedureDto dto,short ComponentId)
+        {
+            CC_ACTN cc = new CC_ACTN(3);
+            
+            
+
+            bool flag = SendCommand((short)enCfgCmnd.enCcProc, cc);
+            if (flag)
+            {
+                return await SendCommandAsync(SCPDLL.scpGetTagLastPosted(scpId), _commandTimeout);
+            }
+
+            return false;
+        }
 
 
         #endregion

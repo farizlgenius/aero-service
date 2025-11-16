@@ -18,5 +18,6 @@ namespace HIDAeroService.Service
         Task<int> GetLowestUnassignedIssueCodeAsync(string userId, int max = 1000);
 
         Task<ResponseDto<bool>> DeleteCardAsync(DeleteCardDto dto);
+        Task<ResponseDto<IEnumerable<ModeDto>>> GetCredentialFlagAsync();
     }
 }

@@ -59,5 +59,12 @@ namespace HIDAeroService.Controllers.V1
             var res = await credentialService.DeleteCardAsync(dto);
             return Ok(res);
         }
+
+        [HttpGet("flag")]
+        public async Task<ActionResult<ResponseDto<ModeDto>>> GetCredentialFlagAsync()
+        {
+            var res = await credentialService.GetCredentialFlagAsync();
+            return Ok(res);
+        }
     }
 }

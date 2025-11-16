@@ -1,0 +1,17 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace HIDAeroService.Entity
+{
+    public sealed class TransactionCode
+    {
+        [Key]
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public short Value { get; set; }
+        public short TransactionTypeValue { get; set; }
+        public TransactionType TransactionType { get; set; }
+
+    }
+
+}

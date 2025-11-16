@@ -1189,7 +1189,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "AccessLevels",
-                columns: new[] { "Id", "ComponentId", "IsActive", "LocationId", "LocationName", "Name", "Uuid" },
+                columns: new[] { "Id", "ComponentId", "IsActive", "ComponentId", "LocationName", "LocationName", "Uuid" },
                 values: new object[,]
                 {
                     { 1, (short)1, true, 1, "Main Location", "No Access", "00000000-0000-0000-0000-000000000001" },
@@ -1198,7 +1198,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "AntipassbackModes",
-                columns: new[] { "Id", "Description", "Name", "Value" },
+                columns: new[] { "Id", "Description", "LocationName", "Value" },
                 values: new object[,]
                 {
                     { 1, "Do not check or alter anti-passback location. No antipassback rules.", "None", (short)0 },
@@ -1214,12 +1214,12 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "CardFormats",
-                columns: new[] { "Id", "Bits", "ChLn", "ChLoc", "ComponentId", "CreatedDate", "Facility", "FcLn", "FcLoc", "Flags", "FunctionId", "IcLn", "IcLoc", "IsActive", "LocationId", "LocationName", "Name", "Offset", "PeLn", "PeLoc", "PoLn", "PoLoc", "UpdatedDate", "Uuid" },
+                columns: new[] { "Id", "Bits", "ChLn", "ChLoc", "ComponentId", "CreatedDate", "Facility", "FcLn", "FcLoc", "Flags", "FunctionId", "IcLn", "IcLoc", "IsActive", "ComponentId", "LocationName", "LocationName", "Offset", "PeLn", "PeLoc", "PoLn", "PoLoc", "UpdatedDate", "Uuid" },
                 values: new object[] { 1, (short)26, (short)16, (short)9, (short)0, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), (short)-1, (short)0, (short)0, (short)0, (short)1, (short)0, (short)0, true, 1, "Main Location", "26 Bits (No Fac)", (short)0, (short)13, (short)0, (short)13, (short)13, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "00000000-0000-0000-0000-000000000001" });
 
             migrationBuilder.InsertData(
                 table: "Components",
-                columns: new[] { "Id", "ModelNo", "Name", "nInput", "nOutput", "nReader" },
+                columns: new[] { "Id", "ModelNo", "LocationName", "nInput", "nOutput", "nReader" },
                 values: new object[,]
                 {
                     { 1, (short)196, "HID Aero X1100", (short)7, (short)4, (short)4 },
@@ -1233,7 +1233,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "CredentialFlag",
-                columns: new[] { "Id", "Description", "Name", "Value" },
+                columns: new[] { "Id", "Description", "LocationName", "Value" },
                 values: new object[,]
                 {
                     { 1, "Active Credential Record", "Active Credential Record", (short)1 },
@@ -1245,7 +1245,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "DoorAccessControlFlags",
-                columns: new[] { "Id", "Description", "Name", "Value" },
+                columns: new[] { "Id", "Description", "LocationName", "Value" },
                 values: new object[,]
                 {
                     { 1, "ACR_F_DCR	0x0001	\r\n🔹 Purpose: Decrements a user’s “use counter” when they successfully access.\r\n🔹 Effect: Each valid access reduces their remaining allowed uses.\r\n🔹 Use Case: Temporary or limited-access credentials (e.g., one-time use visitor cards or tickets).", "Decrease Counter", 1 },
@@ -1264,7 +1264,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "DoorModes",
-                columns: new[] { "Id", "Description", "Name", "Value" },
+                columns: new[] { "Id", "Description", "LocationName", "Value" },
                 values: new object[,]
                 {
                     { 1, "Disable the ACR, no REX", "Disable", (short)1 },
@@ -1279,7 +1279,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "DoorSpareFlags",
-                columns: new[] { "Id", "Description", "Name", "Value" },
+                columns: new[] { "Id", "Description", "LocationName", "Value" },
                 values: new object[,]
                 {
                     { 1, "ACR_FE_NOEXTEND	0x0001	\r\n🔹 Purpose: Prevents the “Extended Door Held Open Timer” from being restarted when a new access is granted.\r\n🔹 Effect: If someone presents a valid credential while the door is already open, the extended hold timer won’t reset — the timer continues to count down.\r\n🔹 Use Case: High-traffic doors where you don’t want repeated badge reads to keep the door open indefinitely.", "No Extend", (short)1 },
@@ -1300,7 +1300,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "InputModes",
-                columns: new[] { "Id", "Description", "Name", "Value" },
+                columns: new[] { "Id", "Description", "LocationName", "Value" },
                 values: new object[,]
                 {
                     { 1, "Normally closed, no End-Of-Line (EOL)", "Normally closed", (short)0 },
@@ -1311,7 +1311,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "MonitorPointModes",
-                columns: new[] { "Id", "Description", "Name", "Value" },
+                columns: new[] { "Id", "Description", "LocationName", "Value" },
                 values: new object[,]
                 {
                     { 1, "", "Normal mode (no exit or entry delay)", (short)0 },
@@ -1321,7 +1321,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "OsdpAddresses",
-                columns: new[] { "Id", "Description", "Name", "Value" },
+                columns: new[] { "Id", "Description", "LocationName", "Value" },
                 values: new object[,]
                 {
                     { 1, "", "Address 0", (short)0 },
@@ -1332,7 +1332,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "OsdpBaudrates",
-                columns: new[] { "Id", "Description", "Name", "Value" },
+                columns: new[] { "Id", "Description", "LocationName", "Value" },
                 values: new object[,]
                 {
                     { 1, "", "9600", (short)1 },
@@ -1358,7 +1358,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "OutputOfflineModes",
-                columns: new[] { "Id", "Description", "Name", "Value" },
+                columns: new[] { "Id", "Description", "LocationName", "Value" },
                 values: new object[,]
                 {
                     { 1, "No Change", "No Change", (short)0 },
@@ -1368,7 +1368,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "ReaderConfigurationModes",
-                columns: new[] { "Id", "Description", "Name", "Value" },
+                columns: new[] { "Id", "Description", "LocationName", "Value" },
                 values: new object[,]
                 {
                     { 1, "Single reader, controlling the door", "Single Reader", (short)0 },
@@ -1381,7 +1381,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "ReaderOutConfigurations",
-                columns: new[] { "Id", "Description", "Name", "Value" },
+                columns: new[] { "Id", "Description", "LocationName", "Value" },
                 values: new object[,]
                 {
                     { 1, "Ignore data from alternate reader", "Ignore", (short)0 },
@@ -1390,7 +1390,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "RelayModes",
-                columns: new[] { "Id", "Description", "Name", "Value" },
+                columns: new[] { "Id", "Description", "LocationName", "Value" },
                 values: new object[,]
                 {
                     { 1, "Active is energized", "Normal", (short)0 },
@@ -1399,7 +1399,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "StrikeModes",
-                columns: new[] { "Id", "Description", "Name", "Value" },
+                columns: new[] { "Id", "Description", "LocationName", "Value" },
                 values: new object[,]
                 {
                     { 1, "Do not use! This would allow the strike to stay active for the entire strike time allowing the door to be opened multiple times.", "Normal", (short)0 },
@@ -1420,7 +1420,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "TimeZoneModes",
-                columns: new[] { "Id", "Description", "Name", "Value" },
+                columns: new[] { "Id", "Description", "LocationName", "Value" },
                 values: new object[,]
                 {
                     { 1, "The time zone is always inactive, regardless of the time zone intervals specified or the holidays in effect.", "Off", (short)0 },
@@ -1433,7 +1433,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "TimeZones",
-                columns: new[] { "Id", "ActiveTime", "ComponentId", "DeactiveTime", "IsActive", "LocationId", "LocationName", "Mode", "Name", "Uuid" },
+                columns: new[] { "Id", "ActiveTime", "ComponentId", "DeactiveTime", "IsActive", "ComponentId", "LocationName", "Mode", "LocationName", "Uuid" },
                 values: new object[] { 1, "", (short)1, "", true, 1, "Main Location", (short)1, "Always", "00000000-0000-0000-0000-000000000001" });
 
             migrationBuilder.CreateIndex(

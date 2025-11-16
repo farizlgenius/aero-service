@@ -4450,4 +4450,41 @@ Begin - SCP Driver DLL (64-bit) version 4.7.1.42
 01272.269    StructId-05, nRecords=00016, nRecSize=2724, nActive=00016
 01272.269    StructId-06, nRecords=00615, nRecSize=032, nActive=00615
 01272.269    StructId-07, nRecords=00388, nRecSize=024, nActive=00388
-01272.269    StructId
+01272.269    StructIdDebug file SCPDEBUG.txt <SCPDEBUGc.txt> <SCPDEBUG.TXT> opened Wed Nov 12 10:05:42 2025
+Begin - SCP Driver DLL (64-bit) version 4.7.1.42
+16745.771 Multiple Threaded scpd_new DLL in use 
+16745.771 WSAStartup ok
+16745.774 RNG_X931A24 Initialized
+16745.774 1, enCcSystem: 011 1 100 0 0 1
+16745.776 1, enCcCreateChannel: 0012 1 7 3333 0 3000 0 "" 0
+16745.789 listen(lsock) created socket=1856 on port 3333
+16745.789 Listen Successful, port: 3333
+16750.686 0(0), enCcAcrSrq: 0407 1 1 1
+16821.064 0(0), enCcScpCfmt: 1102 0 1 0 -1 0 1 0 4 0 -1 0 -1 0 0 0 -1 0 0
+Debug file SCPDEBUG.txt <SCPDEBUGc.txt> <SCPDEBUG.TXT> opened Thu Nov 13 19:35:21 2025
+Begin - SCP Driver DLL (64-bit) version 4.7.1.42
+37324.426 Multiple Threaded scpd_new DLL in use 
+37324.426 WSAStartup ok
+37324.440 RNG_X931A24 Initialized
+37324.440 1, enCcSystem: 011 1 100 0 0 1
+37324.440 1, enCcCreateChannel: 0012 1 7 3333 0 3000 0 "" 0
+37324.457 listen(lsock) created socket=2036 on port 3333
+37324.457 Listen Successful, port: 3333
+37483.794 0(0), enCcAcrSrq: 0407 1 1 1
+37697.277 0(0), enCcAcrSrq: 0407 1 1 1
+44056.726 0(0), enCcAcrSrq: 0407 1 1 1
+44975.142 0(0), enCcAcrSrq: 0407 1 1 1
+Debug file SCPDEBUG.txt <SCPDEBUGc.txt> <SCPDEBUG.TXT> opened Sat Nov 15 21:15:48 2025
+Begin - SCP Driver DLL (64-bit) version 4.7.1.42
+16154.019 Multiple Threaded scpd_new DLL in use 
+16154.020 WSAStartup ok
+16154.021 RNG_X931A24 Initialized
+16154.021 1, enCcSystem: 011 1 100 0 0 1
+16154.031 1, enCcCreateChannel: 0012 1 7 3333 0 3000 0 "" 0
+16154.054 listen(lsock) created socket=2032 on port 3333
+16154.054 Listen Successful, port: 3333
+18468.686 0(0), enCcAcrSrq: 0407 1 1 1
+18813.438 0(0), enCcAcrSrq: 0407 1 1 1
+18869.206 0(0), enCcAcrSrq: 0407 1 1 1
+18971.423 0(0), enCcAcrSrq: 0407 1 1 1
+20150.945 0(0), enCcAcrSrq: 0407 1 1 1

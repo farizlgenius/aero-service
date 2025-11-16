@@ -153,5 +153,13 @@ namespace HIDAeroService.Service.Impl
             return ResponseHelper.SuccessBuilder<bool>(true);
         }
 
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetCredentialFlagAsync()
+        {
+            var dtos = await context.CredentialFlags
+                .Select(x => MapperHelper.CredentialFlagToDto(x))
+                .ToArrayAsync();
+
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+        }
     }
 }

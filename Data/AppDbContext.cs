@@ -53,6 +53,11 @@ namespace HIDAeroService.Data
         public DbSet<Operator> Operators { get; set; }
         public DbSet<DoorSpareFlag> DoorSpareFlags { get; set; }
         public DbSet<DoorAccessControlFlag> DoorAccessControlFlags { get; set; }
+        public DbSet<Location> Locations { get; set; }
+        public DbSet<TransactionSource> TriggerSourceTypes { get; set; }
+        public DbSet<TransactionType> TriggerTranTypes { get; set; }
+        public DbSet<TransactionCode> TriggerTranCodes { get; set; }
+        public DbSet<CredentialFlag> CredentialFlags { get; set; }
 
         // Old 
 
@@ -110,73 +115,6 @@ namespace HIDAeroService.Data
 
             modelBuilder.Entity<Hardware>().Property(nameof(Hardware.LastSync)).HasColumnType("timestamp without time zone");
 
-            // Initial Database 
-
-            modelBuilder.Entity<OutputMode>().HasData(
-                new OutputMode { Id = 1, RelayMode = 0, OfflineMode = 0, Value = 0, Description = "Normal Mode with Offline: No change"},
-                new OutputMode { Id = 2, RelayMode = 1, OfflineMode = 0, Value = 1, Description = "Inverted Mode Offline: No change" },
-                new OutputMode { Id = 3, RelayMode = 0, OfflineMode = 1, Value = 16, Description = "Normal Mode Offline: Inactive" },
-                 new OutputMode { Id = 4, RelayMode = 1, OfflineMode = 1, Value = 17, Description = "Inverted Mode Offline: Inactive" },
-                 new OutputMode { Id = 5, RelayMode = 0, OfflineMode = 2, Value = 32, Description = "Normal Mode Offline: Active" },
-                 new OutputMode { Id = 6, RelayMode = 1, OfflineMode = 2, Value = 33, Description = "Inverted Mode Offline: Active" }
-                );
-
-            modelBuilder.Entity<OutputOfflineMode>().HasData(
-                new OutputOfflineMode { Id = 1, Value = 0, Name = "No Change",Description="No Change"  },
-                 new OutputOfflineMode { Id = 2, Value = 1, Name = "Inactive",Description= "Relay de-energized" },
-                  new OutputOfflineMode { Id = 3, Value = 2, Name = "Active",Description = "Relay energized" }
-                );
-
-            modelBuilder.Entity<RelayMode>().HasData(
-                new RelayMode { Id = 1, Value = 0, Name = "Normal",Description="Active is energized" },
-                new RelayMode { Id = 2, Value = 1, Name = "Inverted",Description="Active is de-energized" }
-                );
-
-            modelBuilder.Entity<ReaderConfigurationMode>().HasData(
-                new ReaderConfigurationMode { Id = 1, Name = "Single Reader", Value = 0, Description = "Single reader, controlling the door" },
-                new ReaderConfigurationMode { Id = 2, Name = "Paired readers, Master", Value = 1, Description = "Paired readers, Master - this reader controls the door" },
-                new ReaderConfigurationMode { Id = 3, Name = "Paired readers, Slave", Value = 2, Description = "Paired readers, Slave - this reader does not control door" },
-                new ReaderConfigurationMode { Id = 4, Name = "Turnstile Reader", Value = 3, Description = "Turnstile Reader. Two modes selected by: n strike_t_min != strike_t_max (original implementation - an access grant pulses the strike output for 1 second) n strike_t_min == strike_t_max (pulses the strike output after a door open/close signal for each additional access grant if several grants are waiting)" },
-                new ReaderConfigurationMode { Id = 5, Name = "Elevator, no floor", Value = 4, Description = "Elevator, no floor select feedback" },
-                new ReaderConfigurationMode { Id = 6, Name = "Elevator with floor", Value = 5, Description = "Elevator with floor select feedback"}
-                );
-
-            modelBuilder.Entity<StrikeMode>().HasData(
-                new StrikeMode { Id = 1, Name = "Normal", Value = 0, Description = "Do not use! This would allow the strike to stay active for the entire strike time allowing the door to be opened multiple times." },
-                new StrikeMode { Id = 2, Name = "Deactivate On Open", Value = 1, Description = "Deactivate strike when door opens" },
-                new StrikeMode { Id = 3, Name = "Deactivate On Close", Value = 2, Description = "Deactivate strike on door close or strike_t_max expires" },
-                new StrikeMode { Id = 4, Name = "Tailgate", Value = 16, Description = "Used with ACR_S_OPEN or ACR_S_CLOSE, to select tailgate mode: pulse (strk_sio:strk_number+1) relay for each user expected to enter" }
-                );
-
-            modelBuilder.Entity<DoorMode>().HasData(
-                new DoorMode { Id = 1, Name = "Disable", Value = 1, Description = "Disable the ACR, no REX" },
-                new DoorMode { Id = 2, Name = "Unlock", Value = 2, Description = "Unlock (unlimited access)" },
-                new DoorMode { Id = 3, Name = "Locked", Value = 3, Description = "Locked (no access, REX active)" },
-                new DoorMode { Id = 4, Name = "Facility code only", Value = 4, Description = "Facility code only" },
-                new DoorMode { Id = 5, Name = "Card only", Value = 5, Description = "Card only" },
-                new DoorMode { Id = 6, Name = "PIN only", Value = 6, Description = "PIN only" },
-                new DoorMode { Id = 7, Name = "Card and PIN", Value = 7, Description = "Card and PIN required"},
-                new DoorMode { Id = 8, Name = "Card or PIN", Value = 8, Description = "Card or PIN required" }
-            );
-
-            modelBuilder.Entity<AntipassbackMode>().HasData(
-                new AntipassbackMode { Id = 1, Name = "None", Value = 0, Description = "Do not check or alter anti-passback location. No antipassback rules." },
-                new AntipassbackMode { Id = 2, Name = "Soft Anti-passback", Value = 1, Description = "Soft anti-passback: Accept any new location, change the user’s location to current reader, and generate an antipassback violation for an invalid entry." },
-                new AntipassbackMode { Id = 3, Name = "Hard Anti-passback", Value = 2, Description = "Hard anti-passback: Check user location, if a valid entry is made, change user’s location to new location. If an invalid entry is attempted, do not grant access." },
-                new AntipassbackMode { Id = 4, Name = "Time-base Anti-passback - Last (Second)", Value = 3, Description = "Reader-based anti-passback using the ACR’s last valid user. Verify it’s not the same user within the time parameter specified within apb_delay." },
-                new AntipassbackMode { Id = 5, Name = "Time-base Anti-passback - History (Second)", Value = 4, Description = "Reader-based anti-passback using the access history from the cardholder database: Check user’s last ACR used, checks for same reader within a specified time (apb_delay). This requires the bSupportTimeApb flag be set in Command 1105: Access Database Specification." },
-                new AntipassbackMode { Id = 6, Name = "Area-base Anti-passback (Second)", Value = 5, Description = "Area based anti-passback: Check user’s current location, if it does not match the expected location then check the delay time (apb_delay). Change user’s location on entry. This requires the bSupportTimeApb flag be set in Command 1105: Access Database Specification." },
-                new AntipassbackMode { Id = 7, Name = "Time-base Anti-passback - Last (Minute)", Value = 6, Description = "Same as \"Time-base Anti-passback - Last (Second)\" but the apb_delay value is treated as minutes instead of seconds." },
-                new AntipassbackMode { Id = 8, Name = "Time-base Anti-passback - History (Minute)", Value = 7, Description = "Same as \"Time-base Anti-passback - History (Second)\" but the apb_delay value is treated as minutes instead of seconds." },
-                new AntipassbackMode { Id = 9, Name = "Area-base Anti-passback (Minute)", Value = 8, Description = "Same as \"Area-base Anti-passback (Second)\" but the apb_delay value is treated as minutes instead of seconds." }
-            );
-
-            modelBuilder.Entity<InputMode>().HasData(
-                new InputMode { Id = 1, Name = "Normally closed", Value = 0, Description = "Normally closed, no End-Of-Line (EOL)" },
-                new InputMode { Id = 2, Name = "Normally open", Value = 1, Description = "Normally open, no EOL" },
-                new InputMode { Id = 3, Name = "Standard EOL 1", Value = 2, Description = "Standard (ROM’ed) EOL: 1 kΩ normal, 2 kΩ active" },
-                new InputMode { Id = 4, Name = "Standard EOL 2", Value = 3, Description = "Standard (ROM’ed) EOL: 2 kΩ normal, 1 kΩ active" }
-                );
 
             #region Hardware 
 
@@ -203,6 +141,48 @@ namespace HIDAeroService.Data
                 .HasForeignKey(e => e.MacAddress)
                 .HasPrincipalKey(e => e.MacAddress)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            #endregion
+
+            #region Monitor Point
+
+            modelBuilder.Entity<MonitorPointMode>().HasData(
+                new MonitorPointMode { Id = 1, Name = "Normal mode (no exit or entry delay)", Value = 0, Description = "" },
+                new MonitorPointMode { Id = 2, Name = "Non-latching mode", Value = 1, Description = "" },
+                new MonitorPointMode { Id = 3, Name = "Latching mode", Value = 2, Description = "" }
+            );
+
+            modelBuilder.Entity<InputMode>().HasData(
+                new InputMode { Id = 1, Name = "Normally closed", Value = 0, Description = "Normally closed, no End-Of-Line (EOL)" },
+                new InputMode { Id = 2, Name = "Normally open", Value = 1, Description = "Normally open, no EOL" },
+                new InputMode { Id = 3, Name = "Standard EOL 1", Value = 2, Description = "Standard (ROM’ed) EOL: 1 kΩ normal, 2 kΩ active" },
+                new InputMode { Id = 4, Name = "Standard EOL 2", Value = 3, Description = "Standard (ROM’ed) EOL: 2 kΩ normal, 1 kΩ active" }
+                );
+
+            #endregion
+
+            #region Control Point 
+
+            modelBuilder.Entity<OutputMode>().HasData(
+                new OutputMode { Id = 1, RelayMode = 0, OfflineMode = 0, Value = 0, Description = "Normal Mode with Offline: No change" },
+                new OutputMode { Id = 2, RelayMode = 1, OfflineMode = 0, Value = 1, Description = "Inverted Mode Offline: No change" },
+                new OutputMode { Id = 3, RelayMode = 0, OfflineMode = 1, Value = 16, Description = "Normal Mode Offline: Inactive" },
+                 new OutputMode { Id = 4, RelayMode = 1, OfflineMode = 1, Value = 17, Description = "Inverted Mode Offline: Inactive" },
+                 new OutputMode { Id = 5, RelayMode = 0, OfflineMode = 2, Value = 32, Description = "Normal Mode Offline: Active" },
+                 new OutputMode { Id = 6, RelayMode = 1, OfflineMode = 2, Value = 33, Description = "Inverted Mode Offline: Active" }
+                );
+
+            modelBuilder.Entity<OutputOfflineMode>().HasData(
+                new OutputOfflineMode { Id = 1, Value = 0, Name = "No Change", Description = "No Change" },
+                 new OutputOfflineMode { Id = 2, Value = 1, Name = "Inactive", Description = "Relay de-energized" },
+                  new OutputOfflineMode { Id = 3, Value = 2, Name = "Active", Description = "Relay energized" }
+                );
+
+            modelBuilder.Entity<RelayMode>().HasData(
+                new RelayMode { Id = 1, Value = 0, Name = "Normal", Description = "Active is energized" },
+                new RelayMode { Id = 2, Value = 1, Name = "Inverted", Description = "Active is de-energized" }
+                );
+
 
             #endregion
 
@@ -316,6 +296,15 @@ namespace HIDAeroService.Data
                 new Entity.TimeZone { Id = 1, Uuid = SeedDefaults.SystemGuid, Name = "Always", ComponentId = 1, Mode = 1, ActiveTime = "", DeactiveTime = "", IsActive = true }
                );
 
+            modelBuilder.Entity<TimeZoneMode>().HasData(
+                new TimeZoneMode { Id = 1, Value = 0, Name = "Off", Description = "The time zone is always inactive, regardless of the time zone intervals specified or the holidays in effect." },
+                new TimeZoneMode { Id = 2, Value = 1, Name = "On", Description = "The time zone is always active, regardless of the time zone intervals specified or the holidays in effect." },
+                new TimeZoneMode { Id = 3, Value = 2, Name = "Scan", Description = "The Time Zone state is decided using either the Day MaskAsync or the Holiday MaskAsync. If the current day is specified as a Holiday, the state relies only on whether the Holiday MaskAsync Flag for that Holiday is set (if today is Holiday 1, and the Holiday MaskAsync sets flag H1, then the state is active. If today is Holiday 1, and the Holiday MaskAsync does not have flag H1 set, then the state is inactive). Holidays override the standard accessibility rules. If the current day is not specified as a Holiday, the Time Zone is active or inactive depending on whether the current day/time falls within the Day MaskAsync. If Day MaskAsync is M-F, 8-5, the Time Zone is active during those times, and inactive on the weekend and outside working hours." },
+                new TimeZoneMode { Id = 4, Value = 3, Name = "OneTimeEvent", Description = "Scan time zone interval list and apply only if the date string in expTest matches the current date" },
+                new TimeZoneMode { Id = 5, Value = 4, Name = "Scan, Always Honor Day of Week", Description = "This mode is similar to mode Scan Mode, but instead of only checking the Holiday MaskAsync if it is a Holiday, and only checking the Day MaskAsync if not, this mode checks both. If it is not a Holiday, this mode functions normally, only checking the Day MaskAsync. If it is a Holiday, this mode performs a logical OR on the Holiday and Day Masks. If either or both are active, the Time Zone is active, otherwise if neither is active, the Time Zone is inactive." },
+                new TimeZoneMode { Id = 6, Value = 5, Name = "Scan, Always Holiday and Day of Week", Description = "This mode is similar to mode \"Scan, Always Honor Day of Week\", but it performs a logical AND instead of a logical OR. If it is not a Holiday, this mode functions normally, only checking the Day MaskAsync. If it is a Holiday, this mode is only active if BOTH the Day MaskAsync and Holiday MaskAsync are active. If either one is inactive, the entire Time Zone is inactive." }
+             );
+
             #endregion
 
             #region Interval
@@ -397,6 +386,68 @@ namespace HIDAeroService.Data
                 
                 );
 
+            modelBuilder.Entity<ReaderConfigurationMode>().HasData(
+              new ReaderConfigurationMode { Id = 1, Name = "Single Reader", Value = 0, Description = "Single reader, controlling the door" },
+              new ReaderConfigurationMode { Id = 2, Name = "Paired readers, Master", Value = 1, Description = "Paired readers, Master - this reader controls the door" },
+              new ReaderConfigurationMode { Id = 3, Name = "Paired readers, Slave", Value = 2, Description = "Paired readers, Slave - this reader does not control door" },
+              new ReaderConfigurationMode { Id = 4, Name = "Turnstile Reader", Value = 3, Description = "Turnstile Reader. Two modes selected by: n strike_t_min != strike_t_max (original implementation - an access grant pulses the strike output for 1 second) n strike_t_min == strike_t_max (pulses the strike output after a door open/close signal for each additional access grant if several grants are waiting)" },
+              new ReaderConfigurationMode { Id = 5, Name = "Elevator, no floor", Value = 4, Description = "Elevator, no floor select feedback" },
+              new ReaderConfigurationMode { Id = 6, Name = "Elevator with floor", Value = 5, Description = "Elevator with floor select feedback" }
+              );
+
+            modelBuilder.Entity<StrikeMode>().HasData(
+                new StrikeMode { Id = 1, Name = "Normal", Value = 0, Description = "Do not use! This would allow the strike to stay active for the entire strike time allowing the door to be opened multiple times." },
+                new StrikeMode { Id = 2, Name = "Deactivate On Open", Value = 1, Description = "Deactivate strike when door opens" },
+                new StrikeMode { Id = 3, Name = "Deactivate On Close", Value = 2, Description = "Deactivate strike on door close or strike_t_max expires" },
+                new StrikeMode { Id = 4, Name = "Tailgate", Value = 16, Description = "Used with ACR_S_OPEN or ACR_S_CLOSE, to select tailgate mode: pulse (strk_sio:strk_number+1) relay for each user expected to enter" }
+                );
+
+            modelBuilder.Entity<DoorMode>().HasData(
+                new DoorMode { Id = 1, Name = "Disable", Value = 1, Description = "Disable the ACR, no REX" },
+                new DoorMode { Id = 2, Name = "Unlock", Value = 2, Description = "Unlock (unlimited access)" },
+                new DoorMode { Id = 3, Name = "Locked", Value = 3, Description = "Locked (no access, REX active)" },
+                new DoorMode { Id = 4, Name = "Facility code only", Value = 4, Description = "Facility code only" },
+                new DoorMode { Id = 5, Name = "Card only", Value = 5, Description = "Card only" },
+                new DoorMode { Id = 6, Name = "PIN only", Value = 6, Description = "PIN only" },
+                new DoorMode { Id = 7, Name = "Card and PIN", Value = 7, Description = "Card and PIN required" },
+                new DoorMode { Id = 8, Name = "Card or PIN", Value = 8, Description = "Card or PIN required" }
+            );
+
+            modelBuilder.Entity<AntipassbackMode>().HasData(
+                new AntipassbackMode { Id = 1, Name = "None", Value = 0, Description = "Do not check or alter anti-passback location. No antipassback rules." },
+                new AntipassbackMode { Id = 2, Name = "Soft Anti-passback", Value = 1, Description = "Soft anti-passback: Accept any new location, change the user’s location to current reader, and generate an antipassback violation for an invalid entry." },
+                new AntipassbackMode { Id = 3, Name = "Hard Anti-passback", Value = 2, Description = "Hard anti-passback: Check user location, if a valid entry is made, change user’s location to new location. If an invalid entry is attempted, do not grant access." },
+                new AntipassbackMode { Id = 4, Name = "Time-base Anti-passback - Last (Second)", Value = 3, Description = "Reader-based anti-passback using the ACR’s last valid user. Verify it’s not the same user within the time parameter specified within apb_delay." },
+                new AntipassbackMode { Id = 5, Name = "Time-base Anti-passback - History (Second)", Value = 4, Description = "Reader-based anti-passback using the access history from the cardholder database: Check user’s last ACR used, checks for same reader within a specified time (apb_delay). This requires the bSupportTimeApb flag be set in Command 1105: Access Database Specification." },
+                new AntipassbackMode { Id = 6, Name = "Area-base Anti-passback (Second)", Value = 5, Description = "Area based anti-passback: Check user’s current location, if it does not match the expected location then check the delay time (apb_delay). Change user’s location on entry. This requires the bSupportTimeApb flag be set in Command 1105: Access Database Specification." },
+                new AntipassbackMode { Id = 7, Name = "Time-base Anti-passback - Last (Minute)", Value = 6, Description = "Same as \"Time-base Anti-passback - Last (Second)\" but the apb_delay value is treated as minutes instead of seconds." },
+                new AntipassbackMode { Id = 8, Name = "Time-base Anti-passback - History (Minute)", Value = 7, Description = "Same as \"Time-base Anti-passback - History (Second)\" but the apb_delay value is treated as minutes instead of seconds." },
+                new AntipassbackMode { Id = 9, Name = "Area-base Anti-passback (Minute)", Value = 8, Description = "Same as \"Area-base Anti-passback (Second)\" but the apb_delay value is treated as minutes instead of seconds." }
+            );
+
+            modelBuilder.Entity<OsdpBaudrate>().HasData(
+                  new OsdpBaudrate { Id = 1, Value = 0x01, Name = "9600", Description = "" },
+                  new OsdpBaudrate { Id = 2, Value = 0x02, Name = "19200", Description = "" },
+                  new OsdpBaudrate { Id = 3, Value = 0x03, Name = "38400", Description = "" },
+                  new OsdpBaudrate { Id = 4, Value = 0x04, Name = "115200", Description = "" },
+                  new OsdpBaudrate { Id = 5, Value = 0x05, Name = "57600", Description = "" },
+                  new OsdpBaudrate { Id = 6, Value = 0x06, Name = "230400", Description = "" }
+              );
+
+            modelBuilder.Entity<OsdpAddress>().HasData(
+                new OsdpAddress { Id = 1, Value = 0x00, Name = "Address 0", Description = "" },
+                new OsdpAddress { Id = 2, Value = 0x20, Name = "Address 1", Description = "" },
+                new OsdpAddress { Id = 3, Value = 0x40, Name = "Address 2", Description = "" },
+                new OsdpAddress { Id = 4, Value = 0x60, Name = "Address 3", Description = "" }
+            );
+
+
+            modelBuilder.Entity<ReaderOutConfiguration>().HasData(
+                new ReaderOutConfiguration { Id = 1, Name = "Ignore", Value = 0, Description = "Ignore data from alternate reader" },
+                new ReaderOutConfiguration { Id = 2, Name = "Normal", Value = 1, Description = "Normal Access Reader (two read heads to the same processor)" }
+
+                );
+
 
             #endregion
 
@@ -432,8 +483,13 @@ namespace HIDAeroService.Data
                 new CredentialFlag { Id=2,Value=0x02,Name="Free One Antipassback",Description="Allow one free anti-passback pass"},
                 new CredentialFlag { Id=3,Value=0x04,Name="Anti-passback exempt"},
                 new CredentialFlag { Id=4,Value=0x08,Name="Timing for disbled (ADA)",Description= "Use timing parameters for the disabled (ADA)" },
-                new CredentialFlag { Id=5,Value=0x10,Name="Pin Exempt",Description= "PIN Exempt for \"Card & PIN\" ACR mode" }
+                new CredentialFlag { Id=5,Value=0x10,Name="Pin Exempt",Description= "PIN Exempt for \"Card & PIN\" ACR mode" },
+                new CredentialFlag { Id=6,Value=0x20,Name="No Change APB Location",Description= "Do not change apb_loc" },
+                new CredentialFlag { Id=7,Value=0x40,Name="No Update Current Use Count",Description= "Do not alter either the \"original\" or the \"current\" use count values" },
+                new CredentialFlag { Id=8,Value=0x80,Name="No Update Current Use Count but Change Use Limit",Description= "Do not alter the \"current\" use count but change the original use limit stored in the cardholder database" }
                 );
+
+
 
 
             #endregion
@@ -471,9 +527,423 @@ namespace HIDAeroService.Data
 
             #endregion
 
+            #region Location
+
+            modelBuilder.Entity<Location>()
+                .HasData(
+                new Location { Id=1,ComponentId=1,LocationName="Main",Description="Main Location",CreatedDate=SeedDefaults.SystemDate,UpdatedDate=SeedDefaults.SystemDate,Uuid=SeedDefaults.SystemGuid,IsActive=true }
+                );
+
+            #endregion
+
+            #region Transaction
+
+            modelBuilder.Entity<TransactionSourceType>()
+                .HasKey(e => new { e.TransactionSourceValue, e.TransactionTypeValue });
+
+            modelBuilder.Entity<TransactionSourceType>()
+                .HasOne(e => e.TransactionSource)
+                .WithMany(e => e.TransactionSourceTypes)
+                .HasForeignKey(e => e.TransactionSourceValue)
+                .HasPrincipalKey(e => e.Value);
+
+            modelBuilder.Entity<TransactionSourceType>()
+                .HasOne(e => e.TransactionType)
+                .WithMany(e => e.TransactionSourceTypes)
+                .HasForeignKey(e => e.TransactionTypeValue)
+                .HasPrincipalKey(e => e.Value);
+
+            modelBuilder.Entity<TransactionType>()
+                .HasMany(e => e.transactionCodes)
+                .WithOne(e => e.TransactionType)
+                .HasForeignKey(e => e.TransactionTypeValue)
+                .HasPrincipalKey(e => e.Value);
+
+            modelBuilder.Entity<TransactionSource>()
+                .HasData(
+                    new TransactionSource { Id = 1, Name = "SCP diagnostics", Value = 0x00 },
+                    new TransactionSource { Id = 2, Name = "SCP to HOST communication driver - not defined", Value = 0x01 },
+                    new TransactionSource { Id = 3, Name = "SCP local monitor points (tamper & power fault)", Value = 0x02 },
+                    new TransactionSource { Id = 4, Name = "SIO diagnostics", Value = 0x03 },
+                    new TransactionSource { Id = 5, Name = "SIO communication driver", Value = 0x04 },
+                    new TransactionSource { Id = 6, Name = "SIO cabinet tamper", Value = 0x05 },
+                    new TransactionSource { Id = 7, Name = "SIO power monitor", Value = 0x06 },
+                    new TransactionSource { Id = 8, Name = "Alarm monitor point", Value = 0x07 },
+                    new TransactionSource { Id = 9, Name = "Output control point", Value = 0x08 },
+                    new TransactionSource { Id = 10, Name = "Access Control Reader (ACR)", Value = 0x09 },
+                    new TransactionSource { Id = 11, Name = "ACR: reader tamper monitor", Value = 0x0A },
+                    new TransactionSource { Id = 12, Name = "ACR: door position sensor", Value = 0x0B },
+                    new TransactionSource { Id = 13, Name = "ACR: 1st \"Request to exit\" input", Value = 0x0D },
+                    new TransactionSource { Id = 14, Name = "ACR: 2nd \"Request to exit\" input", Value = 0x0E },
+                    new TransactionSource { Id = 15, Name = "Time zone", Value = 0x0F },
+                    new TransactionSource { Id = 16, Name = "Procedure (action list)", Value = 0x10 },
+                    new TransactionSource { Id = 17, Name = "Trigger", Value = 0x11 },
+                    new TransactionSource { Id = 18, Name = "Trigger variable", Value = 0x12 },
+                    new TransactionSource { Id = 19, Name = "Monitor point group", Value = 0x13 },
+                    new TransactionSource { Id = 20, Name = "Access area", Value = 0x14 },
+                    new TransactionSource { Id = 21, Name = "ACR: the alternate reader's tamper monitor source_number", Value = 0x15 },
+                    new TransactionSource { Id = 22, Name = "Login Service", Value = 0x18 }
+                );
+
+            modelBuilder.Entity<TransactionType>()
+                .HasData(
+                    new TransactionType { Id = 1, Name = "System", Value = 0x01 },
+                    new TransactionType { Id = 2, Name = "SIO communication status report",  Value = 0x02 },
+                    new TransactionType { Id = 3, Name = "Binary card data",  Value = 0x03 },
+                    new TransactionType { Id = 4, Name = "Card data",  Value = 0x04 },
+                    new TransactionType { Id = 5, Name = "Formatted card: facility code, card number ID, issue code",  Value = 0x05 },
+                    new TransactionType { Id = 6, Name = "Formatted card: card number only", Value = 0x06 },
+                    new TransactionType { Id = 7, Name = "Change-of-state", Value = 0x07 },
+                    new TransactionType { Id = 8, Name = "Exit request", Value = 0x08 },
+                    new TransactionType { Id = 9, Name = "Door status monitor change-of-state", Value = 0x09 },
+                    new TransactionType { Id = 10, Name = "Procedure (command list) log", Value = 0x0A },
+                    new TransactionType { Id = 11, Name = "User command request report", Value = 0x0B },
+                    new TransactionType { Id = 12, Name = "Change of state: trigger variable, time zone, & triggers", Value = 0x0C },
+                    new TransactionType { Id = 13, Name = "ACR mode change", Value = 0x0D },
+                    new TransactionType { Id = 14, Name = "Monitor point group status change", Value = 0x0E },
+                    new TransactionType { Id = 15, Name = "Access area", Value = 0x0F },
+                    new TransactionType { Id = 16, Name = "Extended user command", Value = 0x12 },
+                    new TransactionType { Id = 17, Name = "Use limit report", Value = 0x13 },
+                    new TransactionType { Id = 18, Name = "Web activity", Value = 0x14 },
+                    new TransactionType { Id = 19, Name = "Specify tranTypeCardFull (0x05) instead", Value = 0x15 },
+                    new TransactionType { Id = 20, Name = "Specify tranTypeCardID (0x06) instead", Value = 0x16 },
+                    new TransactionType { Id = 21, Name = "Operating mode change", Value = 0x18 },
+                    new TransactionType { Id = 22, Name = "Elevator Floor Status CoS", Value = 0x1A },
+                    new TransactionType { Id = 23, Name = "File Download Status", Value = 0x1B },
+                    new TransactionType { Id = 24, Name = "Elevator Floor Access Transaction", Value = 0x1D },
+                    new TransactionType { Id = 25, Name = "Specify tranTypeCardFull (0x05) instead", Value = 0x25 },
+                    new TransactionType { Id = 26, Name = "Specify tranTypeCardID (0x06) instead", Value = 0x26 },
+                    new TransactionType { Id = 27, Name = "Specify tranTypeCardFull (0x05) instead", Value = 0x35 },
+                    new TransactionType { Id = 28, Name = "ACR extended feature stateless transition", Value = 0x40 },
+                    new TransactionType { Id = 29, Name = "ACR extended feature change-of-state", Value = 0x41 },
+
+                    // New
+                    new TransactionType { Id=30,Name= "Formatted card and user PIN was captured at an ACR", Value=0x42},
+                    new TransactionType { Id =31, Name = "Reports use limit update ", Value = 0x13 }
+                );
+
+            modelBuilder.Entity<TransactionSourceType>()
+                .HasData(
+                    // tranSrcScpDiag
+                    new TransactionSourceType { Id=1,TransactionSourceValue=0x00,TransactionTypeValue=0x01 },
+                    new TransactionSourceType { Id=2,TransactionSourceValue=0x00,TransactionTypeValue=0x14},
+                    new TransactionSourceType { Id=3,TransactionSourceValue=0x00,TransactionTypeValue=0x18},
+                    new TransactionSourceType { Id=4,TransactionSourceValue=0x00,TransactionTypeValue=0x1B},
+
+                    // tranSrcScpLcl 
+                    new TransactionSourceType { Id=5,TransactionSourceValue=0x02,TransactionTypeValue=0x07},
+
+                    // tranSrcSioDiag
+                    //new TransactionSourceType { Id=6,TransactionSourceValue=0x03,TransactionTypeValue=0x02},
+
+                    // tranSrcSioCom
+                    new TransactionSourceType { Id=7,TransactionSourceValue=0x04,TransactionTypeValue=0x02},
+
+                    // tranSrcSioTmpr
+                    new TransactionSourceType { Id=8,TransactionSourceValue=0x05,TransactionTypeValue=0x07},
+
+                    // tranSrcSioPwr
+                    new TransactionSourceType { Id = 9, TransactionSourceValue = 0x06, TransactionTypeValue = 0x07 },
+
+                    // tranSrcMP
+                    new TransactionSourceType { Id = 10, TransactionSourceValue = 0x07, TransactionTypeValue = 0x07 },
+
+                    // tranSrcCP
+                    new TransactionSourceType { Id = 11, TransactionSourceValue = 0x08, TransactionTypeValue = 0x07 },
+
+                    // tranSrcACR
+                    new TransactionSourceType { Id = 12, TransactionSourceValue = 0x09, TransactionTypeValue = 0x03 },
+                    new TransactionSourceType { Id = 13, TransactionSourceValue = 0x09, TransactionTypeValue = 0x04 },
+                    new TransactionSourceType { Id = 14, TransactionSourceValue = 0x09, TransactionTypeValue = 0x05 },
+                    new TransactionSourceType { Id = 15, TransactionSourceValue = 0x09, TransactionTypeValue = 0x06 },
+                    new TransactionSourceType { Id = 16, TransactionSourceValue = 0x09, TransactionTypeValue = 0x08 },
+                    new TransactionSourceType { Id = 17, TransactionSourceValue = 0x09, TransactionTypeValue = 0x0B },
+                    new TransactionSourceType { Id = 18, TransactionSourceValue = 0x09, TransactionTypeValue = 0x0D },
+                    new TransactionSourceType { Id = 19, TransactionSourceValue = 0x09, TransactionTypeValue = 0x12 },
+                    new TransactionSourceType { Id = 20, TransactionSourceValue = 0x09, TransactionTypeValue = 0x13 },
+                    new TransactionSourceType { Id = 21, TransactionSourceValue = 0x09, TransactionTypeValue = 0x1A },
+                    new TransactionSourceType { Id = 22, TransactionSourceValue = 0x09, TransactionTypeValue = 0x1D },
+                    new TransactionSourceType { Id = 23, TransactionSourceValue = 0x09, TransactionTypeValue = 0x40 },
+                    new TransactionSourceType { Id = 24, TransactionSourceValue = 0x09, TransactionTypeValue = 0x41 },
+                    new TransactionSourceType { Id = 25, TransactionSourceValue = 0x09, TransactionTypeValue = 0x13 },
+
+                    // tranSrcAcrTmpr
+                    new TransactionSourceType { Id = 25, TransactionSourceValue = 0x0A, TransactionTypeValue = 0x07 },
+
+                    // tranSrcAcrDoor
+                    new TransactionSourceType { Id = 26, TransactionSourceValue = 0x0B, TransactionTypeValue = 0x09 },
+
+                    // tranSrcAcrRex0
+                    new TransactionSourceType { Id = 27, TransactionSourceValue = 0x0D, TransactionTypeValue = 0x07 },
+
+                    // tranSrcAcrRex1
+                    new TransactionSourceType { Id = 28, TransactionSourceValue = 0x0E, TransactionTypeValue = 0x07 },
+
+                    // tranSrcTimeZone
+                    new TransactionSourceType { Id = 29, TransactionSourceValue = 0x0F, TransactionTypeValue = 0x0C },
+
+                    // tranSrcProcedure
+                    new TransactionSourceType { Id = 30, TransactionSourceValue = 0x10, TransactionTypeValue = 0x0A },
+
+                    // tranSrcTrigger
+                    new TransactionSourceType { Id = 31, TransactionSourceValue = 0x11, TransactionTypeValue = 0x0C },
+
+                    // tranSrcTrigVar
+                    new TransactionSourceType { Id = 32, TransactionSourceValue = 0x12, TransactionTypeValue = 0x0C },
+
+                    // tranSrcMPG
+                    new TransactionSourceType { Id = 33, TransactionSourceValue = 0x13, TransactionTypeValue = 0x0E },
+
+                    // tranSrcArea
+                    new TransactionSourceType { Id = 34, TransactionSourceValue = 0x14, TransactionTypeValue = 0x0F },
+
+                    // tranSrcAcrTmprAlt
+                    new TransactionSourceType { Id = 35, TransactionSourceValue = 0x15, TransactionTypeValue = 0x07 },
+
+                    // tranSrcLoginService
+                    new TransactionSourceType { Id = 36, TransactionSourceValue = 0x18, TransactionTypeValue = 0x07 }
+
+                    // 
+                );
+
+            modelBuilder.Entity<TransactionCode>()
+                .HasData(
+
+                    // TypeSys
+                    new TransactionCode { Id=1,Name= "SCP power-up diagnostics",Description= "SCP power-up diagnostics", Value =1,TransactionTypeValue=0x01 },
+                    new TransactionCode { Id = 2, Name = "Host communications offline", Description= "Host communications offline", Value = 2, TransactionTypeValue = 0x01 },
+                    new TransactionCode { Id = 3, Name = "Host communications online",Description= "Host communications online", Value = 3, TransactionTypeValue = 0x01 },
+                    new TransactionCode { Id = 4, Name = "Transaction count exceeds the preset limit",Description= "Transaction count exceeds the preset limit", Value = 4, TransactionTypeValue = 0x01 },
+                    new TransactionCode { Id = 5, Name = "Configuration database save complete",Description= "Configuration database save complete", Value = 5, TransactionTypeValue = 0x01 },
+                    new TransactionCode { Id = 6, Name = "Card database save complete", Description= "Card database save complete", Value = 6, TransactionTypeValue = 0x01 },
+                    new TransactionCode { Id = 7, Name = "Card database cleared due to SRAM buffer overflow",Description= "Card database cleared due to SRAM buffer overflow", Value = 7, TransactionTypeValue = 0x01 },
+
+                    // TypeSioComm
+                    new TransactionCode { Id = 8, Name = "Disabled",Description= "Communication disabled (result of host command)", Value = 1, TransactionTypeValue = 0x02 },
+                    new TransactionCode { Id = 9, Name = "Offline",Description= "Timeout (no/bad response from unit)", Value = 2, TransactionTypeValue = 0x02 },
+                    new TransactionCode { Id = 10, Name = "Offline",Description= "Invalid identification from SIO", Value = 3, TransactionTypeValue = 0x02 },
+                    new TransactionCode { Id = 11, Name = "Offline",Description="Command too long", Value = 4, TransactionTypeValue = 0x02 },
+                    new TransactionCode { Id = 12, Name = "Online",Description= "Normal connection", Value = 5, TransactionTypeValue = 0x02 },
+                    new TransactionCode { Id = 13, Name = "hexLoad report",Description= "ser_num is address loaded (-1 = last record)", Value = 6, TransactionTypeValue = 0x02 },
+
+                    // TypeCardBin
+                    new TransactionCode { Id = 14, Name = "Access denied",Description= "Invalid card format", Value = 1, TransactionTypeValue = 0x03 },
+
+                    // TypeCardBcd
+                    new TransactionCode { Id = 15, Name = "Access denied",Description= "Invalid card format, forward read", Value = 1, TransactionTypeValue = 0x04 },
+                    new TransactionCode { Id = 16, Name = "Access denied",Description= "Invalid card format, reverse read", Value = 2, TransactionTypeValue = 0x04 },
+
+                    // TypeCardFull
+                    new TransactionCode { Id = 17, Name = "Request rejected",Description= "Access point \"locked\"", Value = 1, TransactionTypeValue = 0x05 },
+                    new TransactionCode { Id = 18, Name = "Request accepted",Description= "Access point \"unlocked\"", Value = 2, TransactionTypeValue = 0x05 },
+                    new TransactionCode { Id = 19, Name = "Request rejected",Description= "Invalid facility code", Value = 3, TransactionTypeValue = 0x05 },
+                    new TransactionCode { Id = 20, Name = "Request rejected",Description= "Invalid facility code extension", Value = 4, TransactionTypeValue = 0x05 },
+                    new TransactionCode { Id = 21, Name = "Request rejected",Description= "Not in card file", Value = 5, TransactionTypeValue = 0x05 },
+                    new TransactionCode { Id = 22, Name = "Request rejected",Description= "Invalid issue code", Value = 6, TransactionTypeValue = 0x05 },
+                    new TransactionCode { Id = 23, Name = "Request granted",Description= "Facility code verified, not used", Value = 7, TransactionTypeValue = 0x05 },
+                    new TransactionCode { Id = 24, Name = "Request granted",Description= "Facility code verified, door used", Value = 8, TransactionTypeValue = 0x05 },
+                    new TransactionCode { Id = 25, Name = "Access denied",Description= "Asked for host approval, then timed out", Value = 9, TransactionTypeValue = 0x05 },
+                    new TransactionCode { Id = 26, Name = "Reporting that this card is \"about to get access granted\"",Description= "Reporting that this card is \"about to get access granted\"", Value = 10, TransactionTypeValue = 0x05 },
+                    new TransactionCode { Id = 27, Name = "Access denied",Description= "Count exceeded", Value = 11, TransactionTypeValue = 0x05 },
+                    new TransactionCode { Id = 28, Name = "Access denied",Description= "Asked for host approval, then host denied", Value = 12, TransactionTypeValue = 0x05 },
+                    new TransactionCode { Id = 29, Name = "Request rejected",Description= "Airlock is busy", Value = 13, TransactionTypeValue = 0x05 },
+
+                    // TypeCardID
+                    new TransactionCode { Id = 30, Name = "Request rejected", Description= "Deactivated card", Value = 1, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 31, Name = "Request rejected",Description= "Before activation date", Value = 2, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 32, Name = "Request rejected", Description= "After expiration date", Value = 3, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 33, Name = "Request rejected",Description= "Invalid time", Value = 4, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 34, Name = "Request rejected",Description="Invalid PIN", Value = 5, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 35, Name = "Request rejected", Description= "Anti-passback violation", Value = 6, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 36, Name = "Request granted",Description= "APB violation, not used", Value = 7, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 37, Name = "Request granted", Description= "APB violation, used", Value = 8, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 38, Name = "Request rejected", Description= "Duress code detected", Value = 9, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 39, Name = "Request granted", Description= "Duress, used", Value = 10, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 40, Name = "Request granted", Description= "Duress, not used", Value = 11, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 41, Name = "Request granted",Description= "Full test, not used", Value = 12, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 42, Name = "Request granted",Description= "Full test, used", Value = 13, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 43, Name = "Request denied",Description= "Never allowed at this reader (all Tz's = 0)", Value = 14, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 44, Name = "Request denied", Description= "No second card presented", Value = 15, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 45, Name = "Request denied", Description= "Occupancy limit reached", Value = 16, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 46, Name = "Request denied", Description= "The area is NOT enabled", Value = 17, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 47, Name = "Request denied", Description= "Use limit", Value = 18, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 48, Name = "Granting access",Description= "Used/not used transaction will follow", Value = 21, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 49, Name = "Request rejected",Description= "No escort card presented", Value = 24, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 50, Name = "Reserved",Description= "Reserved", Value = 25, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 51, Name = "Reserved",Description= "Reserved", Value = 26, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 52, Name = "Reserved", Description= "Reserved", Value = 27, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 53, Name = "Request rejected",Description= "Airlock is busy", Value = 29, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 54, Name = "Request rejected",Description= "Incomplete CARD & PIN sequence", Value = 30, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 55, Name = "Request granted",Description= "Double-card event", Value = 31, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 56, Name = "Request granted", Description= "Double-card event while in uncontrolled state (locked/unlocked)", Value = 32, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 57, Name = "Granting access", Description= "Requires escort, pending escort card", Value = 39, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 58, Name = "Request rejected", Description= "Violates minimum occupancy count", Value = 40, TransactionTypeValue = 0x06 },
+                    new TransactionCode { Id = 59, Name = "Request rejected",Description= "Card pending at another reader", Value = 41, TransactionTypeValue = 0x06 },
+
+                    // TypeHostCardFullPin 
+                    new TransactionCode { Id = 59, Name = "Request rejected", Description = "Card pending at another reader", Value = 41, TransactionTypeValue = 0x42 },
+
+                    // TypeHostCardFullPin 
+                    new TransactionCode { Id=60,Name= "Reporting that this Card and PIN pair is \"requesting access\"",Description= "Reporting that this Card and PIN pair is \"requesting access\"",Value=1,TransactionTypeValue=0x66 },
+
+                    // TypeCoS
+                    new TransactionCode { Id = 61, Name = "Disconnected", Description = "Disconnected (from an input point ID)", Value = 1, TransactionTypeValue = 0x07 },
+                    new TransactionCode { Id = 62, Name = "Offline", Description = "Unknown (offline): no report from the ID", Value = 2, TransactionTypeValue = 0x07 },
+                    new TransactionCode { Id = 63, Name = "Secure", Description = "Secure (or deactivate relay)", Value = 3, TransactionTypeValue = 0x07 },
+                    new TransactionCode { Id = 64, Name = "Alarm", Description = "Alarm (or activated relay: perm or temp)", Value = 4, TransactionTypeValue = 0x07 },
+                    new TransactionCode { Id = 65, Name = "Fault", Description = "Fault", Value = 5, TransactionTypeValue = 0x07 },
+                    new TransactionCode { Id = 66, Name = "Exit delay in progress", Description = "Exit delay in progress", Value = 6, TransactionTypeValue = 0x07 },
+                    new TransactionCode { Id = 67, Name = "Entry delay in progress", Description = "Entry delay in progress", Value = 7, TransactionTypeValue = 0x07 },
+
+                     // TypeREX
+                     new TransactionCode { Id = 68, Name = "Exit cycle", Description = "Door use not verified", Value = 1, TransactionTypeValue = 0x08 },
+                     new TransactionCode { Id = 69, Name = "Exit cycle", Description = "Door not used", Value = 2, TransactionTypeValue = 0x08 },
+                     new TransactionCode { Id = 70, Name = "Exit cycle", Description = "Door used", Value = 3, TransactionTypeValue = 0x08 },
+                     new TransactionCode { Id = 71, Name = "Host initiated request", Description = "Door use not verified", Value = 4, TransactionTypeValue = 0x08 },
+                     new TransactionCode { Id = 72, Name = "Host initiated request", Description = "Door not used", Value = 5, TransactionTypeValue = 0x08 },
+                     new TransactionCode { Id = 73, Name = "Host initiated request", Description = "Door used", Value = 6, TransactionTypeValue = 0x08 },
+                     new TransactionCode { Id = 74, Name = "Exit cycle", Description = "Started", Value = 9, TransactionTypeValue = 0x08 },
+
+                     // TypeCoSDoor
+                     new TransactionCode { Id = 75, Name = "Disconnected", Description = "Disconnected", Value = 1, TransactionTypeValue = 0x09 },
+                     new TransactionCode { Id = 76, Name = "Unknown _RS bits: last known status", Description = "Unknown _RS bits: last known status", Value = 2, TransactionTypeValue = 0x09 },
+                     new TransactionCode { Id = 77, Name = "Secure", Description = "Secure", Value = 3, TransactionTypeValue = 0x09 },
+                     new TransactionCode { Id = 78, Name = "Alarm", Description = "Alarm (forced, held open or both)", Value = 4, TransactionTypeValue = 0x09 },
+                     new TransactionCode { Id = 79, Name = "Fault", Description = "Fault (fault type is encoded in door_status byte)", Value = 5, TransactionTypeValue = 0x09 },
+
+                     // TypeProcedure
+                     new TransactionCode { Id = 80, Name = "Cancel procedure (abort delay)", Description = "Cancel procedure (abort delay)", Value = 1, TransactionTypeValue = 0x0A },
+                     new TransactionCode { Id = 81, Name = "Execute procedure (start new)", Description = "Execute procedure (start new)", Value = 2, TransactionTypeValue = 0x0A },
+                     new TransactionCode { Id = 82, Name = "Resume procedure, if paused", Description = "Resume procedure, if paused", Value = 3, TransactionTypeValue = 0x0A },
+                     new TransactionCode { Id = 83, Name = "Execute procedure with prefix 256 actions", Description = "Execute procedure with prefix 256 actions", Value = 4, TransactionTypeValue = 0x0A },
+                     new TransactionCode { Id = 84, Name = "Execute procedure with prefix 512 actions", Description = "Execute procedure with prefix 512 actions", Value = 5, TransactionTypeValue = 0x0A },
+                     new TransactionCode { Id = 85, Name = "Execute procedure with prefix 1024 actions", Description = "Execute procedure with prefix 1024 actions", Value = 6, TransactionTypeValue = 0x0A },
+                     new TransactionCode { Id = 86, Name = "Resume procedure with prefix 256 actions", Description = "Resume procedure with prefix 256 actions", Value = 7, TransactionTypeValue = 0x0A },
+                     new TransactionCode { Id = 87, Name = "Resume procedure with prefix 512 actions", Description = "Resume procedure with prefix 512 actions", Value = 8, TransactionTypeValue = 0x0A },
+                     new TransactionCode { Id = 88, Name = "Resume procedure with prefix 1024 actions", Description = "Resume procedure with prefix 1024 actions", Value = 9, TransactionTypeValue = 0x0A },
+                     new TransactionCode { Id = 89, Name = "Command was issued to procedure with no actions - (NOP)", Description = "Command was issued to procedure with no actions - (NOP)", Value = 10, TransactionTypeValue = 0x0A },
 
 
+                     // TypeUserCmnd
+                     new TransactionCode { Id = 90, Name = "Command entered by the user", Description = "Command entered by the user", Value = 10, TransactionTypeValue = 0x0B },
 
+                     // TypeActivate
+                     new TransactionCode { Id = 91, Name = "Became inactive", Description = "Became inactive", Value = 1, TransactionTypeValue = 0x0C },
+                     new TransactionCode { Id = 92, Name = "Became active", Description = "Became active", Value = 2, TransactionTypeValue = 0x0C },
+
+                     // TypeAcr
+                     new TransactionCode { Id = 93, Name = "Disabled", Description = "Disabled", Value = 1, TransactionTypeValue = 0x0D },
+                     new TransactionCode { Id = 94, Name = "Unlocked", Description = "Unlocked", Value = 2, TransactionTypeValue = 0x0D },
+                     new TransactionCode { Id = 95, Name = "Locked", Description = "Locked (exit request enabled)", Value = 3, TransactionTypeValue = 0x0D },
+                     new TransactionCode { Id = 96, Name = "Facility code only", Description = "Facility code only", Value = 4, TransactionTypeValue = 0x0D },
+                     new TransactionCode { Id = 97, Name = "Card only", Description = "Card only", Value = 5, TransactionTypeValue = 0x0D },
+                     new TransactionCode { Id = 98, Name = "PIN only", Description = "PIN only", Value = 6, TransactionTypeValue = 0x0D },
+                     new TransactionCode { Id = 99, Name = "Card and PIN", Description = "Card and PIN", Value = 7, TransactionTypeValue = 0x0D },
+                     new TransactionCode { Id = 100, Name = "PIN or card", Description = "PIN or card", Value = 8, TransactionTypeValue = 0x0D },
+
+                     // TypeMPG
+                     new TransactionCode { Id = 101, Name = "First disarm command executed", Description = "First disarm command executed (mask_count was 0, all MPs got masked)", Value = 1, TransactionTypeValue = 0x0E },
+                     new TransactionCode { Id = 102, Name = "Subsequent disarm command executed", Description = "Subsequent disarm command executed (mask_count incremented, MPs already masked)", Value = 2, TransactionTypeValue = 0x0E },
+                     new TransactionCode { Id = 103, Name = "Override command: armed", Description = "Override command: armed (mask_count cleared, all points unmasked)", Value = 3, TransactionTypeValue = 0x0E },
+                     new TransactionCode { Id = 104, Name = "Override command: disarmed", Description = "Override command: disarmed (mask_count set, unmasked all points)", Value = 4, TransactionTypeValue = 0x0E },
+                     new TransactionCode { Id = 105, Name = "Force arm command, MPG armed", Description = "Force arm command, MPG armed, (may have active zones, mask_count is now zero)", Value = 5, TransactionTypeValue = 0x0E },
+                     new TransactionCode { Id = 106, Name = "Force arm command, MPG not armed", Description = "Force arm command, MPG not armed (mask_count decremented)", Value = 6, TransactionTypeValue = 0x0E },
+                     new TransactionCode { Id = 107, Name = "Standard arm command, MPG armed", Description = "Standard arm command, MPG armed (did not have active zones, mask_count is now zero)", Value = 7, TransactionTypeValue = 0x0E },
+                     new TransactionCode { Id = 108, Name = "Standard arm command, MPG did not arm", Description = "Standard arm command, MPG did not arm, (had active zones, mask_count unchanged)d", Value = 8, TransactionTypeValue = 0x0E },
+                     new TransactionCode { Id = 109, Name = "Standard arm command, MPG still armed", Description = "Standard arm command, MPG still armed, (mask_count decremented)", Value = 9, TransactionTypeValue = 0x0E },
+                     new TransactionCode { Id = 110, Name = "Override arm command, MPG armed", Description = "Override arm command, MPG armed (mask_count is now zero)", Value = 10, TransactionTypeValue = 0x0E },
+                     new TransactionCode { Id = 111, Name = "Override arm command, MPG did not arm", Description = "Override arm command, MPG did not arm, (mask_count decremented)", Value = 11, TransactionTypeValue = 0x0E },
+
+                     // TypeArea
+                     new TransactionCode { Id = 112, Name = "Area disabled", Description = "Area disabled", Value = 1, TransactionTypeValue = 0x0F },
+                     new TransactionCode { Id = 113, Name = "Area enabled", Description = "Area enabled", Value = 2, TransactionTypeValue = 0x0F },
+                     new TransactionCode { Id = 114, Name = "Occupancy count reached zero", Description = "Occupancy count reached zero", Value = 3, TransactionTypeValue = 0x0F },
+                     new TransactionCode { Id = 115, Name = "Occupancy count reached the \"downward-limit\"", Description = "Occupancy count reached the \"downward-limit\"", Value = 4, TransactionTypeValue = 0x0F },
+                     new TransactionCode { Id = 116, Name = "Occupancy count reached the \"upward-limit\"", Description = "Occupancy count reached the \"upward-limit\"", Value = 5, TransactionTypeValue = 0x0F },
+                     new TransactionCode { Id = 117, Name = "Occupancy count reached the \"max-occupancy-limit\"", Description = "Occupancy count reached the \"max-occupancy-limit\"", Value = 6, TransactionTypeValue = 0x0F },
+                     new TransactionCode { Id = 118, Name = "Multi-occupancy mode changed", Description = "Multi-occupancy mode changed", Value = 7, TransactionTypeValue = 0x0F },
+
+                    // TypeWebActivity
+                    // Web Activity Transaction Codes (TransactionTypeValue = 0x14)
+                    new TransactionCode { Id = 119, Name = "Save home notes", Description = "Save home notes", Value = 1, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 120, Name = "Save network settings", Description = "Save network settings", Value = 2, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 121, Name = "Save host communication settings", Description = "Save host communication settings", Value = 3, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 122, Name = "Add user", Description = "Add user", Value = 4, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 123, Name = "Delete user", Description = "Delete user", Value = 5, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 124, Name = "Modify user", Description = "Modify user", Value = 6, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 125, Name = "Save password strength and session timer", Description = "Save password strength and session timer", Value = 7, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 126, Name = "Save web server options", Description = "Save web server options", Value = 8, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 127, Name = "Save time server settings", Description = "Save time server settings", Value = 9, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 128, Name = "Auto save timer settings", Description = "Auto save timer settings", Value = 10, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 129, Name = "Load certificate", Description = "Load certificate", Value = 11, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 130, Name = "Logged out by link", Description = "Logged out by link", Value = 12, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 131, Name = "Logged out by timeout", Description = "Logged out by timeout", Value = 13, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 132, Name = "Logged out by user", Description = "Logged out by user", Value = 14, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 133, Name = "Logged out by apply", Description = "Logged out by apply", Value = 15, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 134, Name = "Invalid login", Description = "Invalid login", Value = 16, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 135, Name = "Successful login", Description = "Successful login", Value = 17, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 136, Name = "Network diagnostic saved", Description = "Network diagnostic saved", Value = 18, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 137, Name = "Card DB size saved", Description = "Card DB size saved", Value = 19, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 138, Name = "Diagnostic page saved", Description = "Diagnostic page saved", Value = 21, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 139, Name = "Security options page saved", Description = "Security options page saved", Value = 22, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 140, Name = "Add-on package page saved", Description = "Add-on package page saved", Value = 23, TransactionTypeValue = 0x14 },
+                    //new TransactionCode { Id = 141, Name = "Not used", Description = "Not used", Value = 24, TransactionTypeValue = 0x14 },
+                    //new TransactionCode { Id = 142, Name = "Not used", Description = "Not used", Value = 25, TransactionTypeValue = 0x14 },
+                    //new TransactionCode { Id = 143, Name = "Not used", Description = "Not used", Value = 26, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 144, Name = "Invalid login limit reached", Description = "Invalid login limit reached", Value = 27, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 145, Name = "Firmware download initiated", Description = "Firmware download initiated", Value = 28, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 146, Name = "Advanced networking routes saved", Description = "Advanced networking routes saved", Value = 29, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 147, Name = "Advanced networking reversion timer started", Description = "Advanced networking reversion timer started", Value = 30, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 148, Name = "Advanced networking reversion timer elapsed", Description = "Advanced networking reversion timer elapsed", Value = 31, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 149, Name = "Advanced networking route changes reverted", Description = "Advanced networking route changes reverted", Value = 32, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 150, Name = "Advanced networking route changes cleared", Description = "Advanced networking route changes cleared", Value = 33, TransactionTypeValue = 0x14 },
+                    new TransactionCode { Id = 151, Name = "Certificate generation started", Description = "Certificate generation started", Value = 34, TransactionTypeValue = 0x14 },
+
+
+                    // TypeOperatingMode
+                    new TransactionCode { Id = 152, Name = "Operating mode changed to mode 0", Description = "Operating mode changed to mode 0", Value = 1, TransactionTypeValue = 0x18 },
+                    new TransactionCode { Id = 153, Name = "Operating mode changed to mode 1", Description = "Operating mode changed to mode 1", Value = 2, TransactionTypeValue = 0x18 },
+                    new TransactionCode { Id = 154, Name = "Operating mode changed to mode 2", Description = "Operating mode changed to mode 2", Value = 3, TransactionTypeValue = 0x18 },
+                    new TransactionCode { Id = 155, Name = "Operating mode changed to mode 3", Description = "Operating mode changed to mode 3", Value = 4, TransactionTypeValue = 0x18 },
+                    new TransactionCode { Id = 156, Name = "Operating mode changed to mode 4", Description = "Operating mode changed to mode 4", Value = 5, TransactionTypeValue = 0x18 },
+                    new TransactionCode { Id = 157, Name = "Operating mode changed to mode 5", Description = "Operating mode changed to mode 5", Value = 6, TransactionTypeValue = 0x18 },
+                    new TransactionCode { Id = 158, Name = "Operating mode changed to mode 6", Description = "Operating mode changed to mode 6", Value = 7, TransactionTypeValue = 0x18 },
+                    new TransactionCode { Id = 159, Name = "Operating mode changed to mode 7", Description = "Operating mode changed to mode 7", Value = 8, TransactionTypeValue = 0x18 },
+
+                    // TypeCoSElevator
+                    new TransactionCode { Id = 160, Name = "Secure", Description = "Floor status is secure", Value = 1, TransactionTypeValue = 0x1A },
+                    new TransactionCode { Id = 161, Name = "Public", Description = "Floor status is public", Value = 2, TransactionTypeValue = 0x1A },
+                    new TransactionCode { Id = 162, Name = "Disabled (override)", Description = "Floor status is disabled (override)", Value = 3, TransactionTypeValue = 0x1A },
+
+                    // TypeFileDownloadStatus
+                    new TransactionCode { Id = 163, Name = "File transfer success", Description = "File transfer success", Value = 1, TransactionTypeValue = 0x1B },
+                    new TransactionCode { Id = 164, Name = "File transfer error", Description = "File transfer error", Value = 2, TransactionTypeValue = 0x1B },
+                    new TransactionCode { Id = 165, Name = "File delete successful", Description = "File delete successful", Value = 3, TransactionTypeValue = 0x1B },
+                    new TransactionCode { Id = 166, Name = "File delete unsuccessful", Description = "File delete unsuccessful", Value = 4, TransactionTypeValue = 0x1B },
+                    new TransactionCode { Id = 167, Name = "OSDP file transfer complete (primary ACR)", Description = "OSDP file transfer complete (primary ACR) - look at source number for ACR number", Value = 5, TransactionTypeValue = 0x1B },
+                    new TransactionCode { Id = 168, Name = "OSDP file transfer error (primary ACR)", Description = "OSDP file transfer error (primary ACR) - look at source number for ACR number", Value = 6, TransactionTypeValue = 0x1B },
+                    new TransactionCode { Id = 169, Name = "OSDP file transfer complete (alternate ACR)", Description = "OSDP file transfer complete (alternate ACR) - look at source number for ACR number", Value = 7, TransactionTypeValue = 0x1B },
+                    new TransactionCode { Id = 170, Name = "OSDP file transfer error (alternate ACR)", Description = "OSDP file transfer error (alternate ACR) - look at source number for ACR number", Value = 8, TransactionTypeValue = 0x1B },
+
+                    // TypeCoSElevatorAccess
+                    new TransactionCode { Id = 171, Name = "Elevator access", Description = "Elevator access", Value = 1, TransactionTypeValue = 0x1D },
+
+                    // TypeAcrExtFeatureStls
+                    new TransactionCode { Id = 172, Name = "Extended status updated", Description = "Extended status updated", Value = 1, TransactionTypeValue = 0x40 },
+
+                    // TypeAcrExtFeatureCoS
+                    new TransactionCode { Id = 173, Name = "Secure / Inactive", Description = "Secure / Inactive", Value = 3, TransactionTypeValue = 0x41 },
+                    new TransactionCode { Id = 174, Name = "Alarm / Active", Description = "Alarm / Active", Value = 4, TransactionTypeValue = 0x41 }
+
+                );
+
+
+            #endregion
+
+            /*
+             *
+            * Below should be inside License Feature
+            * */
             modelBuilder.Entity<SystemConfiguration>().HasData(
                 new SystemConfiguration { Id = 1, nPorts = 1, nScp = 100, nChannelId = 1, cType = 7, cPort = 3333 }
                 );
@@ -482,6 +952,8 @@ namespace HIDAeroService.Data
                 new SystemSetting { Id = 1, nMsp1Port = 3, nTransaction = 60000, nSio = 16, nMp = 615, nCp = 388, nAcr = 64, nAlvl = 32000, nTrgr = 1024, nProc = 1024, GmtOffset = -25200, nTz = 255, nHol = 255, nMpg = 128, nCard = 200 }
                 );
 
+            #region Component
+
             modelBuilder.Entity<Component>().HasData(
                 new Component { Id = 1, ModelNo = 196, Name = "HID Aero X1100", nInput = 7, nOutput = 4, nReader = 4 },
                 new Component { Id = 2, ModelNo = 193, Name = "HID Aero X100", nInput = 7, nOutput = 4, nReader = 4 },
@@ -489,48 +961,16 @@ namespace HIDAeroService.Data
                 new Component { Id = 4, ModelNo = 195, Name = "HID Aero X300", nInput = 5, nOutput = 12, nReader = 0 },
                 new Component { Id = 5, ModelNo = 190, Name = "VertX V100", nInput = 7, nOutput = 4, nReader = 2 },
                 new Component { Id = 6, ModelNo = 191, Name = "VertX V200", nInput = 19, nOutput = 2, nReader = 0 },
-                new Component { Id = 7, ModelNo = 192, Name = "VertX V300", nInput = 5, nOutput = 12, nReader = 0}
+                new Component { Id = 7, ModelNo = 192, Name = "VertX V300", nInput = 5, nOutput = 12, nReader = 0 }
              );
 
-
-            modelBuilder.Entity<TimeZoneMode>().HasData(
-                new TimeZoneMode { Id = 1, Value = 0, Name = "Off", Description = "The time zone is always inactive, regardless of the time zone intervals specified or the holidays in effect." },
-                new TimeZoneMode { Id = 2,  Value = 1, Name = "On", Description = "The time zone is always active, regardless of the time zone intervals specified or the holidays in effect." },
-                new TimeZoneMode { Id = 3, Value = 2, Name = "Scan", Description = "The Time Zone state is decided using either the Day MaskAsync or the Holiday MaskAsync. If the current day is specified as a Holiday, the state relies only on whether the Holiday MaskAsync Flag for that Holiday is set (if today is Holiday 1, and the Holiday MaskAsync sets flag H1, then the state is active. If today is Holiday 1, and the Holiday MaskAsync does not have flag H1 set, then the state is inactive). Holidays override the standard accessibility rules. If the current day is not specified as a Holiday, the Time Zone is active or inactive depending on whether the current day/time falls within the Day MaskAsync. If Day MaskAsync is M-F, 8-5, the Time Zone is active during those times, and inactive on the weekend and outside working hours." },
-                new TimeZoneMode { Id = 4,  Value = 3, Name = "OneTimeEvent", Description = "Scan time zone interval list and apply only if the date string in expTest matches the current date" },
-                new TimeZoneMode { Id = 5,  Value = 4, Name = "Scan, Always Honor Day of Week", Description = "This mode is similar to mode Scan Mode, but instead of only checking the Holiday MaskAsync if it is a Holiday, and only checking the Day MaskAsync if not, this mode checks both. If it is not a Holiday, this mode functions normally, only checking the Day MaskAsync. If it is a Holiday, this mode performs a logical OR on the Holiday and Day Masks. If either or both are active, the Time Zone is active, otherwise if neither is active, the Time Zone is inactive." },
-                new TimeZoneMode { Id = 6, Value = 5, Name = "Scan, Always Holiday and Day of Week", Description = "This mode is similar to mode \"Scan, Always Honor Day of Week\", but it performs a logical AND instead of a logical OR. If it is not a Holiday, this mode functions normally, only checking the Day MaskAsync. If it is a Holiday, this mode is only active if BOTH the Day MaskAsync and Holiday MaskAsync are active. If either one is inactive, the entire Time Zone is inactive." }
-             );
+            #endregion
 
 
-            modelBuilder.Entity<OsdpBaudrate>().HasData(
-                new OsdpBaudrate { Id=1,Value=0x01,Name="9600",Description="" },
-                new OsdpBaudrate { Id=2,Value=0x02, Name = "19200",Description=""},
-                new OsdpBaudrate { Id=3,Value=0x03, Name = "38400",Description=""},
-                new OsdpBaudrate {  Id =4,Value=0x04, Name = "115200",Description=""},
-                new OsdpBaudrate {  Id =5,Value=0x05, Name = "57600",Description=""},
-                new OsdpBaudrate { Id=6,Value=0x06, Name = "230400",Description=""}
-                );
 
-            modelBuilder.Entity<OsdpAddress>().HasData(
-                new OsdpAddress { Id=1,Value=0x00,Name="Address 0",Description="" },
-                new OsdpAddress { Id=2,Value=0x20,Name="Address 1",Description=""},
-                new OsdpAddress { Id=3,Value=0x40,Name="Address 2",Description=""},
-                new OsdpAddress { Id=4,Value=0x60,Name="Address 3",Description=""}
-                );
+  
 
 
-            modelBuilder.Entity<ReaderOutConfiguration>().HasData(
-                new ReaderOutConfiguration { Id=1,Name= "Ignore",Value=0,Description= "Ignore data from alternate reader" },
-                new ReaderOutConfiguration { Id=2,Name= "Normal",Value=1,Description= "Normal Access Reader (two read heads to the same processor)" }
-
-                );
-
-            modelBuilder.Entity<MonitorPointMode>().HasData(
-                new MonitorPointMode { Id = 1, Name = "Normal mode (no exit or entry delay)", Value = 0, Description = "" },
-                new MonitorPointMode { Id = 2, Name = "Non-latching mode", Value = 1, Description = "" },
-                new MonitorPointMode { Id = 3, Name = "Latching mode", Value = 2, Description = "" }
-            );
 
 
         }

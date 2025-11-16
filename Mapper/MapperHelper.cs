@@ -118,12 +118,12 @@ namespace HIDAeroService.Mapper
 
                 // Detail
                 Model = dto.Model,
-                //Readers = dto.Readers.Select(x => DtoToReader(x,Create)).ToList(),
-                //Sensors = dto.Sensors.Select(x => DtoToSensor(x,Create)).ToList(),
-                //Strikes = dto.Strikes.Select(x => DtotoStrike(x,Create)).ToList(),
-                //RequestExits = dto.RequestExits.Select(x => DtoToRequestExit(x,Create)).ToList(),
-                //MonitorPoints = dto.MonitorPoints.Select(x => DtoToMonitorPoint(x,Create)).ToList(),
-                //ControlPoints = dto.ControlPoints.Select(x => DtoToControlPoint(x,Create)).ToList(),
+                //Readers = dto.Readers.Select(x => DtoToReader(x,CreateAsync)).ToList(),
+                //Sensors = dto.Sensors.Select(x => DtoToSensor(x,CreateAsync)).ToList(),
+                //Strikes = dto.Strikes.Select(x => DtotoStrike(x,CreateAsync)).ToList(),
+                //RequestExits = dto.RequestExits.Select(x => DtoToRequestExit(x,CreateAsync)).ToList(),
+                //MonitorPoints = dto.MonitorPoints.Select(x => DtoToMonitorPoint(x,CreateAsync)).ToList(),
+                //ControlPoints = dto.ControlPoints.Select(x => DtoToControlPoint(x,CreateAsync)).ToList(),
                 Address = dto.Address,
                 Port = dto.Port,
                 nInput = dto.nInput,
@@ -920,6 +920,16 @@ namespace HIDAeroService.Mapper
             };
         }
 
+        public static ModeDto CredentialFlagToDto(CredentialFlag flag)
+        {
+            return new ModeDto
+            {
+                Name= flag.Name,
+                Description = flag.Description,
+                Value = flag.Value,
+            };
+        }
+
 
 
         #endregion
@@ -1299,13 +1309,13 @@ namespace HIDAeroService.Mapper
 
         #region Location
 
-        public static Location DtoToLocation(LocationDto dto,DateTime Create)
+        public static Location DtoToLocation(LocationDto dto,short LocationId,DateTime Create)
         {
             return new Location
             {
-                Id = dto.Id,
                 Uuid = dto.Uuid,
-                Name = dto.Name,
+                ComponentId = LocationId,
+                LocationName = dto.LocationName,
                 Description = dto.Description,
                 CreatedDate = Create,
                 UpdatedDate = Create,
@@ -1316,18 +1326,16 @@ namespace HIDAeroService.Mapper
         {
             return new LocationDto
             {
-                Id=location.Id,
                 Uuid=location.Uuid,
-                Name=location.Name,
+                LocationId=location.ComponentId,
+                LocationName=location.LocationName,
                 Description=location.Description,
-                CreatedDate=location.CreatedDate,
-                UpdatedDate=location.UpdatedDate,
             };
         }
 
         public static void UpdateLocation(Location location,LocationDto dto) 
         {
-            location.Name = dto.Name;
+            location.LocationName = dto.LocationName;
             location.Description = dto.Description;
             location.UpdatedDate = DateTime.Now;
         }
