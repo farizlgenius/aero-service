@@ -920,7 +920,7 @@ namespace HIDAeroService.Mapper
             };
         }
 
-        public static ModeDto CredentialFlagToDto(CredentialFlag flag)
+        public static ModeDto CredentialFlagToDto(CredentialFlagOption flag)
         {
             return new ModeDto
             {
@@ -1354,7 +1354,6 @@ namespace HIDAeroService.Mapper
                 LocationName = entity.LocationName,
                 IsActive = entity.IsActive,
                 ComponentId = entity.ComponentId,
-                MacAddress = entity.MacAddress,
 
                 // Detail
                 Name = entity.Name,
@@ -1378,7 +1377,6 @@ namespace HIDAeroService.Mapper
                 LocationId=dto.LocationId,
                 LocationName = dto.LocationName,
                 IsActive = dto.IsActive,
-                MacAddress = dto.MacAddress,
                 ComponentId = ComponentId,
                 CreatedDate = Create,
                 UpdatedDate = Create,
@@ -1402,7 +1400,6 @@ namespace HIDAeroService.Mapper
             entity.LocationId = dto.LocationId;
             entity.LocationName = dto.LocationName;
             entity.IsActive = dto.IsActive;
-            entity.MacAddress = dto.MacAddress;
             entity.UpdatedDate = DateTime.Now;
 
             // Detail
@@ -1416,6 +1413,7 @@ namespace HIDAeroService.Mapper
             entity.OccUp = dto.OccUp;
             entity.AreaFlag = dto.AreaFlag;
         }
+
 
         #endregion
 

@@ -3,8 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HIDAeroService.Entity
 {
-    public sealed class AccessArea : BaseEntity
+    public sealed class AccessArea : NoMacBaseEntity,IComponentId
     {
+        public short ComponentId { get; set; }
         public string Name { get; set; } = string.Empty;    
         public short MultiOccupancy { get; set; }
         public short AccessControl { get; set; }
@@ -14,5 +15,8 @@ namespace HIDAeroService.Entity
         public short OccUp { get; set; }
         public short OccDown { get; set; }
         public short AreaFlag { get; set; }
+        public ICollection<Door> DoorsIn { get; set; }
+        public ICollection<Door> DoorsOut { get; set; }
+
     }
 }

@@ -378,7 +378,7 @@ namespace HIDAeroService.Service.Impl
                 return ResponseHelper.UnsuccessBuilder<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.MacAddress, Command.C115));
             }
 
-            // Delete old 
+            // DeleteAsync old 
             context.Sensors.Remove(door.Sensor);
             if(door.RequestExits is not null)context.RequestExits.RemoveRange(door.RequestExits);
             context.Readers.RemoveRange(door.Readers);
@@ -443,7 +443,7 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<IEnumerable<ModeDto>>> GetSpareFlagAsync()
         {
-            var dtos = await context.DoorSpareFlags
+            var dtos = await context.DoorAccessControlFlags
                 .Select(x => new ModeDto 
                 {
                     Name = x.Name,

@@ -1206,7 +1206,7 @@ namespace HIDAeroService.AeroLibrary
                 case 4:
                     return "Add user";
                 case 5:
-                    return "Delete user";
+                    return "DeleteAsync user";
                 case 6:
                     return "Modify user";
                 case 7:

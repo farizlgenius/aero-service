@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HIDAeroService.Entity
 {
-    public sealed class Location :IComponentId
+    public sealed class Location : IComponentId
     {
         [Key]
         public int Id { get; set; }

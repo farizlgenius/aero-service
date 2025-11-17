@@ -7,7 +7,7 @@ using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace HIDAeroService.Controllers.V1
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class AccessAreaController(IAccessAreaService accessareaService) : ControllerBase
     {
@@ -19,30 +19,67 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpPost]
-        public async Task<ActionResult<ResponseDto<bool>>> Create([FromBody] AccessAreaDto dto) 
+        public async Task<ActionResult<ResponseDto<bool>>> CreateAsync([FromBody] AccessAreaDto dto) 
         {
             var res = await accessareaService.CreateAsync(dto);
             return Ok(res);
         }
 
         [HttpPut]
-        public async Task<ActionResult<ResponseDto<AccessAreaDto>>> Update([FromBody] AccessAreaDto dto)
+        public async Task<ActionResult<ResponseDto<AccessAreaDto>>> UpdateAsync([FromBody] AccessAreaDto dto)
         {
             var res = await accessareaService.UpdateAsync(dto);
             return Ok(res);
         }
 
-        [HttpDelete("{mac}/{component}")]
-        public async Task<ActionResult<ResponseDto<bool>>> Delete(string mac,short component)
+        [HttpDelete("{component}")]
+        public async Task<ActionResult<ResponseDto<bool>>> DeleteAsync(short component)
         {
-            var res = await accessareaService.DeleteAsync(mac,component);
+            var res = await accessareaService.DeleteAsync(component);
             return Ok(res);
         }
 
-        [HttpGet("{mac}/{component}")]
-        public async Task<ActionResult<ResponseDto<AccessAreaDto>>> GetByComponentAsync(string mac,short component)
+        [HttpGet("{component}")]
+        public async Task<ActionResult<ResponseDto<AccessAreaDto>>> GetByComponentAsync(short component)
         {
-            var res = await accessareaService.GetByComponentAsync(mac,component);
+            var res = await accessareaService.GetByComponentAsync(component);
+            return Ok(res);
+        }
+
+        [HttpGet("command")]
+        public async Task<ActionResult<ResponseDto<ModeDto>>> GetCommandAsync()
+        {
+            var res = await accessareaService.GetCommandAsync();
+            return Ok(res);
+        }
+
+        [HttpGet("access")]
+        public async Task<ActionResult<ResponseDto<ModeDto>>> GetAccessControlOptionAsync()
+        {
+            var res = await accessareaService.GetAccessControlOptionAsync();
+            return Ok(res);
+        }
+
+
+        [HttpGet("occcontrol")]
+        public async Task<ActionResult<ResponseDto<ModeDto>>> GetOccupancyControlOptionAsync()
+        {
+            var res = await accessareaService.GetOccupancyControlOptionAsync();
+            return Ok(res);
+        }
+
+        [HttpGet("areaflag")]
+        public async Task<ActionResult<ResponseDto<ModeDto>>> GetAreaFlagOptionAsync()
+        {
+            var res = await accessareaService.GetAreaFlagOptionAsync();
+            return Ok(res);
+        }
+
+
+        [HttpGet("multiocc")]
+        public async Task<ActionResult<ResponseDto<ModeDto>>> GetMultiOccupancyOptionAsync()
+        {
+            var res = await accessareaService.GetMultiOccupancyOptionAsync();
             return Ok(res);
         }
 

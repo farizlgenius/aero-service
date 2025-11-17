@@ -73,7 +73,7 @@ namespace HIDAeroService.Service.Impl
             var link = await context.TimeZoneIntervals.AsNoTracking().Where(x => x.IntervalId == component).AnyAsync();
             if (link) return ResponseHelper.FoundReferenceBuilder<bool>();
 
-            // Delete using a lightweight tracked entity
+            // DeleteAsync using a lightweight tracked entity
             var interval = new Interval { Id = await context.Intervals.Where(x => x.ComponentId == component).Select(x => x.Id).FirstOrDefaultAsync() };
             context.Intervals.Attach(interval);
             context.Intervals.Remove(interval);

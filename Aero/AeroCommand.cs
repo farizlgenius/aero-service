@@ -1193,17 +1193,9 @@ namespace HIDAeroService.AeroLibrary
             bool flag = SendCommand(_commandValue, cc);
             if (flag)
             {
-                TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
-                Console.WriteLine("Command Tag : " + TagNo);
-                //insert code to store the command tag and associated cmnd struct.
-                //cmnd struct and tag can be deleted upon receipt of
-                //successful command delivery notification
                 return await SendCommandAsync(SCPDLL.scpGetTagLastPosted(ScpId), _commandTimeout);
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         #endregion

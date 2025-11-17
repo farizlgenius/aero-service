@@ -125,7 +125,7 @@ namespace HIDAeroService.Service.Impl
 
             if (entity is null) return ResponseHelper.NotFoundBuilder<CardHolderDto>();
             List<short> CredentialComponentId = new List<short>();
-            // Delete Old 
+            // DeleteAsync Old 
             var macs = entity.Credentials.SelectMany(x => x.HardwareCredentials.Select(x => x.MacAddress)).ToList();
             foreach(var mac in macs)
             {

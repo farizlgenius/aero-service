@@ -9,17 +9,33 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HIDAeroService.Migrations
 {
     /// <inheritdoc />
-    public partial class _09112025 : Migration
+    public partial class _171120251 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "AccessAreaCommands",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<short>(type: "smallint", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccessAreaCommands", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "AccessAreas",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     MultiOccupancy = table.Column<short>(type: "smallint", nullable: false),
                     AccessControl = table.Column<short>(type: "smallint", nullable: false),
@@ -30,8 +46,6 @@ namespace HIDAeroService.Migrations
                     OccDown = table.Column<short>(type: "smallint", nullable: false),
                     AreaFlag = table.Column<short>(type: "smallint", nullable: false),
                     Uuid = table.Column<string>(type: "text", nullable: false),
-                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
-                    MacAddress = table.Column<string>(type: "text", nullable: false),
                     LocationId = table.Column<int>(type: "integer", nullable: false),
                     LocationName = table.Column<string>(type: "text", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
@@ -41,6 +55,7 @@ namespace HIDAeroService.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AccessAreas", x => x.Id);
+                    table.UniqueConstraint("AK_AccessAreas_ComponentId", x => x.ComponentId);
                 });
 
             migrationBuilder.CreateTable(
@@ -208,6 +223,37 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CardHolders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    FirstName = table.Column<string>(type: "text", nullable: false),
+                    MiddleName = table.Column<string>(type: "text", nullable: false),
+                    LastName = table.Column<string>(type: "text", nullable: false),
+                    Sex = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    Phone = table.Column<string>(type: "text", nullable: false),
+                    Company = table.Column<string>(type: "text", nullable: false),
+                    Department = table.Column<string>(type: "text", nullable: false),
+                    Position = table.Column<string>(type: "text", nullable: false),
+                    ImagePath = table.Column<string>(type: "text", nullable: false),
+                    Uuid = table.Column<string>(type: "text", nullable: false),
+                    LocationId = table.Column<int>(type: "integer", nullable: false),
+                    LocationName = table.Column<string>(type: "text", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CardHolders", x => x.Id);
+                    table.UniqueConstraint("AK_CardHolders_UserId", x => x.UserId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Components",
                 columns: table => new
                 {
@@ -225,7 +271,7 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CredentialFlag",
+                name: "CredentialFlags",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -236,7 +282,7 @@ namespace HIDAeroService.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CredentialFlag", x => x.Id);
+                    table.PrimaryKey("PK_CredentialFlags", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -296,7 +342,7 @@ namespace HIDAeroService.Migrations
                     SerialNumber = table.Column<string>(type: "text", nullable: false),
                     IsUpload = table.Column<bool>(type: "boolean", nullable: false),
                     IsReset = table.Column<bool>(type: "boolean", nullable: false),
-                    LastSync = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    LastSync = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
                     Uuid = table.Column<string>(type: "text", nullable: false),
                     ComponentId = table.Column<short>(type: "smallint", nullable: false),
                     MacAddress = table.Column<string>(type: "text", nullable: false),
@@ -373,6 +419,25 @@ namespace HIDAeroService.Migrations
                 {
                     table.PrimaryKey("PK_Intervals", x => x.Id);
                     table.UniqueConstraint("AK_Intervals_ComponentId", x => x.ComponentId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Locations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Uuid = table.Column<string>(type: "text", nullable: false),
+                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
+                    LocationName = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Locations", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -626,24 +691,97 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CardHolders",
+                name: "TransactionSources",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<string>(type: "text", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    FirstName = table.Column<string>(type: "text", nullable: false),
-                    MiddleName = table.Column<string>(type: "text", nullable: false),
-                    LastName = table.Column<string>(type: "text", nullable: false),
-                    Sex = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
-                    Phone = table.Column<string>(type: "text", nullable: false),
-                    Company = table.Column<string>(type: "text", nullable: false),
-                    Department = table.Column<string>(type: "text", nullable: false),
-                    Position = table.Column<string>(type: "text", nullable: false),
-                    ImagePath = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<short>(type: "smallint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TransactionSources", x => x.Id);
+                    table.UniqueConstraint("AK_TransactionSources_Value", x => x.Value);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TransactionTypes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<short>(type: "smallint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TransactionTypes", x => x.Id);
+                    table.UniqueConstraint("AK_TransactionTypes_Value", x => x.Value);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CardHolderAccessLevel",
+                columns: table => new
+                {
+                    CardHolderId = table.Column<string>(type: "text", nullable: false),
                     AccessLevelId = table.Column<short>(type: "smallint", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CardHolderAccessLevel", x => new { x.AccessLevelId, x.CardHolderId });
+                    table.ForeignKey(
+                        name: "FK_CardHolderAccessLevel_AccessLevels_AccessLevelId",
+                        column: x => x.AccessLevelId,
+                        principalTable: "AccessLevels",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CardHolderAccessLevel_CardHolders_CardHolderId",
+                        column: x => x.CardHolderId,
+                        principalTable: "CardHolders",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CardHolderAdditional",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CardHolderId = table.Column<int>(type: "integer", nullable: false),
+                    HolderId = table.Column<string>(type: "text", nullable: false),
+                    Additional = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CardHolderAdditional", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CardHolderAdditional_CardHolders_CardHolderId",
+                        column: x => x.CardHolderId,
+                        principalTable: "CardHolders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Credentials",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
+                    Flag = table.Column<short>(type: "smallint", nullable: false),
+                    Bits = table.Column<int>(type: "integer", nullable: false),
+                    IssueCode = table.Column<int>(type: "integer", nullable: false),
+                    FacilityCode = table.Column<int>(type: "integer", nullable: false),
+                    CardNo = table.Column<long>(type: "bigint", nullable: false),
+                    Pin = table.Column<string>(type: "text", nullable: true),
+                    ActiveDate = table.Column<string>(type: "text", nullable: false),
+                    DeactiveDate = table.Column<string>(type: "text", nullable: false),
+                    CardHolderId = table.Column<string>(type: "text", nullable: false),
                     Uuid = table.Column<string>(type: "text", nullable: false),
                     LocationId = table.Column<int>(type: "integer", nullable: false),
                     LocationName = table.Column<string>(type: "text", nullable: false),
@@ -653,13 +791,13 @@ namespace HIDAeroService.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CardHolders", x => x.Id);
-                    table.UniqueConstraint("AK_CardHolders_UserId", x => x.UserId);
+                    table.PrimaryKey("PK_Credentials", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CardHolders_AccessLevels_AccessLevelId",
-                        column: x => x.AccessLevelId,
-                        principalTable: "AccessLevels",
-                        principalColumn: "ComponentId");
+                        name: "FK_Credentials_CardHolders_CardHolderId",
+                        column: x => x.CardHolderId,
+                        principalTable: "CardHolders",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -790,57 +928,76 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CardHolderAdditional",
+                name: "TransactionCodes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CardHolderId = table.Column<int>(type: "integer", nullable: false),
-                    HolderId = table.Column<string>(type: "text", nullable: false),
-                    Additional = table.Column<string>(type: "text", nullable: false)
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<short>(type: "smallint", nullable: false),
+                    TransactionTypeValue = table.Column<short>(type: "smallint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CardHolderAdditional", x => x.Id);
+                    table.PrimaryKey("PK_TransactionCodes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CardHolderAdditional_CardHolders_CardHolderId",
-                        column: x => x.CardHolderId,
-                        principalTable: "CardHolders",
-                        principalColumn: "Id",
+                        name: "FK_TransactionCodes_TransactionTypes_TransactionTypeValue",
+                        column: x => x.TransactionTypeValue,
+                        principalTable: "TransactionTypes",
+                        principalColumn: "Value",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Credentials",
+                name: "TransactionSourceType",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
-                    Flag = table.Column<short>(type: "smallint", nullable: false),
-                    Bits = table.Column<int>(type: "integer", nullable: false),
-                    IssueCode = table.Column<int>(type: "integer", nullable: false),
-                    FacilityCode = table.Column<int>(type: "integer", nullable: false),
-                    CardNo = table.Column<long>(type: "bigint", nullable: false),
-                    Pin = table.Column<string>(type: "text", nullable: true),
-                    ActiveDate = table.Column<string>(type: "text", nullable: false),
-                    DeactiveDate = table.Column<string>(type: "text", nullable: false),
-                    CardHolderId = table.Column<string>(type: "text", nullable: false),
-                    Uuid = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                    TransactionSourceValue = table.Column<short>(type: "smallint", nullable: false),
+                    TransactionTypeValue = table.Column<short>(type: "smallint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Credentials", x => x.Id);
+                    table.PrimaryKey("PK_TransactionSourceType", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Credentials_CardHolders_CardHolderId",
-                        column: x => x.CardHolderId,
-                        principalTable: "CardHolders",
-                        principalColumn: "UserId",
+                        name: "FK_TransactionSourceType_TransactionSources_TransactionSourceV~",
+                        column: x => x.TransactionSourceValue,
+                        principalTable: "TransactionSources",
+                        principalColumn: "Value",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TransactionSourceType_TransactionTypes_TransactionTypeValue",
+                        column: x => x.TransactionTypeValue,
+                        principalTable: "TransactionTypes",
+                        principalColumn: "Value",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HardwareCredential",
+                columns: table => new
+                {
+                    MacAddress = table.Column<string>(type: "text", nullable: false),
+                    HardwareCredentialId = table.Column<short>(type: "smallint", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false),
+                    CredentialId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HardwareCredential", x => new { x.MacAddress, x.HardwareCredentialId });
+                    table.ForeignKey(
+                        name: "FK_HardwareCredential_Credentials_CredentialId",
+                        column: x => x.CredentialId,
+                        principalTable: "Credentials",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_HardwareCredential_Hardwares_HardwareCredentialId",
+                        column: x => x.HardwareCredentialId,
+                        principalTable: "Hardwares",
+                        principalColumn: "ComponentId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -981,32 +1138,6 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "HardwareCredential",
-                columns: table => new
-                {
-                    MacAddress = table.Column<string>(type: "text", nullable: false),
-                    HardwareCredentialId = table.Column<short>(type: "smallint", nullable: false),
-                    Id = table.Column<int>(type: "integer", nullable: false),
-                    CredentialId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_HardwareCredential", x => new { x.MacAddress, x.HardwareCredentialId });
-                    table.ForeignKey(
-                        name: "FK_HardwareCredential_Credentials_CredentialId",
-                        column: x => x.CredentialId,
-                        principalTable: "Credentials",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_HardwareCredential_Hardwares_HardwareCredentialId",
-                        column: x => x.HardwareCredentialId,
-                        principalTable: "Hardwares",
-                        principalColumn: "ComponentId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Doors",
                 columns: table => new
                 {
@@ -1059,6 +1190,18 @@ namespace HIDAeroService.Migrations
                 {
                     table.PrimaryKey("PK_Doors", x => x.Id);
                     table.UniqueConstraint("AK_Doors_ComponentId", x => x.ComponentId);
+                    table.ForeignKey(
+                        name: "FK_Doors_AccessAreas_AntiPassBackIn",
+                        column: x => x.AntiPassBackIn,
+                        principalTable: "AccessAreas",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Doors_AccessAreas_AntiPassBackOut",
+                        column: x => x.AntiPassBackOut,
+                        principalTable: "AccessAreas",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Doors_Sensors_SensorComponentId",
                         column: x => x.SensorComponentId,
@@ -1188,8 +1331,26 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "AccessAreaCommands",
+                columns: new[] { "Id", "Description", "Name", "Value" },
+                values: new object[,]
+                {
+                    { 1, "Disable Area", "Disable Area", (short)1 },
+                    { 2, "Enable area", "Enable area", (short)2 },
+                    { 3, "Set current occupancy to occ_set value", "Set current occupancy to occ_set value", (short)3 },
+                    { 4, "Clear occupancy counts of the “standard” and “special” users", "Clear occupancy counts of the “standard” and “special” users", (short)5 },
+                    { 5, "Disable multi-occupancy rules", "Disable multi-occupancy rules", (short)6 },
+                    { 6, "Enable standard multi-occupancy processing", "Enable standard multi-occupancy processing", (short)7 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AccessAreas",
+                columns: new[] { "Id", "AccessControl", "AreaFlag", "ComponentId", "CreatedDate", "IsActive", "LocationId", "LocationName", "MultiOccupancy", "Name", "OccControl", "OccDown", "OccMax", "OccSet", "OccUp", "UpdatedDate", "Uuid" },
+                values: new object[] { 1, (short)0, (short)0, (short)-1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), true, 1, "Main", (short)0, "Any Area", (short)0, (short)0, (short)0, (short)0, (short)0, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "00000000-0000-0000-0000-000000000001" });
+
+            migrationBuilder.InsertData(
                 table: "AccessLevels",
-                columns: new[] { "Id", "ComponentId", "IsActive", "ComponentId", "LocationName", "LocationName", "Uuid" },
+                columns: new[] { "Id", "ComponentId", "IsActive", "LocationId", "LocationName", "Name", "Uuid" },
                 values: new object[,]
                 {
                     { 1, (short)1, true, 1, "Main Location", "No Access", "00000000-0000-0000-0000-000000000001" },
@@ -1198,7 +1359,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "AntipassbackModes",
-                columns: new[] { "Id", "Description", "LocationName", "Value" },
+                columns: new[] { "Id", "Description", "Name", "Value" },
                 values: new object[,]
                 {
                     { 1, "Do not check or alter anti-passback location. No antipassback rules.", "None", (short)0 },
@@ -1214,12 +1375,12 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "CardFormats",
-                columns: new[] { "Id", "Bits", "ChLn", "ChLoc", "ComponentId", "CreatedDate", "Facility", "FcLn", "FcLoc", "Flags", "FunctionId", "IcLn", "IcLoc", "IsActive", "ComponentId", "LocationName", "LocationName", "Offset", "PeLn", "PeLoc", "PoLn", "PoLoc", "UpdatedDate", "Uuid" },
+                columns: new[] { "Id", "Bits", "ChLn", "ChLoc", "ComponentId", "CreatedDate", "Facility", "FcLn", "FcLoc", "Flags", "FunctionId", "IcLn", "IcLoc", "IsActive", "LocationId", "LocationName", "Name", "Offset", "PeLn", "PeLoc", "PoLn", "PoLoc", "UpdatedDate", "Uuid" },
                 values: new object[] { 1, (short)26, (short)16, (short)9, (short)0, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), (short)-1, (short)0, (short)0, (short)0, (short)1, (short)0, (short)0, true, 1, "Main Location", "26 Bits (No Fac)", (short)0, (short)13, (short)0, (short)13, (short)13, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "00000000-0000-0000-0000-000000000001" });
 
             migrationBuilder.InsertData(
                 table: "Components",
-                columns: new[] { "Id", "ModelNo", "LocationName", "nInput", "nOutput", "nReader" },
+                columns: new[] { "Id", "ModelNo", "Name", "nInput", "nOutput", "nReader" },
                 values: new object[,]
                 {
                     { 1, (short)196, "HID Aero X1100", (short)7, (short)4, (short)4 },
@@ -1232,20 +1393,23 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "CredentialFlag",
-                columns: new[] { "Id", "Description", "LocationName", "Value" },
+                table: "CredentialFlags",
+                columns: new[] { "Id", "Description", "Name", "Value" },
                 values: new object[,]
                 {
                     { 1, "Active Credential Record", "Active Credential Record", (short)1 },
                     { 2, "Allow one free anti-passback pass", "Free One Antipassback", (short)2 },
                     { 3, "", "Anti-passback exempt", (short)4 },
                     { 4, "Use timing parameters for the disabled (ADA)", "Timing for disbled (ADA)", (short)8 },
-                    { 5, "PIN Exempt for \"Card & PIN\" ACR mode", "Pin Exempt", (short)16 }
+                    { 5, "PIN Exempt for \"Card & PIN\" ACR mode", "Pin Exempt", (short)16 },
+                    { 6, "Do not change apb_loc", "No Change APB Location", (short)32 },
+                    { 7, "Do not alter either the \"original\" or the \"current\" use count values", "No UpdateAsync Current Use Count", (short)64 },
+                    { 8, "Do not alter the \"current\" use count but change the original use limit stored in the cardholder database", "No UpdateAsync Current Use Count but Change Use Limit", (short)128 }
                 });
 
             migrationBuilder.InsertData(
                 table: "DoorAccessControlFlags",
-                columns: new[] { "Id", "Description", "LocationName", "Value" },
+                columns: new[] { "Id", "Description", "Name", "Value" },
                 values: new object[,]
                 {
                     { 1, "ACR_F_DCR	0x0001	\r\n🔹 Purpose: Decrements a user’s “use counter” when they successfully access.\r\n🔹 Effect: Each valid access reduces their remaining allowed uses.\r\n🔹 Use Case: Temporary or limited-access credentials (e.g., one-time use visitor cards or tickets).", "Decrease Counter", 1 },
@@ -1264,7 +1428,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "DoorModes",
-                columns: new[] { "Id", "Description", "LocationName", "Value" },
+                columns: new[] { "Id", "Description", "Name", "Value" },
                 values: new object[,]
                 {
                     { 1, "Disable the ACR, no REX", "Disable", (short)1 },
@@ -1279,7 +1443,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "DoorSpareFlags",
-                columns: new[] { "Id", "Description", "LocationName", "Value" },
+                columns: new[] { "Id", "Description", "Name", "Value" },
                 values: new object[,]
                 {
                     { 1, "ACR_FE_NOEXTEND	0x0001	\r\n🔹 Purpose: Prevents the “Extended Door Held Open Timer” from being restarted when a new access is granted.\r\n🔹 Effect: If someone presents a valid credential while the door is already open, the extended hold timer won’t reset — the timer continues to count down.\r\n🔹 Use Case: High-traffic doors where you don’t want repeated badge reads to keep the door open indefinitely.", "No Extend", (short)1 },
@@ -1300,7 +1464,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "InputModes",
-                columns: new[] { "Id", "Description", "LocationName", "Value" },
+                columns: new[] { "Id", "Description", "Name", "Value" },
                 values: new object[,]
                 {
                     { 1, "Normally closed, no End-Of-Line (EOL)", "Normally closed", (short)0 },
@@ -1310,8 +1474,13 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Locations",
+                columns: new[] { "Id", "ComponentId", "CreatedDate", "Description", "IsActive", "LocationName", "UpdatedDate", "Uuid" },
+                values: new object[] { 1, (short)1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Main Location", true, "Main", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "00000000-0000-0000-0000-000000000001" });
+
+            migrationBuilder.InsertData(
                 table: "MonitorPointModes",
-                columns: new[] { "Id", "Description", "LocationName", "Value" },
+                columns: new[] { "Id", "Description", "Name", "Value" },
                 values: new object[,]
                 {
                     { 1, "", "Normal mode (no exit or entry delay)", (short)0 },
@@ -1321,7 +1490,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "OsdpAddresses",
-                columns: new[] { "Id", "Description", "LocationName", "Value" },
+                columns: new[] { "Id", "Description", "Name", "Value" },
                 values: new object[,]
                 {
                     { 1, "", "Address 0", (short)0 },
@@ -1332,7 +1501,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "OsdpBaudrates",
-                columns: new[] { "Id", "Description", "LocationName", "Value" },
+                columns: new[] { "Id", "Description", "Name", "Value" },
                 values: new object[,]
                 {
                     { 1, "", "9600", (short)1 },
@@ -1358,7 +1527,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "OutputOfflineModes",
-                columns: new[] { "Id", "Description", "LocationName", "Value" },
+                columns: new[] { "Id", "Description", "Name", "Value" },
                 values: new object[,]
                 {
                     { 1, "No Change", "No Change", (short)0 },
@@ -1368,7 +1537,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "ReaderConfigurationModes",
-                columns: new[] { "Id", "Description", "LocationName", "Value" },
+                columns: new[] { "Id", "Description", "Name", "Value" },
                 values: new object[,]
                 {
                     { 1, "Single reader, controlling the door", "Single Reader", (short)0 },
@@ -1381,7 +1550,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "ReaderOutConfigurations",
-                columns: new[] { "Id", "Description", "LocationName", "Value" },
+                columns: new[] { "Id", "Description", "Name", "Value" },
                 values: new object[,]
                 {
                     { 1, "Ignore data from alternate reader", "Ignore", (short)0 },
@@ -1390,7 +1559,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "RelayModes",
-                columns: new[] { "Id", "Description", "LocationName", "Value" },
+                columns: new[] { "Id", "Description", "Name", "Value" },
                 values: new object[,]
                 {
                     { 1, "Active is energized", "Normal", (short)0 },
@@ -1399,7 +1568,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "StrikeModes",
-                columns: new[] { "Id", "Description", "LocationName", "Value" },
+                columns: new[] { "Id", "Description", "Name", "Value" },
                 values: new object[,]
                 {
                     { 1, "Do not use! This would allow the strike to stay active for the entire strike time allowing the door to be opened multiple times.", "Normal", (short)0 },
@@ -1420,7 +1589,7 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "TimeZoneModes",
-                columns: new[] { "Id", "Description", "LocationName", "Value" },
+                columns: new[] { "Id", "Description", "Name", "Value" },
                 values: new object[,]
                 {
                     { 1, "The time zone is always inactive, regardless of the time zone intervals specified or the holidays in effect.", "Off", (short)0 },
@@ -1433,8 +1602,295 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "TimeZones",
-                columns: new[] { "Id", "ActiveTime", "ComponentId", "DeactiveTime", "IsActive", "ComponentId", "LocationName", "Mode", "LocationName", "Uuid" },
+                columns: new[] { "Id", "ActiveTime", "ComponentId", "DeactiveTime", "IsActive", "LocationId", "LocationName", "Mode", "Name", "Uuid" },
                 values: new object[] { 1, "", (short)1, "", true, 1, "Main Location", (short)1, "Always", "00000000-0000-0000-0000-000000000001" });
+
+            migrationBuilder.InsertData(
+                table: "TransactionSources",
+                columns: new[] { "Id", "Name", "Value" },
+                values: new object[,]
+                {
+                    { 1, "SCP diagnostics", (short)0 },
+                    { 2, "SCP to HOST communication driver - not defined", (short)1 },
+                    { 3, "SCP local monitor points (tamper & power fault)", (short)2 },
+                    { 4, "SIO diagnostics", (short)3 },
+                    { 5, "SIO communication driver", (short)4 },
+                    { 6, "SIO cabinet tamper", (short)5 },
+                    { 7, "SIO power monitor", (short)6 },
+                    { 8, "Alarm monitor point", (short)7 },
+                    { 9, "Output control point", (short)8 },
+                    { 10, "Access Control Reader (ACR)", (short)9 },
+                    { 11, "ACR: reader tamper monitor", (short)10 },
+                    { 12, "ACR: door position sensor", (short)11 },
+                    { 13, "ACR: 1st \"Request to exit\" input", (short)13 },
+                    { 14, "ACR: 2nd \"Request to exit\" input", (short)14 },
+                    { 15, "Time zone", (short)15 },
+                    { 16, "Procedure (action list)", (short)16 },
+                    { 17, "Trigger", (short)17 },
+                    { 18, "Trigger variable", (short)18 },
+                    { 19, "Monitor point group", (short)19 },
+                    { 20, "Access area", (short)20 },
+                    { 21, "ACR: the alternate reader's tamper monitor source_number", (short)21 },
+                    { 22, "Login Service", (short)24 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "TransactionTypes",
+                columns: new[] { "Id", "Name", "Value" },
+                values: new object[,]
+                {
+                    { 1, "System", (short)1 },
+                    { 2, "SIO communication status report", (short)2 },
+                    { 3, "Binary card data", (short)3 },
+                    { 4, "Card data", (short)4 },
+                    { 5, "Formatted card: facility code, card number ID, issue code", (short)5 },
+                    { 6, "Formatted card: card number only", (short)6 },
+                    { 7, "Change-of-state", (short)7 },
+                    { 8, "Exit request", (short)8 },
+                    { 9, "Door status monitor change-of-state", (short)9 },
+                    { 10, "Procedure (command list) log", (short)10 },
+                    { 11, "User command request report", (short)11 },
+                    { 12, "Change of state: trigger variable, time zone, & triggers", (short)12 },
+                    { 13, "ACR mode change", (short)13 },
+                    { 14, "Monitor point group status change", (short)14 },
+                    { 15, "Access area", (short)15 },
+                    { 16, "Extended user command", (short)18 },
+                    { 17, "Use limit report", (short)19 },
+                    { 18, "Web activity", (short)20 },
+                    { 19, "Specify tranTypeCardFull (0x05) instead", (short)21 },
+                    { 20, "Specify tranTypeCardID (0x06) instead", (short)22 },
+                    { 21, "Operating mode change", (short)24 },
+                    { 22, "Elevator Floor Status CoS", (short)26 },
+                    { 23, "File Download Status", (short)27 },
+                    { 24, "Elevator Floor Access Transaction", (short)29 },
+                    { 25, "Specify tranTypeCardFull (0x05) instead", (short)37 },
+                    { 26, "Specify tranTypeCardID (0x06) instead", (short)38 },
+                    { 27, "Specify tranTypeCardFull (0x05) instead", (short)53 },
+                    { 28, "ACR extended feature stateless transition", (short)64 },
+                    { 29, "ACR extended feature change-of-state", (short)65 },
+                    { 30, "Formatted card and user PIN was captured at an ACR", (short)66 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "TransactionCodes",
+                columns: new[] { "Id", "Description", "Name", "TransactionTypeValue", "Value" },
+                values: new object[,]
+                {
+                    { 1, "SCP power-up diagnostics", "SCP power-up diagnostics", (short)1, (short)1 },
+                    { 2, "Host communications offline", "Host communications offline", (short)1, (short)2 },
+                    { 3, "Host communications online", "Host communications online", (short)1, (short)3 },
+                    { 4, "Transaction count exceeds the preset limit", "Transaction count exceeds the preset limit", (short)1, (short)4 },
+                    { 5, "Configuration database save complete", "Configuration database save complete", (short)1, (short)5 },
+                    { 6, "Card database save complete", "Card database save complete", (short)1, (short)6 },
+                    { 7, "Card database cleared due to SRAM buffer overflow", "Card database cleared due to SRAM buffer overflow", (short)1, (short)7 },
+                    { 8, "Communication disabled (result of host command)", "Disabled", (short)2, (short)1 },
+                    { 9, "Timeout (no/bad response from unit)", "Offline", (short)2, (short)2 },
+                    { 10, "Invalid identification from SIO", "Offline", (short)2, (short)3 },
+                    { 11, "Command too long", "Offline", (short)2, (short)4 },
+                    { 12, "Normal connection", "Online", (short)2, (short)5 },
+                    { 13, "ser_num is address loaded (-1 = last record)", "hexLoad report", (short)2, (short)6 },
+                    { 14, "Invalid card format", "Access denied", (short)3, (short)1 },
+                    { 15, "Invalid card format, forward read", "Access denied", (short)4, (short)1 },
+                    { 16, "Invalid card format, reverse read", "Access denied", (short)4, (short)2 },
+                    { 17, "Access point \"locked\"", "Request rejected", (short)5, (short)1 },
+                    { 18, "Access point \"unlocked\"", "Request accepted", (short)5, (short)2 },
+                    { 19, "Invalid facility code", "Request rejected", (short)5, (short)3 },
+                    { 20, "Invalid facility code extension", "Request rejected", (short)5, (short)4 },
+                    { 21, "Not in card file", "Request rejected", (short)5, (short)5 },
+                    { 22, "Invalid issue code", "Request rejected", (short)5, (short)6 },
+                    { 23, "Facility code verified, not used", "Request granted", (short)5, (short)7 },
+                    { 24, "Facility code verified, door used", "Request granted", (short)5, (short)8 },
+                    { 25, "Asked for host approval, then timed out", "Access denied", (short)5, (short)9 },
+                    { 26, "Reporting that this card is \"about to get access granted\"", "Reporting that this card is \"about to get access granted\"", (short)5, (short)10 },
+                    { 27, "Count exceeded", "Access denied", (short)5, (short)11 },
+                    { 28, "Asked for host approval, then host denied", "Access denied", (short)5, (short)12 },
+                    { 29, "Airlock is busy", "Request rejected", (short)5, (short)13 },
+                    { 30, "Deactivated card", "Request rejected", (short)6, (short)1 },
+                    { 31, "Before activation date", "Request rejected", (short)6, (short)2 },
+                    { 32, "After expiration date", "Request rejected", (short)6, (short)3 },
+                    { 33, "Invalid time", "Request rejected", (short)6, (short)4 },
+                    { 34, "Invalid PIN", "Request rejected", (short)6, (short)5 },
+                    { 35, "Anti-passback violation", "Request rejected", (short)6, (short)6 },
+                    { 36, "APB violation, not used", "Request granted", (short)6, (short)7 },
+                    { 37, "APB violation, used", "Request granted", (short)6, (short)8 },
+                    { 38, "Duress code detected", "Request rejected", (short)6, (short)9 },
+                    { 39, "Duress, used", "Request granted", (short)6, (short)10 },
+                    { 40, "Duress, not used", "Request granted", (short)6, (short)11 },
+                    { 41, "Full test, not used", "Request granted", (short)6, (short)12 },
+                    { 42, "Full test, used", "Request granted", (short)6, (short)13 },
+                    { 43, "Never allowed at this reader (all Tz's = 0)", "Request denied", (short)6, (short)14 },
+                    { 44, "No second card presented", "Request denied", (short)6, (short)15 },
+                    { 45, "Occupancy limit reached", "Request denied", (short)6, (short)16 },
+                    { 46, "The area is NOT enabled", "Request denied", (short)6, (short)17 },
+                    { 47, "Use limit", "Request denied", (short)6, (short)18 },
+                    { 48, "Used/not used transaction will follow", "Granting access", (short)6, (short)21 },
+                    { 49, "No escort card presented", "Request rejected", (short)6, (short)24 },
+                    { 50, "Reserved", "Reserved", (short)6, (short)25 },
+                    { 51, "Reserved", "Reserved", (short)6, (short)26 },
+                    { 52, "Reserved", "Reserved", (short)6, (short)27 },
+                    { 53, "Airlock is busy", "Request rejected", (short)6, (short)29 },
+                    { 54, "Incomplete CARD & PIN sequence", "Request rejected", (short)6, (short)30 },
+                    { 55, "Double-card event", "Request granted", (short)6, (short)31 },
+                    { 56, "Double-card event while in uncontrolled state (locked/unlocked)", "Request granted", (short)6, (short)32 },
+                    { 57, "Requires escort, pending escort card", "Granting access", (short)6, (short)39 },
+                    { 58, "Violates minimum occupancy count", "Request rejected", (short)6, (short)40 },
+                    { 59, "Card pending at another reader", "Request rejected", (short)6, (short)41 },
+                    { 60, "Card pending at another reader", "Request rejected", (short)66, (short)41 },
+                    { 62, "Disconnected (from an input point ID)", "Disconnected", (short)7, (short)1 },
+                    { 63, "Unknown (offline): no report from the ID", "Offline", (short)7, (short)2 },
+                    { 64, "Secure (or deactivate relay)", "Secure", (short)7, (short)3 },
+                    { 65, "Alarm (or activated relay: perm or temp)", "Alarm", (short)7, (short)4 },
+                    { 66, "Fault", "Fault", (short)7, (short)5 },
+                    { 67, "Exit delay in progress", "Exit delay in progress", (short)7, (short)6 },
+                    { 68, "Entry delay in progress", "Entry delay in progress", (short)7, (short)7 },
+                    { 69, "Door use not verified", "Exit cycle", (short)8, (short)1 },
+                    { 70, "Door not used", "Exit cycle", (short)8, (short)2 },
+                    { 71, "Door used", "Exit cycle", (short)8, (short)3 },
+                    { 72, "Door use not verified", "Host initiated request", (short)8, (short)4 },
+                    { 73, "Door not used", "Host initiated request", (short)8, (short)5 },
+                    { 74, "Door used", "Host initiated request", (short)8, (short)6 },
+                    { 75, "Started", "Exit cycle", (short)8, (short)9 },
+                    { 76, "Disconnected", "Disconnected", (short)9, (short)1 },
+                    { 77, "Unknown _RS bits: last known status", "Unknown _RS bits: last known status", (short)9, (short)2 },
+                    { 78, "Secure", "Secure", (short)9, (short)3 },
+                    { 79, "Alarm (forced, held open or both)", "Alarm", (short)9, (short)4 },
+                    { 80, "Fault (fault type is encoded in door_status byte)", "Fault", (short)9, (short)5 },
+                    { 81, "Cancel procedure (abort delay)", "Cancel procedure (abort delay)", (short)10, (short)1 },
+                    { 82, "Execute procedure (start new)", "Execute procedure (start new)", (short)10, (short)2 },
+                    { 83, "Resume procedure, if paused", "Resume procedure, if paused", (short)10, (short)3 },
+                    { 84, "Execute procedure with prefix 256 actions", "Execute procedure with prefix 256 actions", (short)10, (short)4 },
+                    { 85, "Execute procedure with prefix 512 actions", "Execute procedure with prefix 512 actions", (short)10, (short)5 },
+                    { 86, "Execute procedure with prefix 1024 actions", "Execute procedure with prefix 1024 actions", (short)10, (short)6 },
+                    { 87, "Resume procedure with prefix 256 actions", "Resume procedure with prefix 256 actions", (short)10, (short)7 },
+                    { 88, "Resume procedure with prefix 512 actions", "Resume procedure with prefix 512 actions", (short)10, (short)8 },
+                    { 89, "Resume procedure with prefix 1024 actions", "Resume procedure with prefix 1024 actions", (short)10, (short)9 },
+                    { 90, "Command was issued to procedure with no actions - (NOP)", "Command was issued to procedure with no actions - (NOP)", (short)10, (short)10 },
+                    { 91, "Command entered by the user", "Command entered by the user", (short)11, (short)10 },
+                    { 92, "Became inactive", "Became inactive", (short)12, (short)1 },
+                    { 93, "Became active", "Became active", (short)12, (short)2 },
+                    { 94, "Disabled", "Disabled", (short)13, (short)1 },
+                    { 95, "Unlocked", "Unlocked", (short)13, (short)2 },
+                    { 96, "Locked (exit request enabled)", "Locked", (short)13, (short)3 },
+                    { 97, "Facility code only", "Facility code only", (short)13, (short)4 },
+                    { 98, "Card only", "Card only", (short)13, (short)5 },
+                    { 99, "PIN only", "PIN only", (short)13, (short)6 },
+                    { 100, "Card and PIN", "Card and PIN", (short)13, (short)7 },
+                    { 101, "PIN or card", "PIN or card", (short)13, (short)8 },
+                    { 102, "First disarm command executed (mask_count was 0, all MPs got masked)", "First disarm command executed", (short)14, (short)1 },
+                    { 103, "Subsequent disarm command executed (mask_count incremented, MPs already masked)", "Subsequent disarm command executed", (short)14, (short)2 },
+                    { 104, "Override command: armed (mask_count cleared, all points unmasked)", "Override command: armed", (short)14, (short)3 },
+                    { 105, "Override command: disarmed (mask_count set, unmasked all points)", "Override command: disarmed", (short)14, (short)4 },
+                    { 106, "Force arm command, MPG armed, (may have active zones, mask_count is now zero)", "Force arm command, MPG armed", (short)14, (short)5 },
+                    { 107, "Force arm command, MPG not armed (mask_count decremented)", "Force arm command, MPG not armed", (short)14, (short)6 },
+                    { 108, "Standard arm command, MPG armed (did not have active zones, mask_count is now zero)", "Standard arm command, MPG armed", (short)14, (short)7 },
+                    { 109, "Standard arm command, MPG did not arm, (had active zones, mask_count unchanged)d", "Standard arm command, MPG did not arm", (short)14, (short)8 },
+                    { 110, "Standard arm command, MPG still armed, (mask_count decremented)", "Standard arm command, MPG still armed", (short)14, (short)9 },
+                    { 111, "Override arm command, MPG armed (mask_count is now zero)", "Override arm command, MPG armed", (short)14, (short)10 },
+                    { 112, "Override arm command, MPG did not arm, (mask_count decremented)", "Override arm command, MPG did not arm", (short)14, (short)11 },
+                    { 113, "Area disabled", "Area disabled", (short)15, (short)1 },
+                    { 114, "Area enabled", "Area enabled", (short)15, (short)2 },
+                    { 115, "Occupancy count reached zero", "Occupancy count reached zero", (short)15, (short)3 },
+                    { 116, "Occupancy count reached the \"downward-limit\"", "Occupancy count reached the \"downward-limit\"", (short)15, (short)4 },
+                    { 117, "Occupancy count reached the \"upward-limit\"", "Occupancy count reached the \"upward-limit\"", (short)15, (short)5 },
+                    { 118, "Occupancy count reached the \"max-occupancy-limit\"", "Occupancy count reached the \"max-occupancy-limit\"", (short)15, (short)6 },
+                    { 119, "Multi-occupancy mode changed", "Multi-occupancy mode changed", (short)15, (short)7 },
+                    { 120, "Save home notes", "Save home notes", (short)20, (short)1 },
+                    { 121, "Save network settings", "Save network settings", (short)20, (short)2 },
+                    { 122, "Save host communication settings", "Save host communication settings", (short)20, (short)3 },
+                    { 123, "Add user", "Add user", (short)20, (short)4 },
+                    { 124, "DeleteAsync user", "DeleteAsync user", (short)20, (short)5 },
+                    { 125, "Modify user", "Modify user", (short)20, (short)6 },
+                    { 126, "Save password strength and session timer", "Save password strength and session timer", (short)20, (short)7 },
+                    { 127, "Save web server options", "Save web server options", (short)20, (short)8 },
+                    { 128, "Save time server settings", "Save time server settings", (short)20, (short)9 },
+                    { 129, "Auto save timer settings", "Auto save timer settings", (short)20, (short)10 },
+                    { 130, "Load certificate", "Load certificate", (short)20, (short)11 },
+                    { 131, "Logged out by link", "Logged out by link", (short)20, (short)12 },
+                    { 132, "Logged out by timeout", "Logged out by timeout", (short)20, (short)13 },
+                    { 133, "Logged out by user", "Logged out by user", (short)20, (short)14 },
+                    { 134, "Logged out by apply", "Logged out by apply", (short)20, (short)15 },
+                    { 135, "Invalid login", "Invalid login", (short)20, (short)16 },
+                    { 136, "Successful login", "Successful login", (short)20, (short)17 },
+                    { 137, "Network diagnostic saved", "Network diagnostic saved", (short)20, (short)18 },
+                    { 138, "Card DB size saved", "Card DB size saved", (short)20, (short)19 },
+                    { 139, "Diagnostic page saved", "Diagnostic page saved", (short)20, (short)21 },
+                    { 140, "Security options page saved", "Security options page saved", (short)20, (short)22 },
+                    { 141, "Add-on package page saved", "Add-on package page saved", (short)20, (short)23 },
+                    { 145, "Invalid login limit reached", "Invalid login limit reached", (short)20, (short)27 },
+                    { 146, "Firmware download initiated", "Firmware download initiated", (short)20, (short)28 },
+                    { 147, "Advanced networking routes saved", "Advanced networking routes saved", (short)20, (short)29 },
+                    { 148, "Advanced networking reversion timer started", "Advanced networking reversion timer started", (short)20, (short)30 },
+                    { 149, "Advanced networking reversion timer elapsed", "Advanced networking reversion timer elapsed", (short)20, (short)31 },
+                    { 150, "Advanced networking route changes reverted", "Advanced networking route changes reverted", (short)20, (short)32 },
+                    { 151, "Advanced networking route changes cleared", "Advanced networking route changes cleared", (short)20, (short)33 },
+                    { 152, "Certificate generation started", "Certificate generation started", (short)20, (short)34 },
+                    { 153, "Operating mode changed to mode 0", "Operating mode changed to mode 0", (short)24, (short)1 },
+                    { 154, "Operating mode changed to mode 1", "Operating mode changed to mode 1", (short)24, (short)2 },
+                    { 155, "Operating mode changed to mode 2", "Operating mode changed to mode 2", (short)24, (short)3 },
+                    { 156, "Operating mode changed to mode 3", "Operating mode changed to mode 3", (short)24, (short)4 },
+                    { 157, "Operating mode changed to mode 4", "Operating mode changed to mode 4", (short)24, (short)5 },
+                    { 158, "Operating mode changed to mode 5", "Operating mode changed to mode 5", (short)24, (short)6 },
+                    { 159, "Operating mode changed to mode 6", "Operating mode changed to mode 6", (short)24, (short)7 },
+                    { 160, "Operating mode changed to mode 7", "Operating mode changed to mode 7", (short)24, (short)8 },
+                    { 161, "Floor status is secure", "Secure", (short)26, (short)1 },
+                    { 162, "Floor status is public", "Public", (short)26, (short)2 },
+                    { 163, "Floor status is disabled (override)", "Disabled (override)", (short)26, (short)3 },
+                    { 164, "File transfer success", "File transfer success", (short)27, (short)1 },
+                    { 165, "File transfer error", "File transfer error", (short)27, (short)2 },
+                    { 166, "File delete successful", "File delete successful", (short)27, (short)3 },
+                    { 167, "File delete unsuccessful", "File delete unsuccessful", (short)27, (short)4 },
+                    { 168, "OSDP file transfer complete (primary ACR) - look at source number for ACR number", "OSDP file transfer complete (primary ACR)", (short)27, (short)5 },
+                    { 169, "OSDP file transfer error (primary ACR) - look at source number for ACR number", "OSDP file transfer error (primary ACR)", (short)27, (short)6 },
+                    { 170, "OSDP file transfer complete (alternate ACR) - look at source number for ACR number", "OSDP file transfer complete (alternate ACR)", (short)27, (short)7 },
+                    { 171, "OSDP file transfer error (alternate ACR) - look at source number for ACR number", "OSDP file transfer error (alternate ACR)", (short)27, (short)8 },
+                    { 172, "Elevator access", "Elevator access", (short)29, (short)1 },
+                    { 173, "Extended status updated", "Extended status updated", (short)64, (short)1 },
+                    { 174, "Secure / Inactive", "Secure / Inactive", (short)65, (short)3 },
+                    { 175, "Alarm / Active", "Alarm / Active", (short)65, (short)4 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "TransactionSourceType",
+                columns: new[] { "Id", "TransactionSourceValue", "TransactionTypeValue" },
+                values: new object[,]
+                {
+                    { 1, (short)0, (short)1 },
+                    { 2, (short)0, (short)20 },
+                    { 3, (short)0, (short)24 },
+                    { 4, (short)0, (short)27 },
+                    { 5, (short)2, (short)7 },
+                    { 7, (short)4, (short)2 },
+                    { 8, (short)5, (short)7 },
+                    { 9, (short)6, (short)7 },
+                    { 10, (short)7, (short)7 },
+                    { 11, (short)8, (short)7 },
+                    { 12, (short)9, (short)3 },
+                    { 13, (short)9, (short)4 },
+                    { 14, (short)9, (short)5 },
+                    { 15, (short)9, (short)6 },
+                    { 16, (short)9, (short)8 },
+                    { 17, (short)9, (short)11 },
+                    { 18, (short)9, (short)13 },
+                    { 19, (short)9, (short)18 },
+                    { 20, (short)9, (short)19 },
+                    { 21, (short)9, (short)26 },
+                    { 22, (short)9, (short)29 },
+                    { 23, (short)9, (short)64 },
+                    { 24, (short)9, (short)65 },
+                    { 25, (short)9, (short)19 },
+                    { 26, (short)10, (short)7 },
+                    { 27, (short)11, (short)9 },
+                    { 28, (short)13, (short)7 },
+                    { 29, (short)14, (short)7 },
+                    { 30, (short)15, (short)12 },
+                    { 31, (short)16, (short)10 },
+                    { 32, (short)17, (short)12 },
+                    { 33, (short)18, (short)12 },
+                    { 34, (short)19, (short)14 },
+                    { 35, (short)20, (short)15 },
+                    { 36, (short)21, (short)7 },
+                    { 37, (short)24, (short)7 }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccessLevelDoorTimeZones_DoorId",
@@ -1447,14 +1903,14 @@ namespace HIDAeroService.Migrations
                 column: "TimeZoneId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CardHolderAdditional_CardHolderId",
-                table: "CardHolderAdditional",
+                name: "IX_CardHolderAccessLevel_CardHolderId",
+                table: "CardHolderAccessLevel",
                 column: "CardHolderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CardHolders_AccessLevelId",
-                table: "CardHolders",
-                column: "AccessLevelId");
+                name: "IX_CardHolderAdditional_CardHolderId",
+                table: "CardHolderAdditional",
+                column: "CardHolderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ControlPoints_ModuleId",
@@ -1471,6 +1927,16 @@ namespace HIDAeroService.Migrations
                 table: "DaysInWeek",
                 column: "ComponentId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Doors_AntiPassBackIn",
+                table: "Doors",
+                column: "AntiPassBackIn");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Doors_AntiPassBackOut",
+                table: "Doors",
+                column: "AntiPassBackOut");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Doors_SensorComponentId",
@@ -1554,13 +2020,28 @@ namespace HIDAeroService.Migrations
                 name: "IX_TimeZoneIntervals_IntervalId",
                 table: "TimeZoneIntervals",
                 column: "IntervalId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TransactionCodes_TransactionTypeValue",
+                table: "TransactionCodes",
+                column: "TransactionTypeValue");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TransactionSourceType_TransactionSourceValue",
+                table: "TransactionSourceType",
+                column: "TransactionSourceValue");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TransactionSourceType_TransactionTypeValue",
+                table: "TransactionSourceType",
+                column: "TransactionTypeValue");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AccessAreas");
+                name: "AccessAreaCommands");
 
             migrationBuilder.DropTable(
                 name: "AccessLevelDoorTimeZones");
@@ -1581,6 +2062,9 @@ namespace HIDAeroService.Migrations
                 name: "CardFormats");
 
             migrationBuilder.DropTable(
+                name: "CardHolderAccessLevel");
+
+            migrationBuilder.DropTable(
                 name: "CardHolderAdditional");
 
             migrationBuilder.DropTable(
@@ -1590,7 +2074,7 @@ namespace HIDAeroService.Migrations
                 name: "ControlPoints");
 
             migrationBuilder.DropTable(
-                name: "CredentialFlag");
+                name: "CredentialFlags");
 
             migrationBuilder.DropTable(
                 name: "DaysInWeek");
@@ -1615,6 +2099,9 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.DropTable(
                 name: "InputModes");
+
+            migrationBuilder.DropTable(
+                name: "Locations");
 
             migrationBuilder.DropTable(
                 name: "MonitorPointModes");
@@ -1668,6 +2155,15 @@ namespace HIDAeroService.Migrations
                 name: "TimeZoneModes");
 
             migrationBuilder.DropTable(
+                name: "TransactionCodes");
+
+            migrationBuilder.DropTable(
+                name: "TransactionSourceType");
+
+            migrationBuilder.DropTable(
+                name: "AccessLevels");
+
+            migrationBuilder.DropTable(
                 name: "Credentials");
 
             migrationBuilder.DropTable(
@@ -1680,16 +2176,22 @@ namespace HIDAeroService.Migrations
                 name: "TimeZones");
 
             migrationBuilder.DropTable(
+                name: "TransactionSources");
+
+            migrationBuilder.DropTable(
+                name: "TransactionTypes");
+
+            migrationBuilder.DropTable(
                 name: "CardHolders");
+
+            migrationBuilder.DropTable(
+                name: "AccessAreas");
 
             migrationBuilder.DropTable(
                 name: "Sensors");
 
             migrationBuilder.DropTable(
                 name: "Strikes");
-
-            migrationBuilder.DropTable(
-                name: "AccessLevels");
 
             migrationBuilder.DropTable(
                 name: "Modules");

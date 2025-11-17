@@ -148,14 +148,14 @@ namespace HIDAeroService.Service.Impl
             var ScpId = await helperService.GetIdFromMacAsync(dto.MacAddress);
             if(!await command.CardDeleteAsync(ScpId,dto.CardNo))
             {
-                ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, "Delete Card Fail");
+                ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, "DeleteAsync Card Fail");
             }
             return ResponseHelper.SuccessBuilder<bool>(true);
         }
 
         public async Task<ResponseDto<IEnumerable<ModeDto>>> GetCredentialFlagAsync()
         {
-            var dtos = await context.CredentialFlags
+            var dtos = await context.CredentialFlagOptions
                 .Select(x => MapperHelper.CredentialFlagToDto(x))
                 .ToArrayAsync();
 

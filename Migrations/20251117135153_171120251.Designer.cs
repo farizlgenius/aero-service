@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HIDAeroService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251109142338_09112025")]
-    partial class _09112025
+    [Migration("20251117135153_171120251")]
+    partial class _171120251
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,21 +50,17 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("MacAddress")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<short>("MultiOccupancy")
                         .HasColumnType("smallint");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -95,9 +91,99 @@ namespace HIDAeroService.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AccessAreas");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccessControl = (short)0,
+                            AreaFlag = (short)0,
+                            ComponentId = (short)-1,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            LocationId = 1,
+                            LocationName = "Main",
+                            MultiOccupancy = (short)0,
+                            Name = "Any Area",
+                            OccControl = (short)0,
+                            OccDown = (short)0,
+                            OccMax = (short)0,
+                            OccSet = (short)0,
+                            OccUp = (short)0,
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Uuid = "00000000-0000-0000-0000-000000000001"
+                        });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.AccessLevels", b =>
+            modelBuilder.Entity("HIDAeroService.Entity.AccessAreaCommandOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("Value")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AccessAreaCommands");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Disable Area",
+                            Name = "Disable Area",
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Enable area",
+                            Name = "Enable area",
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Set current occupancy to occ_set value",
+                            Name = "Set current occupancy to occ_set value",
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Clear occupancy counts of the “standard” and “special” users",
+                            Name = "Clear occupancy counts of the “standard” and “special” users",
+                            Value = (short)5
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Disable multi-occupancy rules",
+                            Name = "Disable multi-occupancy rules",
+                            Value = (short)6
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "Enable standard multi-occupancy processing",
+                            Name = "Enable standard multi-occupancy processing",
+                            Value = (short)7
+                        });
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.AccessLevel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -116,14 +202,14 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -202,7 +288,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -304,7 +390,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -375,7 +461,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -445,7 +531,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -568,14 +654,14 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -645,9 +731,6 @@ namespace HIDAeroService.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<short>("AccessLevelId")
-                        .HasColumnType("smallint");
-
                     b.Property<string>("Company")
                         .IsRequired()
                         .HasColumnType("text");
@@ -680,7 +763,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -722,9 +805,25 @@ namespace HIDAeroService.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccessLevelId");
-
                     b.ToTable("CardHolders");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.CardHolderAccessLevel", b =>
+                {
+                    b.Property<short>("AccessLevelId")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("CardHolderId")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("integer");
+
+                    b.HasKey("AccessLevelId", "CardHolderId");
+
+                    b.HasIndex("CardHolderId");
+
+                    b.ToTable("CardHolderAccessLevel");
                 });
 
             modelBuilder.Entity("HIDAeroService.Entity.CardHolderAdditional", b =>
@@ -764,7 +863,7 @@ namespace HIDAeroService.Migrations
                     b.Property<short>("ModelNo")
                         .HasColumnType("smallint");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -869,7 +968,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -883,7 +982,7 @@ namespace HIDAeroService.Migrations
                     b.Property<short>("ModuleId")
                         .HasColumnType("smallint");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -958,7 +1057,7 @@ namespace HIDAeroService.Migrations
                     b.Property<int>("IssueCode")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -984,7 +1083,7 @@ namespace HIDAeroService.Migrations
                     b.ToTable("Credentials");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.CredentialFlag", b =>
+            modelBuilder.Entity("HIDAeroService.Entity.CredentialFlagOption", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -996,7 +1095,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -1005,7 +1104,7 @@ namespace HIDAeroService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CredentialFlag");
+                    b.ToTable("CredentialFlags");
 
                     b.HasData(
                         new
@@ -1042,6 +1141,27 @@ namespace HIDAeroService.Migrations
                             Description = "PIN Exempt for \"Card & PIN\" ACR mode",
                             Name = "Pin Exempt",
                             Value = (short)16
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "Do not change apb_loc",
+                            Name = "No Change APB Location",
+                            Value = (short)32
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Description = "Do not alter either the \"original\" or the \"current\" use count values",
+                            Name = "No UpdateAsync Current Use Count",
+                            Value = (short)64
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Description = "Do not alter the \"current\" use count but change the original use limit stored in the cardholder database",
+                            Name = "No UpdateAsync Current Use Count but Change Use Limit",
+                            Value = (short)128
                         });
                 });
 
@@ -1067,7 +1187,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -1180,7 +1300,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -1204,7 +1324,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -1256,6 +1376,10 @@ namespace HIDAeroService.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AntiPassBackIn");
+
+                    b.HasIndex("AntiPassBackOut");
+
                     b.HasIndex("SensorComponentId")
                         .IsUnique();
 
@@ -1277,7 +1401,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -1387,7 +1511,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -1457,7 +1581,7 @@ namespace HIDAeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.DoorSpareFlag", b =>
+            modelBuilder.Entity("HIDAeroService.Entity.DoorSpareFlagOption", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1469,7 +1593,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -1611,9 +1735,11 @@ namespace HIDAeroService.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<DateTime>("LastSync")
-                        .HasColumnType("timestamp without time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasDefaultValueSql("now()");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -1628,7 +1754,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -1725,7 +1851,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -1767,7 +1893,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -1836,7 +1962,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -1864,6 +1990,60 @@ namespace HIDAeroService.Migrations
                     b.ToTable("Intervals");
                 });
 
+            modelBuilder.Entity("HIDAeroService.Entity.Location", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<short>("ComponentId")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LocationName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<string>("Uuid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Locations");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ComponentId = (short)1,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Main Location",
+                            IsActive = true,
+                            LocationName = "Main",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Uuid = "00000000-0000-0000-0000-000000000001"
+                        });
+                });
+
             modelBuilder.Entity("HIDAeroService.Entity.Module", b =>
                 {
                     b.Property<int>("Id")
@@ -1889,7 +2069,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -1981,7 +2161,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsMask")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -2001,7 +2181,7 @@ namespace HIDAeroService.Migrations
                     b.Property<short>("MonitorPointMode")
                         .HasColumnType("smallint");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -2033,7 +2213,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -2103,7 +2283,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -2168,7 +2348,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -2222,7 +2402,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -2366,7 +2546,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -2432,7 +2612,7 @@ namespace HIDAeroService.Migrations
                     b.Property<short>("LedDriveMode")
                         .HasColumnType("smallint");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -2497,7 +2677,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -2565,7 +2745,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -2605,7 +2785,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -2664,7 +2844,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -2733,7 +2913,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -2782,7 +2962,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -2842,7 +3022,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -3029,7 +3209,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -3039,7 +3219,7 @@ namespace HIDAeroService.Migrations
                     b.Property<short>("Mode")
                         .HasColumnType("smallint");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -3093,7 +3273,7 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LocationName")
@@ -3128,7 +3308,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -3184,9 +3364,2005 @@ namespace HIDAeroService.Migrations
                         });
                 });
 
+            modelBuilder.Entity("HIDAeroService.Entity.TransactionCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("TransactionTypeValue")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("Value")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TransactionTypeValue");
+
+                    b.ToTable("TransactionCodes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "SCP power-up diagnostics",
+                            Name = "SCP power-up diagnostics",
+                            TransactionTypeValue = (short)1,
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Host communications offline",
+                            Name = "Host communications offline",
+                            TransactionTypeValue = (short)1,
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Host communications online",
+                            Name = "Host communications online",
+                            TransactionTypeValue = (short)1,
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Transaction count exceeds the preset limit",
+                            Name = "Transaction count exceeds the preset limit",
+                            TransactionTypeValue = (short)1,
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Configuration database save complete",
+                            Name = "Configuration database save complete",
+                            TransactionTypeValue = (short)1,
+                            Value = (short)5
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "Card database save complete",
+                            Name = "Card database save complete",
+                            TransactionTypeValue = (short)1,
+                            Value = (short)6
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Description = "Card database cleared due to SRAM buffer overflow",
+                            Name = "Card database cleared due to SRAM buffer overflow",
+                            TransactionTypeValue = (short)1,
+                            Value = (short)7
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Description = "Communication disabled (result of host command)",
+                            Name = "Disabled",
+                            TransactionTypeValue = (short)2,
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Description = "Timeout (no/bad response from unit)",
+                            Name = "Offline",
+                            TransactionTypeValue = (short)2,
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Description = "Invalid identification from SIO",
+                            Name = "Offline",
+                            TransactionTypeValue = (short)2,
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Description = "Command too long",
+                            Name = "Offline",
+                            TransactionTypeValue = (short)2,
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Description = "Normal connection",
+                            Name = "Online",
+                            TransactionTypeValue = (short)2,
+                            Value = (short)5
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Description = "ser_num is address loaded (-1 = last record)",
+                            Name = "hexLoad report",
+                            TransactionTypeValue = (short)2,
+                            Value = (short)6
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Description = "Invalid card format",
+                            Name = "Access denied",
+                            TransactionTypeValue = (short)3,
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Description = "Invalid card format, forward read",
+                            Name = "Access denied",
+                            TransactionTypeValue = (short)4,
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Description = "Invalid card format, reverse read",
+                            Name = "Access denied",
+                            TransactionTypeValue = (short)4,
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Description = "Access point \"locked\"",
+                            Name = "Request rejected",
+                            TransactionTypeValue = (short)5,
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Description = "Access point \"unlocked\"",
+                            Name = "Request accepted",
+                            TransactionTypeValue = (short)5,
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Description = "Invalid facility code",
+                            Name = "Request rejected",
+                            TransactionTypeValue = (short)5,
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 20,
+                            Description = "Invalid facility code extension",
+                            Name = "Request rejected",
+                            TransactionTypeValue = (short)5,
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 21,
+                            Description = "Not in card file",
+                            Name = "Request rejected",
+                            TransactionTypeValue = (short)5,
+                            Value = (short)5
+                        },
+                        new
+                        {
+                            Id = 22,
+                            Description = "Invalid issue code",
+                            Name = "Request rejected",
+                            TransactionTypeValue = (short)5,
+                            Value = (short)6
+                        },
+                        new
+                        {
+                            Id = 23,
+                            Description = "Facility code verified, not used",
+                            Name = "Request granted",
+                            TransactionTypeValue = (short)5,
+                            Value = (short)7
+                        },
+                        new
+                        {
+                            Id = 24,
+                            Description = "Facility code verified, door used",
+                            Name = "Request granted",
+                            TransactionTypeValue = (short)5,
+                            Value = (short)8
+                        },
+                        new
+                        {
+                            Id = 25,
+                            Description = "Asked for host approval, then timed out",
+                            Name = "Access denied",
+                            TransactionTypeValue = (short)5,
+                            Value = (short)9
+                        },
+                        new
+                        {
+                            Id = 26,
+                            Description = "Reporting that this card is \"about to get access granted\"",
+                            Name = "Reporting that this card is \"about to get access granted\"",
+                            TransactionTypeValue = (short)5,
+                            Value = (short)10
+                        },
+                        new
+                        {
+                            Id = 27,
+                            Description = "Count exceeded",
+                            Name = "Access denied",
+                            TransactionTypeValue = (short)5,
+                            Value = (short)11
+                        },
+                        new
+                        {
+                            Id = 28,
+                            Description = "Asked for host approval, then host denied",
+                            Name = "Access denied",
+                            TransactionTypeValue = (short)5,
+                            Value = (short)12
+                        },
+                        new
+                        {
+                            Id = 29,
+                            Description = "Airlock is busy",
+                            Name = "Request rejected",
+                            TransactionTypeValue = (short)5,
+                            Value = (short)13
+                        },
+                        new
+                        {
+                            Id = 30,
+                            Description = "Deactivated card",
+                            Name = "Request rejected",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 31,
+                            Description = "Before activation date",
+                            Name = "Request rejected",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 32,
+                            Description = "After expiration date",
+                            Name = "Request rejected",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 33,
+                            Description = "Invalid time",
+                            Name = "Request rejected",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 34,
+                            Description = "Invalid PIN",
+                            Name = "Request rejected",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)5
+                        },
+                        new
+                        {
+                            Id = 35,
+                            Description = "Anti-passback violation",
+                            Name = "Request rejected",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)6
+                        },
+                        new
+                        {
+                            Id = 36,
+                            Description = "APB violation, not used",
+                            Name = "Request granted",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)7
+                        },
+                        new
+                        {
+                            Id = 37,
+                            Description = "APB violation, used",
+                            Name = "Request granted",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)8
+                        },
+                        new
+                        {
+                            Id = 38,
+                            Description = "Duress code detected",
+                            Name = "Request rejected",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)9
+                        },
+                        new
+                        {
+                            Id = 39,
+                            Description = "Duress, used",
+                            Name = "Request granted",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)10
+                        },
+                        new
+                        {
+                            Id = 40,
+                            Description = "Duress, not used",
+                            Name = "Request granted",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)11
+                        },
+                        new
+                        {
+                            Id = 41,
+                            Description = "Full test, not used",
+                            Name = "Request granted",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)12
+                        },
+                        new
+                        {
+                            Id = 42,
+                            Description = "Full test, used",
+                            Name = "Request granted",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)13
+                        },
+                        new
+                        {
+                            Id = 43,
+                            Description = "Never allowed at this reader (all Tz's = 0)",
+                            Name = "Request denied",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)14
+                        },
+                        new
+                        {
+                            Id = 44,
+                            Description = "No second card presented",
+                            Name = "Request denied",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)15
+                        },
+                        new
+                        {
+                            Id = 45,
+                            Description = "Occupancy limit reached",
+                            Name = "Request denied",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)16
+                        },
+                        new
+                        {
+                            Id = 46,
+                            Description = "The area is NOT enabled",
+                            Name = "Request denied",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)17
+                        },
+                        new
+                        {
+                            Id = 47,
+                            Description = "Use limit",
+                            Name = "Request denied",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)18
+                        },
+                        new
+                        {
+                            Id = 48,
+                            Description = "Used/not used transaction will follow",
+                            Name = "Granting access",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)21
+                        },
+                        new
+                        {
+                            Id = 49,
+                            Description = "No escort card presented",
+                            Name = "Request rejected",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)24
+                        },
+                        new
+                        {
+                            Id = 50,
+                            Description = "Reserved",
+                            Name = "Reserved",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)25
+                        },
+                        new
+                        {
+                            Id = 51,
+                            Description = "Reserved",
+                            Name = "Reserved",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)26
+                        },
+                        new
+                        {
+                            Id = 52,
+                            Description = "Reserved",
+                            Name = "Reserved",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)27
+                        },
+                        new
+                        {
+                            Id = 53,
+                            Description = "Airlock is busy",
+                            Name = "Request rejected",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)29
+                        },
+                        new
+                        {
+                            Id = 54,
+                            Description = "Incomplete CARD & PIN sequence",
+                            Name = "Request rejected",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)30
+                        },
+                        new
+                        {
+                            Id = 55,
+                            Description = "Double-card event",
+                            Name = "Request granted",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)31
+                        },
+                        new
+                        {
+                            Id = 56,
+                            Description = "Double-card event while in uncontrolled state (locked/unlocked)",
+                            Name = "Request granted",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)32
+                        },
+                        new
+                        {
+                            Id = 57,
+                            Description = "Requires escort, pending escort card",
+                            Name = "Granting access",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)39
+                        },
+                        new
+                        {
+                            Id = 58,
+                            Description = "Violates minimum occupancy count",
+                            Name = "Request rejected",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)40
+                        },
+                        new
+                        {
+                            Id = 59,
+                            Description = "Card pending at another reader",
+                            Name = "Request rejected",
+                            TransactionTypeValue = (short)6,
+                            Value = (short)41
+                        },
+                        new
+                        {
+                            Id = 60,
+                            Description = "Card pending at another reader",
+                            Name = "Request rejected",
+                            TransactionTypeValue = (short)66,
+                            Value = (short)41
+                        },
+                        new
+                        {
+                            Id = 62,
+                            Description = "Disconnected (from an input point ID)",
+                            Name = "Disconnected",
+                            TransactionTypeValue = (short)7,
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 63,
+                            Description = "Unknown (offline): no report from the ID",
+                            Name = "Offline",
+                            TransactionTypeValue = (short)7,
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 64,
+                            Description = "Secure (or deactivate relay)",
+                            Name = "Secure",
+                            TransactionTypeValue = (short)7,
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 65,
+                            Description = "Alarm (or activated relay: perm or temp)",
+                            Name = "Alarm",
+                            TransactionTypeValue = (short)7,
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 66,
+                            Description = "Fault",
+                            Name = "Fault",
+                            TransactionTypeValue = (short)7,
+                            Value = (short)5
+                        },
+                        new
+                        {
+                            Id = 67,
+                            Description = "Exit delay in progress",
+                            Name = "Exit delay in progress",
+                            TransactionTypeValue = (short)7,
+                            Value = (short)6
+                        },
+                        new
+                        {
+                            Id = 68,
+                            Description = "Entry delay in progress",
+                            Name = "Entry delay in progress",
+                            TransactionTypeValue = (short)7,
+                            Value = (short)7
+                        },
+                        new
+                        {
+                            Id = 69,
+                            Description = "Door use not verified",
+                            Name = "Exit cycle",
+                            TransactionTypeValue = (short)8,
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 70,
+                            Description = "Door not used",
+                            Name = "Exit cycle",
+                            TransactionTypeValue = (short)8,
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 71,
+                            Description = "Door used",
+                            Name = "Exit cycle",
+                            TransactionTypeValue = (short)8,
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 72,
+                            Description = "Door use not verified",
+                            Name = "Host initiated request",
+                            TransactionTypeValue = (short)8,
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 73,
+                            Description = "Door not used",
+                            Name = "Host initiated request",
+                            TransactionTypeValue = (short)8,
+                            Value = (short)5
+                        },
+                        new
+                        {
+                            Id = 74,
+                            Description = "Door used",
+                            Name = "Host initiated request",
+                            TransactionTypeValue = (short)8,
+                            Value = (short)6
+                        },
+                        new
+                        {
+                            Id = 75,
+                            Description = "Started",
+                            Name = "Exit cycle",
+                            TransactionTypeValue = (short)8,
+                            Value = (short)9
+                        },
+                        new
+                        {
+                            Id = 76,
+                            Description = "Disconnected",
+                            Name = "Disconnected",
+                            TransactionTypeValue = (short)9,
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 77,
+                            Description = "Unknown _RS bits: last known status",
+                            Name = "Unknown _RS bits: last known status",
+                            TransactionTypeValue = (short)9,
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 78,
+                            Description = "Secure",
+                            Name = "Secure",
+                            TransactionTypeValue = (short)9,
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 79,
+                            Description = "Alarm (forced, held open or both)",
+                            Name = "Alarm",
+                            TransactionTypeValue = (short)9,
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 80,
+                            Description = "Fault (fault type is encoded in door_status byte)",
+                            Name = "Fault",
+                            TransactionTypeValue = (short)9,
+                            Value = (short)5
+                        },
+                        new
+                        {
+                            Id = 81,
+                            Description = "Cancel procedure (abort delay)",
+                            Name = "Cancel procedure (abort delay)",
+                            TransactionTypeValue = (short)10,
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 82,
+                            Description = "Execute procedure (start new)",
+                            Name = "Execute procedure (start new)",
+                            TransactionTypeValue = (short)10,
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 83,
+                            Description = "Resume procedure, if paused",
+                            Name = "Resume procedure, if paused",
+                            TransactionTypeValue = (short)10,
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 84,
+                            Description = "Execute procedure with prefix 256 actions",
+                            Name = "Execute procedure with prefix 256 actions",
+                            TransactionTypeValue = (short)10,
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 85,
+                            Description = "Execute procedure with prefix 512 actions",
+                            Name = "Execute procedure with prefix 512 actions",
+                            TransactionTypeValue = (short)10,
+                            Value = (short)5
+                        },
+                        new
+                        {
+                            Id = 86,
+                            Description = "Execute procedure with prefix 1024 actions",
+                            Name = "Execute procedure with prefix 1024 actions",
+                            TransactionTypeValue = (short)10,
+                            Value = (short)6
+                        },
+                        new
+                        {
+                            Id = 87,
+                            Description = "Resume procedure with prefix 256 actions",
+                            Name = "Resume procedure with prefix 256 actions",
+                            TransactionTypeValue = (short)10,
+                            Value = (short)7
+                        },
+                        new
+                        {
+                            Id = 88,
+                            Description = "Resume procedure with prefix 512 actions",
+                            Name = "Resume procedure with prefix 512 actions",
+                            TransactionTypeValue = (short)10,
+                            Value = (short)8
+                        },
+                        new
+                        {
+                            Id = 89,
+                            Description = "Resume procedure with prefix 1024 actions",
+                            Name = "Resume procedure with prefix 1024 actions",
+                            TransactionTypeValue = (short)10,
+                            Value = (short)9
+                        },
+                        new
+                        {
+                            Id = 90,
+                            Description = "Command was issued to procedure with no actions - (NOP)",
+                            Name = "Command was issued to procedure with no actions - (NOP)",
+                            TransactionTypeValue = (short)10,
+                            Value = (short)10
+                        },
+                        new
+                        {
+                            Id = 91,
+                            Description = "Command entered by the user",
+                            Name = "Command entered by the user",
+                            TransactionTypeValue = (short)11,
+                            Value = (short)10
+                        },
+                        new
+                        {
+                            Id = 92,
+                            Description = "Became inactive",
+                            Name = "Became inactive",
+                            TransactionTypeValue = (short)12,
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 93,
+                            Description = "Became active",
+                            Name = "Became active",
+                            TransactionTypeValue = (short)12,
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 94,
+                            Description = "Disabled",
+                            Name = "Disabled",
+                            TransactionTypeValue = (short)13,
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 95,
+                            Description = "Unlocked",
+                            Name = "Unlocked",
+                            TransactionTypeValue = (short)13,
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 96,
+                            Description = "Locked (exit request enabled)",
+                            Name = "Locked",
+                            TransactionTypeValue = (short)13,
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 97,
+                            Description = "Facility code only",
+                            Name = "Facility code only",
+                            TransactionTypeValue = (short)13,
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 98,
+                            Description = "Card only",
+                            Name = "Card only",
+                            TransactionTypeValue = (short)13,
+                            Value = (short)5
+                        },
+                        new
+                        {
+                            Id = 99,
+                            Description = "PIN only",
+                            Name = "PIN only",
+                            TransactionTypeValue = (short)13,
+                            Value = (short)6
+                        },
+                        new
+                        {
+                            Id = 100,
+                            Description = "Card and PIN",
+                            Name = "Card and PIN",
+                            TransactionTypeValue = (short)13,
+                            Value = (short)7
+                        },
+                        new
+                        {
+                            Id = 101,
+                            Description = "PIN or card",
+                            Name = "PIN or card",
+                            TransactionTypeValue = (short)13,
+                            Value = (short)8
+                        },
+                        new
+                        {
+                            Id = 102,
+                            Description = "First disarm command executed (mask_count was 0, all MPs got masked)",
+                            Name = "First disarm command executed",
+                            TransactionTypeValue = (short)14,
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 103,
+                            Description = "Subsequent disarm command executed (mask_count incremented, MPs already masked)",
+                            Name = "Subsequent disarm command executed",
+                            TransactionTypeValue = (short)14,
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 104,
+                            Description = "Override command: armed (mask_count cleared, all points unmasked)",
+                            Name = "Override command: armed",
+                            TransactionTypeValue = (short)14,
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 105,
+                            Description = "Override command: disarmed (mask_count set, unmasked all points)",
+                            Name = "Override command: disarmed",
+                            TransactionTypeValue = (short)14,
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 106,
+                            Description = "Force arm command, MPG armed, (may have active zones, mask_count is now zero)",
+                            Name = "Force arm command, MPG armed",
+                            TransactionTypeValue = (short)14,
+                            Value = (short)5
+                        },
+                        new
+                        {
+                            Id = 107,
+                            Description = "Force arm command, MPG not armed (mask_count decremented)",
+                            Name = "Force arm command, MPG not armed",
+                            TransactionTypeValue = (short)14,
+                            Value = (short)6
+                        },
+                        new
+                        {
+                            Id = 108,
+                            Description = "Standard arm command, MPG armed (did not have active zones, mask_count is now zero)",
+                            Name = "Standard arm command, MPG armed",
+                            TransactionTypeValue = (short)14,
+                            Value = (short)7
+                        },
+                        new
+                        {
+                            Id = 109,
+                            Description = "Standard arm command, MPG did not arm, (had active zones, mask_count unchanged)d",
+                            Name = "Standard arm command, MPG did not arm",
+                            TransactionTypeValue = (short)14,
+                            Value = (short)8
+                        },
+                        new
+                        {
+                            Id = 110,
+                            Description = "Standard arm command, MPG still armed, (mask_count decremented)",
+                            Name = "Standard arm command, MPG still armed",
+                            TransactionTypeValue = (short)14,
+                            Value = (short)9
+                        },
+                        new
+                        {
+                            Id = 111,
+                            Description = "Override arm command, MPG armed (mask_count is now zero)",
+                            Name = "Override arm command, MPG armed",
+                            TransactionTypeValue = (short)14,
+                            Value = (short)10
+                        },
+                        new
+                        {
+                            Id = 112,
+                            Description = "Override arm command, MPG did not arm, (mask_count decremented)",
+                            Name = "Override arm command, MPG did not arm",
+                            TransactionTypeValue = (short)14,
+                            Value = (short)11
+                        },
+                        new
+                        {
+                            Id = 113,
+                            Description = "Area disabled",
+                            Name = "Area disabled",
+                            TransactionTypeValue = (short)15,
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 114,
+                            Description = "Area enabled",
+                            Name = "Area enabled",
+                            TransactionTypeValue = (short)15,
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 115,
+                            Description = "Occupancy count reached zero",
+                            Name = "Occupancy count reached zero",
+                            TransactionTypeValue = (short)15,
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 116,
+                            Description = "Occupancy count reached the \"downward-limit\"",
+                            Name = "Occupancy count reached the \"downward-limit\"",
+                            TransactionTypeValue = (short)15,
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 117,
+                            Description = "Occupancy count reached the \"upward-limit\"",
+                            Name = "Occupancy count reached the \"upward-limit\"",
+                            TransactionTypeValue = (short)15,
+                            Value = (short)5
+                        },
+                        new
+                        {
+                            Id = 118,
+                            Description = "Occupancy count reached the \"max-occupancy-limit\"",
+                            Name = "Occupancy count reached the \"max-occupancy-limit\"",
+                            TransactionTypeValue = (short)15,
+                            Value = (short)6
+                        },
+                        new
+                        {
+                            Id = 119,
+                            Description = "Multi-occupancy mode changed",
+                            Name = "Multi-occupancy mode changed",
+                            TransactionTypeValue = (short)15,
+                            Value = (short)7
+                        },
+                        new
+                        {
+                            Id = 120,
+                            Description = "Save home notes",
+                            Name = "Save home notes",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 121,
+                            Description = "Save network settings",
+                            Name = "Save network settings",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 122,
+                            Description = "Save host communication settings",
+                            Name = "Save host communication settings",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 123,
+                            Description = "Add user",
+                            Name = "Add user",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 124,
+                            Description = "DeleteAsync user",
+                            Name = "DeleteAsync user",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)5
+                        },
+                        new
+                        {
+                            Id = 125,
+                            Description = "Modify user",
+                            Name = "Modify user",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)6
+                        },
+                        new
+                        {
+                            Id = 126,
+                            Description = "Save password strength and session timer",
+                            Name = "Save password strength and session timer",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)7
+                        },
+                        new
+                        {
+                            Id = 127,
+                            Description = "Save web server options",
+                            Name = "Save web server options",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)8
+                        },
+                        new
+                        {
+                            Id = 128,
+                            Description = "Save time server settings",
+                            Name = "Save time server settings",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)9
+                        },
+                        new
+                        {
+                            Id = 129,
+                            Description = "Auto save timer settings",
+                            Name = "Auto save timer settings",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)10
+                        },
+                        new
+                        {
+                            Id = 130,
+                            Description = "Load certificate",
+                            Name = "Load certificate",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)11
+                        },
+                        new
+                        {
+                            Id = 131,
+                            Description = "Logged out by link",
+                            Name = "Logged out by link",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)12
+                        },
+                        new
+                        {
+                            Id = 132,
+                            Description = "Logged out by timeout",
+                            Name = "Logged out by timeout",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)13
+                        },
+                        new
+                        {
+                            Id = 133,
+                            Description = "Logged out by user",
+                            Name = "Logged out by user",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)14
+                        },
+                        new
+                        {
+                            Id = 134,
+                            Description = "Logged out by apply",
+                            Name = "Logged out by apply",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)15
+                        },
+                        new
+                        {
+                            Id = 135,
+                            Description = "Invalid login",
+                            Name = "Invalid login",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)16
+                        },
+                        new
+                        {
+                            Id = 136,
+                            Description = "Successful login",
+                            Name = "Successful login",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)17
+                        },
+                        new
+                        {
+                            Id = 137,
+                            Description = "Network diagnostic saved",
+                            Name = "Network diagnostic saved",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)18
+                        },
+                        new
+                        {
+                            Id = 138,
+                            Description = "Card DB size saved",
+                            Name = "Card DB size saved",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)19
+                        },
+                        new
+                        {
+                            Id = 139,
+                            Description = "Diagnostic page saved",
+                            Name = "Diagnostic page saved",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)21
+                        },
+                        new
+                        {
+                            Id = 140,
+                            Description = "Security options page saved",
+                            Name = "Security options page saved",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)22
+                        },
+                        new
+                        {
+                            Id = 141,
+                            Description = "Add-on package page saved",
+                            Name = "Add-on package page saved",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)23
+                        },
+                        new
+                        {
+                            Id = 145,
+                            Description = "Invalid login limit reached",
+                            Name = "Invalid login limit reached",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)27
+                        },
+                        new
+                        {
+                            Id = 146,
+                            Description = "Firmware download initiated",
+                            Name = "Firmware download initiated",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)28
+                        },
+                        new
+                        {
+                            Id = 147,
+                            Description = "Advanced networking routes saved",
+                            Name = "Advanced networking routes saved",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)29
+                        },
+                        new
+                        {
+                            Id = 148,
+                            Description = "Advanced networking reversion timer started",
+                            Name = "Advanced networking reversion timer started",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)30
+                        },
+                        new
+                        {
+                            Id = 149,
+                            Description = "Advanced networking reversion timer elapsed",
+                            Name = "Advanced networking reversion timer elapsed",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)31
+                        },
+                        new
+                        {
+                            Id = 150,
+                            Description = "Advanced networking route changes reverted",
+                            Name = "Advanced networking route changes reverted",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)32
+                        },
+                        new
+                        {
+                            Id = 151,
+                            Description = "Advanced networking route changes cleared",
+                            Name = "Advanced networking route changes cleared",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)33
+                        },
+                        new
+                        {
+                            Id = 152,
+                            Description = "Certificate generation started",
+                            Name = "Certificate generation started",
+                            TransactionTypeValue = (short)20,
+                            Value = (short)34
+                        },
+                        new
+                        {
+                            Id = 153,
+                            Description = "Operating mode changed to mode 0",
+                            Name = "Operating mode changed to mode 0",
+                            TransactionTypeValue = (short)24,
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 154,
+                            Description = "Operating mode changed to mode 1",
+                            Name = "Operating mode changed to mode 1",
+                            TransactionTypeValue = (short)24,
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 155,
+                            Description = "Operating mode changed to mode 2",
+                            Name = "Operating mode changed to mode 2",
+                            TransactionTypeValue = (short)24,
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 156,
+                            Description = "Operating mode changed to mode 3",
+                            Name = "Operating mode changed to mode 3",
+                            TransactionTypeValue = (short)24,
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 157,
+                            Description = "Operating mode changed to mode 4",
+                            Name = "Operating mode changed to mode 4",
+                            TransactionTypeValue = (short)24,
+                            Value = (short)5
+                        },
+                        new
+                        {
+                            Id = 158,
+                            Description = "Operating mode changed to mode 5",
+                            Name = "Operating mode changed to mode 5",
+                            TransactionTypeValue = (short)24,
+                            Value = (short)6
+                        },
+                        new
+                        {
+                            Id = 159,
+                            Description = "Operating mode changed to mode 6",
+                            Name = "Operating mode changed to mode 6",
+                            TransactionTypeValue = (short)24,
+                            Value = (short)7
+                        },
+                        new
+                        {
+                            Id = 160,
+                            Description = "Operating mode changed to mode 7",
+                            Name = "Operating mode changed to mode 7",
+                            TransactionTypeValue = (short)24,
+                            Value = (short)8
+                        },
+                        new
+                        {
+                            Id = 161,
+                            Description = "Floor status is secure",
+                            Name = "Secure",
+                            TransactionTypeValue = (short)26,
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 162,
+                            Description = "Floor status is public",
+                            Name = "Public",
+                            TransactionTypeValue = (short)26,
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 163,
+                            Description = "Floor status is disabled (override)",
+                            Name = "Disabled (override)",
+                            TransactionTypeValue = (short)26,
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 164,
+                            Description = "File transfer success",
+                            Name = "File transfer success",
+                            TransactionTypeValue = (short)27,
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 165,
+                            Description = "File transfer error",
+                            Name = "File transfer error",
+                            TransactionTypeValue = (short)27,
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 166,
+                            Description = "File delete successful",
+                            Name = "File delete successful",
+                            TransactionTypeValue = (short)27,
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 167,
+                            Description = "File delete unsuccessful",
+                            Name = "File delete unsuccessful",
+                            TransactionTypeValue = (short)27,
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 168,
+                            Description = "OSDP file transfer complete (primary ACR) - look at source number for ACR number",
+                            Name = "OSDP file transfer complete (primary ACR)",
+                            TransactionTypeValue = (short)27,
+                            Value = (short)5
+                        },
+                        new
+                        {
+                            Id = 169,
+                            Description = "OSDP file transfer error (primary ACR) - look at source number for ACR number",
+                            Name = "OSDP file transfer error (primary ACR)",
+                            TransactionTypeValue = (short)27,
+                            Value = (short)6
+                        },
+                        new
+                        {
+                            Id = 170,
+                            Description = "OSDP file transfer complete (alternate ACR) - look at source number for ACR number",
+                            Name = "OSDP file transfer complete (alternate ACR)",
+                            TransactionTypeValue = (short)27,
+                            Value = (short)7
+                        },
+                        new
+                        {
+                            Id = 171,
+                            Description = "OSDP file transfer error (alternate ACR) - look at source number for ACR number",
+                            Name = "OSDP file transfer error (alternate ACR)",
+                            TransactionTypeValue = (short)27,
+                            Value = (short)8
+                        },
+                        new
+                        {
+                            Id = 172,
+                            Description = "Elevator access",
+                            Name = "Elevator access",
+                            TransactionTypeValue = (short)29,
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 173,
+                            Description = "Extended status updated",
+                            Name = "Extended status updated",
+                            TransactionTypeValue = (short)64,
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 174,
+                            Description = "Secure / Inactive",
+                            Name = "Secure / Inactive",
+                            TransactionTypeValue = (short)65,
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 175,
+                            Description = "Alarm / Active",
+                            Name = "Alarm / Active",
+                            TransactionTypeValue = (short)65,
+                            Value = (short)4
+                        });
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.TransactionSource", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("Value")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TransactionSources");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "SCP diagnostics",
+                            Value = (short)0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "SCP to HOST communication driver - not defined",
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "SCP local monitor points (tamper & power fault)",
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "SIO diagnostics",
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "SIO communication driver",
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "SIO cabinet tamper",
+                            Value = (short)5
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "SIO power monitor",
+                            Value = (short)6
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "Alarm monitor point",
+                            Value = (short)7
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Name = "Output control point",
+                            Value = (short)8
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Name = "Access Control Reader (ACR)",
+                            Value = (short)9
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Name = "ACR: reader tamper monitor",
+                            Value = (short)10
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Name = "ACR: door position sensor",
+                            Value = (short)11
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Name = "ACR: 1st \"Request to exit\" input",
+                            Value = (short)13
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Name = "ACR: 2nd \"Request to exit\" input",
+                            Value = (short)14
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Name = "Time zone",
+                            Value = (short)15
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Name = "Procedure (action list)",
+                            Value = (short)16
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Name = "Trigger",
+                            Value = (short)17
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Name = "Trigger variable",
+                            Value = (short)18
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Name = "Monitor point group",
+                            Value = (short)19
+                        },
+                        new
+                        {
+                            Id = 20,
+                            Name = "Access area",
+                            Value = (short)20
+                        },
+                        new
+                        {
+                            Id = 21,
+                            Name = "ACR: the alternate reader's tamper monitor source_number",
+                            Value = (short)21
+                        },
+                        new
+                        {
+                            Id = 22,
+                            Name = "Login Service",
+                            Value = (short)24
+                        });
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.TransactionSourceType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<short>("TransactionSourceValue")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TransactionTypeValue")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TransactionSourceValue");
+
+                    b.HasIndex("TransactionTypeValue");
+
+                    b.ToTable("TransactionSourceType");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            TransactionSourceValue = (short)0,
+                            TransactionTypeValue = (short)1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            TransactionSourceValue = (short)0,
+                            TransactionTypeValue = (short)20
+                        },
+                        new
+                        {
+                            Id = 3,
+                            TransactionSourceValue = (short)0,
+                            TransactionTypeValue = (short)24
+                        },
+                        new
+                        {
+                            Id = 4,
+                            TransactionSourceValue = (short)0,
+                            TransactionTypeValue = (short)27
+                        },
+                        new
+                        {
+                            Id = 5,
+                            TransactionSourceValue = (short)2,
+                            TransactionTypeValue = (short)7
+                        },
+                        new
+                        {
+                            Id = 7,
+                            TransactionSourceValue = (short)4,
+                            TransactionTypeValue = (short)2
+                        },
+                        new
+                        {
+                            Id = 8,
+                            TransactionSourceValue = (short)5,
+                            TransactionTypeValue = (short)7
+                        },
+                        new
+                        {
+                            Id = 9,
+                            TransactionSourceValue = (short)6,
+                            TransactionTypeValue = (short)7
+                        },
+                        new
+                        {
+                            Id = 10,
+                            TransactionSourceValue = (short)7,
+                            TransactionTypeValue = (short)7
+                        },
+                        new
+                        {
+                            Id = 11,
+                            TransactionSourceValue = (short)8,
+                            TransactionTypeValue = (short)7
+                        },
+                        new
+                        {
+                            Id = 12,
+                            TransactionSourceValue = (short)9,
+                            TransactionTypeValue = (short)3
+                        },
+                        new
+                        {
+                            Id = 13,
+                            TransactionSourceValue = (short)9,
+                            TransactionTypeValue = (short)4
+                        },
+                        new
+                        {
+                            Id = 14,
+                            TransactionSourceValue = (short)9,
+                            TransactionTypeValue = (short)5
+                        },
+                        new
+                        {
+                            Id = 15,
+                            TransactionSourceValue = (short)9,
+                            TransactionTypeValue = (short)6
+                        },
+                        new
+                        {
+                            Id = 16,
+                            TransactionSourceValue = (short)9,
+                            TransactionTypeValue = (short)8
+                        },
+                        new
+                        {
+                            Id = 17,
+                            TransactionSourceValue = (short)9,
+                            TransactionTypeValue = (short)11
+                        },
+                        new
+                        {
+                            Id = 18,
+                            TransactionSourceValue = (short)9,
+                            TransactionTypeValue = (short)13
+                        },
+                        new
+                        {
+                            Id = 19,
+                            TransactionSourceValue = (short)9,
+                            TransactionTypeValue = (short)18
+                        },
+                        new
+                        {
+                            Id = 20,
+                            TransactionSourceValue = (short)9,
+                            TransactionTypeValue = (short)19
+                        },
+                        new
+                        {
+                            Id = 21,
+                            TransactionSourceValue = (short)9,
+                            TransactionTypeValue = (short)26
+                        },
+                        new
+                        {
+                            Id = 22,
+                            TransactionSourceValue = (short)9,
+                            TransactionTypeValue = (short)29
+                        },
+                        new
+                        {
+                            Id = 23,
+                            TransactionSourceValue = (short)9,
+                            TransactionTypeValue = (short)64
+                        },
+                        new
+                        {
+                            Id = 24,
+                            TransactionSourceValue = (short)9,
+                            TransactionTypeValue = (short)65
+                        },
+                        new
+                        {
+                            Id = 25,
+                            TransactionSourceValue = (short)9,
+                            TransactionTypeValue = (short)19
+                        },
+                        new
+                        {
+                            Id = 26,
+                            TransactionSourceValue = (short)10,
+                            TransactionTypeValue = (short)7
+                        },
+                        new
+                        {
+                            Id = 27,
+                            TransactionSourceValue = (short)11,
+                            TransactionTypeValue = (short)9
+                        },
+                        new
+                        {
+                            Id = 28,
+                            TransactionSourceValue = (short)13,
+                            TransactionTypeValue = (short)7
+                        },
+                        new
+                        {
+                            Id = 29,
+                            TransactionSourceValue = (short)14,
+                            TransactionTypeValue = (short)7
+                        },
+                        new
+                        {
+                            Id = 30,
+                            TransactionSourceValue = (short)15,
+                            TransactionTypeValue = (short)12
+                        },
+                        new
+                        {
+                            Id = 31,
+                            TransactionSourceValue = (short)16,
+                            TransactionTypeValue = (short)10
+                        },
+                        new
+                        {
+                            Id = 32,
+                            TransactionSourceValue = (short)17,
+                            TransactionTypeValue = (short)12
+                        },
+                        new
+                        {
+                            Id = 33,
+                            TransactionSourceValue = (short)18,
+                            TransactionTypeValue = (short)12
+                        },
+                        new
+                        {
+                            Id = 34,
+                            TransactionSourceValue = (short)19,
+                            TransactionTypeValue = (short)14
+                        },
+                        new
+                        {
+                            Id = 35,
+                            TransactionSourceValue = (short)20,
+                            TransactionTypeValue = (short)15
+                        },
+                        new
+                        {
+                            Id = 36,
+                            TransactionSourceValue = (short)21,
+                            TransactionTypeValue = (short)7
+                        },
+                        new
+                        {
+                            Id = 37,
+                            TransactionSourceValue = (short)24,
+                            TransactionTypeValue = (short)7
+                        });
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.TransactionType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("Value")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TransactionTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "System",
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "SIO communication status report",
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Binary card data",
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Card data",
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Formatted card: facility code, card number ID, issue code",
+                            Value = (short)5
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Formatted card: card number only",
+                            Value = (short)6
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Change-of-state",
+                            Value = (short)7
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "Exit request",
+                            Value = (short)8
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Name = "Door status monitor change-of-state",
+                            Value = (short)9
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Name = "Procedure (command list) log",
+                            Value = (short)10
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Name = "User command request report",
+                            Value = (short)11
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Name = "Change of state: trigger variable, time zone, & triggers",
+                            Value = (short)12
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Name = "ACR mode change",
+                            Value = (short)13
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Name = "Monitor point group status change",
+                            Value = (short)14
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Name = "Access area",
+                            Value = (short)15
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Name = "Extended user command",
+                            Value = (short)18
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Name = "Use limit report",
+                            Value = (short)19
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Name = "Web activity",
+                            Value = (short)20
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Name = "Specify tranTypeCardFull (0x05) instead",
+                            Value = (short)21
+                        },
+                        new
+                        {
+                            Id = 20,
+                            Name = "Specify tranTypeCardID (0x06) instead",
+                            Value = (short)22
+                        },
+                        new
+                        {
+                            Id = 21,
+                            Name = "Operating mode change",
+                            Value = (short)24
+                        },
+                        new
+                        {
+                            Id = 22,
+                            Name = "Elevator Floor Status CoS",
+                            Value = (short)26
+                        },
+                        new
+                        {
+                            Id = 23,
+                            Name = "File Download Status",
+                            Value = (short)27
+                        },
+                        new
+                        {
+                            Id = 24,
+                            Name = "Elevator Floor Access Transaction",
+                            Value = (short)29
+                        },
+                        new
+                        {
+                            Id = 25,
+                            Name = "Specify tranTypeCardFull (0x05) instead",
+                            Value = (short)37
+                        },
+                        new
+                        {
+                            Id = 26,
+                            Name = "Specify tranTypeCardID (0x06) instead",
+                            Value = (short)38
+                        },
+                        new
+                        {
+                            Id = 27,
+                            Name = "Specify tranTypeCardFull (0x05) instead",
+                            Value = (short)53
+                        },
+                        new
+                        {
+                            Id = 28,
+                            Name = "ACR extended feature stateless transition",
+                            Value = (short)64
+                        },
+                        new
+                        {
+                            Id = 29,
+                            Name = "ACR extended feature change-of-state",
+                            Value = (short)65
+                        },
+                        new
+                        {
+                            Id = 30,
+                            Name = "Formatted card and user PIN was captured at an ACR",
+                            Value = (short)66
+                        });
+                });
+
             modelBuilder.Entity("HIDAeroService.Entity.AccessLevelDoorTimeZone", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.AccessLevels", "AccessLevels")
+                    b.HasOne("HIDAeroService.Entity.AccessLevel", "AccessLevel")
                         .WithMany("AccessLevelDoorTimeZones")
                         .HasForeignKey("AccessLevelId")
                         .HasPrincipalKey("ComponentId")
@@ -3207,23 +5383,32 @@ namespace HIDAeroService.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AccessLevels");
+                    b.Navigation("AccessLevel");
 
                     b.Navigation("Door");
 
                     b.Navigation("TimeZone");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.CardHolder", b =>
+            modelBuilder.Entity("HIDAeroService.Entity.CardHolderAccessLevel", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.AccessLevels", "AccessLevels")
-                        .WithMany("CardHolders")
+                    b.HasOne("HIDAeroService.Entity.AccessLevel", "AccessLevel")
+                        .WithMany("CardHolderAccessLevels")
                         .HasForeignKey("AccessLevelId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AccessLevels");
+                    b.HasOne("HIDAeroService.Entity.CardHolder", "CardHolder")
+                        .WithMany("CardHolderAccessLevels")
+                        .HasForeignKey("CardHolderId")
+                        .HasPrincipalKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AccessLevel");
+
+                    b.Navigation("CardHolder");
                 });
 
             modelBuilder.Entity("HIDAeroService.Entity.CardHolderAdditional", b =>
@@ -3275,6 +5460,20 @@ namespace HIDAeroService.Migrations
 
             modelBuilder.Entity("HIDAeroService.Entity.Door", b =>
                 {
+                    b.HasOne("HIDAeroService.Entity.AccessArea", "AreaIn")
+                        .WithMany("DoorsIn")
+                        .HasForeignKey("AntiPassBackIn")
+                        .HasPrincipalKey("ComponentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HIDAeroService.Entity.AccessArea", "AreaOut")
+                        .WithMany("DoorsOut")
+                        .HasForeignKey("AntiPassBackOut")
+                        .HasPrincipalKey("ComponentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("HIDAeroService.Entity.Sensor", "Sensor")
                         .WithOne("SensorDoor")
                         .HasForeignKey("HIDAeroService.Entity.Door", "SensorComponentId")
@@ -3289,6 +5488,10 @@ namespace HIDAeroService.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("AreaIn");
+
+                    b.Navigation("AreaOut");
+
                     b.Navigation("Sensor");
 
                     b.Navigation("Strk");
@@ -3296,7 +5499,7 @@ namespace HIDAeroService.Migrations
 
             modelBuilder.Entity("HIDAeroService.Entity.HardwareAccessLevel", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.AccessLevels", "AccessLevels")
+                    b.HasOne("HIDAeroService.Entity.AccessLevel", "AccessLevel")
                         .WithMany()
                         .HasForeignKey("AccessLevelId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -3309,7 +5512,7 @@ namespace HIDAeroService.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AccessLevels");
+                    b.Navigation("AccessLevel");
 
                     b.Navigation("Hardware");
                 });
@@ -3445,16 +5648,58 @@ namespace HIDAeroService.Migrations
                     b.Navigation("TimeZone");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.AccessLevels", b =>
+            modelBuilder.Entity("HIDAeroService.Entity.TransactionCode", b =>
+                {
+                    b.HasOne("HIDAeroService.Entity.TransactionType", "TransactionType")
+                        .WithMany("transactionCodes")
+                        .HasForeignKey("TransactionTypeValue")
+                        .HasPrincipalKey("Value")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TransactionType");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.TransactionSourceType", b =>
+                {
+                    b.HasOne("HIDAeroService.Entity.TransactionSource", "TransactionSource")
+                        .WithMany("TransactionSourceTypes")
+                        .HasForeignKey("TransactionSourceValue")
+                        .HasPrincipalKey("Value")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HIDAeroService.Entity.TransactionType", "TransactionType")
+                        .WithMany("TransactionSourceTypes")
+                        .HasForeignKey("TransactionTypeValue")
+                        .HasPrincipalKey("Value")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TransactionSource");
+
+                    b.Navigation("TransactionType");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.AccessArea", b =>
+                {
+                    b.Navigation("DoorsIn");
+
+                    b.Navigation("DoorsOut");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.AccessLevel", b =>
                 {
                     b.Navigation("AccessLevelDoorTimeZones");
 
-                    b.Navigation("CardHolders");
+                    b.Navigation("CardHolderAccessLevels");
                 });
 
             modelBuilder.Entity("HIDAeroService.Entity.CardHolder", b =>
                 {
                     b.Navigation("Additional");
+
+                    b.Navigation("CardHolderAccessLevels");
 
                     b.Navigation("Credentials");
                 });
@@ -3522,6 +5767,18 @@ namespace HIDAeroService.Migrations
                     b.Navigation("AccessLevelDoorTimeZones");
 
                     b.Navigation("TimeZoneIntervals");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.TransactionSource", b =>
+                {
+                    b.Navigation("TransactionSourceTypes");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.TransactionType", b =>
+                {
+                    b.Navigation("TransactionSourceTypes");
+
+                    b.Navigation("transactionCodes");
                 });
 #pragma warning restore 612, 618
         }

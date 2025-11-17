@@ -3,6 +3,7 @@ using System;
 using HIDAeroService.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HIDAeroService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251117142809_171120252")]
+    partial class _171120252
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2329,46 +2332,6 @@ namespace HIDAeroService.Migrations
                             Description = "",
                             Name = "Latching mode",
                             Value = (short)2
-                        });
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.MultiOccupancyOption", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("Value")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MultiOccupancyOptions");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Two or more not required in area",
-                            Name = "Two or more not required in area",
-                            Value = (short)0
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Two or more required",
-                            Name = "Two or more required",
-                            Value = (short)1
                         });
                 });
 
