@@ -2937,6 +2937,46 @@ namespace HIDAeroService.Migrations
                         });
                 });
 
+            modelBuilder.Entity("HIDAeroService.Entity.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedByIp")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("JwtId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ReplacedByToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("RevokedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("HIDAeroService.Entity.RelayMode", b =>
                 {
                     b.Property<int>("Id")
@@ -3331,7 +3371,7 @@ namespace HIDAeroService.Migrations
                             GmtOffset = (short)-25200,
                             nAcr = (short)64,
                             nAlvl = (short)32000,
-                            nArea = (short)0,
+                            nArea = (short)126,
                             nCard = (short)200,
                             nCp = (short)388,
                             nHol = (short)255,
@@ -5076,7 +5116,7 @@ namespace HIDAeroService.Migrations
                         new
                         {
                             Id = 22,
-                            Name = "Login Service",
+                            Name = "LoginDto Service",
                             Value = (short)24
                         });
                 });

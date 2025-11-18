@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HIDAeroService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251117135153_171120251")]
-    partial class _171120251
+    [Migration("20251118145331_181120251")]
+    partial class _181120251
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -115,6 +115,53 @@ namespace HIDAeroService.Migrations
                         });
                 });
 
+            modelBuilder.Entity("HIDAeroService.Entity.AccessAreaAccessControlOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("Value")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AccessAreaAccessControlOptions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "No Operation",
+                            Name = "NOP",
+                            Value = (short)0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "No One Can Access",
+                            Name = "Disable area",
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Enable Area",
+                            Name = "Enable area",
+                            Value = (short)2
+                        });
+                });
+
             modelBuilder.Entity("HIDAeroService.Entity.AccessAreaCommandOption", b =>
                 {
                     b.Property<int>("Id")
@@ -136,7 +183,7 @@ namespace HIDAeroService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AccessAreaCommands");
+                    b.ToTable("AccessAreaCommandOptions");
 
                     b.HasData(
                         new
@@ -603,6 +650,46 @@ namespace HIDAeroService.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ArScpStructureStatuses");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.AreaFlagOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("Value")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AreaFlagOptions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Area can have open thresholds to only one other area",
+                            Name = "Interlock",
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Just (O)ne (D)oor (O)nly is allowed to be open into this area (AREA_F_AIRLOCK must also be set)",
+                            Name = "AirLock One Door Only",
+                            Value = (short)2
+                        });
                 });
 
             modelBuilder.Entity("HIDAeroService.Entity.CardFormat", b =>
@@ -1104,7 +1191,7 @@ namespace HIDAeroService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CredentialFlags");
+                    b.ToTable("CredentialFlagOptions");
 
                     b.HasData(
                         new
@@ -1602,7 +1689,7 @@ namespace HIDAeroService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DoorSpareFlags");
+                    b.ToTable("DoorSpareFlagOption");
 
                     b.HasData(
                         new
@@ -2248,6 +2335,86 @@ namespace HIDAeroService.Migrations
                         });
                 });
 
+            modelBuilder.Entity("HIDAeroService.Entity.MultiOccupancyOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("Value")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MultiOccupancyOptions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Two or more not required in area",
+                            Name = "Two or more not required in area",
+                            Value = (short)0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Two or more required",
+                            Name = "Two or more required",
+                            Value = (short)1
+                        });
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.OccupancyControlOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("Value")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OccupancyControlOptions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Do not change current occupancy count",
+                            Name = "Do not change current occupancy count",
+                            Value = (short)0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Change current occupancy to occ_set",
+                            Name = "Change current occupancy to occ_set",
+                            Value = (short)1
+                        });
+                });
+
             modelBuilder.Entity("HIDAeroService.Entity.Operator", b =>
                 {
                     b.Property<int>("Id")
@@ -2773,6 +2940,46 @@ namespace HIDAeroService.Migrations
                         });
                 });
 
+            modelBuilder.Entity("HIDAeroService.Entity.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedByIp")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("JwtId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ReplacedByToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("RevokedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("HIDAeroService.Entity.RelayMode", b =>
                 {
                     b.Property<int>("Id")
@@ -3167,7 +3374,7 @@ namespace HIDAeroService.Migrations
                             GmtOffset = (short)-25200,
                             nAcr = (short)64,
                             nAlvl = (short)32000,
-                            nArea = (short)0,
+                            nArea = (short)126,
                             nCard = (short)200,
                             nCp = (short)388,
                             nHol = (short)255,

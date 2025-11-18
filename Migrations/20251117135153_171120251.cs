@@ -1631,7 +1631,7 @@ namespace HIDAeroService.Migrations
                     { 19, "Monitor point group", (short)19 },
                     { 20, "Access area", (short)20 },
                     { 21, "ACR: the alternate reader's tamper monitor source_number", (short)21 },
-                    { 22, "Login Service", (short)24 }
+                    { 22, "LoginDto Service", (short)24 }
                 });
 
             migrationBuilder.InsertData(

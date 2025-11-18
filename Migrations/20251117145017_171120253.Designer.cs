@@ -5079,7 +5079,7 @@ namespace HIDAeroService.Migrations
                         new
                         {
                             Id = 22,
-                            Name = "Login Service",
+                            Name = "LoginDto Service",
                             Value = (short)24
                         });
                 });

@@ -4488,3 +4488,11 @@ Begin - SCP Driver DLL (64-bit) version 4.7.1.42
 18869.206 0(0), enCcAcrSrq: 0407 1 1 1
 18971.423 0(0), enCcAcrSrq: 0407 1 1 1
 20150.945 0(0), enCcAcrSrq: 0407 1 1 1
+Debug file SCPDEBUG.txt <SCPDEBUGc.txt> <SCPDEBUG.TXT> opened Tue Nov 18 16:01:43 2025
+Begin - SCP Driver DLL (64-bit) version 4.7.1.43
+56505.423 WSAStartup ok
+56505.426 RNG_X931A24 Initialized
+56505.426 1, enCcSystem: 011 1 100 0 0 1
+56505.427 1, enCcCreateChannel: 0012 1 7 3333 0 3000 0 "" 0
+56505.438 listen(lsock) created socket=2012 on port 3333
+56505.438 Listen Successful, port: 3333

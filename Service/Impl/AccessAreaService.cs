@@ -56,14 +56,14 @@ namespace HIDAeroService.Service.Impl
                 .Select(x => x.MacAddress)
                 .ToArrayAsync();
 
-            foreach(var mac in hardwares)
-            {
-                var ScpId = await helperService.GetIdFromMacAsync(mac);
-                if (!await command.ConfigureAccessAreaAsync(ScpId, ComponentId, dto.MultiOccupancy, dto.AccessControl, dto.OccControl, dto.OccSet, dto.OccMax, dto.OccUp, dto.OccDown, dto.AreaFlag))
-                {
-                    return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.C1121));
-                }
-            }
+            //foreach(var mac in hardwares)
+            //{
+            //    var ScpId = await helperService.GetIdFromMacAsync(mac);
+            //    if (!await command.ConfigureAccessAreaAsync(ScpId, ComponentId, dto.MultiOccupancy, dto.AccessControl, dto.OccControl, dto.OccSet, dto.OccMax, dto.OccUp, dto.OccDown, dto.AreaFlag))
+            //    {
+            //        return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.C1121));
+            //    }
+            //}
 
 
             var entity = MapperHelper.DtoToAccessArea(dto,ComponentId,DateTime.Now);

@@ -63,6 +63,7 @@ namespace HIDAeroService.Data
         public DbSet<OccupancyControlOption> OccupancyControlOptions { get; set; }
         public DbSet<AreaFlagOption> AreaFlagOptions { get; set; }
         public DbSet<MultiOccupancyOption> MultiOccupancyOptions { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         // Old 
 
         public DbSet<ArEvent> ArEvents { get; set; }
@@ -591,7 +592,7 @@ namespace HIDAeroService.Data
                     new TransactionSource { Id = 19, Name = "Monitor point group", Value = 0x13 },
                     new TransactionSource { Id = 20, Name = "Access area", Value = 0x14 },
                     new TransactionSource { Id = 21, Name = "ACR: the alternate reader's tamper monitor source_number", Value = 0x15 },
-                    new TransactionSource { Id = 22, Name = "Login Service", Value = 0x18 }
+                    new TransactionSource { Id = 22, Name = "LoginDto Service", Value = 0x18 }
                 );
 
             modelBuilder.Entity<TransactionType>()
@@ -1013,7 +1014,7 @@ namespace HIDAeroService.Data
                 );
 
             modelBuilder.Entity<SystemSetting>().HasData(
-                new SystemSetting { Id = 1, nMsp1Port = 3, nTransaction = 60000, nSio = 16, nMp = 615, nCp = 388, nAcr = 64, nAlvl = 32000, nTrgr = 1024, nProc = 1024, GmtOffset = -25200, nTz = 255, nHol = 255, nMpg = 128, nCard = 200 }
+                new SystemSetting { Id = 1, nMsp1Port = 3, nTransaction = 60000, nSio = 16, nMp = 615, nCp = 388, nAcr = 64, nAlvl = 32000, nTrgr = 1024, nProc = 1024, GmtOffset = -25200, nTz = 255, nHol = 255, nMpg = 128, nCard = 200,nArea= 126}
                 );
 
             #region Component

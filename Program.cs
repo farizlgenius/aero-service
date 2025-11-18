@@ -10,6 +10,9 @@ using HIDAeroService.Exceptions.Middleware;
 using HIDAeroService.Entity;
 using HIDAeroService.Service;
 using HIDAeroService.DTO.Credential;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace HIDAeroService
 {
@@ -18,6 +21,12 @@ namespace HIDAeroService
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // read config
+            var jwtSection = builder.Configuration.GetSection("Jwt");
+            var key = jwtSection["Key"];
+            var issuer = jwtSection["Issuer"];
+            var audience = jwtSection["Audience"];
 
             // Bind AppSettings section
             // Bind AppSettings section to AppSettings class
@@ -30,9 +39,34 @@ namespace HIDAeroService
             builder.Services.AddControllers();
             builder.Services.AddDbContext<AppDbContext>(option => option.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            
+            // Add Authentication
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = true; // set false only for local dev
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = issuer,
+
+                    ValidateAudience = true,
+                    ValidAudience = audience,
+
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromSeconds(30)
+                };
+            });
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddAuthorization();
 
             // AutoMapper
             builder.Services.AddAutoMapper(cfg =>
@@ -75,6 +109,8 @@ namespace HIDAeroService
             builder.Services.AddScoped<ICardHolderService, CardHolderService>();
             builder.Services.AddScoped<IControlPointService, ControlPointService>();
             builder.Services.AddScoped<IHelperService, HelperService>();
+            builder.Services.AddScoped<ILicenseService, LicenseService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
 
 
             //
@@ -166,6 +202,7 @@ namespace HIDAeroService
             app.UseSerilogRequestLogging();
 
             app.UseAuthorization();
+            app.UseAuthentication();
 
 
             app.MapControllers();

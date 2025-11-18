@@ -87,7 +87,7 @@ namespace HIDAeroService.AeroLibrary
                 case (short)tranSrc.tranSrcAcrTmprAlt:
                     return "ACR: the alternate reader's tamper monitor source_number";
                 case (short)tranSrc.tranSrcLoginService:
-                    return "Login service";
+                    return "LoginDto service";
                 default:
                     return "";
             }

@@ -1178,7 +1178,6 @@ namespace HIDAeroService.AeroLibrary
 
         public async Task<bool> ConfigureAccessAreaAsync(short ScpId, short AreaNo, short MultiOccu,short AccControl,short OccControl,short OccSet,short OccMax,short OccUp,short OccDown,short AreaFlag)
         {
-            var _commandValue = (short)enCfgCmnd.enCcAreaSpc;
             CC_AREA_SPC cc = new CC_AREA_SPC();
             cc.scp_number = ScpId;
             cc.area_number = AreaNo;
@@ -1190,7 +1189,21 @@ namespace HIDAeroService.AeroLibrary
             cc.occ_up = OccUp;
             cc.occ_down = OccDown;
             cc.area_flags = AreaFlag;
-            bool flag = SendCommand(_commandValue, cc);
+            bool flag = SendCommand((short)enCfgCmnd.enCcAreaSpc, cc);
+            if (flag)
+            {
+                return await SendCommandAsync(SCPDLL.scpGetTagLastPosted(ScpId), _commandTimeout);
+            }
+            return false;
+        }
+
+        public async Task<bool> GetAccessAreaStatusAsync(short ScpId,short ComponentId,short Number) 
+        {
+            CC_AREASRQ cc = new CC_AREASRQ();
+            cc.scp_number = ScpId;
+            cc.first = ComponentId;
+            cc.count = Number;
+            bool flag = SendCommand((short)enCfgCmnd.enCcAreaSrq, cc);
             if (flag)
             {
                 return await SendCommandAsync(SCPDLL.scpGetTagLastPosted(ScpId), _commandTimeout);
