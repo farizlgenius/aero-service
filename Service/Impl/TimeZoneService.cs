@@ -92,8 +92,6 @@ namespace HIDAeroService.Service.Impl
                     new TimeZoneInterval
                     {
                         Uuid = dto.Uuid,
-                        LocationId = dto.LocationId,
-                        LocationName = dto.LocationName,
                         IsActive = dto.IsActive,
 
                         IntervalId = interval.ComponentId,

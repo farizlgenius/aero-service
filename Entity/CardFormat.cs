@@ -3,8 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HIDAeroService.Entity
 {
-    public class CardFormat : NoMacBaseEntity,IComponentId
+    public class CardFormat : IComponentId,IDatetime
     {
+        [Key]
+        public int Id { get; set; }
+        public string Uuid { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; } = string.Empty;
         public short ComponentId { get; set; }
         public short Facility { get; set; }
@@ -22,5 +25,8 @@ namespace HIDAeroService.Entity
         public short ChLoc { get; set; }
         public short IcLn { get; set; }
         public short IcLoc { get; set; }
+        public bool IsActive { get; set; } = true;
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
     }
 }

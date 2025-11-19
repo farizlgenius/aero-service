@@ -19,7 +19,7 @@ namespace HIDAeroService.Service.Impl
     {
         public async Task<(List<EventDto> Data, int TotalCount)> GetPagedEventsWithCountAsync(PaginationParams paginationParams)
         {
-            var query = context.ArEvents.AsQueryable();
+            var query = context.Events.AsQueryable();
 
             var totalCount = await query.CountAsync();
 
@@ -31,7 +31,7 @@ namespace HIDAeroService.Service.Impl
                 .Take(paginationParams.PageSize)
                 .ToListAsync();
 
-            foreach (ArEvent d in data)
+            foreach (Event d in data)
             {
                 events.Add(MapperHelper.EventToEventDto(d));
             }
@@ -44,7 +44,7 @@ namespace HIDAeroService.Service.Impl
             var result = hub.Clients.All.SendAsync("eventTrig", true);
             string typeDesc = Description.GetTypeDesc(message.tran.tran_type);
             string sourceDesc = Description.GetSourceDesc(message.tran.source_type);
-            ArEvent tran = new ArEvent();
+            Event tran = new Event();
             string[] dt = UtilityHelper.UnixToDateTimeParts(message.tran.time);
             tran.Date = dt[0];
             tran.Time = dt[1];
@@ -57,7 +57,7 @@ namespace HIDAeroService.Service.Impl
             tran.Additional = additional;
             tran.CreatedDate = DateTime.Now;
             tran.UpdatedDate = DateTime.Now;
-            context.ArEvents.Add(tran);
+            context.Events.Add(tran);
             context.SaveChanges();
 
         }

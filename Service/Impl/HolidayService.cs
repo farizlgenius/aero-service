@@ -27,7 +27,6 @@ namespace HIDAeroService.Service.Impl
                     // Base
                     Uuid = p.Uuid,
                     LocationId = p.LocationId,
-                    LocationName = p.LocationName,
                     IsActive = p.IsActive,
 
                     // Detail
@@ -69,7 +68,6 @@ namespace HIDAeroService.Service.Impl
                 // Base
                 Uuid = p.Uuid,
                 LocationId = p.LocationId,
-                LocationName = p.LocationName,
                 IsActive = p.IsActive,
 
                 // Detail
@@ -102,7 +100,6 @@ namespace HIDAeroService.Service.Impl
             {
                 // Base
                 LocationId = dto.LocationId,
-                LocationName = dto.LocationName,
                 CreatedDate = DateTime.Now,
                 UpdatedDate = DateTime.Now,
                 IsActive = true,

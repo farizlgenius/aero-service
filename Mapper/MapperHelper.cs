@@ -37,7 +37,6 @@ namespace HIDAeroService.Mapper
                 ComponentId = hardware.ComponentId,
                 MacAddress = hardware.MacAddress,
                 LocationId = hardware.LocationId,
-                LocationName = hardware.LocationName,
                 IsActive = hardware.IsActive,
 
                 // Detail
@@ -59,7 +58,6 @@ namespace HIDAeroService.Mapper
                 ComponentId = dto.ComponentId,
                 MacAddress = dto.MacAddress,
                 LocationId = dto.LocationId,
-                LocationName = dto.LocationName,
                 Name = dto.Name,
                 Model = dto.Model,
                 Module = new List<Module>
@@ -70,7 +68,6 @@ namespace HIDAeroService.Mapper
                         ComponentId = 0,
                         MacAddress = dto.MacAddress,
                         LocationId = dto.LocationId,
-                        LocationName = dto.LocationName,
                         IsActive = dto.IsActive,
                         CreatedDate = dto.CreatedDate,
                         UpdatedDate = dto.UpdatedDate,
@@ -111,7 +108,6 @@ namespace HIDAeroService.Mapper
                 ComponentId = ComponentId,
                 MacAddress = dto.MacAddress,
                 LocationId = dto.LocationId,
-                LocationName = dto.LocationName,
                 IsActive = dto.IsActive,
                 CreatedDate = Create,
                 UpdatedDate= Create,
@@ -145,7 +141,6 @@ namespace HIDAeroService.Mapper
                 Uuid = d.Uuid,
                 ComponentId = d.ComponentId,
                 MacAddress = d.MacAddress,
-                LocationName = d.LocationName,
                 LocationId = d.LocationId,
                 IsActive = d.IsActive,
 
@@ -182,7 +177,6 @@ namespace HIDAeroService.Mapper
                 ComponentId = x.ComponentId,
                 MacAddress = x.MacAddress,
                 LocationId = x.LocationId,
-                LocationName = x.LocationName,
                 IsActive = x.IsActive,
 
                 // Detail 
@@ -209,7 +203,6 @@ namespace HIDAeroService.Mapper
                 ComponentId = ComponentId,
                 MacAddress = dto.MacAddress,
                 LocationId = dto.LocationId,
-                LocationName = dto.LocationName,
                 IsActive = true,
                 CreatedDate = Create,
                 UpdatedDate = Create,
@@ -234,7 +227,6 @@ namespace HIDAeroService.Mapper
 
             // Base
             input.LocationId = dto.LocationId;
-            input.LocationName = dto.LocationName;
             input.IsActive = dto.IsActive;
             input.UpdatedDate = DateTime.Now;
 
@@ -265,7 +257,7 @@ namespace HIDAeroService.Mapper
                 ComponentId = x.ComponentId,
                 MacAddress = x.MacAddress,
                 LocationId = x.LocationId,
-                LocationName = x.LocationName,
+
                 IsActive = x.IsActive,
 
                 // Detail
@@ -287,7 +279,6 @@ namespace HIDAeroService.Mapper
                 ComponentId = ComponentId,
                 MacAddress = dto.MacAddress,
                 LocationId = dto.LocationId,
-                LocationName = dto.LocationName,
                 IsActive = true,
                 CreatedDate = Create,
                 UpdatedDate = Create,
@@ -308,7 +299,6 @@ namespace HIDAeroService.Mapper
 
             // Base
             output.LocationId = dto.LocationId;
-            output.LocationName = dto.LocationName;
             output.IsActive = dto.IsActive;
             output.UpdatedDate = DateTime.Now;
 
@@ -334,7 +324,6 @@ namespace HIDAeroService.Mapper
                 ComponentId = x.ComponentId,
                 MacAddress = x.MacAddress,
                 LocationId = x.LocationId,
-                LocationName = x.LocationName,
                 IsActive = x.IsActive,
 
                 // Detail
@@ -360,7 +349,6 @@ namespace HIDAeroService.Mapper
                 ComponentId = dto.ComponentId,
                 MacAddress = dto.MacAddress,
                 LocationId = dto.LocationId,
-                LocationName = dto.LocationName,
                 IsActive = dto.IsActive,
                 CreatedDate = Create,
                 UpdatedDate = Create,
@@ -385,7 +373,6 @@ namespace HIDAeroService.Mapper
             // Base
             reader.MacAddress = dto.MacAddress;
             reader.LocationId = dto.LocationId;
-            reader.LocationName = dto.LocationName;
             reader.IsActive = dto.IsActive;
             reader.UpdatedDate = DateTime.Now;
 
@@ -416,7 +403,6 @@ namespace HIDAeroService.Mapper
                 ComponentId = x.ComponentId,
                 MacAddress = x.MacAddress,
                 LocationId = x.LocationId,
-                LocationName = x.LocationName,
                 IsActive = x.IsActive,
 
                 // Detail
@@ -438,7 +424,6 @@ namespace HIDAeroService.Mapper
                 ComponentId= dto.ComponentId,
                 MacAddress= dto.MacAddress,
                 LocationId= dto.LocationId,
-                LocationName= dto.LocationName,
                 IsActive = dto.IsActive,
                 CreatedDate = Create,
                 UpdatedDate = Create,
@@ -467,7 +452,6 @@ namespace HIDAeroService.Mapper
                 ComponentId = x.ComponentId,
                 MacAddress = x.MacAddress,
                 LocationId = x.LocationId,
-                LocationName = x.LocationName,
                 IsActive = x.IsActive,
 
                 // Detail
@@ -488,7 +472,6 @@ namespace HIDAeroService.Mapper
                 ComponentId= dto.ComponentId,
                 MacAddress= dto.MacAddress,
                 LocationId= dto.LocationId,
-                LocationName= dto.LocationName,
                 IsActive= dto.IsActive,
                 UpdatedDate = Create,
                 CreatedDate = Create,
@@ -517,7 +500,6 @@ namespace HIDAeroService.Mapper
                 ComponentId = x.ComponentId,
                 MacAddress = x.MacAddress,
                 LocationId = x.LocationId,
-                LocationName = x.LocationName,
                 IsActive = x.IsActive,
 
                 // Detail
@@ -539,7 +521,7 @@ namespace HIDAeroService.Mapper
                 ComponentId = dto.ComponentId,
                 MacAddress = dto.MacAddress,
                 LocationId = dto.LocationId,
-                LocationName = dto.LocationName,
+                
                 IsActive = dto.IsActive,
                 CreatedDate = Create,
                 UpdatedDate = Create,
@@ -567,7 +549,6 @@ namespace HIDAeroService.Mapper
                 ComponentId = x.ComponentId,
                 MacAddress = x.MacAddress,
                 LocationId = x.LocationId,
-                LocationName = x.LocationName,
                 IsActive = x.IsActive,
 
                 // Detail
@@ -641,7 +622,7 @@ namespace HIDAeroService.Mapper
                 ComponentId = ComponentId,
                 MacAddress = dto.MacAddress,
                 LocationId = dto.LocationId,
-                LocationName = dto.LocationName,
+                
                 IsActive = true,
                 CreatedDate = Create,
                 UpdatedDate = Create,
@@ -705,7 +686,6 @@ namespace HIDAeroService.Mapper
             door.ComponentId = dto.ComponentId;
             door.MacAddress = dto.MacAddress;
             door.LocationId = dto.LocationId;
-            door.LocationName = dto.LocationName;
             door.IsActive = true;
             door.UpdatedDate = time;
 
@@ -763,7 +743,6 @@ namespace HIDAeroService.Mapper
                 // Base
                 Uuid = entity.Uuid,
                 LocationId = entity.LocationId,
-                LocationName = entity.LocationName,
                 IsActive = entity.IsActive,
 
                 // Detail
@@ -794,7 +773,7 @@ namespace HIDAeroService.Mapper
             {
                 // Base
                 LocationId = dto.LocationId,
-                LocationName = dto.LocationName,
+                
                 IsActive = true,
                 CreatedDate = Create,
                 UpdatedDate = Create,
@@ -833,7 +812,6 @@ namespace HIDAeroService.Mapper
         {
             // Detial
             entity.LocationId = dto.LocationId;
-            entity.LocationName = dto.LocationName;
             entity.IsActive = dto.IsActive;
             entity.UpdatedDate = DateTime.Now;
 
@@ -878,7 +856,6 @@ namespace HIDAeroService.Mapper
                 // Base
                 Uuid = entity.Uuid,
                 LocationId = entity.LocationId,
-                LocationName = entity.LocationName,
                 IsActive = entity.IsActive,
 
                 // Detail
@@ -902,7 +879,6 @@ namespace HIDAeroService.Mapper
             {
                 // Base
                 LocationId = dto.LocationId,
-                LocationName = dto.LocationName,
                 IsActive = true,
                 CreatedDate = Create,
                 UpdatedDate = Create,
@@ -943,7 +919,6 @@ namespace HIDAeroService.Mapper
                 // Base
                 Uuid = entity.Uuid,
                 LocationId = entity.LocationId,
-                LocationName = entity.LocationName,
                 IsActive = entity.IsActive,
 
                 // Detail
@@ -962,7 +937,6 @@ namespace HIDAeroService.Mapper
             {
                 // Base 
                 LocationId= dto.LocationId,
-                LocationName= dto.LocationName,
                 IsActive=true,
                 CreatedDate= Create,
                 UpdatedDate= Create,
@@ -980,7 +954,6 @@ namespace HIDAeroService.Mapper
         {
             // Base
             entity.LocationId = dto.LocationId;
-            entity.LocationName = dto.LocationName;
             entity.IsActive = dto.IsActive;
             entity.UpdatedDate = DateTime.Now;
 
@@ -1019,8 +992,6 @@ namespace HIDAeroService.Mapper
             return new TimeZoneDto 
             {
                 // Base
-                LocationId = t.LocationId,
-                LocationName = t.LocationName,
                 IsActive = t.IsActive,
 
                 // Detail
@@ -1042,8 +1013,6 @@ namespace HIDAeroService.Mapper
             return new Entity.TimeZone 
             {
                 // Base
-                LocationId = t.LocationId,
-                LocationName = t.LocationName,
                 IsActive = t.IsActive,
 
                 // detail
@@ -1060,8 +1029,6 @@ namespace HIDAeroService.Mapper
             return new Entity.TimeZone
             {
                 // Base
-                LocationId = t.LocationId,
-                LocationName = t.LocationName,
                 IsActive = t.IsActive,
 
                 // detail
@@ -1094,8 +1061,6 @@ namespace HIDAeroService.Mapper
             return new IntervalDto
             {
                 // Base 
-                LocationId = p.LocationId,
-                LocationName = p.LocationName,
                 IsActive = p.IsActive,
 
                 // Detail
@@ -1123,8 +1088,7 @@ namespace HIDAeroService.Mapper
             {
                 // Base
                 Uuid = dto.Uuid,
-                LocationId = dto.LocationId,
-                LocationName = dto.LocationName,
+                
                 IsActive = dto.IsActive,
 
                 // Detail
@@ -1150,8 +1114,7 @@ namespace HIDAeroService.Mapper
             return new Interval
             {
                 // Base 
-                LocationId = dto.LocationId,
-                LocationName = dto.LocationName,
+                
                 IsActive = true,
                 UpdatedDate = DateTime.Now,
 
@@ -1176,8 +1139,6 @@ namespace HIDAeroService.Mapper
         public static Interval IntervalDtoMapInterval(IntervalDto dto,Interval interval) 
         {
             // Base 
-            interval.LocationId = dto.LocationId;
-            interval.LocationName = dto.LocationName;
             interval.IsActive = dto.IsActive;
             interval.UpdatedDate = DateTime.Now;
 
@@ -1206,9 +1167,7 @@ namespace HIDAeroService.Mapper
             return new CardFormat
             {
                 // Base 
-                Uuid = dto.Uuid,
-                LocationId = dto.LocationId,
-                LocationName = dto.LocationName,
+                Uuid = dto.Uuid,           
                 IsActive = dto.IsActive,
                 CreatedDate = Create,
                 UpdatedDate = Create,
@@ -1239,8 +1198,6 @@ namespace HIDAeroService.Mapper
             {
                 // Baes 
                 Uuid = x.Uuid,
-                LocationId = x.LocationId,
-                LocationName = x.LocationName,
                 IsActive = x.IsActive,
 
                 // Detail
@@ -1265,8 +1222,6 @@ namespace HIDAeroService.Mapper
 
         public static void UpdateCardFormat(CardFormat card,CardFormatDto dto)
         {
-            card.LocationId = dto.LocationId;
-            card.LocationName = dto.LocationName;
             card.IsActive = dto.IsActive;
             card.UpdatedDate = DateTime.Now;
 
@@ -1290,7 +1245,7 @@ namespace HIDAeroService.Mapper
 
         #region Event
 
-        public static EventDto EventToEventDto(ArEvent even) 
+        public static EventDto EventToEventDto(Event even) 
         {
             EventDto dto = new EventDto();
             dto.Date = even.Date;
@@ -1315,7 +1270,7 @@ namespace HIDAeroService.Mapper
             {
                 Uuid = dto.Uuid,
                 ComponentId = LocationId,
-                LocationName = dto.LocationName,
+                
                 Description = dto.Description,
                 CreatedDate = Create,
                 UpdatedDate = Create,
@@ -1327,7 +1282,7 @@ namespace HIDAeroService.Mapper
             return new LocationDto
             {
                 Uuid=location.Uuid,
-                LocationId=location.ComponentId,
+                ComponentId=location.ComponentId,
                 LocationName=location.LocationName,
                 Description=location.Description,
             };
@@ -1351,7 +1306,6 @@ namespace HIDAeroService.Mapper
                 // Base
                 Uuid = entity.Uuid,
                 LocationId = entity.LocationId,
-                LocationName = entity.LocationName,
                 IsActive = entity.IsActive,
                 ComponentId = entity.ComponentId,
 
@@ -1375,7 +1329,7 @@ namespace HIDAeroService.Mapper
                 // Base
                 Uuid=dto.Uuid,
                 LocationId=dto.LocationId,
-                LocationName = dto.LocationName,
+                
                 IsActive = dto.IsActive,
                 ComponentId = ComponentId,
                 CreatedDate = Create,
@@ -1398,7 +1352,6 @@ namespace HIDAeroService.Mapper
         {
             // Base
             entity.LocationId = dto.LocationId;
-            entity.LocationName = dto.LocationName;
             entity.IsActive = dto.IsActive;
             entity.UpdatedDate = DateTime.Now;
 

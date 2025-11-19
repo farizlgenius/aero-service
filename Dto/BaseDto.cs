@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using HIDAeroService.DTO.Location;
+using System.ComponentModel.DataAnnotations;
 
 namespace HIDAeroService.DTO
 {
@@ -7,8 +8,7 @@ namespace HIDAeroService.DTO
         public string Uuid { get; set; } = Guid.NewGuid().ToString();
         public short ComponentId { get; set; }
         public string MacAddress { get; set; }
-        public int LocationId { get; set; }
-        public string LocationName { get; set; }
+        public short LocationId { get; set; }
         public bool IsActive { get; set; }
     }
 }

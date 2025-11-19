@@ -9,13 +9,13 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HIDAeroService.Migrations
 {
     /// <inheritdoc />
-    public partial class _171120251 : Migration
+    public partial class _191120251 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AccessAreaCommands",
+                name: "AccessAreaAccessControlOptions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -26,57 +26,22 @@ namespace HIDAeroService.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AccessAreaCommands", x => x.Id);
+                    table.PrimaryKey("PK_AccessAreaAccessControlOptions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AccessAreas",
+                name: "AccessAreaCommandOptions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    MultiOccupancy = table.Column<short>(type: "smallint", nullable: false),
-                    AccessControl = table.Column<short>(type: "smallint", nullable: false),
-                    OccControl = table.Column<short>(type: "smallint", nullable: false),
-                    OccSet = table.Column<short>(type: "smallint", nullable: false),
-                    OccMax = table.Column<short>(type: "smallint", nullable: false),
-                    OccUp = table.Column<short>(type: "smallint", nullable: false),
-                    OccDown = table.Column<short>(type: "smallint", nullable: false),
-                    AreaFlag = table.Column<short>(type: "smallint", nullable: false),
-                    Uuid = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                    Value = table.Column<short>(type: "smallint", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AccessAreas", x => x.Id);
-                    table.UniqueConstraint("AK_AccessAreas_ComponentId", x => x.ComponentId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AccessLevels",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Uuid = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AccessLevels", x => x.Id);
-                    table.UniqueConstraint("AK_AccessLevels_ComponentId", x => x.ComponentId);
+                    table.PrimaryKey("PK_AccessAreaCommandOptions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -100,18 +65,15 @@ namespace HIDAeroService.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Uuid = table.Column<string>(type: "text", nullable: false),
                     TagNo = table.Column<int>(type: "integer", nullable: false),
                     ScpId = table.Column<int>(type: "integer", nullable: false),
                     ScpMac = table.Column<string>(type: "text", nullable: true),
                     Command = table.Column<string>(type: "text", nullable: true),
-                    CommandStatus = table.Column<char>(type: "character(1)", nullable: false),
+                    Status = table.Column<char>(type: "character(1)", nullable: false),
                     NakReason = table.Column<string>(type: "text", nullable: true),
                     NakDescCode = table.Column<int>(type: "integer", nullable: false),
-                    Uuid = table.Column<string>(type: "text", nullable: false),
-                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
                     MacAddress = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
@@ -122,69 +84,18 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ArEvents",
+                name: "AreaFlagOptions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Date = table.Column<string>(type: "text", nullable: false),
-                    Time = table.Column<string>(type: "text", nullable: false),
-                    Serialnumber = table.Column<int>(type: "integer", nullable: false),
-                    Source = table.Column<string>(type: "text", nullable: false),
-                    SourceNo = table.Column<string>(type: "text", nullable: false),
-                    Type = table.Column<string>(type: "text", nullable: false),
-                    TransactionCode = table.Column<double>(type: "double precision", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    Additional = table.Column<string>(type: "text", nullable: false),
-                    Uuid = table.Column<string>(type: "text", nullable: false),
-                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
-                    MacAddress = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<short>(type: "smallint", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ArEvents", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ArScpStructureStatuses",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Ip = table.Column<string>(type: "text", nullable: false),
-                    Mac = table.Column<string>(type: "text", nullable: false),
-                    RecAllocTransaction = table.Column<int>(type: "integer", nullable: false),
-                    RecAllocTimezone = table.Column<int>(type: "integer", nullable: false),
-                    RecAllocHoliday = table.Column<int>(type: "integer", nullable: false),
-                    RecAllocSioPort = table.Column<int>(type: "integer", nullable: false),
-                    RecAllocMp = table.Column<int>(type: "integer", nullable: false),
-                    RecAllocCp = table.Column<int>(type: "integer", nullable: false),
-                    RecAllocAcr = table.Column<int>(type: "integer", nullable: false),
-                    RecAllocAlvl = table.Column<int>(type: "integer", nullable: false),
-                    RecAllocTrig = table.Column<int>(type: "integer", nullable: false),
-                    RecAllocProc = table.Column<int>(type: "integer", nullable: false),
-                    RecAllocMpg = table.Column<int>(type: "integer", nullable: false),
-                    RecAllocArea = table.Column<int>(type: "integer", nullable: false),
-                    RecAllocEal = table.Column<int>(type: "integer", nullable: false),
-                    RecAllocCrdb = table.Column<int>(type: "integer", nullable: false),
-                    RecAllocCardActive = table.Column<int>(type: "integer", nullable: false),
-                    Uuid = table.Column<string>(type: "text", nullable: false),
-                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
-                    MacAddress = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ArScpStructureStatuses", x => x.Id);
+                    table.PrimaryKey("PK_AreaFlagOptions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -193,6 +104,7 @@ namespace HIDAeroService.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Uuid = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     ComponentId = table.Column<short>(type: "smallint", nullable: false),
                     Facility = table.Column<short>(type: "smallint", nullable: false),
@@ -210,9 +122,6 @@ namespace HIDAeroService.Migrations
                     ChLoc = table.Column<short>(type: "smallint", nullable: false),
                     IcLn = table.Column<short>(type: "smallint", nullable: false),
                     IcLoc = table.Column<short>(type: "smallint", nullable: false),
-                    Uuid = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
@@ -220,37 +129,6 @@ namespace HIDAeroService.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CardFormats", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CardHolders",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<string>(type: "text", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    FirstName = table.Column<string>(type: "text", nullable: false),
-                    MiddleName = table.Column<string>(type: "text", nullable: false),
-                    LastName = table.Column<string>(type: "text", nullable: false),
-                    Sex = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
-                    Phone = table.Column<string>(type: "text", nullable: false),
-                    Company = table.Column<string>(type: "text", nullable: false),
-                    Department = table.Column<string>(type: "text", nullable: false),
-                    Position = table.Column<string>(type: "text", nullable: false),
-                    ImagePath = table.Column<string>(type: "text", nullable: false),
-                    Uuid = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CardHolders", x => x.Id);
-                    table.UniqueConstraint("AK_CardHolders_UserId", x => x.UserId);
                 });
 
             migrationBuilder.CreateTable(
@@ -271,7 +149,7 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CredentialFlags",
+                name: "CredentialFlagOptions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -282,7 +160,7 @@ namespace HIDAeroService.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CredentialFlags", x => x.Id);
+                    table.PrimaryKey("PK_CredentialFlagOptions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -316,7 +194,7 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DoorSpareFlags",
+                name: "DoorSpareFlagOption",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -327,60 +205,37 @@ namespace HIDAeroService.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DoorSpareFlags", x => x.Id);
+                    table.PrimaryKey("PK_DoorSpareFlagOption", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Hardwares",
+                name: "FeatureLists",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FeatureLists", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Features",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Model = table.Column<string>(type: "text", nullable: false),
-                    IpAddress = table.Column<string>(type: "text", nullable: false),
-                    SerialNumber = table.Column<string>(type: "text", nullable: false),
-                    IsUpload = table.Column<bool>(type: "boolean", nullable: false),
-                    IsReset = table.Column<bool>(type: "boolean", nullable: false),
-                    LastSync = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
-                    Uuid = table.Column<string>(type: "text", nullable: false),
-                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
-                    MacAddress = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                    IsWritable = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Hardwares", x => x.Id);
-                    table.UniqueConstraint("AK_Hardwares_ComponentId", x => x.ComponentId);
-                    table.UniqueConstraint("AK_Hardwares_MacAddress", x => x.MacAddress);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Holidays",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
-                    Year = table.Column<short>(type: "smallint", nullable: false),
-                    Month = table.Column<short>(type: "smallint", nullable: false),
-                    Day = table.Column<short>(type: "smallint", nullable: false),
-                    Extend = table.Column<short>(type: "smallint", nullable: false),
-                    TypeMask = table.Column<short>(type: "smallint", nullable: false),
-                    Uuid = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Holidays", x => x.Id);
+                    table.PrimaryKey("PK_Features", x => x.Id);
+                    table.UniqueConstraint("AK_Features_ComponentId", x => x.ComponentId);
                 });
 
             migrationBuilder.CreateTable(
@@ -404,16 +259,14 @@ namespace HIDAeroService.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Uuid = table.Column<string>(type: "text", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
                     ComponentId = table.Column<short>(type: "smallint", nullable: false),
                     DaysDesc = table.Column<string>(type: "text", nullable: false),
                     StartTime = table.Column<string>(type: "text", nullable: false),
-                    EndTime = table.Column<string>(type: "text", nullable: false),
-                    Uuid = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                    EndTime = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -438,6 +291,7 @@ namespace HIDAeroService.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Locations", x => x.Id);
+                    table.UniqueConstraint("AK_Locations_ComponentId", x => x.ComponentId);
                 });
 
             migrationBuilder.CreateTable(
@@ -456,34 +310,33 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Operators",
+                name: "MultiOccupancyOptions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<string>(type: "text", nullable: false),
-                    UserName = table.Column<string>(type: "text", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    FirstName = table.Column<string>(type: "text", nullable: false),
-                    MiddleName = table.Column<string>(type: "text", nullable: false),
-                    LastName = table.Column<string>(type: "text", nullable: false),
-                    Role = table.Column<string>(type: "text", nullable: false),
-                    Phone = table.Column<string>(type: "text", nullable: false),
-                    Image = table.Column<string>(type: "text", nullable: false),
-                    Uuid = table.Column<string>(type: "text", nullable: false),
-                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
-                    MacAddress = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<short>(type: "smallint", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Operators", x => x.Id);
+                    table.PrimaryKey("PK_MultiOccupancyOptions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OccupancyControlOptions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<short>(type: "smallint", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OccupancyControlOptions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -578,6 +431,26 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RefreshTokens",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Token = table.Column<string>(type: "text", nullable: false),
+                    UserName = table.Column<string>(type: "text", nullable: false),
+                    JwtId = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedByIp = table.Column<string>(type: "text", nullable: true),
+                    ExpiresAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsRevoked = table.Column<bool>(type: "boolean", nullable: false),
+                    RevokedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ReplacedByToken = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RelayModes",
                 columns: table => new
                 {
@@ -590,6 +463,21 @@ namespace HIDAeroService.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RelayModes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Roles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Roles", x => x.Id);
+                    table.UniqueConstraint("AK_Roles_ComponentId", x => x.ComponentId);
                 });
 
             migrationBuilder.CreateTable(
@@ -672,14 +560,12 @@ namespace HIDAeroService.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Uuid = table.Column<string>(type: "text", nullable: false),
                     ComponentId = table.Column<short>(type: "smallint", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Mode = table.Column<short>(type: "smallint", nullable: false),
                     ActiveTime = table.Column<string>(type: "text", nullable: false),
                     DeactiveTime = table.Column<string>(type: "text", nullable: false),
-                    Uuid = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
@@ -721,155 +607,15 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CardHolderAccessLevel",
-                columns: table => new
-                {
-                    CardHolderId = table.Column<string>(type: "text", nullable: false),
-                    AccessLevelId = table.Column<short>(type: "smallint", nullable: false),
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CardHolderAccessLevel", x => new { x.AccessLevelId, x.CardHolderId });
-                    table.ForeignKey(
-                        name: "FK_CardHolderAccessLevel_AccessLevels_AccessLevelId",
-                        column: x => x.AccessLevelId,
-                        principalTable: "AccessLevels",
-                        principalColumn: "ComponentId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CardHolderAccessLevel_CardHolders_CardHolderId",
-                        column: x => x.CardHolderId,
-                        principalTable: "CardHolders",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CardHolderAdditional",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CardHolderId = table.Column<int>(type: "integer", nullable: false),
-                    HolderId = table.Column<string>(type: "text", nullable: false),
-                    Additional = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CardHolderAdditional", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CardHolderAdditional_CardHolders_CardHolderId",
-                        column: x => x.CardHolderId,
-                        principalTable: "CardHolders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Credentials",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
-                    Flag = table.Column<short>(type: "smallint", nullable: false),
-                    Bits = table.Column<int>(type: "integer", nullable: false),
-                    IssueCode = table.Column<int>(type: "integer", nullable: false),
-                    FacilityCode = table.Column<int>(type: "integer", nullable: false),
-                    CardNo = table.Column<long>(type: "bigint", nullable: false),
-                    Pin = table.Column<string>(type: "text", nullable: true),
-                    ActiveDate = table.Column<string>(type: "text", nullable: false),
-                    DeactiveDate = table.Column<string>(type: "text", nullable: false),
-                    CardHolderId = table.Column<string>(type: "text", nullable: false),
-                    Uuid = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Credentials", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Credentials_CardHolders_CardHolderId",
-                        column: x => x.CardHolderId,
-                        principalTable: "CardHolders",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "HardwareAccessLevel",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    HardwareAccessLevelId = table.Column<short>(type: "smallint", nullable: false),
-                    AccessLevelId = table.Column<int>(type: "integer", nullable: false),
-                    MacAddress = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_HardwareAccessLevel", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_HardwareAccessLevel_AccessLevels_AccessLevelId",
-                        column: x => x.AccessLevelId,
-                        principalTable: "AccessLevels",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_HardwareAccessLevel_Hardwares_MacAddress",
-                        column: x => x.MacAddress,
-                        principalTable: "Hardwares",
-                        principalColumn: "MacAddress",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Modules",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Model = table.Column<string>(type: "text", nullable: false),
-                    Address = table.Column<short>(type: "smallint", nullable: false),
-                    Port = table.Column<short>(type: "smallint", nullable: false),
-                    nInput = table.Column<short>(type: "smallint", nullable: false),
-                    nOutput = table.Column<short>(type: "smallint", nullable: false),
-                    nReader = table.Column<short>(type: "smallint", nullable: false),
-                    Msp1No = table.Column<short>(type: "smallint", nullable: false),
-                    BaudRate = table.Column<short>(type: "smallint", nullable: false),
-                    nProtocol = table.Column<short>(type: "smallint", nullable: false),
-                    nDialect = table.Column<short>(type: "smallint", nullable: false),
-                    Uuid = table.Column<string>(type: "text", nullable: false),
-                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
-                    MacAddress = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Modules", x => x.Id);
-                    table.UniqueConstraint("AK_Modules_ComponentId", x => x.ComponentId);
-                    table.ForeignKey(
-                        name: "FK_Modules_Hardwares_MacAddress",
-                        column: x => x.MacAddress,
-                        principalTable: "Hardwares",
-                        principalColumn: "MacAddress",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "DaysInWeek",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Uuid = table.Column<string>(type: "text", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
                     ComponentId = table.Column<short>(type: "smallint", nullable: false),
                     Sunday = table.Column<bool>(type: "boolean", nullable: false),
                     Monday = table.Column<bool>(type: "boolean", nullable: false),
@@ -877,13 +623,7 @@ namespace HIDAeroService.Migrations
                     Wednesday = table.Column<bool>(type: "boolean", nullable: false),
                     Thursday = table.Column<bool>(type: "boolean", nullable: false),
                     Friday = table.Column<bool>(type: "boolean", nullable: false),
-                    Saturday = table.Column<bool>(type: "boolean", nullable: false),
-                    Uuid = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                    Saturday = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -897,6 +637,331 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AccessAreas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    MultiOccupancy = table.Column<short>(type: "smallint", nullable: false),
+                    AccessControl = table.Column<short>(type: "smallint", nullable: false),
+                    OccControl = table.Column<short>(type: "smallint", nullable: false),
+                    OccSet = table.Column<short>(type: "smallint", nullable: false),
+                    OccMax = table.Column<short>(type: "smallint", nullable: false),
+                    OccUp = table.Column<short>(type: "smallint", nullable: false),
+                    OccDown = table.Column<short>(type: "smallint", nullable: false),
+                    AreaFlag = table.Column<short>(type: "smallint", nullable: false),
+                    Uuid = table.Column<string>(type: "text", nullable: false),
+                    LocationId = table.Column<short>(type: "smallint", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccessAreas", x => x.Id);
+                    table.UniqueConstraint("AK_AccessAreas_ComponentId", x => x.ComponentId);
+                    table.ForeignKey(
+                        name: "FK_AccessAreas_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AccessLevels",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Uuid = table.Column<string>(type: "text", nullable: false),
+                    LocationId = table.Column<short>(type: "smallint", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccessLevels", x => x.Id);
+                    table.UniqueConstraint("AK_AccessLevels_ComponentId", x => x.ComponentId);
+                    table.ForeignKey(
+                        name: "FK_AccessLevels_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AeroStructureStatuses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Uuid = table.Column<string>(type: "text", nullable: false),
+                    IpAddress = table.Column<string>(type: "text", nullable: false),
+                    RecAllocTransaction = table.Column<int>(type: "integer", nullable: false),
+                    RecAllocTimezone = table.Column<int>(type: "integer", nullable: false),
+                    RecAllocHoliday = table.Column<int>(type: "integer", nullable: false),
+                    RecAllocSioPort = table.Column<int>(type: "integer", nullable: false),
+                    RecAllocMp = table.Column<int>(type: "integer", nullable: false),
+                    RecAllocCp = table.Column<int>(type: "integer", nullable: false),
+                    RecAllocAcr = table.Column<int>(type: "integer", nullable: false),
+                    RecAllocAlvl = table.Column<int>(type: "integer", nullable: false),
+                    RecAllocTrig = table.Column<int>(type: "integer", nullable: false),
+                    RecAllocProc = table.Column<int>(type: "integer", nullable: false),
+                    RecAllocMpg = table.Column<int>(type: "integer", nullable: false),
+                    RecAllocArea = table.Column<int>(type: "integer", nullable: false),
+                    RecAllocEal = table.Column<int>(type: "integer", nullable: false),
+                    RecAllocCrdb = table.Column<int>(type: "integer", nullable: false),
+                    RecAllocCardActive = table.Column<int>(type: "integer", nullable: false),
+                    MacAddress = table.Column<string>(type: "text", nullable: false),
+                    LocationId = table.Column<short>(type: "smallint", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AeroStructureStatuses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AeroStructureStatuses_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CardHolders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    FirstName = table.Column<string>(type: "text", nullable: false),
+                    MiddleName = table.Column<string>(type: "text", nullable: false),
+                    LastName = table.Column<string>(type: "text", nullable: false),
+                    Sex = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    Phone = table.Column<string>(type: "text", nullable: false),
+                    Company = table.Column<string>(type: "text", nullable: false),
+                    Department = table.Column<string>(type: "text", nullable: false),
+                    Position = table.Column<string>(type: "text", nullable: false),
+                    ImagePath = table.Column<string>(type: "text", nullable: false),
+                    Uuid = table.Column<string>(type: "text", nullable: false),
+                    LocationId = table.Column<short>(type: "smallint", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CardHolders", x => x.Id);
+                    table.UniqueConstraint("AK_CardHolders_UserId", x => x.UserId);
+                    table.ForeignKey(
+                        name: "FK_CardHolders_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Events",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Date = table.Column<string>(type: "text", nullable: false),
+                    Time = table.Column<string>(type: "text", nullable: false),
+                    Serialnumber = table.Column<int>(type: "integer", nullable: false),
+                    Source = table.Column<string>(type: "text", nullable: false),
+                    SourceNo = table.Column<string>(type: "text", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    TransactionCode = table.Column<double>(type: "double precision", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Additional = table.Column<string>(type: "text", nullable: false),
+                    Uuid = table.Column<string>(type: "text", nullable: false),
+                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
+                    MacAddress = table.Column<string>(type: "text", nullable: false),
+                    LocationId = table.Column<short>(type: "smallint", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Events", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Events_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Hardwares",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Model = table.Column<string>(type: "text", nullable: false),
+                    IpAddress = table.Column<string>(type: "text", nullable: false),
+                    SerialNumber = table.Column<string>(type: "text", nullable: false),
+                    IsUpload = table.Column<bool>(type: "boolean", nullable: false),
+                    IsReset = table.Column<bool>(type: "boolean", nullable: false),
+                    LastSync = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
+                    Uuid = table.Column<string>(type: "text", nullable: false),
+                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
+                    MacAddress = table.Column<string>(type: "text", nullable: false),
+                    LocationId = table.Column<short>(type: "smallint", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Hardwares", x => x.Id);
+                    table.UniqueConstraint("AK_Hardwares_ComponentId", x => x.ComponentId);
+                    table.UniqueConstraint("AK_Hardwares_MacAddress", x => x.MacAddress);
+                    table.ForeignKey(
+                        name: "FK_Hardwares_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Holidays",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
+                    Year = table.Column<short>(type: "smallint", nullable: false),
+                    Month = table.Column<short>(type: "smallint", nullable: false),
+                    Day = table.Column<short>(type: "smallint", nullable: false),
+                    Extend = table.Column<short>(type: "smallint", nullable: false),
+                    TypeMask = table.Column<short>(type: "smallint", nullable: false),
+                    Uuid = table.Column<string>(type: "text", nullable: false),
+                    LocationId = table.Column<short>(type: "smallint", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Holidays", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Holidays_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MonitorPointGroup",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Uuid = table.Column<string>(type: "text", nullable: false),
+                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
+                    MacAddress = table.Column<string>(type: "text", nullable: false),
+                    LocationId = table.Column<short>(type: "smallint", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MonitorPointGroup", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MonitorPointGroup_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FeatureRole",
+                columns: table => new
+                {
+                    FeatureId = table.Column<short>(type: "smallint", nullable: false),
+                    RoleId = table.Column<short>(type: "smallint", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FeatureRole", x => new { x.RoleId, x.FeatureId });
+                    table.ForeignKey(
+                        name: "FK_FeatureRole_Features_FeatureId",
+                        column: x => x.FeatureId,
+                        principalTable: "Features",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FeatureRole_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Operators",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    UserName = table.Column<string>(type: "text", nullable: false),
+                    Password = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    FirstName = table.Column<string>(type: "text", nullable: false),
+                    MiddleName = table.Column<string>(type: "text", nullable: false),
+                    LastName = table.Column<string>(type: "text", nullable: false),
+                    Phone = table.Column<string>(type: "text", nullable: false),
+                    Image = table.Column<string>(type: "text", nullable: false),
+                    RoleId = table.Column<short>(type: "smallint", nullable: false),
+                    Uuid = table.Column<string>(type: "text", nullable: false),
+                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
+                    MacAddress = table.Column<string>(type: "text", nullable: false),
+                    LocationId = table.Column<short>(type: "smallint", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Operators", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Operators_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Operators_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TimeZoneIntervals",
                 columns: table => new
                 {
@@ -904,8 +969,6 @@ namespace HIDAeroService.Migrations
                     IntervalId = table.Column<short>(type: "smallint", nullable: false),
                     Id = table.Column<int>(type: "integer", nullable: false),
                     Uuid = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
@@ -976,6 +1039,160 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CardHolderAccessLevel",
+                columns: table => new
+                {
+                    CardHolderId = table.Column<string>(type: "text", nullable: false),
+                    AccessLevelId = table.Column<short>(type: "smallint", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CardHolderAccessLevel", x => new { x.AccessLevelId, x.CardHolderId });
+                    table.ForeignKey(
+                        name: "FK_CardHolderAccessLevel_AccessLevels_AccessLevelId",
+                        column: x => x.AccessLevelId,
+                        principalTable: "AccessLevels",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CardHolderAccessLevel_CardHolders_CardHolderId",
+                        column: x => x.CardHolderId,
+                        principalTable: "CardHolders",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CardHolderAdditional",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CardHolderId = table.Column<int>(type: "integer", nullable: false),
+                    HolderId = table.Column<string>(type: "text", nullable: false),
+                    Additional = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CardHolderAdditional", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CardHolderAdditional_CardHolders_CardHolderId",
+                        column: x => x.CardHolderId,
+                        principalTable: "CardHolders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Credentials",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
+                    Flag = table.Column<short>(type: "smallint", nullable: false),
+                    Bits = table.Column<int>(type: "integer", nullable: false),
+                    IssueCode = table.Column<int>(type: "integer", nullable: false),
+                    FacilityCode = table.Column<int>(type: "integer", nullable: false),
+                    CardNo = table.Column<long>(type: "bigint", nullable: false),
+                    Pin = table.Column<string>(type: "text", nullable: true),
+                    ActiveDate = table.Column<string>(type: "text", nullable: false),
+                    DeactiveDate = table.Column<string>(type: "text", nullable: false),
+                    CardHolderId = table.Column<string>(type: "text", nullable: false),
+                    Uuid = table.Column<string>(type: "text", nullable: false),
+                    LocationId = table.Column<short>(type: "smallint", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Credentials", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Credentials_CardHolders_CardHolderId",
+                        column: x => x.CardHolderId,
+                        principalTable: "CardHolders",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Credentials_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HardwareAccessLevel",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    HardwareAccessLevelId = table.Column<short>(type: "smallint", nullable: false),
+                    AccessLevelId = table.Column<int>(type: "integer", nullable: false),
+                    MacAddress = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HardwareAccessLevel", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_HardwareAccessLevel_AccessLevels_AccessLevelId",
+                        column: x => x.AccessLevelId,
+                        principalTable: "AccessLevels",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_HardwareAccessLevel_Hardwares_MacAddress",
+                        column: x => x.MacAddress,
+                        principalTable: "Hardwares",
+                        principalColumn: "MacAddress",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Modules",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Model = table.Column<string>(type: "text", nullable: false),
+                    Address = table.Column<short>(type: "smallint", nullable: false),
+                    Port = table.Column<short>(type: "smallint", nullable: false),
+                    nInput = table.Column<short>(type: "smallint", nullable: false),
+                    nOutput = table.Column<short>(type: "smallint", nullable: false),
+                    nReader = table.Column<short>(type: "smallint", nullable: false),
+                    Msp1No = table.Column<short>(type: "smallint", nullable: false),
+                    BaudRate = table.Column<short>(type: "smallint", nullable: false),
+                    nProtocol = table.Column<short>(type: "smallint", nullable: false),
+                    nDialect = table.Column<short>(type: "smallint", nullable: false),
+                    Uuid = table.Column<string>(type: "text", nullable: false),
+                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
+                    MacAddress = table.Column<string>(type: "text", nullable: false),
+                    LocationId = table.Column<short>(type: "smallint", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Modules", x => x.Id);
+                    table.UniqueConstraint("AK_Modules_ComponentId", x => x.ComponentId);
+                    table.ForeignKey(
+                        name: "FK_Modules_Hardwares_MacAddress",
+                        column: x => x.MacAddress,
+                        principalTable: "Hardwares",
+                        principalColumn: "MacAddress",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Modules_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "HardwareCredential",
                 columns: table => new
                 {
@@ -1016,8 +1233,7 @@ namespace HIDAeroService.Migrations
                     Uuid = table.Column<string>(type: "text", nullable: false),
                     ComponentId = table.Column<short>(type: "smallint", nullable: false),
                     MacAddress = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
+                    LocationId = table.Column<short>(type: "smallint", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
@@ -1025,6 +1241,12 @@ namespace HIDAeroService.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ControlPoints", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ControlPoints_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ControlPoints_Modules_ModuleId",
                         column: x => x.ModuleId,
@@ -1053,8 +1275,7 @@ namespace HIDAeroService.Migrations
                     Uuid = table.Column<string>(type: "text", nullable: false),
                     ComponentId = table.Column<short>(type: "smallint", nullable: false),
                     MacAddress = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
+                    LocationId = table.Column<short>(type: "smallint", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
@@ -1062,6 +1283,12 @@ namespace HIDAeroService.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MonitorPoints", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MonitorPoints_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_MonitorPoints_Modules_ModuleId",
                         column: x => x.ModuleId,
@@ -1085,8 +1312,7 @@ namespace HIDAeroService.Migrations
                     Uuid = table.Column<string>(type: "text", nullable: false),
                     ComponentId = table.Column<short>(type: "smallint", nullable: false),
                     MacAddress = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
+                    LocationId = table.Column<short>(type: "smallint", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
@@ -1095,6 +1321,12 @@ namespace HIDAeroService.Migrations
                 {
                     table.PrimaryKey("PK_Sensors", x => x.Id);
                     table.UniqueConstraint("AK_Sensors_ComponentId", x => x.ComponentId);
+                    table.ForeignKey(
+                        name: "FK_Sensors_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Sensors_Modules_ModuleId",
                         column: x => x.ModuleId,
@@ -1119,8 +1351,7 @@ namespace HIDAeroService.Migrations
                     Uuid = table.Column<string>(type: "text", nullable: false),
                     ComponentId = table.Column<short>(type: "smallint", nullable: false),
                     MacAddress = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
+                    LocationId = table.Column<short>(type: "smallint", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
@@ -1129,6 +1360,12 @@ namespace HIDAeroService.Migrations
                 {
                     table.PrimaryKey("PK_Strikes", x => x.Id);
                     table.UniqueConstraint("AK_Strikes_ComponentId", x => x.ComponentId);
+                    table.ForeignKey(
+                        name: "FK_Strikes_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Strikes_Modules_ModuleId",
                         column: x => x.ModuleId,
@@ -1180,8 +1417,7 @@ namespace HIDAeroService.Migrations
                     Uuid = table.Column<string>(type: "text", nullable: false),
                     ComponentId = table.Column<short>(type: "smallint", nullable: false),
                     MacAddress = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
+                    LocationId = table.Column<short>(type: "smallint", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
@@ -1200,6 +1436,12 @@ namespace HIDAeroService.Migrations
                         name: "FK_Doors_AccessAreas_AntiPassBackOut",
                         column: x => x.AntiPassBackOut,
                         principalTable: "AccessAreas",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Doors_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
                         principalColumn: "ComponentId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -1269,8 +1511,7 @@ namespace HIDAeroService.Migrations
                     Uuid = table.Column<string>(type: "text", nullable: false),
                     ComponentId = table.Column<short>(type: "smallint", nullable: false),
                     MacAddress = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
+                    LocationId = table.Column<short>(type: "smallint", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
@@ -1282,6 +1523,12 @@ namespace HIDAeroService.Migrations
                         name: "FK_Readers_Doors_ComponentId",
                         column: x => x.ComponentId,
                         principalTable: "Doors",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Readers_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
                         principalColumn: "ComponentId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -1307,8 +1554,7 @@ namespace HIDAeroService.Migrations
                     Uuid = table.Column<string>(type: "text", nullable: false),
                     ComponentId = table.Column<short>(type: "smallint", nullable: false),
                     MacAddress = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<int>(type: "integer", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
+                    LocationId = table.Column<short>(type: "smallint", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
@@ -1323,6 +1569,12 @@ namespace HIDAeroService.Migrations
                         principalColumn: "ComponentId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_RequestExits_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_RequestExits_Modules_ModuleId",
                         column: x => x.ModuleId,
                         principalTable: "Modules",
@@ -1331,7 +1583,17 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "AccessAreaCommands",
+                table: "AccessAreaAccessControlOptions",
+                columns: new[] { "Id", "Description", "Name", "Value" },
+                values: new object[,]
+                {
+                    { 1, "No Operation", "NOP", (short)0 },
+                    { 2, "No One Can Access", "Disable area", (short)1 },
+                    { 3, "Enable Area", "Enable area", (short)2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AccessAreaCommandOptions",
                 columns: new[] { "Id", "Description", "Name", "Value" },
                 values: new object[,]
                 {
@@ -1341,20 +1603,6 @@ namespace HIDAeroService.Migrations
                     { 4, "Clear occupancy counts of the “standard” and “special” users", "Clear occupancy counts of the “standard” and “special” users", (short)5 },
                     { 5, "Disable multi-occupancy rules", "Disable multi-occupancy rules", (short)6 },
                     { 6, "Enable standard multi-occupancy processing", "Enable standard multi-occupancy processing", (short)7 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "AccessAreas",
-                columns: new[] { "Id", "AccessControl", "AreaFlag", "ComponentId", "CreatedDate", "IsActive", "LocationId", "LocationName", "MultiOccupancy", "Name", "OccControl", "OccDown", "OccMax", "OccSet", "OccUp", "UpdatedDate", "Uuid" },
-                values: new object[] { 1, (short)0, (short)0, (short)-1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), true, 1, "Main", (short)0, "Any Area", (short)0, (short)0, (short)0, (short)0, (short)0, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "00000000-0000-0000-0000-000000000001" });
-
-            migrationBuilder.InsertData(
-                table: "AccessLevels",
-                columns: new[] { "Id", "ComponentId", "IsActive", "LocationId", "LocationName", "Name", "Uuid" },
-                values: new object[,]
-                {
-                    { 1, (short)1, true, 1, "Main Location", "No Access", "00000000-0000-0000-0000-000000000001" },
-                    { 2, (short)2, true, 1, "Main Location", "Full Access", "00000000-0000-0000-0000-000000000001" }
                 });
 
             migrationBuilder.InsertData(
@@ -1374,9 +1622,18 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "AreaFlagOptions",
+                columns: new[] { "Id", "Description", "Name", "Value" },
+                values: new object[,]
+                {
+                    { 1, "Area can have open thresholds to only one other area", "Interlock", (short)1 },
+                    { 2, "Just (O)ne (D)oor (O)nly is allowed to be open into this area (AREA_F_AIRLOCK must also be set)", "AirLock One Door Only", (short)2 }
+                });
+
+            migrationBuilder.InsertData(
                 table: "CardFormats",
-                columns: new[] { "Id", "Bits", "ChLn", "ChLoc", "ComponentId", "CreatedDate", "Facility", "FcLn", "FcLoc", "Flags", "FunctionId", "IcLn", "IcLoc", "IsActive", "LocationId", "LocationName", "Name", "Offset", "PeLn", "PeLoc", "PoLn", "PoLoc", "UpdatedDate", "Uuid" },
-                values: new object[] { 1, (short)26, (short)16, (short)9, (short)0, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), (short)-1, (short)0, (short)0, (short)0, (short)1, (short)0, (short)0, true, 1, "Main Location", "26 Bits (No Fac)", (short)0, (short)13, (short)0, (short)13, (short)13, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "00000000-0000-0000-0000-000000000001" });
+                columns: new[] { "Id", "Bits", "ChLn", "ChLoc", "ComponentId", "CreatedDate", "Facility", "FcLn", "FcLoc", "Flags", "FunctionId", "IcLn", "IcLoc", "IsActive", "Name", "Offset", "PeLn", "PeLoc", "PoLn", "PoLoc", "Uuid" },
+                values: new object[] { 1, (short)26, (short)16, (short)9, (short)0, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), (short)-1, (short)0, (short)0, (short)0, (short)1, (short)0, (short)0, true, "26 Bits (No Fac)", (short)0, (short)13, (short)0, (short)13, (short)13, "00000000-0000-0000-0000-000000000001" });
 
             migrationBuilder.InsertData(
                 table: "Components",
@@ -1393,7 +1650,7 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "CredentialFlags",
+                table: "CredentialFlagOptions",
                 columns: new[] { "Id", "Description", "Name", "Value" },
                 values: new object[,]
                 {
@@ -1442,7 +1699,7 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "DoorSpareFlags",
+                table: "DoorSpareFlagOption",
                 columns: new[] { "Id", "Description", "Name", "Value" },
                 values: new object[,]
                 {
@@ -1463,6 +1720,28 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "FeatureLists",
+                columns: new[] { "Id", "ComponentId", "Name" },
+                values: new object[,]
+                {
+                    { 1, (short)1, "Dashboard" },
+                    { 2, (short)2, "Events" },
+                    { 3, (short)3, "Locations" },
+                    { 4, (short)4, "Alerts" },
+                    { 5, (short)5, "Operators" },
+                    { 6, (short)6, "Device" },
+                    { 7, (short)7, "Doors" },
+                    { 8, (short)8, "Card Holder" },
+                    { 9, (short)9, "Access Level" },
+                    { 10, (short)10, "Access Area" },
+                    { 11, (short)11, "Time" },
+                    { 12, (short)12, "Trigger & Procedure" },
+                    { 13, (short)13, "Report" },
+                    { 14, (short)14, "Setting" },
+                    { 15, (short)16, "Map" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "InputModes",
                 columns: new[] { "Id", "Description", "Name", "Value" },
                 values: new object[,]
@@ -1475,8 +1754,8 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "Locations",
-                columns: new[] { "Id", "ComponentId", "CreatedDate", "Description", "IsActive", "LocationName", "UpdatedDate", "Uuid" },
-                values: new object[] { 1, (short)1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Main Location", true, "Main", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "00000000-0000-0000-0000-000000000001" });
+                columns: new[] { "Id", "ComponentId", "CreatedDate", "Description", "IsActive", "LocationName", "Uuid" },
+                values: new object[] { 1, (short)0, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "All Location", true, "All", "00000000-0000-0000-0000-000000000001" });
 
             migrationBuilder.InsertData(
                 table: "MonitorPointModes",
@@ -1486,6 +1765,24 @@ namespace HIDAeroService.Migrations
                     { 1, "", "Normal mode (no exit or entry delay)", (short)0 },
                     { 2, "", "Non-latching mode", (short)1 },
                     { 3, "", "Latching mode", (short)2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "MultiOccupancyOptions",
+                columns: new[] { "Id", "Description", "Name", "Value" },
+                values: new object[,]
+                {
+                    { 1, "Two or more not required in area", "Two or more not required in area", (short)0 },
+                    { 2, "Two or more required", "Two or more required", (short)1 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "OccupancyControlOptions",
+                columns: new[] { "Id", "Description", "Name", "Value" },
+                values: new object[,]
+                {
+                    { 1, "Do not change current occupancy count", "Do not change current occupancy count", (short)0 },
+                    { 2, "Change current occupancy to occ_set", "Change current occupancy to occ_set", (short)1 }
                 });
 
             migrationBuilder.InsertData(
@@ -1585,7 +1882,7 @@ namespace HIDAeroService.Migrations
             migrationBuilder.InsertData(
                 table: "SystemSettings",
                 columns: new[] { "Id", "GmtOffset", "nAcr", "nAlvl", "nArea", "nCard", "nCp", "nHol", "nMp", "nMpg", "nMsp1Port", "nProc", "nSio", "nTransaction", "nTrgr", "nTz" },
-                values: new object[] { 1, (short)-25200, (short)64, (short)32000, (short)0, (short)200, (short)388, (short)255, (short)615, (short)128, (short)3, (short)1024, (short)16, 60000, (short)1024, (short)255 });
+                values: new object[] { 1, (short)-25200, (short)64, (short)32000, (short)127, (short)200, (short)388, (short)255, (short)615, (short)128, (short)3, (short)1024, (short)16, 60000, (short)1024, (short)255 });
 
             migrationBuilder.InsertData(
                 table: "TimeZoneModes",
@@ -1602,8 +1899,8 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.InsertData(
                 table: "TimeZones",
-                columns: new[] { "Id", "ActiveTime", "ComponentId", "DeactiveTime", "IsActive", "LocationId", "LocationName", "Mode", "Name", "Uuid" },
-                values: new object[] { 1, "", (short)1, "", true, 1, "Main Location", (short)1, "Always", "00000000-0000-0000-0000-000000000001" });
+                columns: new[] { "Id", "ActiveTime", "ComponentId", "DeactiveTime", "IsActive", "Mode", "Name", "Uuid" },
+                values: new object[] { 1, "", (short)1, "", true, (short)1, "Always", "00000000-0000-0000-0000-000000000001" });
 
             migrationBuilder.InsertData(
                 table: "TransactionSources",
@@ -1669,6 +1966,20 @@ namespace HIDAeroService.Migrations
                     { 28, "ACR extended feature stateless transition", (short)64 },
                     { 29, "ACR extended feature change-of-state", (short)65 },
                     { 30, "Formatted card and user PIN was captured at an ACR", (short)66 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AccessAreas",
+                columns: new[] { "Id", "AccessControl", "AreaFlag", "ComponentId", "CreatedDate", "IsActive", "LocationId", "MultiOccupancy", "Name", "OccControl", "OccDown", "OccMax", "OccSet", "OccUp", "Uuid" },
+                values: new object[] { 1, (short)0, (short)0, (short)-1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), true, (short)0, (short)0, "Any Area", (short)0, (short)0, (short)0, (short)0, (short)0, "00000000-0000-0000-0000-000000000001" });
+
+            migrationBuilder.InsertData(
+                table: "AccessLevels",
+                columns: new[] { "Id", "ComponentId", "IsActive", "LocationId", "Name", "Uuid" },
+                values: new object[,]
+                {
+                    { 1, (short)1, true, (short)0, "No Access", "00000000-0000-0000-0000-000000000001" },
+                    { 2, (short)2, true, (short)0, "Full Access", "00000000-0000-0000-0000-000000000001" }
                 });
 
             migrationBuilder.InsertData(
@@ -1893,6 +2204,11 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AccessAreas_LocationId",
+                table: "AccessAreas",
+                column: "LocationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AccessLevelDoorTimeZones_DoorId",
                 table: "AccessLevelDoorTimeZones",
                 column: "DoorId");
@@ -1901,6 +2217,16 @@ namespace HIDAeroService.Migrations
                 name: "IX_AccessLevelDoorTimeZones_TimeZoneId",
                 table: "AccessLevelDoorTimeZones",
                 column: "TimeZoneId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AccessLevels_LocationId",
+                table: "AccessLevels",
+                column: "LocationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AeroStructureStatuses_LocationId",
+                table: "AeroStructureStatuses",
+                column: "LocationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CardHolderAccessLevel_CardHolderId",
@@ -1913,6 +2239,16 @@ namespace HIDAeroService.Migrations
                 column: "CardHolderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CardHolders_LocationId",
+                table: "CardHolders",
+                column: "LocationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ControlPoints_LocationId",
+                table: "ControlPoints",
+                column: "LocationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ControlPoints_ModuleId",
                 table: "ControlPoints",
                 column: "ModuleId");
@@ -1921,6 +2257,11 @@ namespace HIDAeroService.Migrations
                 name: "IX_Credentials_CardHolderId",
                 table: "Credentials",
                 column: "CardHolderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Credentials_LocationId",
+                table: "Credentials",
+                column: "LocationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DaysInWeek_ComponentId",
@@ -1939,6 +2280,11 @@ namespace HIDAeroService.Migrations
                 column: "AntiPassBackOut");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Doors_LocationId",
+                table: "Doors",
+                column: "LocationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Doors_SensorComponentId",
                 table: "Doors",
                 column: "SensorComponentId",
@@ -1949,6 +2295,16 @@ namespace HIDAeroService.Migrations
                 table: "Doors",
                 column: "StrkComponentId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Events_LocationId",
+                table: "Events",
+                column: "LocationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FeatureRole_FeatureId",
+                table: "FeatureRole",
+                column: "FeatureId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_HardwareAccessLevel_AccessLevelId",
@@ -1971,10 +2327,25 @@ namespace HIDAeroService.Migrations
                 column: "HardwareCredentialId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Hardwares_LocationId",
+                table: "Hardwares",
+                column: "LocationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Holidays_LocationId",
+                table: "Holidays",
+                column: "LocationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Intervals_ComponentId",
                 table: "Intervals",
                 column: "ComponentId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Modules_LocationId",
+                table: "Modules",
+                column: "LocationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Modules_MacAddress",
@@ -1982,14 +2353,39 @@ namespace HIDAeroService.Migrations
                 column: "MacAddress");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MonitorPointGroup_LocationId",
+                table: "MonitorPointGroup",
+                column: "LocationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MonitorPoints_LocationId",
+                table: "MonitorPoints",
+                column: "LocationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MonitorPoints_ModuleId",
                 table: "MonitorPoints",
                 column: "ModuleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Operators_LocationId",
+                table: "Operators",
+                column: "LocationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Operators_RoleId",
+                table: "Operators",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Readers_ComponentId",
                 table: "Readers",
                 column: "ComponentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Readers_LocationId",
+                table: "Readers",
+                column: "LocationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Readers_ModuleId",
@@ -2002,14 +2398,29 @@ namespace HIDAeroService.Migrations
                 column: "ComponentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RequestExits_LocationId",
+                table: "RequestExits",
+                column: "LocationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RequestExits_ModuleId",
                 table: "RequestExits",
                 column: "ModuleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Sensors_LocationId",
+                table: "Sensors",
+                column: "LocationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Sensors_ModuleId",
                 table: "Sensors",
                 column: "ModuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Strikes_LocationId",
+                table: "Strikes",
+                column: "LocationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Strikes_ModuleId",
@@ -2041,10 +2452,16 @@ namespace HIDAeroService.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AccessAreaCommands");
+                name: "AccessAreaAccessControlOptions");
+
+            migrationBuilder.DropTable(
+                name: "AccessAreaCommandOptions");
 
             migrationBuilder.DropTable(
                 name: "AccessLevelDoorTimeZones");
+
+            migrationBuilder.DropTable(
+                name: "AeroStructureStatuses");
 
             migrationBuilder.DropTable(
                 name: "AntipassbackModes");
@@ -2053,10 +2470,7 @@ namespace HIDAeroService.Migrations
                 name: "ArCommandStatuses");
 
             migrationBuilder.DropTable(
-                name: "ArEvents");
-
-            migrationBuilder.DropTable(
-                name: "ArScpStructureStatuses");
+                name: "AreaFlagOptions");
 
             migrationBuilder.DropTable(
                 name: "CardFormats");
@@ -2074,7 +2488,7 @@ namespace HIDAeroService.Migrations
                 name: "ControlPoints");
 
             migrationBuilder.DropTable(
-                name: "CredentialFlags");
+                name: "CredentialFlagOptions");
 
             migrationBuilder.DropTable(
                 name: "DaysInWeek");
@@ -2086,7 +2500,16 @@ namespace HIDAeroService.Migrations
                 name: "DoorModes");
 
             migrationBuilder.DropTable(
-                name: "DoorSpareFlags");
+                name: "DoorSpareFlagOption");
+
+            migrationBuilder.DropTable(
+                name: "Events");
+
+            migrationBuilder.DropTable(
+                name: "FeatureLists");
+
+            migrationBuilder.DropTable(
+                name: "FeatureRole");
 
             migrationBuilder.DropTable(
                 name: "HardwareAccessLevel");
@@ -2101,13 +2524,19 @@ namespace HIDAeroService.Migrations
                 name: "InputModes");
 
             migrationBuilder.DropTable(
-                name: "Locations");
+                name: "MonitorPointGroup");
 
             migrationBuilder.DropTable(
                 name: "MonitorPointModes");
 
             migrationBuilder.DropTable(
                 name: "MonitorPoints");
+
+            migrationBuilder.DropTable(
+                name: "MultiOccupancyOptions");
+
+            migrationBuilder.DropTable(
+                name: "OccupancyControlOptions");
 
             migrationBuilder.DropTable(
                 name: "Operators");
@@ -2132,6 +2561,9 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.DropTable(
                 name: "Readers");
+
+            migrationBuilder.DropTable(
+                name: "RefreshTokens");
 
             migrationBuilder.DropTable(
                 name: "RelayModes");
@@ -2161,10 +2593,16 @@ namespace HIDAeroService.Migrations
                 name: "TransactionSourceType");
 
             migrationBuilder.DropTable(
+                name: "Features");
+
+            migrationBuilder.DropTable(
                 name: "AccessLevels");
 
             migrationBuilder.DropTable(
                 name: "Credentials");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "Doors");
@@ -2198,6 +2636,9 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.DropTable(
                 name: "Hardwares");
+
+            migrationBuilder.DropTable(
+                name: "Locations");
         }
     }
 }

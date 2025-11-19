@@ -2,6 +2,7 @@
 using HIDAeroService.AeroLibrary;
 using HIDAeroService.Controllers.V1;
 using HIDAeroService.Entity;
+using HIDAeroService.Entity.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -64,13 +65,16 @@ namespace HIDAeroService.Data
         public DbSet<AreaFlagOption> AreaFlagOptions { get; set; }
         public DbSet<MultiOccupancyOption> MultiOccupancyOptions { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<Feature> Features { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<FeatureList> FeatureLists { get; set; }
         // Old 
 
-        public DbSet<ArEvent> ArEvents { get; set; }
+        public DbSet<Event> Events { get; set; }
 
-        public DbSet<ArCommandStatus> ArCommandStatuses { get; set; }
+        public DbSet<CommandStatus> ArCommandStatuses { get; set; }
 
-        public DbSet<ArScpStructureStatus> ArScpStructureStatuses { get; set; }
+        public DbSet<AeroStructureStatus> AeroStructureStatuses { get; set; }
 
 
 
@@ -79,51 +83,44 @@ namespace HIDAeroService.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
+            // put this inside OnModelCreating(ModelBuilder modelBuilder)
+            var datetimeInterface = typeof(IDatetime);
 
-            // Apply configuration to all entities that inherit from BaseEntity
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes()
-                         .Where(e => typeof(BaseEntity).IsAssignableFrom(e.ClrType)))
+            foreach (var et in modelBuilder.Model.GetEntityTypes()
+                         .Where(t => t.ClrType != null && datetimeInterface.IsAssignableFrom(t.ClrType)))
             {
-                // For CreatedAt
-                modelBuilder.Entity(entityType.ClrType)
-                    .Property(nameof(BaseEntity.CreatedDate))
+                // get the builder for the concrete CLR type (e.g. Location, ArEvent, ...)
+                var builder = modelBuilder.Entity(et.ClrType);
+
+                // configure CreatedDate
+                builder.Property<DateTime>(nameof(IDatetime.CreatedDate))
                     .HasColumnType("timestamp without time zone")
                     .HasDefaultValueSql("now()")
                     .ValueGeneratedOnAdd();
 
-                // For UpdatedAt
-                modelBuilder.Entity(entityType.ClrType)
-                    .Property(nameof(BaseEntity.UpdatedDate))
+                // configure UpdatedDate
+                builder.Property<DateTime>(nameof(IDatetime.UpdatedDate))
                     .HasColumnType("timestamp without time zone")
                     .HasDefaultValueSql("now()")
-                    .ValueGeneratedOnAdd();
+                    // ValueGeneratedOnAddOrUpdate can be used, but in many DBs you'll still want to set UpdatedDate in SaveChanges
+                    .ValueGeneratedOnAddOrUpdate();
             }
 
-            // Apply configuration to all entities that inherit from BaseEntity
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes()
-                         .Where(e => typeof(NoMacBaseEntity).IsAssignableFrom(e.ClrType)))
-            {
-                // For CreatedAt
-                modelBuilder.Entity(entityType.ClrType)
-                    .Property(nameof(NoMacBaseEntity.CreatedDate))
-                    .HasColumnType("timestamp without time zone")
-                    .HasDefaultValueSql("now()")
-                     .ValueGeneratedOnAdd();
+            //modelBuilder.Entity<IDatetime>()
+            //    .Property(nameof(IDatetime.CreatedDate))
+            //    .HasColumnType("timestamp without time zone")
+            //    .HasDefaultValueSql("now()")
+            //    .ValueGeneratedOnAdd();
 
-                // For UpdatedAt
-                modelBuilder.Entity(entityType.ClrType)
-                    .Property(nameof(NoMacBaseEntity.UpdatedDate))
-                    .HasColumnType("timestamp without time zone")
-                    .HasDefaultValueSql("now()")
-                    .ValueGeneratedOnAdd();
-            }
+            //modelBuilder.Entity<IDatetime>()
+            //    .Property(nameof(IDatetime.UpdatedDate))
+            //    .HasColumnType("timestamp without time zone")
+            //    .HasDefaultValueSql("now()")
+            //    .ValueGeneratedOnAddOrUpdate();
 
             modelBuilder.Entity<Hardware>().Property(nameof(Hardware.LastSync)).HasColumnType("timestamp without time zone").HasDefaultValueSql("now()")
                     .ValueGeneratedOnAdd(); 
-            modelBuilder.Entity<Location>().Property(nameof(Location.CreatedDate)).HasColumnType("timestamp without time zone").HasDefaultValueSql("now()")
-                    .ValueGeneratedOnAdd();
-            modelBuilder.Entity<Location>().Property(nameof(Location.UpdatedDate)).HasColumnType("timestamp without time zone").HasDefaultValueSql("now()")
-        .ValueGeneratedOnAdd();
+
 
 
             #region Hardware 
@@ -270,9 +267,9 @@ namespace HIDAeroService.Data
                 .HasPrincipalKey(x => x.ComponentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            var NoAccess = new AccessLevel { Id = 1, Uuid = SeedDefaults.SystemGuid, Name = "No Access", ComponentId = 1, IsActive = true };
+            var NoAccess = new AccessLevel { Id = 1, Uuid = SeedDefaults.SystemGuid, Name = "No Access", ComponentId = 1,LocationId=0, IsActive = true };
 
-            var FullAccess = new AccessLevel { Id = 2, Uuid = SeedDefaults.SystemGuid, Name = "Full Access", ComponentId = 2, IsActive = true };
+            var FullAccess = new AccessLevel { Id = 2, Uuid = SeedDefaults.SystemGuid, Name = "Full Access", ComponentId = 2,LocationId=0, IsActive = true };
 
 
             modelBuilder.Entity<AccessLevel>().HasData(
@@ -511,8 +508,6 @@ namespace HIDAeroService.Data
                 {
                     Id=1,
                     Uuid = SeedDefaults.SystemGuid,
-                    LocationId=1,
-                    LocationName="Main Location",
                     IsActive=true,
                     Name = "26 Bits (No Fac)",
                     Facility = -1,
@@ -541,8 +536,122 @@ namespace HIDAeroService.Data
 
             modelBuilder.Entity<Location>()
                 .HasData(
-                new Location { Id=1,ComponentId=1,LocationName="Main",Description="Main Location",CreatedDate=SeedDefaults.SystemDate,UpdatedDate=SeedDefaults.SystemDate,Uuid=SeedDefaults.SystemGuid,IsActive=true }
+                new Location { Id=1,ComponentId=0,LocationName="All",Description="All Location",CreatedDate=SeedDefaults.SystemDate,UpdatedDate=SeedDefaults.SystemDate,Uuid=SeedDefaults.SystemGuid,IsActive=true }
                 );
+
+            modelBuilder.Entity<Location>()
+                .HasMany(l => l.Hardwares)
+                .WithOne(h => h.Location)
+                .HasForeignKey(f => f.LocationId)
+                .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+                .HasMany(l => l.Modules)
+                .WithOne(h => h.Location)
+                .HasForeignKey(f => f.LocationId)
+                .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+                .HasMany(l => l.ControlPoints)
+                .WithOne(h => h.Location)
+                .HasForeignKey(f => f.LocationId)
+                .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+               .HasMany(l => l.MonitorPoints)
+               .WithOne(h => h.Location)
+               .HasForeignKey(f => f.LocationId)
+               .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+               .HasMany(l => l.AccessLevels)
+               .WithOne(h => h.Location)
+               .HasForeignKey(f => f.LocationId)
+               .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+               .HasMany(l => l.AccessAreas)
+               .WithOne(h => h.Location)
+               .HasForeignKey(f => f.LocationId)
+               .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+               .HasMany(l => l.CardHolders)
+               .WithOne(h => h.Location)
+               .HasForeignKey(f => f.LocationId)
+               .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+               .HasMany(l => l.Doors)
+               .WithOne(h => h.Location)
+               .HasForeignKey(f => f.LocationId)
+               .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+               .HasMany(l => l.MonitorPointsGroup)
+               .WithOne(h => h.Location)
+               .HasForeignKey(f => f.LocationId)
+               .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+               .HasMany(l => l.Operators)
+               .WithOne(h => h.Location)
+               .HasForeignKey(f => f.LocationId)
+               .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+                .HasMany(l => l.Events)
+                .WithOne(c => c.Location)
+                 .HasForeignKey(f => f.LocationId)
+               .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+               .HasMany(l => l.AeroStructureStatuses)
+               .WithOne(c => c.Location)
+               .HasForeignKey(f => f.LocationId)
+               .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+              .HasMany(l => l.Credentials)
+              .WithOne(c => c.Location)
+              .HasForeignKey(f => f.LocationId)
+              .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+              .HasMany(l => l.Credentials)
+              .WithOne(c => c.Location)
+              .HasForeignKey(f => f.LocationId)
+              .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+              .HasMany(l => l.Holidays)
+              .WithOne(c => c.Location)
+              .HasForeignKey(f => f.LocationId)
+              .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+              .HasMany(l => l.Readers)
+              .WithOne(c => c.Location)
+              .HasForeignKey(f => f.LocationId)
+              .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+              .HasMany(l => l.RequestExits)
+              .WithOne(c => c.Location)
+              .HasForeignKey(f => f.LocationId)
+              .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+              .HasMany(l => l.Sensors)
+              .WithOne(c => c.Location)
+              .HasForeignKey(f => f.LocationId)
+              .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+              .HasMany(l => l.Strikes)
+              .WithOne(c => c.Location)
+              .HasForeignKey(f => f.LocationId)
+              .HasPrincipalKey(p => p.ComponentId);
 
             #endregion
 
@@ -965,7 +1074,7 @@ namespace HIDAeroService.Data
 
             modelBuilder.Entity<AccessArea>()
                 .HasData(
-                    new AccessArea { Id=1,ComponentId=-1,MultiOccupancy=0,AccessControl=0,OccControl=0,OccSet=0,OccMax=0,OccUp=0,OccDown=0,AreaFlag=0,Uuid=SeedDefaults.SystemGuid,LocationId=1,LocationName="Main",IsActive=true,CreatedDate=SeedDefaults.SystemDate,UpdatedDate=SeedDefaults.SystemDate,Name="Any Area", }
+                    new AccessArea { Id=1,ComponentId=-1,MultiOccupancy=0,AccessControl=0,OccControl=0,OccSet=0,OccMax=0,OccUp=0,OccDown=0,AreaFlag=0,Uuid=SeedDefaults.SystemGuid,LocationId=0,IsActive=true,CreatedDate=SeedDefaults.SystemDate,UpdatedDate=SeedDefaults.SystemDate,Name="Any Area", }
                 );
 
             modelBuilder.Entity<AccessAreaCommandOption>()
@@ -1005,6 +1114,54 @@ namespace HIDAeroService.Data
 
             #endregion
 
+            #region Operator
+
+            modelBuilder.Entity<Operator>()
+                .HasOne(o => o.Role)
+                .WithMany(r => r.Operators)
+                .HasForeignKey(o => o.RoleId)
+                .HasPrincipalKey(r => r.ComponentId);
+
+            modelBuilder.Entity<FeatureRole>()
+                .HasKey(e => new { e.RoleId, e.FeatureId });
+
+            modelBuilder.Entity<FeatureRole>()
+                .HasOne(e => e.Role)
+                .WithMany(e => e.FeatureRoles)
+                .HasForeignKey(e => e.RoleId)
+                .HasPrincipalKey(e => e.ComponentId);
+
+            modelBuilder.Entity<FeatureRole>()
+                .HasOne(e => e.Feature)
+                .WithMany(e => e.FeatureRoles)
+                .HasForeignKey(e => e.FeatureId)
+                .HasPrincipalKey(e => e.ComponentId);
+
+            #endregion
+
+            #region FeatureList
+
+            modelBuilder.Entity<FeatureList>()
+                .HasData(
+                    new FeatureList { Id=1,ComponentId=1,Name="Dashboard" },
+                    new FeatureList { Id=2,ComponentId=2,Name="Events" },
+                    new FeatureList { Id = 3, ComponentId = 3, Name = "Locations" },
+                    new FeatureList { Id = 4, ComponentId = 4, Name = "Alerts" },
+                    new FeatureList { Id = 5, ComponentId = 5, Name = "Operators" },
+                    new FeatureList { Id = 6, ComponentId = 6, Name = "Device" },
+                    new FeatureList { Id = 7, ComponentId = 7, Name = "Doors" },
+                    new FeatureList { Id = 8, ComponentId = 8, Name = "Card Holder" },
+                    new FeatureList { Id = 9, ComponentId = 9, Name = "Access Level" },
+                    new FeatureList { Id = 10, ComponentId = 10, Name = "Access Area" },
+                    new FeatureList { Id = 11, ComponentId = 11, Name = "Time" },
+                    new FeatureList { Id = 12, ComponentId = 12, Name = "Trigger & Procedure" },
+                    new FeatureList { Id = 13, ComponentId = 13, Name = "Report" },
+                    new FeatureList { Id = 14, ComponentId = 14, Name = "Setting" },
+                    new FeatureList { Id = 15, ComponentId = 16, Name = "Map" }
+                );
+
+            #endregion
+
             /*
              *
             * Below should be inside License Feature
@@ -1014,7 +1171,7 @@ namespace HIDAeroService.Data
                 );
 
             modelBuilder.Entity<SystemSetting>().HasData(
-                new SystemSetting { Id = 1, nMsp1Port = 3, nTransaction = 60000, nSio = 16, nMp = 615, nCp = 388, nAcr = 64, nAlvl = 32000, nTrgr = 1024, nProc = 1024, GmtOffset = -25200, nTz = 255, nHol = 255, nMpg = 128, nCard = 200,nArea= 126}
+                new SystemSetting { Id = 1, nMsp1Port = 3, nTransaction = 60000, nSio = 16, nMp = 615, nCp = 388, nAcr = 64, nAlvl = 32000, nTrgr = 1024, nProc = 1024, GmtOffset = -25200, nTz = 255, nHol = 255, nMpg = 128, nCard = 200,nArea= 127}
                 );
 
             #region Component

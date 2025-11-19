@@ -12,9 +12,10 @@ namespace HIDAeroService.Entity
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string LastName { get; set; }
-        public string Role { get; set; }
         public string Phone { get; set; }
         public string Image { get; set; }
+        public short RoleId { get; set; }
+        public Role Role { get; set; }
 
     }
 }

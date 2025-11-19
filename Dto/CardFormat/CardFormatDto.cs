@@ -5,6 +5,7 @@ namespace HIDAeroService.DTO.CardFormat
 {
     public sealed class CardFormatDto : NoMacBaseDto
     {
+        public string Uuid { get; set; } = Guid.NewGuid().ToString();
         public required string Name { get; set; }
         public short ComponentId { get; set; }
         public short Facility { get; set; }
@@ -19,5 +20,6 @@ namespace HIDAeroService.DTO.CardFormat
         public short ChLoc { get; set; }
         public short IcLn { get; set; }
         public short IcLoc { get; set; }
+        public bool IsActive { get; set; } = true;
     }
 }

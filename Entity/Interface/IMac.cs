@@ -1,4 +1,4 @@
-namespace HIDAeroService.Entity.Interface
+﻿namespace HIDAeroService.Entity.Interface
 {
     public interface IMac
     {

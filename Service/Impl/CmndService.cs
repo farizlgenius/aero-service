@@ -11,18 +11,18 @@ using static HID.Aero.ScpdNet.Wrapper.SCPReplyMessage;
 
 namespace HIDAeroService.Service.Impl
 {
-    public sealed class CmndService(IHubContext<CmndHub> hub, ILogger<CmndService> logger, AppDbContext context, IHelperService<ArCommandStatus> helperService, AeroCommand write)
+    public sealed class CmndService(IHubContext<CmndHub> hub, ILogger<CmndService> logger, AppDbContext context, IHelperService<CommandStatus> helperService, AeroCommand write)
     {
 
 
         public void Save(int ScpId, string ScpMac, short TagNo, short CommandStatus, string Command, SCPReplyNAK nak)
         {
-            ArCommandStatus s = new ArCommandStatus();
+            CommandStatus s = new CommandStatus();
             s.CreatedDate = DateTime.Now;
             s.UpdatedDate = DateTime.Now;
             s.ScpMac = ScpMac;
             s.TagNo = TagNo;
-            s.CommandStatus = CommandStatus == 1 ? 'S' : 'F';
+            s.Status = CommandStatus == 1 ? 'S' : 'F';
             s.Command = Command;
             s.NakReason = Description.GetNakReasonDescription(nak.reason);
             s.NakDescCode = nak.description_code;

@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace HIDAeroService.Entity
 {
-    public sealed class ArEvent : BaseEntity
+    public sealed class Event : BaseEntity
     {
         public string Date { get; set; }
         public string Time { get; set; }

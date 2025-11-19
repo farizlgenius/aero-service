@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HIDAeroService.Entity
 {
-    public sealed class Location : IComponentId
+    public sealed class Location : IComponentId,IDatetime
     {
         [Key]
         public int Id { get; set; }
@@ -11,6 +11,27 @@ namespace HIDAeroService.Entity
         public short ComponentId { get; set; } = 1;
         public string LocationName { get; set; } = "Main Location";
         public string Description { get; set; } = string.Empty;
+
+        // All Component 
+        public ICollection<Hardware> Hardwares { get; set; }
+        public ICollection<Module> Modules { get; set; }
+        public ICollection<ControlPoint> ControlPoints { get; set; }
+        public ICollection<MonitorPoint> MonitorPoints { get; set; }
+        public ICollection<AccessLevel> AccessLevels { get; set; }
+        public ICollection<AccessArea> AccessAreas { get; set; }
+        public ICollection<CardHolder> CardHolders { get; set; }
+        public ICollection<Door> Doors { get; set; }
+        public ICollection<MonitorPointGroup> MonitorPointsGroup { get; set; }
+        public ICollection<Operator> Operators { get; set; }
+        public ICollection<Event> Events { get; set; }
+        public ICollection<AeroStructureStatus> AeroStructureStatuses { get; set; }
+        public ICollection<Credential> Credentials { get; set; }
+        public ICollection<Holiday> Holidays { get; set; }
+        public ICollection<Reader> Readers { get; set; }
+        public ICollection<RequestExit> RequestExits { get; set; }
+        public ICollection<Sensor> Sensors { get; set; }
+        public ICollection<Strike> Strikes { get; set; }
+
         public bool IsActive { get; set; } = true;
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
