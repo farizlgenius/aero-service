@@ -20,6 +20,9 @@ using HIDAeroService.DTO.AccessArea;
 using HIDAeroService.DTO.CardHolder;
 using HIDAeroService.DTO.Credential;
 using HIDAeroService.DTO.AccessLevel;
+using HIDAeroService.DTO.Operator;
+using HIDAeroService.DTO.Role;
+using HIDAeroService.DTO.Feature;
 
 namespace HIDAeroService.Mapper
 {
@@ -1271,6 +1274,7 @@ namespace HIDAeroService.Mapper
                 Uuid = dto.Uuid,
                 ComponentId = LocationId,
                 
+                LocationName = dto.LocationName,
                 Description = dto.Description,
                 CreatedDate = Create,
                 UpdatedDate = Create,
@@ -1367,6 +1371,130 @@ namespace HIDAeroService.Mapper
             entity.AreaFlag = dto.AreaFlag;
         }
 
+
+        #endregion
+
+        #region Operator
+
+        public static OperatorDto OperatorToDto(Operator entity) 
+        {
+            return new OperatorDto
+            {
+                Uuid = entity.Uuid,
+                LocationId = entity.LocationId,
+                IsActive = entity.IsActive,
+
+                // Detail 
+                ComponentId = entity.ComponentId,
+                UserName = entity.UserName,
+                Password = entity.Password,
+                Email = entity.Email,
+                Title = entity.Title,
+                FirstName = entity.FirstName,
+                MiddleName = entity.MiddleName,
+                LastName = entity.LastName,
+                Phone = entity.Phone,
+                ImagePath = entity.ImagePath,
+                RoleId = entity.RoleId,
+            };
+        }
+
+        public static Operator DtoToOperator(OperatorDto dto,short ComponentId,DateTime Created)
+        {
+            return new Operator
+            {
+                LocationId = dto.LocationId,
+                IsActive = true,
+                CreatedDate = Created,
+                UpdatedDate = Created,
+
+                // Detail
+                ComponentId = ComponentId,
+                UserName= dto.UserName,
+                Password= dto.Password,
+                Email= dto.Email,
+                Title= dto.Title,
+                FirstName= dto.FirstName,
+                MiddleName= dto.MiddleName,
+                LastName= dto.LastName,
+                Phone= dto.Phone,
+                ImagePath= dto.ImagePath,
+                RoleId= dto.RoleId,
+            };
+        }
+
+        public static void UpdateOperator(Operator en,OperatorDto dto) 
+        {
+            en.LocationId = dto.LocationId;
+            en.UpdatedDate = DateTime.Now;
+
+            // Detail
+            en.ComponentId = dto.ComponentId;
+            en.UserName = dto.UserName;
+            en.Password = dto.Password;
+            en.Email = dto.Email;
+            en.Title = dto.Title;
+            en.FirstName = dto.FirstName;
+            en.MiddleName = dto.MiddleName;
+            en.LastName = dto.LastName;
+            en.Phone = dto.Phone;
+            en.ImagePath = dto.ImagePath;
+            en.RoleId = dto.RoleId;
+        }
+
+        #endregion
+
+        #region Role
+
+        public static RoleDto RoleToDto(Role en) 
+        {
+            return new RoleDto
+            {
+                ComponentId = en.ComponentId,
+                Name = en.Name,
+                Fetures = en.FeatureRoles is not null && en.FeatureRoles.Count > 0 ? en.FeatureRoles.Select(x => MapperHelper.FeatureToDto(x.Feature)).ToList() : new List<FeatureDto>()
+            };
+        }
+
+        public static Role DtoToRole(RoleDto dto)
+        {
+            return new Role
+            {
+                ComponentId = dto.ComponentId,
+                Name = dto.Name,
+                FeatureRoles = dto.Fetures.Select(fr => DtoToFeatureRole(fr,dto.ComponentId)).ToArray(),
+
+            };
+        }
+
+        public static FeatureRole DtoToFeatureRole(FeatureDto dto,short RoleId) 
+        {
+            return new FeatureRole
+            {
+                FeatureId = dto.ComponentId,
+                RoleId = RoleId
+            };
+        }
+
+        public static void UpdateRole(Role en,RoleDto dto)
+        {
+            en.Name = dto.Name;
+            en.FeatureRoles = dto.Fetures.Select(fr => DtoToFeatureRole(fr, dto.ComponentId)).ToArray();
+        }
+
+        #endregion
+
+        #region Feature
+
+        public static FeatureDto FeatureToDto(Feature fn)
+        {
+            return new FeatureDto
+            {
+                ComponentId = fn.ComponentId,
+                Name = fn.Name,
+                IsWritable = fn.IsWritable,
+            };
+        }
 
         #endregion
 

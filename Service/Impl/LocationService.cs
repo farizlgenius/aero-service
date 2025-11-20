@@ -24,7 +24,17 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<bool>> DeleteByIdAsync(short Id)
         {
-            throw new NotImplementedException();
+            var en = await context.Locations
+                .Where(l => l.ComponentId == Id)
+                .OrderBy(l => l.ComponentId)
+                .FirstOrDefaultAsync();
+
+            if (en is null) return ResponseHelper.NotFoundBuilder<bool>();
+
+            context.Locations.Remove(en);
+            await context.SaveChangesAsync();
+
+            return ResponseHelper.SuccessBuilder<bool>(true);
         }
 
         public async Task<ResponseDto<IEnumerable<LocationDto>>> GetAsync()

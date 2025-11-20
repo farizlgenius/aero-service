@@ -111,6 +111,9 @@ namespace HIDAeroService
             builder.Services.AddScoped<IHelperService, HelperService>();
             builder.Services.AddScoped<ILicenseService, LicenseService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IOperatorService, OperatorService>();
+            builder.Services.AddScoped<ILocationService,LocationService>();
+            builder.Services.AddScoped<IRoleService, RoleService>();
 
 
             //

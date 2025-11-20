@@ -1,9 +1,8 @@
-﻿using HIDAeroService.Entity.Interface;
-using System.ComponentModel.DataAnnotations;
+﻿using HIDAeroService.Entity;
 
-namespace HIDAeroService.Entity
+namespace HIDAeroService.DTO.Operator
 {
-    public sealed class Operator : NoMacBaseEntity,IComponentId
+    public sealed class OperatorDto : NoMacBaseDto
     {
         public short ComponentId { get; set; }
         public string UserName { get; set; } = string.Empty;
@@ -16,7 +15,5 @@ namespace HIDAeroService.Entity
         public string Phone { get; set; } = string.Empty;
         public string ImagePath { get; set; } = string.Empty;
         public short RoleId { get; set; }
-        public Role Role { get; set; }
-
     }
 }

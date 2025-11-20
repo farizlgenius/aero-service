@@ -1116,11 +1116,19 @@ namespace HIDAeroService.Data
 
             #region Operator
 
+            //modelBuilder.Entity<Role>()
+            //    .HasMany(o => o.Operators)
+            //    .WithOne(r => r.Role)
+            //    .HasForeignKey(o => o.RoleId)
+            //    .HasPrincipalKey(r => r.ComponentId)
+            //    .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Operator>()
                 .HasOne(o => o.Role)
                 .WithMany(r => r.Operators)
                 .HasForeignKey(o => o.RoleId)
-                .HasPrincipalKey(r => r.ComponentId);
+                .HasPrincipalKey(r => r.ComponentId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<FeatureRole>()
                 .HasKey(e => new { e.RoleId, e.FeatureId });
