@@ -3,10 +3,11 @@ using HIDAeroService.DTO.Role;
 using HIDAeroService.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Crypto;
 
 namespace HIDAeroService.Controllers.V1
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class RoleController(IRoleService roleService) : ControllerBase
     {
@@ -44,6 +45,7 @@ namespace HIDAeroService.Controllers.V1
             var res = await roleService.GetByComponentIdAsync(Id);
             return Ok(res);
         }
+
 
     }
 }

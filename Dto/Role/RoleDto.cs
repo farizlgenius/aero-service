@@ -9,6 +9,6 @@ namespace HIDAeroService.DTO.Role
     {
         public short ComponentId { get; set; }
         public string Name { get; set; } = string.Empty;
-        public List<FeatureDto> Fetures { get; set; }
+        public List<FeatureDto> Features { get; set; }
     }
 }

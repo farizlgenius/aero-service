@@ -1748,36 +1748,13 @@ namespace HIDAeroService.Migrations
                     b.Property<short>("ComponentId")
                         .HasColumnType("smallint");
 
-                    b.Property<bool>("IsWritable")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Features");
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.FeatureList", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<short>("ComponentId")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FeatureLists");
+                    b.ToTable("Feature");
 
                     b.HasData(
                         new
@@ -1882,6 +1859,12 @@ namespace HIDAeroService.Migrations
 
                     b.Property<int>("Id")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("IsAllow")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsWritable")
+                        .HasColumnType("boolean");
 
                     b.HasKey("RoleId", "FeatureId");
 
@@ -3209,9 +3192,19 @@ namespace HIDAeroService.Migrations
                     b.Property<short>("ComponentId")
                         .HasColumnType("smallint");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasDefaultValueSql("now()");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp without time zone")
+                        .HasDefaultValueSql("now()");
 
                     b.HasKey("Id");
 

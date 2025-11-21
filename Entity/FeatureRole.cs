@@ -10,5 +10,7 @@ namespace HIDAeroService.Entity
         public Feature Feature { get; set; }
         public short RoleId { get; set; }
         public Role Role { get; set; }
+        public bool IsAllow { get; set; }
+        public bool IsWritable { get; set; }
     }
 }

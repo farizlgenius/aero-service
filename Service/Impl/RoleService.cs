@@ -1,19 +1,21 @@
 ﻿using HIDAeroService.Data;
 using HIDAeroService.DTO;
 using HIDAeroService.DTO.Role;
+using HIDAeroService.Entity;
 using HIDAeroService.Helpers;
 using HIDAeroService.Mapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace HIDAeroService.Service.Impl
 {
-    public sealed class RoleService(AppDbContext context) : IRoleService
+    public sealed class RoleService(AppDbContext context,IHelperService<Role> helperService) : IRoleService
     {
         public async Task<ResponseDto<bool>> CreateAsync(RoleDto dto)
         {
             if (await context.Roles.AsNoTracking().AnyAsync(r => r.Name == dto.Name)) return ResponseHelper.Duplicate<bool>();
+            var ComponentId = await helperService.GetLowestUnassignedNumberNoLimitAsync<Role>(context);
 
-            var en = MapperHelper.DtoToRole(dto);
+            var en = MapperHelper.DtoToRole(dto,ComponentId,DateTime.Now);
 
             await context.Roles.AddAsync(en);
             await context.SaveChangesAsync();
@@ -41,6 +43,7 @@ namespace HIDAeroService.Service.Impl
                 await context.Roles
                 .AsNoTracking()
                 .Include(f => f.FeatureRoles)
+                .ThenInclude(fr => fr.Feature)
                 .Select(x => MapperHelper.RoleToDto(x))
                 .ToArrayAsync()
                 );
@@ -51,6 +54,7 @@ namespace HIDAeroService.Service.Impl
             var dto = await context.Roles
                 .AsNoTracking()
                 .Include(f => f.FeatureRoles)
+                .ThenInclude(fr => fr.Feature)
                 .Select(x => MapperHelper.RoleToDto(x))
                 .OrderBy(x => x.ComponentId)
                 .FirstOrDefaultAsync();

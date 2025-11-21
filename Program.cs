@@ -114,6 +114,7 @@ namespace HIDAeroService
             builder.Services.AddScoped<IOperatorService, OperatorService>();
             builder.Services.AddScoped<ILocationService,LocationService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
+            builder.Services.AddScoped<IFeatureService, FeatureService>();
 
 
             //

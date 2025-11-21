@@ -67,7 +67,7 @@ namespace HIDAeroService.Data
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Feature> Features { get; set; }
         public DbSet<Role> Roles { get; set; }
-        public DbSet<FeatureList> FeatureLists { get; set; }
+        public DbSet<Feature> FeatureLists { get; set; }
         // Old 
 
         public DbSet<Event> Events { get; set; }
@@ -1147,25 +1147,25 @@ namespace HIDAeroService.Data
 
             #endregion
 
-            #region FeatureList
+            #region Feature
 
-            modelBuilder.Entity<FeatureList>()
+            modelBuilder.Entity<Feature>()
                 .HasData(
-                    new FeatureList { Id=1,ComponentId=1,Name="Dashboard" },
-                    new FeatureList { Id=2,ComponentId=2,Name="Events" },
-                    new FeatureList { Id = 3, ComponentId = 3, Name = "Locations" },
-                    new FeatureList { Id = 4, ComponentId = 4, Name = "Alerts" },
-                    new FeatureList { Id = 5, ComponentId = 5, Name = "Operators" },
-                    new FeatureList { Id = 6, ComponentId = 6, Name = "Device" },
-                    new FeatureList { Id = 7, ComponentId = 7, Name = "Doors" },
-                    new FeatureList { Id = 8, ComponentId = 8, Name = "Card Holder" },
-                    new FeatureList { Id = 9, ComponentId = 9, Name = "Access Level" },
-                    new FeatureList { Id = 10, ComponentId = 10, Name = "Access Area" },
-                    new FeatureList { Id = 11, ComponentId = 11, Name = "Time" },
-                    new FeatureList { Id = 12, ComponentId = 12, Name = "Trigger & Procedure" },
-                    new FeatureList { Id = 13, ComponentId = 13, Name = "Report" },
-                    new FeatureList { Id = 14, ComponentId = 14, Name = "Setting" },
-                    new FeatureList { Id = 15, ComponentId = 16, Name = "Map" }
+                    new Feature { Id=1,ComponentId=1,Name="Dashboard" },
+                    new Feature { Id=2,ComponentId=2,Name="Events" },
+                    new Feature { Id = 3, ComponentId = 3, Name = "Locations" },
+                    new Feature { Id = 4, ComponentId = 4, Name = "Alerts" },
+                    new Feature { Id = 5, ComponentId = 5, Name = "Operators" },
+                    new Feature { Id = 6, ComponentId = 6, Name = "Device" },
+                    new Feature { Id = 7, ComponentId = 7, Name = "Doors" },
+                    new Feature { Id = 8, ComponentId = 8, Name = "Card Holder" },
+                    new Feature { Id = 9, ComponentId = 9, Name = "Access Level" },
+                    new Feature { Id = 10, ComponentId = 10, Name = "Access Area" },
+                    new Feature { Id = 11, ComponentId = 11, Name = "Time" },
+                    new Feature { Id = 12, ComponentId = 12, Name = "Trigger & Procedure" },
+                    new Feature { Id = 13, ComponentId = 13, Name = "Report" },
+                    new Feature { Id = 14, ComponentId = 14, Name = "Setting" },
+                    new Feature { Id = 15, ComponentId = 16, Name = "Map" }
                 );
 
             #endregion

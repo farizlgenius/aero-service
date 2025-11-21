@@ -1452,17 +1452,19 @@ namespace HIDAeroService.Mapper
             {
                 ComponentId = en.ComponentId,
                 Name = en.Name,
-                Fetures = en.FeatureRoles is not null && en.FeatureRoles.Count > 0 ? en.FeatureRoles.Select(x => MapperHelper.FeatureToDto(x.Feature)).ToList() : new List<FeatureDto>()
+                Features = en.FeatureRoles is not null && en.FeatureRoles.Count > 0 ? en.FeatureRoles.Select(x => MapperHelper.FeatureToDto(x.Feature,x.IsWritable,x.IsAllow)).ToList() : new List<FeatureDto>()
             };
         }
 
-        public static Role DtoToRole(RoleDto dto)
+        public static Role DtoToRole(RoleDto dto,short ComponentId,DateTime Create)
         {
             return new Role
             {
-                ComponentId = dto.ComponentId,
+                ComponentId = ComponentId,
                 Name = dto.Name,
-                FeatureRoles = dto.Fetures.Select(fr => DtoToFeatureRole(fr,dto.ComponentId)).ToArray(),
+                FeatureRoles = dto.Features.Select(fr => DtoToFeatureRole(fr,dto.ComponentId)).ToArray(),
+                CreatedDate = Create,
+                UpdatedDate = Create
 
             };
         }
@@ -1472,27 +1474,30 @@ namespace HIDAeroService.Mapper
             return new FeatureRole
             {
                 FeatureId = dto.ComponentId,
-                RoleId = RoleId
+                RoleId = RoleId,
+                IsWritable = dto.IsWritable,
             };
         }
 
         public static void UpdateRole(Role en,RoleDto dto)
         {
             en.Name = dto.Name;
-            en.FeatureRoles = dto.Fetures.Select(fr => DtoToFeatureRole(fr, dto.ComponentId)).ToArray();
+            en.UpdatedDate = DateTime.Now;
+            en.FeatureRoles = dto.Features.Select(fr => DtoToFeatureRole(fr, dto.ComponentId)).ToArray();
         }
 
         #endregion
 
         #region Feature
 
-        public static FeatureDto FeatureToDto(Feature fn)
+        public static FeatureDto FeatureToDto(Feature fn,bool isWrite,bool isAllow)
         {
             return new FeatureDto
             {
                 ComponentId = fn.ComponentId,
                 Name = fn.Name,
-                IsWritable = fn.IsWritable,
+                IsAllow = isAllow,
+                IsWritable = isWrite,
             };
         }
 
