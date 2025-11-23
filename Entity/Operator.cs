@@ -6,9 +6,10 @@ namespace HIDAeroService.Entity
     public sealed class Operator : NoMacBaseEntity,IComponentId
     {
         public short ComponentId { get; set; }
-        public string UserName { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
+        public required string UserId { get; set; }
+        public required string Username { get; set; }
+        public required string Password { get; set; } 
+        public string Email { get; set; } 
         public string Title { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;
         public string MiddleName { get; set; } = string.Empty;

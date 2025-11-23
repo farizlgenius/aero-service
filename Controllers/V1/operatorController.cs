@@ -13,18 +13,18 @@ namespace HIDAeroService.Controllers.V1
         public async Task<ActionResult<ResponseDto<IEnumerable<OperatorDto>>>> GetAsync()
         {
             var res = await operatorService.GetAsync();
-            return Ok();
+            return Ok(res);
         }
 
         [HttpPost]
-        public async Task<ActionResult<ResponseDto<bool>>> CreateAsync([FromBody] OperatorDto dto)
+        public async Task<ActionResult<ResponseDto<bool>>> CreateAsync([FromBody] CreateOperatorDto dto)
         {
             var res = await operatorService.CreateAsync(dto);
             return Ok(res);
         }
 
         [HttpPut]
-        public async Task<ActionResult<ResponseDto<OperatorDto>>> UpdateAsync([FromBody] OperatorDto dto)
+        public async Task<ActionResult<ResponseDto<CreateOperatorDto>>> UpdateAsync([FromBody] CreateOperatorDto dto)
         {
             var res = await operatorService.UpdateAsync(dto);
             return Ok(res);
@@ -38,7 +38,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpGet("{Username}")]
-        public async Task<ActionResult<ResponseDto<bool>>> GetByUsernameAsync(string Username)
+        public async Task<ActionResult<ResponseDto<OperatorDto>>> GetByUsernameAsync(string Username)
         {
 
             var res = await operatorService.GetByUsernameAsync(Username);

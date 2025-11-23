@@ -64,7 +64,7 @@ namespace HIDAeroService.Data
         public DbSet<OccupancyControlOption> OccupancyControlOptions { get; set; }
         public DbSet<AreaFlagOption> AreaFlagOptions { get; set; }
         public DbSet<MultiOccupancyOption> MultiOccupancyOptions { get; set; }
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<RefreshTokenAudit> RefreshTokenAudits { get; set; }
         public DbSet<Feature> Features { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Feature> FeatureLists { get; set; }
@@ -267,9 +267,9 @@ namespace HIDAeroService.Data
                 .HasPrincipalKey(x => x.ComponentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            var NoAccess = new AccessLevel { Id = 1, Uuid = SeedDefaults.SystemGuid, Name = "No Access", ComponentId = 1,LocationId=0, IsActive = true };
+            var NoAccess = new AccessLevel { Id = 1, Uuid = SeedDefaults.SystemGuid, Name = "No Access", ComponentId = 1,LocationId=1, IsActive = true };
 
-            var FullAccess = new AccessLevel { Id = 2, Uuid = SeedDefaults.SystemGuid, Name = "Full Access", ComponentId = 2,LocationId=0, IsActive = true };
+            var FullAccess = new AccessLevel { Id = 2, Uuid = SeedDefaults.SystemGuid, Name = "Full Access", ComponentId = 2,LocationId=1, IsActive = true };
 
 
             modelBuilder.Entity<AccessLevel>().HasData(
@@ -536,7 +536,7 @@ namespace HIDAeroService.Data
 
             modelBuilder.Entity<Location>()
                 .HasData(
-                new Location { Id=1,ComponentId=0,LocationName="All",Description="All Location",CreatedDate=SeedDefaults.SystemDate,UpdatedDate=SeedDefaults.SystemDate,Uuid=SeedDefaults.SystemGuid,IsActive=true }
+                new Location { Id=1,ComponentId=1,LocationName="Any",Description="All Location",CreatedDate=SeedDefaults.SystemDate,UpdatedDate=SeedDefaults.SystemDate,Uuid=SeedDefaults.SystemGuid,IsActive=true }
                 );
 
             modelBuilder.Entity<Location>()
@@ -1074,7 +1074,7 @@ namespace HIDAeroService.Data
 
             modelBuilder.Entity<AccessArea>()
                 .HasData(
-                    new AccessArea { Id=1,ComponentId=-1,MultiOccupancy=0,AccessControl=0,OccControl=0,OccSet=0,OccMax=0,OccUp=0,OccDown=0,AreaFlag=0,Uuid=SeedDefaults.SystemGuid,LocationId=0,IsActive=true,CreatedDate=SeedDefaults.SystemDate,UpdatedDate=SeedDefaults.SystemDate,Name="Any Area", }
+                    new AccessArea { Id=1,ComponentId=-1,MultiOccupancy=0,AccessControl=0,OccControl=0,OccSet=0,OccMax=0,OccUp=0,OccDown=0,AreaFlag=0,Uuid=SeedDefaults.SystemGuid,LocationId=1,IsActive=true,CreatedDate=SeedDefaults.SystemDate,UpdatedDate=SeedDefaults.SystemDate,Name="Any Area", }
                 );
 
             modelBuilder.Entity<AccessAreaCommandOption>()
@@ -1114,6 +1114,62 @@ namespace HIDAeroService.Data
 
             #endregion
 
+            #region Feature
+
+            modelBuilder.Entity<Feature>()
+                .HasData(
+                    new Feature { Id = 1, ComponentId = 1, Name = "Dashboard" },
+                    new Feature { Id = 2, ComponentId = 2, Name = "Events" },
+                    new Feature { Id = 3, ComponentId = 3, Name = "LocationId" },
+                    new Feature { Id = 4, ComponentId = 4, Name = "Alerts" },
+                    new Feature { Id = 5, ComponentId = 5, Name = "Operators" },
+                    new Feature { Id = 6, ComponentId = 6, Name = "Device" },
+                    new Feature { Id = 7, ComponentId = 7, Name = "Doors" },
+                    new Feature { Id = 8, ComponentId = 8, Name = "Card Holder" },
+                    new Feature { Id = 9, ComponentId = 9, Name = "Access Level" },
+                    new Feature { Id = 10, ComponentId = 10, Name = "Access Area" },
+                    new Feature { Id = 11, ComponentId = 11, Name = "Time" },
+                    new Feature { Id = 12, ComponentId = 12, Name = "Trigger & Procedure" },
+                    new Feature { Id = 13, ComponentId = 13, Name = "Report" },
+                    new Feature { Id = 14, ComponentId = 14, Name = "Setting" },
+                    new Feature { Id = 15, ComponentId = 15, Name = "Map" }
+                );
+
+            #endregion
+
+            #region FeatureRole 
+
+            modelBuilder.Entity<FeatureRole>()
+                .HasData(
+                    new FeatureRole { Id=1,FeatureId=1,RoleId=1,IsAllow=true,IsWritable=true },
+                     new FeatureRole { Id = 2, FeatureId = 2, RoleId = 1, IsAllow = true, IsWritable = true },
+                      new FeatureRole { Id = 3, FeatureId = 3, RoleId = 1, IsAllow = true, IsWritable = true },
+                       new FeatureRole { Id = 4, FeatureId = 4, RoleId = 1, IsAllow = true, IsWritable = true },
+                        new FeatureRole { Id = 5, FeatureId = 5, RoleId = 1, IsAllow = true, IsWritable = true },
+                         new FeatureRole { Id = 6, FeatureId = 6, RoleId = 1, IsAllow = true, IsWritable = true },
+                          new FeatureRole { Id = 7, FeatureId = 7, RoleId = 1, IsAllow = true, IsWritable = true },
+                           new FeatureRole { Id = 8, FeatureId = 8, RoleId = 1, IsAllow = true, IsWritable = true },
+                            new FeatureRole { Id = 9, FeatureId = 9, RoleId = 1, IsAllow = true, IsWritable = true },
+                             new FeatureRole { Id = 10, FeatureId = 10, RoleId = 1, IsAllow = true, IsWritable = true },
+                              new FeatureRole { Id = 11, FeatureId = 11, RoleId = 1, IsAllow = true, IsWritable = true },
+                               new FeatureRole { Id = 12, FeatureId = 12, RoleId = 1, IsAllow = true, IsWritable = true },
+                                new FeatureRole { Id = 13, FeatureId = 13, RoleId = 1, IsAllow = true, IsWritable = true },
+                                 new FeatureRole { Id = 14, FeatureId = 14, RoleId = 1, IsAllow = true, IsWritable = true },
+                                  new FeatureRole { Id = 15, FeatureId = 15, RoleId = 1, IsAllow = true, IsWritable = true }
+                );
+
+            #endregion
+
+
+            #region Role
+
+            modelBuilder.Entity<Role>()
+                .HasData(
+                    new Role { Id=1,ComponentId=1,Name="Administrator",UpdatedDate=SeedDefaults.SystemDate,CreatedDate=SeedDefaults.SystemDate}
+                );
+
+            #endregion
+
             #region Operator
 
             //modelBuilder.Entity<Role>()
@@ -1145,30 +1201,14 @@ namespace HIDAeroService.Data
                 .HasForeignKey(e => e.FeatureId)
                 .HasPrincipalKey(e => e.ComponentId);
 
-            #endregion
-
-            #region Feature
-
-            modelBuilder.Entity<Feature>()
+            modelBuilder.Entity<Operator>()
                 .HasData(
-                    new Feature { Id=1,ComponentId=1,Name="Dashboard" },
-                    new Feature { Id=2,ComponentId=2,Name="Events" },
-                    new Feature { Id = 3, ComponentId = 3, Name = "Locations" },
-                    new Feature { Id = 4, ComponentId = 4, Name = "Alerts" },
-                    new Feature { Id = 5, ComponentId = 5, Name = "Operators" },
-                    new Feature { Id = 6, ComponentId = 6, Name = "Device" },
-                    new Feature { Id = 7, ComponentId = 7, Name = "Doors" },
-                    new Feature { Id = 8, ComponentId = 8, Name = "Card Holder" },
-                    new Feature { Id = 9, ComponentId = 9, Name = "Access Level" },
-                    new Feature { Id = 10, ComponentId = 10, Name = "Access Area" },
-                    new Feature { Id = 11, ComponentId = 11, Name = "Time" },
-                    new Feature { Id = 12, ComponentId = 12, Name = "Trigger & Procedure" },
-                    new Feature { Id = 13, ComponentId = 13, Name = "Report" },
-                    new Feature { Id = 14, ComponentId = 14, Name = "Setting" },
-                    new Feature { Id = 15, ComponentId = 16, Name = "Map" }
+                    new Operator { Id = 1,UserId="Administrator-001",Username = "admin", Password = "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY", Email = "support@honorsupplying.com", Title = "Mr.", FirstName = "Administrator", MiddleName = "", LastName = "", Phone = "", ImagePath = "", RoleId = 1,Uuid=SeedDefaults.SystemGuid,CreatedDate=SeedDefaults.SystemDate,UpdatedDate=SeedDefaults.SystemDate,LocationId=1 }
                 );
 
             #endregion
+
+
 
             /*
              *

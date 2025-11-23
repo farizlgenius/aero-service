@@ -1,5 +1,9 @@
-﻿using HIDAeroService.DTO.Auth;
+﻿using HIDAeroService.DTO;
+using HIDAeroService.DTO.Auth;
+using HIDAeroService.DTO.Token;
+using HIDAeroService.Helpers;
 using HIDAeroService.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -8,53 +12,42 @@ namespace HIDAeroService.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class AuthController(IAuthService authService,ITokenService tokenService,IConfiguration configuration) : ControllerBase
+    public class AuthController(IAuthService authService) : ControllerBase
     {
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto model)
+        public async Task<ActionResult<ResponseDto<TokenDto>>> Login([FromBody] LoginDto model)
         {
-            // TODO: Replace with real user validation (DB, hashed passwords)
-            if (!IsValidUser(model.Username, model.Password))
-                return Unauthorized();
-
-            var accessToken = tokenService.GenerateAccessToken(model.Username);
-
-            var refreshToken = tokenService.GenerateRefreshToken(model.Username, HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown");
-            await tokenService.SaveRefreshTokenAsync(refreshToken);
-
-            return Ok(new
-            {
-                accessToken,
-                refreshToken = refreshToken.Token,
-                expiresIn = int.Parse(configuration["Jwt:ExpireMinutes"] ?? "15")
-            });
+            var res = await authService.LoginAsync(model,Request,Response);
+            return Ok(res);
         }
 
         [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh([FromBody] RefreshRequest req)
+        public async Task<ActionResult<ResponseDto<TokenDto>>> Refresh()
         {
-            var existing = await tokenService.GetRefreshTokenAsync(req.RefreshToken);
-            if (existing == null || !existing.IsActive) return Unauthorized();
+            // HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown"
+            var res = await authService.RefreshAsync(Request,Response);
+            return Ok(res);
 
-            // rotate refresh token (recommended)
-            var newRt = await tokenService.RotateRefreshTokenAsync(existing, HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown");
-            if (newRt == null) return Unauthorized();
-
-            // issue new access token
-            var newAccess = tokenService.GenerateAccessToken(existing.UserName);
-            return Ok(new { accessToken = newAccess, refreshToken = newRt.Token });
         }
 
         [HttpPost("revoke")]
-        public async Task<IActionResult> Revoke([FromBody] RefreshRequest req)
+        public async Task<ActionResult<ResponseDto<bool>>> Revoke()
         {
-            var existing = await tokenService.GetRefreshTokenAsync(req.RefreshToken);
-            if (existing == null) return NotFound();
-            await tokenService.RevokeRefreshTokenAsync(existing);
-            return Ok();
+
+            var res = await authService.RevokeAsync(Request,Response);
+            return Ok(res);
+
         }
 
-        private bool IsValidUser(string u, string p) => (u == "user" && p == "password"); // demo only
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpGet("me")]
+        public IActionResult Me()
+        {
+            var userId = User.FindFirst("sub")?.Value ?? User.Identity?.Name ?? "unknown";
+            var name = User.Identity?.Name;
+            return Ok(new { auth = true, user = new {id=userId,name}});
+        }
+
 
     }
 }

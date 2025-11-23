@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HIDAeroService.Migrations
 {
     /// <inheritdoc />
-    public partial class _211120251 : Migration
+    public partial class _231120251 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -416,23 +416,22 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RefreshTokens",
+                name: "RefreshTokenAudits",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Token = table.Column<string>(type: "text", nullable: false),
-                    UserName = table.Column<string>(type: "text", nullable: false),
-                    JwtId = table.Column<string>(type: "text", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CreatedByIp = table.Column<string>(type: "text", nullable: true),
-                    ExpiresAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    IsRevoked = table.Column<bool>(type: "boolean", nullable: false),
-                    RevokedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ReplacedByToken = table.Column<string>(type: "text", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Uuid = table.Column<Guid>(type: "uuid", nullable: false),
+                    HashedToken = table.Column<string>(type: "text", nullable: false),
+                    Username = table.Column<string>(type: "text", nullable: false),
+                    Action = table.Column<string>(type: "text", nullable: false),
+                    Info = table.Column<string>(type: "text", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+                    table.PrimaryKey("PK_RefreshTokenAudits", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -888,6 +887,7 @@ namespace HIDAeroService.Migrations
                     FeatureId = table.Column<short>(type: "smallint", nullable: false),
                     RoleId = table.Column<short>(type: "smallint", nullable: false),
                     Id = table.Column<int>(type: "integer", nullable: false),
+                    IsAllow = table.Column<bool>(type: "boolean", nullable: false),
                     IsWritable = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
@@ -914,7 +914,8 @@ namespace HIDAeroService.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ComponentId = table.Column<short>(type: "smallint", nullable: false),
-                    UserName = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    Username = table.Column<string>(type: "text", nullable: false),
                     Password = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
@@ -1711,7 +1712,7 @@ namespace HIDAeroService.Migrations
                 {
                     { 1, (short)1, "Dashboard" },
                     { 2, (short)2, "Events" },
-                    { 3, (short)3, "Locations" },
+                    { 3, (short)3, "LocationId" },
                     { 4, (short)4, "Alerts" },
                     { 5, (short)5, "Operators" },
                     { 6, (short)6, "Device" },
@@ -1723,7 +1724,7 @@ namespace HIDAeroService.Migrations
                     { 12, (short)12, "Trigger & Procedure" },
                     { 13, (short)13, "Report" },
                     { 14, (short)14, "Setting" },
-                    { 15, (short)16, "Map" }
+                    { 15, (short)15, "Map" }
                 });
 
             migrationBuilder.InsertData(
@@ -1740,7 +1741,7 @@ namespace HIDAeroService.Migrations
             migrationBuilder.InsertData(
                 table: "Locations",
                 columns: new[] { "Id", "ComponentId", "CreatedDate", "Description", "IsActive", "LocationName", "Uuid" },
-                values: new object[] { 1, (short)0, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "All Location", true, "All", "00000000-0000-0000-0000-000000000001" });
+                values: new object[] { 1, (short)1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "All Location", true, "Any", "00000000-0000-0000-0000-000000000001" });
 
             migrationBuilder.InsertData(
                 table: "MonitorPointModes",
@@ -1847,6 +1848,11 @@ namespace HIDAeroService.Migrations
                     { 1, "Active is energized", "Normal", (short)0 },
                     { 2, "Active is de-energized", "Inverted", (short)1 }
                 });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "ComponentId", "CreatedDate", "Name" },
+                values: new object[] { 1, (short)1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Administrator" });
 
             migrationBuilder.InsertData(
                 table: "StrikeModes",
@@ -1956,16 +1962,43 @@ namespace HIDAeroService.Migrations
             migrationBuilder.InsertData(
                 table: "AccessAreas",
                 columns: new[] { "Id", "AccessControl", "AreaFlag", "ComponentId", "CreatedDate", "IsActive", "LocationId", "MultiOccupancy", "Name", "OccControl", "OccDown", "OccMax", "OccSet", "OccUp", "Uuid" },
-                values: new object[] { 1, (short)0, (short)0, (short)-1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), true, (short)0, (short)0, "Any Area", (short)0, (short)0, (short)0, (short)0, (short)0, "00000000-0000-0000-0000-000000000001" });
+                values: new object[] { 1, (short)0, (short)0, (short)-1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), true, (short)1, (short)0, "Any Area", (short)0, (short)0, (short)0, (short)0, (short)0, "00000000-0000-0000-0000-000000000001" });
 
             migrationBuilder.InsertData(
                 table: "AccessLevels",
                 columns: new[] { "Id", "ComponentId", "IsActive", "LocationId", "Name", "Uuid" },
                 values: new object[,]
                 {
-                    { 1, (short)1, true, (short)0, "No Access", "00000000-0000-0000-0000-000000000001" },
-                    { 2, (short)2, true, (short)0, "Full Access", "00000000-0000-0000-0000-000000000001" }
+                    { 1, (short)1, true, (short)1, "No Access", "00000000-0000-0000-0000-000000000001" },
+                    { 2, (short)2, true, (short)1, "Full Access", "00000000-0000-0000-0000-000000000001" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "FeatureRole",
+                columns: new[] { "FeatureId", "RoleId", "Id", "IsAllow", "IsWritable" },
+                values: new object[,]
+                {
+                    { (short)1, (short)1, 1, true, true },
+                    { (short)2, (short)1, 2, true, true },
+                    { (short)3, (short)1, 3, true, true },
+                    { (short)4, (short)1, 4, true, true },
+                    { (short)5, (short)1, 5, true, true },
+                    { (short)6, (short)1, 6, true, true },
+                    { (short)7, (short)1, 7, true, true },
+                    { (short)8, (short)1, 8, true, true },
+                    { (short)9, (short)1, 9, true, true },
+                    { (short)10, (short)1, 10, true, true },
+                    { (short)11, (short)1, 11, true, true },
+                    { (short)12, (short)1, 12, true, true },
+                    { (short)13, (short)1, 13, true, true },
+                    { (short)14, (short)1, 14, true, true },
+                    { (short)15, (short)1, 15, true, true }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Operators",
+                columns: new[] { "Id", "ComponentId", "CreatedDate", "Email", "FirstName", "ImagePath", "IsActive", "LastName", "LocationId", "MiddleName", "Password", "Phone", "RoleId", "Title", "UserId", "Username", "Uuid" },
+                values: new object[] { 1, (short)0, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "support@honorsupplying.com", "Administrator", "", true, "", (short)1, "", "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY", "", (short)1, "Mr.", "Administrator-001", "admin", "00000000-0000-0000-0000-000000000001" });
 
             migrationBuilder.InsertData(
                 table: "TransactionCodes",
@@ -2545,7 +2578,7 @@ namespace HIDAeroService.Migrations
                 name: "Readers");
 
             migrationBuilder.DropTable(
-                name: "RefreshTokens");
+                name: "RefreshTokenAudits");
 
             migrationBuilder.DropTable(
                 name: "RelayModes");

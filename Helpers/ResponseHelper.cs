@@ -46,7 +46,19 @@ namespace HIDAeroService.Helpers
                 Code = HttpStatusCode.NotFound,
                 TimeStamp = DateTime.UtcNow,
                 Message = ResponseMessage.NOT_FOUND_RECORD,
-                Details= Enumerable.Empty<string>(),
+                Details = Enumerable.Empty<string>(),
+                Data = default
+            };
+        }
+
+        public static ResponseDto<T> NotFoundBuilder<T>(IEnumerable<string> message)
+        {
+            return new ResponseDto<T>()
+            {
+                Code = HttpStatusCode.NotFound,
+                TimeStamp = DateTime.UtcNow,
+                Message = ResponseMessage.NOT_FOUND_RECORD,
+                Details=message,
                 Data = default
             };
         }
@@ -84,6 +96,30 @@ namespace HIDAeroService.Helpers
                 TimeStamp = DateTime.UtcNow,
                 Message = ResponseMessage.DUPLICATE_USER,
                 Details = Enumerable.Empty<string>(),
+                Data = default
+            };
+        }
+
+        public static ResponseDto<T> Unauthorize<T>()
+        {
+            return new ResponseDto<T>()
+            {
+                Code = HttpStatusCode.Unauthorized,
+                TimeStamp = DateTime.UtcNow,
+                Message = ResponseMessage.UNAUTHORIZED,
+                Details = Enumerable.Empty<string>(),
+                Data = default
+            };
+        }
+
+        public static ResponseDto<T> Unauthorize<T>(IEnumerable<string> message)
+        {
+            return new ResponseDto<T>()
+            {
+                Code = HttpStatusCode.Unauthorized,
+                TimeStamp = DateTime.UtcNow,
+                Message = ResponseMessage.UNAUTHORIZED,
+                Details = message,
                 Data = default
             };
         }

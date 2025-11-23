@@ -13,6 +13,7 @@ using HIDAeroService.DTO.Credential;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using StackExchange.Redis;
 
 namespace HIDAeroService
 {
@@ -23,10 +24,15 @@ namespace HIDAeroService
             var builder = WebApplication.CreateBuilder(args);
 
             // read config
-            var jwtSection = builder.Configuration.GetSection("Jwt");
-            var key = jwtSection["Key"];
-            var issuer = jwtSection["Issuer"];
-            var audience = jwtSection["Audience"];
+            var jwtCfg = builder.Configuration.GetSection("Jwt");
+            var jwtSecret = jwtCfg["Secret"];
+            var issuer = jwtCfg["Issuer"];
+            var audience = jwtCfg["Audience"];
+            var accessTokenMinute = int.Parse(jwtCfg["AccessTokenMinutes"] ?? "10");
+
+            // Redis config (StackExchange.Redis connection)
+            var redisConn = builder.Configuration.GetValue<string>("Redis:Configuration") ?? "localhost:6379";
+            builder.Services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(redisConn));
 
             // Bind AppSettings section
             // Bind AppSettings section to AppSettings class
@@ -39,6 +45,8 @@ namespace HIDAeroService
             builder.Services.AddControllers();
             builder.Services.AddDbContext<AppDbContext>(option => option.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
             // Add Authentication
             builder.Services.AddAuthentication(options =>
             {
@@ -46,8 +54,8 @@ namespace HIDAeroService
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
-                options.RequireHttpsMetadata = true; // set false only for local dev
-                options.SaveToken = true;
+                //options.RequireHttpsMetadata = true; // set false only for local dev
+                //options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -57,7 +65,7 @@ namespace HIDAeroService
                     ValidAudience = audience,
 
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+                    IssuerSigningKey = key,
 
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.FromSeconds(30)
@@ -65,7 +73,35 @@ namespace HIDAeroService
             });
 
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c => 
+                {
+                    c.SwaggerDoc("v1", new() { Title = "HIS API", Version = "v1" });
+
+                    // Add JWT Authorization header
+                    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                    {
+                        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                        Description = "Please enter JWT with Bearer prefix. Example: Bearer {token}",
+                        Name = "Authorization",
+                        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+                        Scheme = "Bearer"
+                    });
+                    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+                    {
+                        {
+                            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                            {
+                                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                                {
+                                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                                    Id = "Bearer"
+                                }
+                            },
+                            new string[] {}
+                        }
+                    });
+                }
+            );
             builder.Services.AddAuthorization();
 
             // AutoMapper
@@ -115,6 +151,8 @@ namespace HIDAeroService
             builder.Services.AddScoped<ILocationService,LocationService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IFeatureService, FeatureService>();
+            builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+            builder.Services.AddScoped<IRefreshTokenStore, RefreshTokenStore>();
 
 
             //

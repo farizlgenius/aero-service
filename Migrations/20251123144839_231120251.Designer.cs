@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HIDAeroService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251121140341_211120251")]
-    partial class _211120251
+    [Migration("20251123144839_231120251")]
+    partial class _231120251
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -99,7 +99,7 @@ namespace HIDAeroService.Migrations
                             ComponentId = (short)-1,
                             CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            LocationId = (short)0,
+                            LocationId = (short)1,
                             MultiOccupancy = (short)0,
                             Name = "Any Area",
                             OccControl = (short)0,
@@ -275,7 +275,7 @@ namespace HIDAeroService.Migrations
                             ComponentId = (short)1,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            LocationId = (short)0,
+                            LocationId = (short)1,
                             Name = "No Access",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Uuid = "00000000-0000-0000-0000-000000000001"
@@ -286,7 +286,7 @@ namespace HIDAeroService.Migrations
                             ComponentId = (short)2,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            LocationId = (short)0,
+                            LocationId = (short)1,
                             Name = "Full Access",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Uuid = "00000000-0000-0000-0000-000000000001"
@@ -1776,7 +1776,7 @@ namespace HIDAeroService.Migrations
                         {
                             Id = 3,
                             ComponentId = (short)3,
-                            Name = "Locations"
+                            Name = "LocationId"
                         },
                         new
                         {
@@ -1847,7 +1847,7 @@ namespace HIDAeroService.Migrations
                         new
                         {
                             Id = 15,
-                            ComponentId = (short)16,
+                            ComponentId = (short)15,
                             Name = "Map"
                         });
                 });
@@ -1863,6 +1863,9 @@ namespace HIDAeroService.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsAllow")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsWritable")
                         .HasColumnType("boolean");
 
@@ -1871,6 +1874,128 @@ namespace HIDAeroService.Migrations
                     b.HasIndex("FeatureId");
 
                     b.ToTable("FeatureRole");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = (short)1,
+                            FeatureId = (short)1,
+                            Id = 1,
+                            IsAllow = true,
+                            IsWritable = true
+                        },
+                        new
+                        {
+                            RoleId = (short)1,
+                            FeatureId = (short)2,
+                            Id = 2,
+                            IsAllow = true,
+                            IsWritable = true
+                        },
+                        new
+                        {
+                            RoleId = (short)1,
+                            FeatureId = (short)3,
+                            Id = 3,
+                            IsAllow = true,
+                            IsWritable = true
+                        },
+                        new
+                        {
+                            RoleId = (short)1,
+                            FeatureId = (short)4,
+                            Id = 4,
+                            IsAllow = true,
+                            IsWritable = true
+                        },
+                        new
+                        {
+                            RoleId = (short)1,
+                            FeatureId = (short)5,
+                            Id = 5,
+                            IsAllow = true,
+                            IsWritable = true
+                        },
+                        new
+                        {
+                            RoleId = (short)1,
+                            FeatureId = (short)6,
+                            Id = 6,
+                            IsAllow = true,
+                            IsWritable = true
+                        },
+                        new
+                        {
+                            RoleId = (short)1,
+                            FeatureId = (short)7,
+                            Id = 7,
+                            IsAllow = true,
+                            IsWritable = true
+                        },
+                        new
+                        {
+                            RoleId = (short)1,
+                            FeatureId = (short)8,
+                            Id = 8,
+                            IsAllow = true,
+                            IsWritable = true
+                        },
+                        new
+                        {
+                            RoleId = (short)1,
+                            FeatureId = (short)9,
+                            Id = 9,
+                            IsAllow = true,
+                            IsWritable = true
+                        },
+                        new
+                        {
+                            RoleId = (short)1,
+                            FeatureId = (short)10,
+                            Id = 10,
+                            IsAllow = true,
+                            IsWritable = true
+                        },
+                        new
+                        {
+                            RoleId = (short)1,
+                            FeatureId = (short)11,
+                            Id = 11,
+                            IsAllow = true,
+                            IsWritable = true
+                        },
+                        new
+                        {
+                            RoleId = (short)1,
+                            FeatureId = (short)12,
+                            Id = 12,
+                            IsAllow = true,
+                            IsWritable = true
+                        },
+                        new
+                        {
+                            RoleId = (short)1,
+                            FeatureId = (short)13,
+                            Id = 13,
+                            IsAllow = true,
+                            IsWritable = true
+                        },
+                        new
+                        {
+                            RoleId = (short)1,
+                            FeatureId = (short)14,
+                            Id = 14,
+                            IsAllow = true,
+                            IsWritable = true
+                        },
+                        new
+                        {
+                            RoleId = (short)1,
+                            FeatureId = (short)15,
+                            Id = 15,
+                            IsAllow = true,
+                            IsWritable = true
+                        });
                 });
 
             modelBuilder.Entity("HIDAeroService.Entity.Hardware", b =>
@@ -2191,11 +2316,11 @@ namespace HIDAeroService.Migrations
                         new
                         {
                             Id = 1,
-                            ComponentId = (short)0,
+                            ComponentId = (short)1,
                             CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "All Location",
                             IsActive = true,
-                            LocationName = "All",
+                            LocationName = "Any",
                             UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Uuid = "00000000-0000-0000-0000-000000000001"
                         });
@@ -2585,7 +2710,11 @@ namespace HIDAeroService.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasDefaultValueSql("now()");
 
-                    b.Property<string>("UserName")
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -2600,6 +2729,29 @@ namespace HIDAeroService.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Operators");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ComponentId = (short)0,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "support@honorsupplying.com",
+                            FirstName = "Administrator",
+                            ImagePath = "",
+                            IsActive = true,
+                            LastName = "",
+                            LocationId = (short)1,
+                            MiddleName = "",
+                            Password = "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY",
+                            Phone = "",
+                            RoleId = (short)1,
+                            Title = "Mr.",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = "Administrator-001",
+                            Username = "admin",
+                            Uuid = "00000000-0000-0000-0000-000000000001"
+                        });
                 });
 
             modelBuilder.Entity("HIDAeroService.Entity.OsdpAddress", b =>
@@ -3037,44 +3189,45 @@ namespace HIDAeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.RefreshToken", b =>
+            modelBuilder.Entity("HIDAeroService.Entity.RefreshTokenAudit", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<string>("HashedToken")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Info")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp without time zone")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("Uuid")
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("CreatedByIp")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsRevoked")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("JwtId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ReplacedByToken")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("RevokedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("RefreshTokenAudits");
                 });
 
             modelBuilder.Entity("HIDAeroService.Entity.RelayMode", b =>
@@ -3209,6 +3362,16 @@ namespace HIDAeroService.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ComponentId = (short)1,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Administrator",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("HIDAeroService.Entity.Sensor", b =>

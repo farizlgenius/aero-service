@@ -23,6 +23,7 @@ using HIDAeroService.DTO.AccessLevel;
 using HIDAeroService.DTO.Operator;
 using HIDAeroService.DTO.Role;
 using HIDAeroService.DTO.Feature;
+using HIDAeroService.Helpers;
 
 namespace HIDAeroService.Mapper
 {
@@ -1386,20 +1387,19 @@ namespace HIDAeroService.Mapper
 
                 // Detail 
                 ComponentId = entity.ComponentId,
-                UserName = entity.UserName,
-                Password = entity.Password,
+                Username = entity.Username,
                 Email = entity.Email,
                 Title = entity.Title,
                 FirstName = entity.FirstName,
                 MiddleName = entity.MiddleName,
                 LastName = entity.LastName,
                 Phone = entity.Phone,
-                ImagePath = entity.ImagePath,
+                Image = entity.ImagePath,
                 RoleId = entity.RoleId,
             };
         }
 
-        public static Operator DtoToOperator(OperatorDto dto,short ComponentId,DateTime Created)
+        public static Operator DtoToOperator(CreateOperatorDto dto,short ComponentId,DateTime Created)
         {
             return new Operator
             {
@@ -1409,9 +1409,10 @@ namespace HIDAeroService.Mapper
                 UpdatedDate = Created,
 
                 // Detail
+                UserId = dto.UserId,
                 ComponentId = ComponentId,
-                UserName= dto.UserName,
-                Password= dto.Password,
+                Username= dto.Username,
+                Password= EncryptHelper.HashPassword(dto.Password),
                 Email= dto.Email,
                 Title= dto.Title,
                 FirstName= dto.FirstName,
@@ -1423,14 +1424,14 @@ namespace HIDAeroService.Mapper
             };
         }
 
-        public static void UpdateOperator(Operator en,OperatorDto dto) 
+        public static void UpdateOperator(Operator en,CreateOperatorDto dto) 
         {
             en.LocationId = dto.LocationId;
             en.UpdatedDate = DateTime.Now;
 
             // Detail
             en.ComponentId = dto.ComponentId;
-            en.UserName = dto.UserName;
+            en.Username = dto.Username;
             en.Password = dto.Password;
             en.Email = dto.Email;
             en.Title = dto.Title;
