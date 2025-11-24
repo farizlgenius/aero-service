@@ -185,6 +185,10 @@ namespace HIDAeroService
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
+                    builder.WithOrigins("http://192.168.1.170:5173")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
                 });
 
             });

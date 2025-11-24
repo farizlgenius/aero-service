@@ -8,8 +8,8 @@ namespace HIDAeroService.Entity
         [Key]
         public int Id { get; set; }
         public string Uuid { get; set; } = Guid.NewGuid().ToString();
-        public short ComponentId { get; set; } = 1;
-        public string LocationName { get; set; } = "Main Location";
+        public short ComponentId { get; set; }
+        public string LocationName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
 
         // All Component 

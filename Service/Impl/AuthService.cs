@@ -14,6 +14,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 
 namespace HIDAeroService.Service.Impl
 {
@@ -30,22 +31,26 @@ namespace HIDAeroService.Service.Impl
         {
             var user = await context.Operators
                 .AsNoTracking()
+                .Include(x => x.Location)
+                 .Include(x => x.Role)
+                .ThenInclude(x => x.FeatureRoles)
                 .Where(x => x.Username == model.Username)
                 .OrderBy(x => x.ComponentId)
                 .FirstOrDefaultAsync();
 
-            if (user is null) return ResponseHelper.NotFoundBuilder<TokenDto>();
+            if (user is null) return ResponseHelper.NotFoundBuilder<TokenDto>(["User not found."]);
 
             // TODO: Replace with real user validation (DB, hashed passwords)
             if (!ValidateLogin(user, model.Password))
-                return ResponseHelper.Unauthorize<TokenDto>();
+                return ResponseHelper.Unauthorize<TokenDto>(["Password incorrect."]);
 
 
-            var accessToken = tokenService.CreateAccessToken(user.UserId, model.Username);
+            var accessToken = tokenService.CreateAccessToken(user.UserId, model.Username,user.Location,user.Role,user.Email,user.Title,user.FirstName,user.MiddleName,user.LastName);
 
             // create random refresh token and store hashed in redis + audit in DB
             var rawRefresh = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
-            await refresh.StoreTokenAsync(rawRefresh, user.UserId, _refreshTtl, info: request.Headers["User-Agent"].ToString());
+            
+            await refresh.StoreTokenAsync(rawRefresh, user.UserId,user.Username, _refreshTtl, info: request.HttpContext.Connection.RemoteIpAddress.ToString());
 
             // set HttpOnly cookies (path limited to auth endpoint)
             response.Cookies.Append("refresh_token", rawRefresh, new CookieOptions
@@ -106,31 +111,34 @@ namespace HIDAeroService.Service.Impl
             {
                 // token invalid expire
                 if (rec != null) await refresh.RevokeTokenAsync(oldRaw);
-                return ResponseHelper.Unauthorize<TokenDto>(["invalid refresh token"]);
+                return ResponseHelper.Unauthorize<TokenDto>(["Invalid refresh token"]);
             }
 
-            var userName = await context.Operators.AsNoTracking()
+            var user = await context.Operators
+                .AsNoTracking()
+                .Include(x => x.Location)
+                .Include(x => x.Role)
+                .ThenInclude(x => x.FeatureRoles)
                 .Where(x => x.UserId == rec.UserId)
-                .Select(x => x.Username)
                 .FirstOrDefaultAsync();
 
-            if (String.IsNullOrEmpty(userName)) return ResponseHelper.NotFoundBuilder<TokenDto>(["can not automatic create token username with specific userid not found"]);
+            if (String.IsNullOrEmpty(user.Username)) return ResponseHelper.NotFoundBuilder<TokenDto>(["can not automatic create token username with specific userid not found"]);
 
             // rotate token automatically: create new raw token and swap in redis
             var newRaw = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
             try
             {
-                await refresh.RotateTokenAtomicAsync(oldRaw, newRaw, rec.UserId, _refreshTtl, request.Headers["User-Agent"].ToString());
+                await refresh.RotateTokenAtomicAsync(oldRaw, newRaw, rec.UserId, rec.Username,_refreshTtl, request.HttpContext.Connection.RemoteIpAddress.ToString());
             }
             catch (InvalidOperationException ex)
             {
-                return ResponseHelper.Unauthorize<TokenDto>(["token reuse detected"]);
+                return ResponseHelper.Unauthorize<TokenDto>(["Token reuse detected"]);
             }
 
 
 
             // issue new access token
-            var accessToken = tokenService.CreateAccessToken(rec.UserId, userName);
+            var accessToken = tokenService.CreateAccessToken(rec.UserId, user.Username,user.Location,user.Role,user.Email,user.Title,user.FirstName,user.MiddleName,user.LastName);
 
             // set rotate cookie
             response.Cookies.Append("refresh_token", newRaw, new CookieOptions
@@ -167,6 +175,21 @@ namespace HIDAeroService.Service.Impl
             });
 
             return ResponseHelper.SuccessBuilder<bool>(true);
+        }
+
+        public ResponseDto<TokenDetail> Me(ClaimsPrincipal User)
+        {
+            //var userId = User.FindFirst("sub")?.Value ?? User.Identity?.Name ?? "unknown";
+            //var name = User.Identity?.Name;
+            //var ujson = User.FindFirst("user")?.Value;
+            //var user = JsonSerializer.Deserialize<Users>(ujson);
+            //var ljson = User.FindFirst("location")?.Value;
+            //var loc = JsonSerializer.Deserialize<DTO.Token.Location>(ljson);
+            //var rjson = User.FindFirst("role")?.Value;
+            //var rol = JsonSerializer.Deserialize<DTO.Token.Role>(rjson);
+            //var info = new TokenInfo(user, loc, rol);
+            //var dto = new TokenDetail(true, info);
+            return ResponseHelper.SuccessBuilder<TokenDetail>(null);
         }
     }
 }

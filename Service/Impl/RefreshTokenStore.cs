@@ -35,10 +35,10 @@ namespace HIDAeroService.Service.Impl
 
         private static string RedisKey(string hashed) => $"refresh:{hashed}";
 
-        public async Task StoreTokenAsync(string rawToken, string username, TimeSpan ttl, string? info = null)
+        public async Task StoreTokenAsync(string rawToken,string userId,string username, TimeSpan ttl, string? info = null)
         {
             var hashed = EncryptHelper.Hash(rawToken);
-            var payload = new { username,createdAt = DateTime.UtcNow,expiresAt = DateTime.UtcNow.Add(ttl) };
+            var payload = new { userId,username,createdAt = DateTime.UtcNow,expiresAt = DateTime.UtcNow.Add(ttl) };
             var json = JsonSerializer.Serialize(payload,jopts);
 
             await _redis.StringSetAsync(RedisKey(hashed),json,ttl);
@@ -47,6 +47,7 @@ namespace HIDAeroService.Service.Impl
             var audit = new RefreshTokenAudit
             {
                 HashedToken = hashed,
+                UserId = userId,
                 Username = username,
                 Action = "create",
                 Info = info,
@@ -63,11 +64,12 @@ namespace HIDAeroService.Service.Impl
             if(val.IsNullOrEmpty) return null;
             var doc = JsonSerializer.Deserialize<JsonElement>(val,jopts);
             var userId = doc.GetProperty("userId").GetString();
+            var userName = doc.GetProperty("username").GetString();
             var expiresAt = doc.GetProperty("expiresAt").GetDateTime();
-            return new RefreshTokenRecord(hashed,userId,expiresAt);
+            return new RefreshTokenRecord(hashed,userId,userName,expiresAt);
         }
 
-        public async Task RotateTokenAtomicAsync(string oldRawToken, string newRawToken, string userId, TimeSpan ttl, string? info = null)
+        public async Task RotateTokenAtomicAsync(string oldRawToken, string newRawToken, string userId,string username, TimeSpan ttl, string? info = null)
         {
             var oldHashed = EncryptHelper.Hash(oldRawToken);
             var newHashed = EncryptHelper.Hash(newRawToken);
@@ -88,7 +90,8 @@ namespace HIDAeroService.Service.Impl
                     new RefreshTokenAudit 
                     {
                         HashedToken = newHashed,
-                        Username = userId,
+                        UserId = userId,
+                        Username = username,
                         Action = "rotate",
                         Info = info,
                         CreatedDate = DateTime.Now,
@@ -112,6 +115,7 @@ namespace HIDAeroService.Service.Impl
                 new RefreshTokenAudit 
                 {
                     HashedToken = hashed,
+                    UserId = "unknown",
                     Username = "unknown",
                     Action = "revoke",
                     CreatedDate= DateTime.Now,

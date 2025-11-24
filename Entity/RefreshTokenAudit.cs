@@ -9,6 +9,7 @@ namespace HIDAeroService.Entity
         public int Id { get; set; }
         public Guid Uuid { get; set; } = Guid.NewGuid();
         public string HashedToken { get; set; } = default!; // store hashed token
+        public string UserId { get; set; } = default!;
         public string Username { get; set; } = default!;
         public string Action { get; set; } = default!; // "create", "rotate", "revoke"
         public string? Info { get; set; } // optional JSON for ip/user-agent

@@ -5,7 +5,7 @@ namespace HIDAeroService.Service
 {
     public interface IJwtTokenService
     {
-        string CreateAccessToken(string userId, string username);
+        string CreateAccessToken(string userId, string username,Location location,Role role,string email,string title,string firstname,string middlename,string lastname);
 
     }
 }
