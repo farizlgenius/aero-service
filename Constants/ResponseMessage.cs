@@ -7,7 +7,7 @@ namespace HIDAeroService.Constant
 
         public static string COMMAND_UNSUCCESS = "Send Command to Controller failed.";
 
-        // ResponseDto Message
+        // ResponseDto message
         public static string SCP_NOT_FOUND = "NO Main Controller In System";
         public static string DOOR_NOT_FOUND = "AccessLevelDoorTimeZones not found in the System.";
         public static string COMPONENT_EXCEED_LIMIT = "Component Exceed The Limit,Please Remove Some Before CreateAsync New Component";
@@ -16,7 +16,7 @@ namespace HIDAeroService.Constant
 
 
 
-        // HTTP Return Message
+        // HTTP Return message
         public static string SUCCESS = "Success";
         public static string WARNING = "Success with Errors Found";
         public static string REMOVE_SUCCESS = "Removed";
@@ -40,8 +40,8 @@ namespace HIDAeroService.Constant
         // SIO
 
 
-        // Upload Message
-        public static string UPLOAD_COMPARE_SCP_DATA = "Compare Controller Data...";
+        // Upload message
+        public static string UPLOAD_COMPARE_SCP_DATA = "Compare Controller data...";
         public static string UPLOAD_CONTROL_POINT = "Upload Control Point...";
         public static string UPLOAD_SUCCESS = "Upload Successful";
 

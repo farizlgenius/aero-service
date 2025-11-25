@@ -36,11 +36,11 @@ namespace HIDAeroService.Exceptions.Middleware
 
             return context.Response.WriteAsync(JsonConvert.SerializeObject(new ResponseDto<object>()
             {
-                TimeStamp = DateTime.UtcNow,
-                Code = ex is TimeoutException ? HttpStatusCode.RequestTimeout : HttpStatusCode.InternalServerError,
-                Data = null,
-                Message = ex is TimeoutException ? ResponseMessage.REQUEST_TIMEOUT : ResponseMessage.INTERNAL_ERROR,
-                Details = errors
+                timestamp = DateTime.UtcNow,
+                code = ex is TimeoutException ? HttpStatusCode.RequestTimeout : HttpStatusCode.InternalServerError,
+                data = null,
+                message = ex is TimeoutException ? ResponseMessage.REQUEST_TIMEOUT : ResponseMessage.INTERNAL_ERROR,
+                details = errors
             }));
         }
     }

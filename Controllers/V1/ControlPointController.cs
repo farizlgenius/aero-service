@@ -27,7 +27,7 @@ namespace HIDAeroService.Controllers.V1
         public async Task<ActionResult<ResponseDto<ControlPointDto>>> GetByComponentAsync(string mac,short id)
         {
             var res = await cpService.GetByMacAndIdAsync(mac,id);
-            return StatusCode((int)res.Code, res);
+            return StatusCode((int)res.code, res);
         }
 
         [HttpPost("control")]
@@ -65,14 +65,14 @@ namespace HIDAeroService.Controllers.V1
         public async Task<ActionResult<ResponseDto<List<ModeDto>>>> GetOfflineModeAsync()
         {
             var res = await cpService.GetModeAsync(0);
-            return StatusCode((int)res.Code, res);
+            return StatusCode((int)res.code, res);
         }
 
         [HttpGet("mode/relay")]
         public async Task<ActionResult<ResponseDto<List<ModeDto>>>> GetRelayModeAsync()
         {
             var res = await cpService.GetModeAsync(1);
-            return StatusCode((int)res.Code, res);
+            return StatusCode((int)res.code, res);
         }
 
         [HttpGet("op/{mac}/{component}")]

@@ -14,11 +14,11 @@ namespace HIDAeroService.Helpers
         {
             return new ResponseDto<T>()
             {
-                Code = HttpStatusCode.OK,
-                TimeStamp = DateTime.UtcNow,
-                Message = ResponseMessage.SUCCESS,
-                Details = Enumerable.Empty<string>(),
-                Data = data
+                code = HttpStatusCode.OK,
+                timestamp = DateTime.UtcNow,
+                message = ResponseMessage.SUCCESS,
+                details = Enumerable.Empty<string>(),
+                data = data
             };
         }
 
@@ -31,11 +31,11 @@ namespace HIDAeroService.Helpers
         {
             return new ResponseDto<T>()
             {
-                Code = HttpStatusCode.InternalServerError,
-                TimeStamp = DateTime.UtcNow,
-                Message = message,
-                Details = details.ToList(),
-                Data = default
+                code = HttpStatusCode.InternalServerError,
+                timestamp = DateTime.UtcNow,
+                message = message,
+                details = details.ToList(),
+                data = default
             };
         }
 
@@ -43,11 +43,11 @@ namespace HIDAeroService.Helpers
         {
             return new ResponseDto<T>()
             {
-                Code = HttpStatusCode.NotFound,
-                TimeStamp = DateTime.UtcNow,
-                Message = ResponseMessage.NOT_FOUND_RECORD,
-                Details = Enumerable.Empty<string>(),
-                Data = default
+                code = HttpStatusCode.NotFound,
+                timestamp = DateTime.UtcNow,
+                message = ResponseMessage.NOT_FOUND_RECORD,
+                details = Enumerable.Empty<string>(),
+                data = default
             };
         }
 
@@ -55,11 +55,11 @@ namespace HIDAeroService.Helpers
         {
             return new ResponseDto<T>()
             {
-                Code = HttpStatusCode.NotFound,
-                TimeStamp = DateTime.UtcNow,
-                Message = ResponseMessage.NOT_FOUND_RECORD,
-                Details=message,
-                Data = default
+                code = HttpStatusCode.NotFound,
+                timestamp = DateTime.UtcNow,
+                message = ResponseMessage.NOT_FOUND_RECORD,
+                details=message,
+                data = default
             };
         }
 
@@ -67,11 +67,11 @@ namespace HIDAeroService.Helpers
         {
             return new ResponseDto<T>()
             {
-                Code = HttpStatusCode.InternalServerError,
-                TimeStamp = DateTime.UtcNow,
-                Message = ResponseMessage.FOUND_RELATE_REFERENCE,
-                Details = Enumerable.Empty<string>(),
-                Data = default
+                code = HttpStatusCode.InternalServerError,
+                timestamp = DateTime.UtcNow,
+                message = ResponseMessage.FOUND_RELATE_REFERENCE,
+                details = Enumerable.Empty<string>(),
+                data = default
             };
         }
 
@@ -80,11 +80,11 @@ namespace HIDAeroService.Helpers
         {
             return new ResponseDto<T>()
             {
-                Code = HttpStatusCode.InternalServerError,
-                TimeStamp = DateTime.UtcNow,
-                Message = ResponseMessage.COMPONENT_EXCEED_LIMIT,
-                Details = Enumerable.Empty<string>(),
-                Data = default
+                code = HttpStatusCode.InternalServerError,
+                timestamp = DateTime.UtcNow,
+                message = ResponseMessage.COMPONENT_EXCEED_LIMIT,
+                details = Enumerable.Empty<string>(),
+                data = default
             };
         }
 
@@ -92,11 +92,11 @@ namespace HIDAeroService.Helpers
         {
             return new ResponseDto<T>()
             {
-                Code = HttpStatusCode.BadRequest,
-                TimeStamp = DateTime.UtcNow,
-                Message = ResponseMessage.DUPLICATE_USER,
-                Details = Enumerable.Empty<string>(),
-                Data = default
+                code = HttpStatusCode.BadRequest,
+                timestamp = DateTime.UtcNow,
+                message = ResponseMessage.DUPLICATE_USER,
+                details = Enumerable.Empty<string>(),
+                data = default
             };
         }
 
@@ -104,11 +104,11 @@ namespace HIDAeroService.Helpers
         {
             return new ResponseDto<T>()
             {
-                Code = HttpStatusCode.Unauthorized,
-                TimeStamp = DateTime.UtcNow,
-                Message = ResponseMessage.UNAUTHORIZED,
-                Details = Enumerable.Empty<string>(),
-                Data = default
+                code = HttpStatusCode.Unauthorized,
+                timestamp = DateTime.UtcNow,
+                message = ResponseMessage.UNAUTHORIZED,
+                details = Enumerable.Empty<string>(),
+                data = default
             };
         }
 
@@ -116,11 +116,11 @@ namespace HIDAeroService.Helpers
         {
             return new ResponseDto<T>()
             {
-                Code = HttpStatusCode.Unauthorized,
-                TimeStamp = DateTime.UtcNow,
-                Message = ResponseMessage.UNAUTHORIZED,
-                Details = message,
-                Data = default
+                code = HttpStatusCode.Unauthorized,
+                timestamp = DateTime.UtcNow,
+                message = ResponseMessage.UNAUTHORIZED,
+                details = message,
+                data = default
             };
         }
 

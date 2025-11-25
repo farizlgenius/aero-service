@@ -26,7 +26,7 @@ namespace HIDAeroService.Controllers.V1
         public async Task<ActionResult<ResponseDto<HardwareDto>>> GetByMacAsync(string mac)
         {
             var res = await hardwareService.GetByMacAsync(mac);
-            return StatusCode((int)res.Code, res);
+            return StatusCode((int)res.code, res);
         }
 
 
@@ -41,7 +41,7 @@ namespace HIDAeroService.Controllers.V1
         public async Task<ActionResult<ResponseDto<HardwareDto>>> CreateAsync([FromBody] CreateHardwareDto dto)
         {
             var res = await hardwareService.CreateAsync(dto);
-            return StatusCode((int)res.Code, res);
+            return StatusCode((int)res.code, res);
         }
 
         [HttpPut]
@@ -54,7 +54,7 @@ namespace HIDAeroService.Controllers.V1
         public async Task<ActionResult<ResponseDto<HardwareDto>>> DeleteAsync(string mac)
         {
             var res = await hardwareService.DeleteAsync(mac);
-            return StatusCode((int)res.Code, res);
+            return StatusCode((int)res.code, res);
         }
 
 

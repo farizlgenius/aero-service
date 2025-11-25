@@ -21,7 +21,7 @@ namespace HIDAeroService.Service.Impl
             if (await context.CardHolders.AnyAsync(x => dto.UserId == x.UserId)) return ResponseHelper.Duplicate<bool>();
             List<short> CredentialComponentId = new List<short>();
             List<string> errors = new List<string>();
-            // Send Data 
+            // Send data 
             var ScpIds = await context.Hardwares.Select(x => new { x.ComponentId,x.MacAddress }).ToArrayAsync();
             foreach (var cred in dto.Credentials)
             {
@@ -140,7 +140,7 @@ namespace HIDAeroService.Service.Impl
             }
 
 
-            // Send Data 
+            // Send data 
             var ScpIds = await context.Hardwares.Select(x => new { x.ComponentId, x.MacAddress }).ToArrayAsync();
             foreach (var cred in dto.Credentials)
             {

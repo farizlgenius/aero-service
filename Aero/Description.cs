@@ -1087,7 +1087,7 @@ namespace HIDAeroService.AeroLibrary
                 case 800:
                     return "If HOST is not available (offline or timeout) proceed with GRANT. See remarks.";
                 case 1000:
-                    return "Enable cipher mode (if user command fits a card format then use it as card). Allows user to enter digits through the keypad as card number. See Command 1117: Trigger Specification (Expanded Code Map).";
+                    return "Enable cipher mode (if user command fits a card format then use it as card). Allows user to enter digits through the keypad as card number. See Command 1117: Trigger Specification (Expanded code Map).";
                 case 4000:
                     return "If set, log access grant transaction right away, then log used/not-used. This feature disabled when the ACR_F_ALLUSED (0x0008) access control flag is set.";
                 case 8000:

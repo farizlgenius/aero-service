@@ -14,10 +14,10 @@ namespace HIDAeroService.Controllers.V1
         {
             ResponseDto<HealthDto> dto = new ResponseDto<HealthDto>()
             {
-                Code = HttpStatusCode.OK,
-                Message = "Success",
-                TimeStamp = DateTime.Now.ToLocalTime(),
-                Data = new HealthDto { ServerStatus = "UP" }
+                code = HttpStatusCode.OK,
+                message = "Success",
+                timestamp = DateTime.Now.ToLocalTime(),
+                data = new HealthDto { ServerStatus = "UP" }
             };
             return Ok(dto);
         }

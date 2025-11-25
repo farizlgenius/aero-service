@@ -247,8 +247,9 @@ namespace HIDAeroService
             // This logs every HTTP request automatically
             app.UseSerilogRequestLogging();
 
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
+
 
 
             app.MapControllers();

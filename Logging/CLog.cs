@@ -35,22 +35,22 @@ namespace HIDAeroService.Logging
 
         public static void LogCri<T>(ILogger<T> logger,string message, [CallerMemberName] string methodName = "")
         {
-            logger.LogCritical("[{Method}] {Message}", methodName, message);
+            logger.LogCritical("[{Method}] {message}", methodName, message);
         }
 
         public static void LogErr<T>(ILogger<T> logger, string message, [CallerMemberName] string methodName = "")
         {
-            logger.LogError("[{Method}] {Message}", methodName, message);
+            logger.LogError("[{Method}] {message}", methodName, message);
         }
 
         public static void LogInfo<T>(ILogger<T> logger, string message, [CallerMemberName] string methodName = "")
         {
-            logger.LogInformation("[{Method}] {Message}", methodName, message);
+            logger.LogInformation("[{Method}] {message}", methodName, message);
         }
 
         public static void LogWarn<T>(ILogger<T> logger, string message, [CallerMemberName] string methodName = "")
         {
-            logger.LogWarning("[{Method}] {Message}", methodName, message);
+            logger.LogWarning("[{Method}] {message}", methodName, message);
         }
     }
 }

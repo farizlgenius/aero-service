@@ -3,13 +3,13 @@
     public sealed class TokenDetail
     {
         public bool Auth { get; set; }
-        public TokenInfo Info { get; set; }
+        public TokenInfo? Info { get; set; }
     }
     public sealed class TokenInfo
     {
-        public Users User { get; set; }
-        public Location Location { get; set; }
-        public Role Role { get; set; }
+        public required Users User { get; set; }
+        public required Location Location { get; set; }
+        public required Role Role { get; set; }
     }
     public sealed class Users
     {

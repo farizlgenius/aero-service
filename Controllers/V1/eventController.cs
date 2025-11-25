@@ -28,10 +28,10 @@ namespace HIDAeroService.Controllers.V1
             pagination.Page = page;
 
             ResponseDto<PaginationDto<List<EventDto>>> p = new ResponseDto<PaginationDto<List<EventDto>>>();
-            p.TimeStamp = DateTime.UtcNow;
-            p.Message = "OK";
-            p.Code = HttpStatusCode.OK;
-            p.Data = pagination;
+            p.timestamp = DateTime.UtcNow;
+            p.message = "OK";
+            p.code = HttpStatusCode.OK;
+            p.data = pagination;
 
             return Ok(p);
         }
