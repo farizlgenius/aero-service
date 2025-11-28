@@ -44,6 +44,7 @@ namespace HIDAeroService.Service.Impl
                 .AsNoTracking()
                 .Include(f => f.FeatureRoles)
                 .ThenInclude(fr => fr.Feature)
+                .ThenInclude(s => s.SubFeatures)
                 .Select(x => MapperHelper.RoleToDto(x))
                 .ToArrayAsync()
                 );

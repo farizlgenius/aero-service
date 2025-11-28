@@ -3,8 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HIDAeroService.Entity
 {
-    public sealed class Operator : NoMacBaseEntity,IComponentId
+    public sealed class Operator : IComponentId,IDatetime
     {
+        [Key]
+        public int Id { get; set; }
+        public string Uuid { get; set; } = Guid.NewGuid().ToString();
         public short ComponentId { get; set; }
         public required string UserId { get; set; }
         public required string Username { get; set; }
@@ -18,6 +21,10 @@ namespace HIDAeroService.Entity
         public string ImagePath { get; set; } = string.Empty;
         public short RoleId { get; set; }
         public Role Role { get; set; }
+        public ICollection<OperatorLocation> OperatorLocations { get; set; }
+        public bool IsActive { get; set; } = true;
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
 
     }
 }

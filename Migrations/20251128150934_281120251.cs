@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HIDAeroService.Migrations
 {
     /// <inheritdoc />
-    public partial class _231120251 : Migration
+    public partial class _281120251 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -209,18 +209,19 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Feature",
+                name: "Features",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ComponentId = table.Column<short>(type: "smallint", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Path = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Feature", x => x.Id);
-                    table.UniqueConstraint("AK_Feature_ComponentId", x => x.ComponentId);
+                    table.PrimaryKey("PK_Features", x => x.Id);
+                    table.UniqueConstraint("AK_Features_ComponentId", x => x.ComponentId);
                 });
 
             migrationBuilder.CreateTable(
@@ -423,6 +424,7 @@ namespace HIDAeroService.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Uuid = table.Column<Guid>(type: "uuid", nullable: false),
                     HashedToken = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
                     Username = table.Column<string>(type: "text", nullable: false),
                     Action = table.Column<string>(type: "text", nullable: false),
                     Info = table.Column<string>(type: "text", nullable: true),
@@ -590,6 +592,28 @@ namespace HIDAeroService.Migrations
                 {
                     table.PrimaryKey("PK_TransactionTypes", x => x.Id);
                     table.UniqueConstraint("AK_TransactionTypes_Value", x => x.Value);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SubFeatures",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ComponentId = table.Column<short>(type: "smallint", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Path = table.Column<string>(type: "text", nullable: false),
+                    FeatureId = table.Column<short>(type: "smallint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SubFeatures", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SubFeatures_Features_FeatureId",
+                        column: x => x.FeatureId,
+                        principalTable: "Features",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -881,26 +905,28 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FeatureRole",
+                name: "FeatureRoles",
                 columns: table => new
                 {
                     FeatureId = table.Column<short>(type: "smallint", nullable: false),
                     RoleId = table.Column<short>(type: "smallint", nullable: false),
-                    Id = table.Column<int>(type: "integer", nullable: false),
                     IsAllow = table.Column<bool>(type: "boolean", nullable: false),
-                    IsWritable = table.Column<bool>(type: "boolean", nullable: false)
+                    IsCreate = table.Column<bool>(type: "boolean", nullable: false),
+                    IsModify = table.Column<bool>(type: "boolean", nullable: false),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    IsAction = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FeatureRole", x => new { x.RoleId, x.FeatureId });
+                    table.PrimaryKey("PK_FeatureRoles", x => new { x.RoleId, x.FeatureId });
                     table.ForeignKey(
-                        name: "FK_FeatureRole_Feature_FeatureId",
+                        name: "FK_FeatureRoles_Features_FeatureId",
                         column: x => x.FeatureId,
-                        principalTable: "Feature",
+                        principalTable: "Features",
                         principalColumn: "ComponentId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_FeatureRole_Roles_RoleId",
+                        name: "FK_FeatureRoles_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "ComponentId",
@@ -913,6 +939,7 @@ namespace HIDAeroService.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Uuid = table.Column<string>(type: "text", nullable: false),
                     ComponentId = table.Column<short>(type: "smallint", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: false),
                     Username = table.Column<string>(type: "text", nullable: false),
@@ -925,8 +952,6 @@ namespace HIDAeroService.Migrations
                     Phone = table.Column<string>(type: "text", nullable: false),
                     ImagePath = table.Column<string>(type: "text", nullable: false),
                     RoleId = table.Column<short>(type: "smallint", nullable: false),
-                    Uuid = table.Column<string>(type: "text", nullable: false),
-                    LocationId = table.Column<short>(type: "smallint", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()")
@@ -934,12 +959,7 @@ namespace HIDAeroService.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Operators", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Operators_Locations_LocationId",
-                        column: x => x.LocationId,
-                        principalTable: "Locations",
-                        principalColumn: "ComponentId",
-                        onDelete: ReferentialAction.Cascade);
+                    table.UniqueConstraint("AK_Operators_ComponentId", x => x.ComponentId);
                     table.ForeignKey(
                         name: "FK_Operators_Roles_RoleId",
                         column: x => x.RoleId,
@@ -1174,6 +1194,31 @@ namespace HIDAeroService.Migrations
                         name: "FK_Modules_Locations_LocationId",
                         column: x => x.LocationId,
                         principalTable: "Locations",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OperatorLocation",
+                columns: table => new
+                {
+                    LocationId = table.Column<short>(type: "smallint", nullable: false),
+                    OperatorId = table.Column<short>(type: "smallint", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OperatorLocation", x => new { x.LocationId, x.OperatorId });
+                    table.ForeignKey(
+                        name: "FK_OperatorLocation_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "ComponentId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OperatorLocation_Operators_OperatorId",
+                        column: x => x.OperatorId,
+                        principalTable: "Operators",
                         principalColumn: "ComponentId",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1706,25 +1751,25 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Feature",
-                columns: new[] { "Id", "ComponentId", "Name" },
+                table: "Features",
+                columns: new[] { "Id", "ComponentId", "Name", "Path" },
                 values: new object[,]
                 {
-                    { 1, (short)1, "Dashboard" },
-                    { 2, (short)2, "Events" },
-                    { 3, (short)3, "LocationId" },
-                    { 4, (short)4, "Alerts" },
-                    { 5, (short)5, "Operators" },
-                    { 6, (short)6, "Device" },
-                    { 7, (short)7, "Doors" },
-                    { 8, (short)8, "Card Holder" },
-                    { 9, (short)9, "Access Level" },
-                    { 10, (short)10, "Access Area" },
-                    { 11, (short)11, "Time" },
-                    { 12, (short)12, "Trigger & Procedure" },
-                    { 13, (short)13, "Report" },
-                    { 14, (short)14, "Setting" },
-                    { 15, (short)15, "Map" }
+                    { 1, (short)1, "Dashboard", "/" },
+                    { 2, (short)2, "Events", "/event" },
+                    { 3, (short)3, "Locations", "/location" },
+                    { 4, (short)4, "Alerts", "/alert" },
+                    { 5, (short)5, "Operators", "" },
+                    { 6, (short)6, "Devices", "" },
+                    { 7, (short)7, "Doors", "/door" },
+                    { 8, (short)8, "Card Holder", "/cardholder" },
+                    { 9, (short)9, "Access Level", "/level" },
+                    { 10, (short)10, "Access Area", "/area" },
+                    { 11, (short)11, "Time", "" },
+                    { 12, (short)12, "Trigger & Action", "" },
+                    { 13, (short)13, "Reports", "" },
+                    { 14, (short)14, "Settings", "/setting" },
+                    { 15, (short)15, "Maps", "/map" }
                 });
 
             migrationBuilder.InsertData(
@@ -1741,7 +1786,7 @@ namespace HIDAeroService.Migrations
             migrationBuilder.InsertData(
                 table: "Locations",
                 columns: new[] { "Id", "ComponentId", "CreatedDate", "Description", "IsActive", "LocationName", "Uuid" },
-                values: new object[] { 1, (short)1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "All Location", true, "Any", "00000000-0000-0000-0000-000000000001" });
+                values: new object[] { 1, (short)1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Main Location", true, "Main", "00000000-0000-0000-0000-000000000001" });
 
             migrationBuilder.InsertData(
                 table: "MonitorPointModes",
@@ -1974,31 +2019,52 @@ namespace HIDAeroService.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "FeatureRole",
-                columns: new[] { "FeatureId", "RoleId", "Id", "IsAllow", "IsWritable" },
+                table: "FeatureRoles",
+                columns: new[] { "FeatureId", "RoleId", "IsAction", "IsAllow", "IsCreate", "IsDelete", "IsModify" },
                 values: new object[,]
                 {
-                    { (short)1, (short)1, 1, true, true },
-                    { (short)2, (short)1, 2, true, true },
-                    { (short)3, (short)1, 3, true, true },
-                    { (short)4, (short)1, 4, true, true },
-                    { (short)5, (short)1, 5, true, true },
-                    { (short)6, (short)1, 6, true, true },
-                    { (short)7, (short)1, 7, true, true },
-                    { (short)8, (short)1, 8, true, true },
-                    { (short)9, (short)1, 9, true, true },
-                    { (short)10, (short)1, 10, true, true },
-                    { (short)11, (short)1, 11, true, true },
-                    { (short)12, (short)1, 12, true, true },
-                    { (short)13, (short)1, 13, true, true },
-                    { (short)14, (short)1, 14, true, true },
-                    { (short)15, (short)1, 15, true, true }
+                    { (short)1, (short)1, false, true, true, true, true },
+                    { (short)2, (short)1, false, true, true, true, true },
+                    { (short)3, (short)1, false, true, true, true, true },
+                    { (short)4, (short)1, false, true, true, true, true },
+                    { (short)5, (short)1, false, true, true, true, true },
+                    { (short)6, (short)1, false, true, true, true, true },
+                    { (short)7, (short)1, false, true, true, true, true },
+                    { (short)8, (short)1, false, true, true, true, true },
+                    { (short)9, (short)1, false, true, true, true, true },
+                    { (short)10, (short)1, false, true, true, true, true },
+                    { (short)11, (short)1, false, true, true, true, true },
+                    { (short)12, (short)1, false, true, true, true, true },
+                    { (short)13, (short)1, false, true, true, true, true },
+                    { (short)14, (short)1, false, true, true, true, true },
+                    { (short)15, (short)1, false, true, true, true, true }
                 });
 
             migrationBuilder.InsertData(
                 table: "Operators",
-                columns: new[] { "Id", "ComponentId", "CreatedDate", "Email", "FirstName", "ImagePath", "IsActive", "LastName", "LocationId", "MiddleName", "Password", "Phone", "RoleId", "Title", "UserId", "Username", "Uuid" },
-                values: new object[] { 1, (short)0, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "support@honorsupplying.com", "Administrator", "", true, "", (short)1, "", "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY", "", (short)1, "Mr.", "Administrator-001", "admin", "00000000-0000-0000-0000-000000000001" });
+                columns: new[] { "Id", "ComponentId", "CreatedDate", "Email", "FirstName", "ImagePath", "IsActive", "LastName", "MiddleName", "Password", "Phone", "RoleId", "Title", "UserId", "Username", "Uuid" },
+                values: new object[] { 1, (short)1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "support@honorsupplying.com", "Administrator", "", true, "", "", "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY", "", (short)1, "Mr.", "Administrator", "admin", "00000000-0000-0000-0000-000000000001" });
+
+            migrationBuilder.InsertData(
+                table: "SubFeatures",
+                columns: new[] { "Id", "ComponentId", "FeatureId", "Name", "Path" },
+                values: new object[,]
+                {
+                    { 1, (short)1, (short)5, "Operator", "/operator" },
+                    { 2, (short)2, (short)5, "Role", "/role" },
+                    { 3, (short)3, (short)6, "Hardwares", "/hardware" },
+                    { 4, (short)4, (short)6, "Modules", "/module" },
+                    { 5, (short)5, (short)6, "Control Points", "/control" },
+                    { 6, (short)6, (short)6, "Monitor Points", "/monitor" },
+                    { 7, (short)7, (short)6, "Monitor Points Groups", "/monitorgroup" },
+                    { 8, (short)8, (short)11, "Timezone", "/timezone" },
+                    { 9, (short)9, (short)11, "Holidays", "/holiday" },
+                    { 10, (short)10, (short)11, "Intervals", "/interval" },
+                    { 11, (short)11, (short)12, "Trigger", "/trigger" },
+                    { 12, (short)12, (short)12, "Action", "/action" },
+                    { 13, (short)13, (short)13, "Transaction", "/transaction" },
+                    { 14, (short)14, (short)13, "Audit Trail", "/audit" }
+                });
 
             migrationBuilder.InsertData(
                 table: "TransactionCodes",
@@ -2221,6 +2287,11 @@ namespace HIDAeroService.Migrations
                     { 37, (short)24, (short)7 }
                 });
 
+            migrationBuilder.InsertData(
+                table: "OperatorLocation",
+                columns: new[] { "LocationId", "OperatorId", "Id" },
+                values: new object[] { (short)1, (short)1, 1 });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AccessAreas_LocationId",
                 table: "AccessAreas",
@@ -2320,8 +2391,8 @@ namespace HIDAeroService.Migrations
                 column: "LocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FeatureRole_FeatureId",
-                table: "FeatureRole",
+                name: "IX_FeatureRoles_FeatureId",
+                table: "FeatureRoles",
                 column: "FeatureId");
 
             migrationBuilder.CreateIndex(
@@ -2386,9 +2457,9 @@ namespace HIDAeroService.Migrations
                 column: "ModuleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Operators_LocationId",
-                table: "Operators",
-                column: "LocationId");
+                name: "IX_OperatorLocation_OperatorId",
+                table: "OperatorLocation",
+                column: "OperatorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Operators_RoleId",
@@ -2444,6 +2515,11 @@ namespace HIDAeroService.Migrations
                 name: "IX_Strikes_ModuleId",
                 table: "Strikes",
                 column: "ModuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SubFeatures_FeatureId",
+                table: "SubFeatures",
+                column: "FeatureId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TimeZoneIntervals_IntervalId",
@@ -2524,7 +2600,7 @@ namespace HIDAeroService.Migrations
                 name: "Events");
 
             migrationBuilder.DropTable(
-                name: "FeatureRole");
+                name: "FeatureRoles");
 
             migrationBuilder.DropTable(
                 name: "HardwareAccessLevel");
@@ -2554,7 +2630,7 @@ namespace HIDAeroService.Migrations
                 name: "OccupancyControlOptions");
 
             migrationBuilder.DropTable(
-                name: "Operators");
+                name: "OperatorLocation");
 
             migrationBuilder.DropTable(
                 name: "OsdpAddresses");
@@ -2590,6 +2666,9 @@ namespace HIDAeroService.Migrations
                 name: "StrikeModes");
 
             migrationBuilder.DropTable(
+                name: "SubFeatures");
+
+            migrationBuilder.DropTable(
                 name: "SystemConfigurations");
 
             migrationBuilder.DropTable(
@@ -2608,19 +2687,19 @@ namespace HIDAeroService.Migrations
                 name: "TransactionSourceType");
 
             migrationBuilder.DropTable(
-                name: "Feature");
-
-            migrationBuilder.DropTable(
                 name: "AccessLevels");
 
             migrationBuilder.DropTable(
                 name: "Credentials");
 
             migrationBuilder.DropTable(
-                name: "Roles");
+                name: "Operators");
 
             migrationBuilder.DropTable(
                 name: "Doors");
+
+            migrationBuilder.DropTable(
+                name: "Features");
 
             migrationBuilder.DropTable(
                 name: "Intervals");
@@ -2636,6 +2715,9 @@ namespace HIDAeroService.Migrations
 
             migrationBuilder.DropTable(
                 name: "CardHolders");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "AccessAreas");

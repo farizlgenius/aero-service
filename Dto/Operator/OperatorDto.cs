@@ -1,7 +1,10 @@
-﻿namespace HIDAeroService.DTO.Operator
+﻿using HIDAeroService.DTO.Location;
+
+namespace HIDAeroService.DTO.Operator
 {
-    public sealed class OperatorDto : NoMacBaseDto
+    public sealed class OperatorDto 
     {
+        public string Uuid { get; set; } = Guid.NewGuid().ToString();
         public short ComponentId { get; set; }
         public string Username { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
@@ -12,6 +15,7 @@
         public string Phone { get; set; } = string.Empty;
         public string Image { get; set; } = string.Empty;
         public short RoleId { get; set; }
-        public short LocationId { get; set; }
+        public List<short> LocationIds { get; set; }
+        public bool IsActive { get; set; } = true;
     }
 }

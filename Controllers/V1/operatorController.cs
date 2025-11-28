@@ -16,6 +16,13 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
+        [HttpGet("/api/v1/{location}/[controller]")]
+        public async Task<ActionResult<ResponseDto<IEnumerable<OperatorDto>>>> GetByLocationAsync(short location)
+        {
+            var res = await operatorService.GetByLocationAsync(location);
+            return Ok(res);
+        }
+
         [HttpPost]
         public async Task<ActionResult<ResponseDto<bool>>> CreateAsync([FromBody] CreateOperatorDto dto)
         {

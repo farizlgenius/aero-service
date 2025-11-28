@@ -1274,6 +1274,7 @@ namespace HIDAeroService.Mapper
             {
                 Uuid = dto.Uuid,
                 ComponentId = LocationId,
+                OperatorLocations = new List<OperatorLocation> { new OperatorLocation { LocationId = LocationId, OperatorId = 1 } },
                 
                 LocationName = dto.LocationName,
                 Description = dto.Description,
@@ -1382,7 +1383,7 @@ namespace HIDAeroService.Mapper
             return new OperatorDto
             {
                 Uuid = entity.Uuid,
-                LocationId = entity.LocationId,
+                LocationIds = entity.OperatorLocations.Select(x => x.Location.ComponentId).ToList(),
                 IsActive = entity.IsActive,
 
                 // Detail 
@@ -1403,7 +1404,7 @@ namespace HIDAeroService.Mapper
         {
             return new Operator
             {
-                LocationId = dto.LocationId,
+                OperatorLocations = dto.LocationIds.Select(x => new OperatorLocation { LocationId=x,OperatorId=ComponentId }).ToArray(),
                 IsActive = true,
                 CreatedDate = Created,
                 UpdatedDate = Created,
@@ -1426,7 +1427,7 @@ namespace HIDAeroService.Mapper
 
         public static void UpdateOperator(Operator en,CreateOperatorDto dto) 
         {
-            en.LocationId = dto.LocationId;
+            en.OperatorLocations = dto.LocationIds.Select(x => new OperatorLocation { LocationId = x, OperatorId = en.ComponentId }).ToArray();
             en.UpdatedDate = DateTime.Now;
 
             // Detail
@@ -1453,7 +1454,7 @@ namespace HIDAeroService.Mapper
             {
                 ComponentId = en.ComponentId,
                 Name = en.Name,
-                Features = en.FeatureRoles is not null && en.FeatureRoles.Count > 0 ? en.FeatureRoles.Select(x => MapperHelper.FeatureToDto(x.Feature,x.IsWritable,x.IsAllow)).ToList() : new List<FeatureDto>()
+                Features = en.FeatureRoles is not null && en.FeatureRoles.Count > 0 ? en.FeatureRoles.Select(x => MapperHelper.FeatureToDto(x.Feature,x.IsAllow,x.IsCreate,x.IsModify,x.IsDelete,x.IsAction)).ToList() : new List<FeatureDto>()
             };
         }
 
@@ -1463,7 +1464,7 @@ namespace HIDAeroService.Mapper
             {
                 ComponentId = ComponentId,
                 Name = dto.Name,
-                FeatureRoles = dto.Features.Select(fr => DtoToFeatureRole(fr,dto.ComponentId)).ToArray(),
+                FeatureRoles = dto.Features.Select(fr => DtoToFeatureRole(fr,ComponentId)).ToArray(),
                 CreatedDate = Create,
                 UpdatedDate = Create
 
@@ -1476,7 +1477,11 @@ namespace HIDAeroService.Mapper
             {
                 FeatureId = dto.ComponentId,
                 RoleId = RoleId,
-                IsWritable = dto.IsWritable,
+                IsCreate = dto.IsCreate,
+                IsDelete = dto.IsDelete,
+                IsModify = dto.IsModify,
+                IsAllow = dto.IsAllow,
+                IsAction = dto.IsAction,
             };
         }
 
@@ -1491,14 +1496,28 @@ namespace HIDAeroService.Mapper
 
         #region Feature
 
-        public static FeatureDto FeatureToDto(Feature fn,bool isWrite,bool isAllow)
+        public static FeatureDto FeatureToDto(Feature fn,bool isAllow, bool isCreate,bool isModify,bool isDelete,bool isAction)
         {
             return new FeatureDto
             {
                 ComponentId = fn.ComponentId,
                 Name = fn.Name,
+                Path = fn.Path,
+                SubItems = fn.SubFeatures is null ? new List<SubFeatureDto>() : fn.SubFeatures.Select(x => SubFeatureToDto(x)).ToList(),
                 IsAllow = isAllow,
-                IsWritable = isWrite,
+                IsCreate = isCreate,
+                IsModify = isModify,
+                IsDelete = isDelete,
+                IsAction = isAction
+            };
+        }
+
+        public static SubFeatureDto SubFeatureToDto(SubFeature s) 
+        {
+            return new SubFeatureDto
+            {
+                Path = s.Path,
+                Name = s.Name
             };
         }
 

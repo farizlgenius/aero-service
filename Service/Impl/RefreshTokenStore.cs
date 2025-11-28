@@ -74,7 +74,7 @@ namespace HIDAeroService.Service.Impl
             var oldHashed = EncryptHelper.Hash(oldRawToken);
             var newHashed = EncryptHelper.Hash(newRawToken);
 
-            var payload = new {userId,createdAt = DateTime.UtcNow,expiresAt = DateTime.UtcNow.Add(ttl)};
+            var payload = new {userId,username,createdAt = DateTime.UtcNow,expiresAt = DateTime.UtcNow.Add(ttl)};
             var json = JsonSerializer.Serialize(payload, jopts);
 
             // execute LUA script against Redis

@@ -16,6 +16,6 @@ namespace HIDAeroService.DTO.Operator
         public string Phone { get; set; } = string.Empty;
         public string ImagePath { get; set; } = string.Empty;
         public short RoleId { get; set; }
-        public short LocationId { get; set; }
+        public List<short> LocationIds { get; set; }
     }
 }

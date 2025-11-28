@@ -6,6 +6,7 @@ namespace HIDAeroService.Service
     public interface IOperatorService
     {
         Task<ResponseDto<IEnumerable<OperatorDto>>> GetAsync();
+        Task<ResponseDto<IEnumerable<OperatorDto>>> GetByLocationAsync(short location);
         Task<ResponseDto<bool>> CreateAsync(CreateOperatorDto dto);
         Task<ResponseDto<bool>> DeleteByUsernameAsync(string Username);
         Task<ResponseDto<CreateOperatorDto>> UpdateAsync(CreateOperatorDto dto);

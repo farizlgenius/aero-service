@@ -45,6 +45,21 @@ namespace HIDAeroService.Service.Impl
         {
             var dto = await context.Operators
                 .AsNoTracking()
+                .Include(x => x.OperatorLocations)
+                .ThenInclude(x => x.Location)
+                .Select(x => MapperHelper.OperatorToDto(x))
+                .ToArrayAsync();
+
+            return ResponseHelper.SuccessBuilder<IEnumerable<OperatorDto>>(dto);
+        }
+
+        public async Task<ResponseDto<IEnumerable<OperatorDto>>> GetByLocationAsync(short location)
+        {
+            var dto = await context.Operators
+                .AsNoTracking()
+                .Include(x => x.OperatorLocations)
+                .ThenInclude(x => x.Location)
+                .Where(x => x.OperatorLocations.Select(x => x.LocationId).Contains(location))
                 .Select(x => MapperHelper.OperatorToDto(x))
                 .ToArrayAsync();
 
@@ -55,6 +70,8 @@ namespace HIDAeroService.Service.Impl
         {
             var dto = await context.Operators
                 .AsNoTracking()
+                .Include(x => x.OperatorLocations)
+                .ThenInclude(x => x.Location)
                 .Where(o => String.Equals(Username, o.Username))
                 .Select(o => MapperHelper.OperatorToDto(o))
                 .FirstOrDefaultAsync();
@@ -67,6 +84,8 @@ namespace HIDAeroService.Service.Impl
         public async Task<ResponseDto<CreateOperatorDto>> UpdateAsync(CreateOperatorDto dto)
         {
             var en = await context.Operators
+                .Include(x => x.OperatorLocations)
+                .ThenInclude(x => x.Location)
                 .Where(o => String.Equals(dto.Username, o.Username))
                 .FirstOrDefaultAsync();
 

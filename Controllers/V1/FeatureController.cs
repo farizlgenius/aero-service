@@ -12,9 +12,23 @@ namespace HIDAeroService.Controllers.V1
     public class FeatureController(IFeatureService featureService) : ControllerBase
     {
         [HttpGet("list")]
-        public async Task<ActionResult<ResponseDto<FeatureDto>>> GetFeatureListAsync()
+        public async Task<ActionResult<ResponseDto<IEnumerable<FeatureDto>>>> GetFeatureListAsync()
         {
             var res = await featureService.GetFeatureListAsync();
+            return Ok(res);
+        }
+
+        [HttpGet("role/{RoleId}")]
+        public async Task<ActionResult<ResponseDto<IEnumerable<FeatureDto>>>> GetFeatureByRoleIdAsync(short RoleId)
+        {
+            var res = await featureService.GetFeatureByRoleAsync(RoleId);
+            return Ok(res);
+        }
+
+        [HttpGet("role/{RoleId}/{FeatureId}")]
+        public async Task<ActionResult<ResponseDto<FeatureDto>>> GetOneFeatureByRoleIdAsync(short RoleId,short FeatureId)
+        {
+            var res = await featureService.GetOneFeatureByRoleIdAsync(RoleId,FeatureId);
             return Ok(res);
         }
     }

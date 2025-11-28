@@ -58,13 +58,8 @@ namespace HIDAeroService.Controllers.V1
             } : JsonSerializer.Deserialize<Users>(userJson);
 
             var locJson = User.FindFirst("location")?.Value ?? "";
-            var loc = string.IsNullOrEmpty(locJson) ? new Location
-            {
-                LocationNo = 0,
-                LocationName = ""
-            } : JsonSerializer.Deserialize<DTO.Token.Location>(locJson);
-
-            var roleJson = User.FindFirst("role")?.Value ?? "";
+            var loc = string.IsNullOrEmpty(locJson) ? [] : JsonSerializer.Deserialize<List<short>>(locJson);
+            var roleJson = User.FindFirst("rol")?.Value ?? "";
             var rol = string.IsNullOrEmpty(roleJson) ? new Role
             {
                 Features = [],
@@ -75,7 +70,7 @@ namespace HIDAeroService.Controllers.V1
             var info = new TokenInfo
             {
                 User = user,
-                Location = loc,
+                Locations = loc,
                 Role = rol
             };
             var dto = new TokenDetail

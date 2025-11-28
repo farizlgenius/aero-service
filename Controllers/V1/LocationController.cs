@@ -2,8 +2,10 @@
 using HIDAeroService.DTO.Location;
 using HIDAeroService.Entity.Interface;
 using HIDAeroService.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SixLabors.ImageSharp;
 
 namespace HIDAeroService.Controllers.V1
 {
@@ -19,6 +21,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<bool>>> CreateAsync([FromBody] LocationDto dto)
         {
             var res = await locationService.CreateAsync(dto);
@@ -36,6 +39,14 @@ namespace HIDAeroService.Controllers.V1
         public async Task<ActionResult<ResponseDto<bool>>> DeleteByIdAsync(short id)
         {
             var res = await locationService.DeleteByIdAsync(id);
+            return Ok(res);
+        }
+
+        [HttpPost("range")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<IEnumerable<LocationDto>>>> GetRangeLocationById([FromBody] LocationRangeDto locationIds)
+        {
+            var res = await locationService.GetRangeLocationById(locationIds);
             return Ok(res);
         }
         

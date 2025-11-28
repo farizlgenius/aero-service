@@ -31,8 +31,9 @@ namespace HIDAeroService.Service.Impl
         {
             var user = await context.Operators
                 .AsNoTracking()
-                .Include(x => x.Location)
-                 .Include(x => x.Role)
+                .Include(x => x.OperatorLocations)
+                .ThenInclude(x => x.Location)
+                .Include(x => x.Role)
                 .ThenInclude(x => x.FeatureRoles)
                 .Where(x => x.Username == model.Username)
                 .OrderBy(x => x.ComponentId)
@@ -45,7 +46,18 @@ namespace HIDAeroService.Service.Impl
                 return ResponseHelper.Unauthorize<TokenDto>(["Password incorrect."]);
 
 
-            var accessToken = tokenService.CreateAccessToken(user.UserId, model.Username,user.Location,user.Role,user.Email,user.Title,user.FirstName,user.MiddleName,user.LastName);
+            var accessToken = tokenService.CreateAccessToken(
+                user.UserId, 
+                model.Username,
+                user.OperatorLocations
+                .Select(x => x.Location)
+                .ToList(),
+                user.Role,
+                user.Email,
+                user.Title,
+                user.FirstName,
+                user.MiddleName,
+                user.LastName);
 
             // create random refresh token and store hashed in redis + audit in DB
             var rawRefresh = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
@@ -116,13 +128,16 @@ namespace HIDAeroService.Service.Impl
 
             var user = await context.Operators
                 .AsNoTracking()
-                .Include(x => x.Location)
+                .Include(x => x.OperatorLocations)
+                .ThenInclude(x => x.Location)
                 .Include(x => x.Role)
                 .ThenInclude(x => x.FeatureRoles)
                 .Where(x => x.UserId == rec.UserId)
                 .FirstOrDefaultAsync();
 
-            if (String.IsNullOrEmpty(user.Username)) return ResponseHelper.NotFoundBuilder<TokenDto>(["can not automatic create token username with specific userid not found"]);
+            if (user is null) return ResponseHelper.NotFoundBuilder<TokenDto>(["User not found."]);
+
+            if (String.IsNullOrEmpty(user.Username)) return ResponseHelper.NotFoundBuilder<TokenDto>(["Can not automatic create token username with specific userid not found"]);
 
             // rotate token automatically: create new raw token and swap in redis
             var newRaw = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
@@ -138,7 +153,7 @@ namespace HIDAeroService.Service.Impl
 
 
             // issue new access token
-            var accessToken = tokenService.CreateAccessToken(rec.UserId, user.Username,user.Location,user.Role,user.Email,user.Title,user.FirstName,user.MiddleName,user.LastName);
+            var accessToken = tokenService.CreateAccessToken(rec.UserId, user.Username,user.OperatorLocations.Select(x => x.Location).ToList(),user.Role,user.Email,user.Title,user.FirstName,user.MiddleName,user.LastName);
 
             // set rotate cookie
             response.Cookies.Append("refresh_token", newRaw, new CookieOptions

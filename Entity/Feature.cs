@@ -8,7 +8,9 @@ namespace HIDAeroService.Entity
         [Key]
         public int Id { get; set; }
         public short ComponentId { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Path { get; set; } = string.Empty;
         public ICollection<FeatureRole> FeatureRoles { get; set; }
+        public ICollection<SubFeature> SubFeatures { get; set; }
     }
 }

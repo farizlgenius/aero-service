@@ -66,8 +66,9 @@ namespace HIDAeroService.Data
         public DbSet<MultiOccupancyOption> MultiOccupancyOptions { get; set; }
         public DbSet<RefreshTokenAudit> RefreshTokenAudits { get; set; }
         public DbSet<Feature> Features { get; set; }
+        public DbSet<SubFeature> SubFeatures { get; set; }
         public DbSet<Role> Roles { get; set; }
-        public DbSet<Feature> FeatureLists { get; set; }
+        public DbSet<FeatureRole> FeatureRoles { get; set; }
         // Old 
 
         public DbSet<Event> Events { get; set; }
@@ -75,8 +76,6 @@ namespace HIDAeroService.Data
         public DbSet<CommandStatus> ArCommandStatuses { get; set; }
 
         public DbSet<AeroStructureStatus> AeroStructureStatuses { get; set; }
-
-
 
 
 
@@ -536,7 +535,7 @@ namespace HIDAeroService.Data
 
             modelBuilder.Entity<Location>()
                 .HasData(
-                new Location { Id=1,ComponentId=1,LocationName="Any",Description="All Location",CreatedDate=SeedDefaults.SystemDate,UpdatedDate=SeedDefaults.SystemDate,Uuid=SeedDefaults.SystemGuid,IsActive=true }
+                new Location { Id=1,ComponentId=1,LocationName="Main",Description="Main Location",CreatedDate=SeedDefaults.SystemDate,UpdatedDate=SeedDefaults.SystemDate,Uuid=SeedDefaults.SystemGuid,IsActive=true }
                 );
 
             modelBuilder.Entity<Location>()
@@ -589,12 +588,6 @@ namespace HIDAeroService.Data
 
             modelBuilder.Entity<Location>()
                .HasMany(l => l.MonitorPointsGroup)
-               .WithOne(h => h.Location)
-               .HasForeignKey(f => f.LocationId)
-               .HasPrincipalKey(p => p.ComponentId);
-
-            modelBuilder.Entity<Location>()
-               .HasMany(l => l.Operators)
                .WithOne(h => h.Location)
                .HasForeignKey(f => f.LocationId)
                .HasPrincipalKey(p => p.ComponentId);
@@ -1117,22 +1110,50 @@ namespace HIDAeroService.Data
             #region Feature
 
             modelBuilder.Entity<Feature>()
+                .HasMany(s => s.SubFeatures)
+                .WithOne(s => s.Features)
+                .HasForeignKey(k => k.FeatureId)
+                .HasPrincipalKey(l => l.ComponentId);
+
+
+            modelBuilder.Entity<Feature>()
                 .HasData(
-                    new Feature { Id = 1, ComponentId = 1, Name = "Dashboard" },
-                    new Feature { Id = 2, ComponentId = 2, Name = "Events" },
-                    new Feature { Id = 3, ComponentId = 3, Name = "LocationId" },
-                    new Feature { Id = 4, ComponentId = 4, Name = "Alerts" },
+                    new Feature { Id = 1, ComponentId = 1, Name = "Dashboard", Path = "/" },
+                    new Feature { Id = 2, ComponentId = 2, Name = "Events", Path = "/event" },
+                    new Feature { Id = 3, ComponentId = 3, Name = "Locations", Path = "/location" },
+                    new Feature { Id = 4, ComponentId = 4, Name = "Alerts", Path = "/alert" },
                     new Feature { Id = 5, ComponentId = 5, Name = "Operators" },
-                    new Feature { Id = 6, ComponentId = 6, Name = "Device" },
-                    new Feature { Id = 7, ComponentId = 7, Name = "Doors" },
-                    new Feature { Id = 8, ComponentId = 8, Name = "Card Holder" },
-                    new Feature { Id = 9, ComponentId = 9, Name = "Access Level" },
-                    new Feature { Id = 10, ComponentId = 10, Name = "Access Area" },
+                    new Feature { Id = 6, ComponentId = 6, Name = "Devices" },
+                    new Feature { Id = 7, ComponentId = 7, Name = "Doors", Path = "/door" },
+                    new Feature { Id = 8, ComponentId = 8, Name = "Card Holder", Path = "/cardholder" },
+                    new Feature { Id = 9, ComponentId = 9, Name = "Access Level", Path = "/level" },
+                    new Feature { Id = 10, ComponentId = 10, Name = "Access Area", Path = "/area" },
                     new Feature { Id = 11, ComponentId = 11, Name = "Time" },
-                    new Feature { Id = 12, ComponentId = 12, Name = "Trigger & Procedure" },
-                    new Feature { Id = 13, ComponentId = 13, Name = "Report" },
-                    new Feature { Id = 14, ComponentId = 14, Name = "Setting" },
-                    new Feature { Id = 15, ComponentId = 15, Name = "Map" }
+                    new Feature { Id = 12, ComponentId = 12, Name = "Trigger & Action" },
+                    new Feature { Id = 13, ComponentId = 13, Name = "Reports" },
+                    new Feature { Id = 14, ComponentId = 14, Name = "Settings", Path = "/setting" },
+                    new Feature { Id = 15, ComponentId = 15, Name = "Maps", Path = "/map" }
+
+                );
+
+            modelBuilder.Entity<SubFeature>()
+                .HasData(
+                new SubFeature { Id = 1, ComponentId = 1, Name = "Operator", Path = "/operator", FeatureId = 5 },
+                new SubFeature { Id = 2, ComponentId = 2, Name = "Role", Path = "/role", FeatureId = 5 },
+                new SubFeature { Id = 3, ComponentId = 3, Name = "Hardwares", Path = "/hardware", FeatureId = 6 },
+                new SubFeature { Id = 4, ComponentId = 4, Name = "Modules", Path = "/module", FeatureId = 6 },
+                new SubFeature { Id = 5, ComponentId = 5, Name = "Control Points", Path = "/control", FeatureId = 6 },
+                new SubFeature { Id = 6, ComponentId = 6, Name = "Monitor Points", Path = "/monitor", FeatureId = 6 },
+                new SubFeature { Id = 7, ComponentId = 7, Name = "Monitor Points Groups", Path = "/monitorgroup", FeatureId = 6 },
+                new SubFeature { Id = 8, ComponentId = 8, Name = "Timezone", Path = "/timezone", FeatureId = 11 },
+                new SubFeature { Id = 9, ComponentId = 9, Name = "Holidays", Path = "/holiday", FeatureId = 11 },
+                new SubFeature { Id = 10, ComponentId = 10, Name = "Intervals", Path = "/interval", FeatureId = 11 },
+                new SubFeature { Id = 11, ComponentId = 11, Name = "Trigger", Path = "/trigger", FeatureId = 12 },
+                new SubFeature { Id = 12, ComponentId = 12, Name = "Action", Path = "/action", FeatureId = 12 },
+                new SubFeature { Id = 13, ComponentId = 13, Name = "Transaction", Path = "/transaction", FeatureId = 13 },
+                new SubFeature { Id = 14, ComponentId = 14, Name = "Audit Trail", Path = "/audit", FeatureId = 13 }
+
+
                 );
 
             #endregion
@@ -1141,25 +1162,24 @@ namespace HIDAeroService.Data
 
             modelBuilder.Entity<FeatureRole>()
                 .HasData(
-                    new FeatureRole { Id=1,FeatureId=1,RoleId=1,IsAllow=true,IsWritable=true },
-                     new FeatureRole { Id = 2, FeatureId = 2, RoleId = 1, IsAllow = true, IsWritable = true },
-                      new FeatureRole { Id = 3, FeatureId = 3, RoleId = 1, IsAllow = true, IsWritable = true },
-                       new FeatureRole { Id = 4, FeatureId = 4, RoleId = 1, IsAllow = true, IsWritable = true },
-                        new FeatureRole { Id = 5, FeatureId = 5, RoleId = 1, IsAllow = true, IsWritable = true },
-                         new FeatureRole { Id = 6, FeatureId = 6, RoleId = 1, IsAllow = true, IsWritable = true },
-                          new FeatureRole { Id = 7, FeatureId = 7, RoleId = 1, IsAllow = true, IsWritable = true },
-                           new FeatureRole { Id = 8, FeatureId = 8, RoleId = 1, IsAllow = true, IsWritable = true },
-                            new FeatureRole { Id = 9, FeatureId = 9, RoleId = 1, IsAllow = true, IsWritable = true },
-                             new FeatureRole { Id = 10, FeatureId = 10, RoleId = 1, IsAllow = true, IsWritable = true },
-                              new FeatureRole { Id = 11, FeatureId = 11, RoleId = 1, IsAllow = true, IsWritable = true },
-                               new FeatureRole { Id = 12, FeatureId = 12, RoleId = 1, IsAllow = true, IsWritable = true },
-                                new FeatureRole { Id = 13, FeatureId = 13, RoleId = 1, IsAllow = true, IsWritable = true },
-                                 new FeatureRole { Id = 14, FeatureId = 14, RoleId = 1, IsAllow = true, IsWritable = true },
-                                  new FeatureRole { Id = 15, FeatureId = 15, RoleId = 1, IsAllow = true, IsWritable = true }
+                    new FeatureRole { FeatureId=1,RoleId=1,IsAllow=true,IsCreate=true,IsModify=true,IsDelete=true },
+                     new FeatureRole { FeatureId = 2, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
+                      new FeatureRole { FeatureId = 3, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
+                       new FeatureRole { FeatureId = 4, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
+                        new FeatureRole {  FeatureId = 5, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
+                         new FeatureRole { FeatureId = 6, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
+                          new FeatureRole { FeatureId = 7, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
+                           new FeatureRole {  FeatureId = 8, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
+                            new FeatureRole {  FeatureId = 9, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
+                             new FeatureRole {  FeatureId = 10, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
+                              new FeatureRole {  FeatureId = 11, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
+                               new FeatureRole {  FeatureId = 12, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
+                                new FeatureRole {  FeatureId = 13, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
+                                 new FeatureRole {  FeatureId = 14, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
+                                  new FeatureRole {  FeatureId = 15, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true }
                 );
 
             #endregion
-
 
             #region Role
 
@@ -1178,6 +1198,28 @@ namespace HIDAeroService.Data
             //    .HasForeignKey(o => o.RoleId)
             //    .HasPrincipalKey(r => r.ComponentId)
             //    .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<OperatorLocation>()
+                .HasKey(x => new { x.LocationId, x.OperatorId });
+
+            modelBuilder.Entity<OperatorLocation>()
+                .HasOne(x => x.Location)
+                .WithMany(x => x.OperatorLocations)
+                .HasForeignKey(x => x.LocationId)
+                .HasPrincipalKey(x => x.ComponentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<OperatorLocation>()
+                .HasOne(x => x.Operator)
+                .WithMany(x => x.OperatorLocations)
+                .HasForeignKey(x => x.OperatorId)
+                .HasPrincipalKey(x => x.ComponentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<OperatorLocation>()
+                .HasData(
+                    new OperatorLocation { Id=1,LocationId=1,OperatorId=1 }
+                );
 
             modelBuilder.Entity<Operator>()
                 .HasOne(o => o.Role)
@@ -1203,10 +1245,11 @@ namespace HIDAeroService.Data
 
             modelBuilder.Entity<Operator>()
                 .HasData(
-                    new Operator { Id = 1,UserId="Administrator-001",Username = "admin", Password = "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY", Email = "support@honorsupplying.com", Title = "Mr.", FirstName = "Administrator", MiddleName = "", LastName = "", Phone = "", ImagePath = "", RoleId = 1,Uuid=SeedDefaults.SystemGuid,CreatedDate=SeedDefaults.SystemDate,UpdatedDate=SeedDefaults.SystemDate,LocationId=1 }
+                    new Operator { Id = 1,ComponentId=1,UserId="Administrator",Username = "admin", Password = "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY", Email = "support@honorsupplying.com", Title = "Mr.", FirstName = "Administrator", MiddleName = "", LastName = "", Phone = "", ImagePath = "", RoleId = 1,Uuid=SeedDefaults.SystemGuid,CreatedDate=SeedDefaults.SystemDate,UpdatedDate=SeedDefaults.SystemDate,IsActive=true }
                 );
 
             #endregion
+
 
 
 

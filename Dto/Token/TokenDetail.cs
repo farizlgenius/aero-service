@@ -8,7 +8,7 @@
     public sealed class TokenInfo
     {
         public required Users User { get; set; }
-        public required Location Location { get; set; }
+        public required List<short> Locations { get; set; }
         public required Role Role { get; set; }
     }
     public sealed class Users

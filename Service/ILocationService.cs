@@ -10,5 +10,6 @@ namespace HIDAeroService.Service
         Task<ResponseDto<bool>> CreateAsync(LocationDto dto);
         Task<ResponseDto<bool>> DeleteByIdAsync(short Id);
         Task<ResponseDto<LocationDto>> UpdateAsync(LocationDto dto);
+        Task<ResponseDto<IEnumerable<LocationDto>>> GetRangeLocationById(LocationRangeDto locationIds);
     }
 }

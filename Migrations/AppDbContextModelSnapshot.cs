@@ -1752,100 +1752,119 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Feature");
+                    b.ToTable("Features");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
                             ComponentId = (short)1,
-                            Name = "Dashboard"
+                            Name = "Dashboard",
+                            Path = "/"
                         },
                         new
                         {
                             Id = 2,
                             ComponentId = (short)2,
-                            Name = "Events"
+                            Name = "Events",
+                            Path = "/event"
                         },
                         new
                         {
                             Id = 3,
                             ComponentId = (short)3,
-                            Name = "LocationId"
+                            Name = "Locations",
+                            Path = "/location"
                         },
                         new
                         {
                             Id = 4,
                             ComponentId = (short)4,
-                            Name = "Alerts"
+                            Name = "Alerts",
+                            Path = "/alert"
                         },
                         new
                         {
                             Id = 5,
                             ComponentId = (short)5,
-                            Name = "Operators"
+                            Name = "Operators",
+                            Path = ""
                         },
                         new
                         {
                             Id = 6,
                             ComponentId = (short)6,
-                            Name = "Device"
+                            Name = "Devices",
+                            Path = ""
                         },
                         new
                         {
                             Id = 7,
                             ComponentId = (short)7,
-                            Name = "Doors"
+                            Name = "Doors",
+                            Path = "/door"
                         },
                         new
                         {
                             Id = 8,
                             ComponentId = (short)8,
-                            Name = "Card Holder"
+                            Name = "Card Holder",
+                            Path = "/cardholder"
                         },
                         new
                         {
                             Id = 9,
                             ComponentId = (short)9,
-                            Name = "Access Level"
+                            Name = "Access Level",
+                            Path = "/level"
                         },
                         new
                         {
                             Id = 10,
                             ComponentId = (short)10,
-                            Name = "Access Area"
+                            Name = "Access Area",
+                            Path = "/area"
                         },
                         new
                         {
                             Id = 11,
                             ComponentId = (short)11,
-                            Name = "Time"
+                            Name = "Time",
+                            Path = ""
                         },
                         new
                         {
                             Id = 12,
                             ComponentId = (short)12,
-                            Name = "Trigger & Procedure"
+                            Name = "Trigger & Action",
+                            Path = ""
                         },
                         new
                         {
                             Id = 13,
                             ComponentId = (short)13,
-                            Name = "Report"
+                            Name = "Reports",
+                            Path = ""
                         },
                         new
                         {
                             Id = 14,
                             ComponentId = (short)14,
-                            Name = "Setting"
+                            Name = "Settings",
+                            Path = "/setting"
                         },
                         new
                         {
                             Id = 15,
                             ComponentId = (short)15,
-                            Name = "Map"
+                            Name = "Maps",
+                            Path = "/map"
                         });
                 });
 
@@ -1857,141 +1876,177 @@ namespace HIDAeroService.Migrations
                     b.Property<short>("FeatureId")
                         .HasColumnType("smallint");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("integer");
+                    b.Property<bool>("IsAction")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsAllow")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsWritable")
+                    b.Property<bool>("IsCreate")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsModify")
                         .HasColumnType("boolean");
 
                     b.HasKey("RoleId", "FeatureId");
 
                     b.HasIndex("FeatureId");
 
-                    b.ToTable("FeatureRole");
+                    b.ToTable("FeatureRoles");
 
                     b.HasData(
                         new
                         {
                             RoleId = (short)1,
                             FeatureId = (short)1,
-                            Id = 1,
+                            IsAction = false,
                             IsAllow = true,
-                            IsWritable = true
+                            IsCreate = true,
+                            IsDelete = true,
+                            IsModify = true
                         },
                         new
                         {
                             RoleId = (short)1,
                             FeatureId = (short)2,
-                            Id = 2,
+                            IsAction = false,
                             IsAllow = true,
-                            IsWritable = true
+                            IsCreate = true,
+                            IsDelete = true,
+                            IsModify = true
                         },
                         new
                         {
                             RoleId = (short)1,
                             FeatureId = (short)3,
-                            Id = 3,
+                            IsAction = false,
                             IsAllow = true,
-                            IsWritable = true
+                            IsCreate = true,
+                            IsDelete = true,
+                            IsModify = true
                         },
                         new
                         {
                             RoleId = (short)1,
                             FeatureId = (short)4,
-                            Id = 4,
+                            IsAction = false,
                             IsAllow = true,
-                            IsWritable = true
+                            IsCreate = true,
+                            IsDelete = true,
+                            IsModify = true
                         },
                         new
                         {
                             RoleId = (short)1,
                             FeatureId = (short)5,
-                            Id = 5,
+                            IsAction = false,
                             IsAllow = true,
-                            IsWritable = true
+                            IsCreate = true,
+                            IsDelete = true,
+                            IsModify = true
                         },
                         new
                         {
                             RoleId = (short)1,
                             FeatureId = (short)6,
-                            Id = 6,
+                            IsAction = false,
                             IsAllow = true,
-                            IsWritable = true
+                            IsCreate = true,
+                            IsDelete = true,
+                            IsModify = true
                         },
                         new
                         {
                             RoleId = (short)1,
                             FeatureId = (short)7,
-                            Id = 7,
+                            IsAction = false,
                             IsAllow = true,
-                            IsWritable = true
+                            IsCreate = true,
+                            IsDelete = true,
+                            IsModify = true
                         },
                         new
                         {
                             RoleId = (short)1,
                             FeatureId = (short)8,
-                            Id = 8,
+                            IsAction = false,
                             IsAllow = true,
-                            IsWritable = true
+                            IsCreate = true,
+                            IsDelete = true,
+                            IsModify = true
                         },
                         new
                         {
                             RoleId = (short)1,
                             FeatureId = (short)9,
-                            Id = 9,
+                            IsAction = false,
                             IsAllow = true,
-                            IsWritable = true
+                            IsCreate = true,
+                            IsDelete = true,
+                            IsModify = true
                         },
                         new
                         {
                             RoleId = (short)1,
                             FeatureId = (short)10,
-                            Id = 10,
+                            IsAction = false,
                             IsAllow = true,
-                            IsWritable = true
+                            IsCreate = true,
+                            IsDelete = true,
+                            IsModify = true
                         },
                         new
                         {
                             RoleId = (short)1,
                             FeatureId = (short)11,
-                            Id = 11,
+                            IsAction = false,
                             IsAllow = true,
-                            IsWritable = true
+                            IsCreate = true,
+                            IsDelete = true,
+                            IsModify = true
                         },
                         new
                         {
                             RoleId = (short)1,
                             FeatureId = (short)12,
-                            Id = 12,
+                            IsAction = false,
                             IsAllow = true,
-                            IsWritable = true
+                            IsCreate = true,
+                            IsDelete = true,
+                            IsModify = true
                         },
                         new
                         {
                             RoleId = (short)1,
                             FeatureId = (short)13,
-                            Id = 13,
+                            IsAction = false,
                             IsAllow = true,
-                            IsWritable = true
+                            IsCreate = true,
+                            IsDelete = true,
+                            IsModify = true
                         },
                         new
                         {
                             RoleId = (short)1,
                             FeatureId = (short)14,
-                            Id = 14,
+                            IsAction = false,
                             IsAllow = true,
-                            IsWritable = true
+                            IsCreate = true,
+                            IsDelete = true,
+                            IsModify = true
                         },
                         new
                         {
                             RoleId = (short)1,
                             FeatureId = (short)15,
-                            Id = 15,
+                            IsAction = false,
                             IsAllow = true,
-                            IsWritable = true
+                            IsCreate = true,
+                            IsDelete = true,
+                            IsModify = true
                         });
                 });
 
@@ -2315,9 +2370,9 @@ namespace HIDAeroService.Migrations
                             Id = 1,
                             ComponentId = (short)1,
                             CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "All Location",
+                            Description = "Main Location",
                             IsActive = true,
-                            LocationName = "Any",
+                            LocationName = "Main",
                             UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Uuid = "00000000-0000-0000-0000-000000000001"
                         });
@@ -2680,9 +2735,6 @@ namespace HIDAeroService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<short>("LocationId")
-                        .HasColumnType("smallint");
-
                     b.Property<string>("MiddleName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -2721,8 +2773,6 @@ namespace HIDAeroService.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LocationId");
-
                     b.HasIndex("RoleId");
 
                     b.ToTable("Operators");
@@ -2731,23 +2781,48 @@ namespace HIDAeroService.Migrations
                         new
                         {
                             Id = 1,
-                            ComponentId = (short)0,
+                            ComponentId = (short)1,
                             CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "support@honorsupplying.com",
                             FirstName = "Administrator",
                             ImagePath = "",
                             IsActive = true,
                             LastName = "",
-                            LocationId = (short)1,
                             MiddleName = "",
                             Password = "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY",
                             Phone = "",
                             RoleId = (short)1,
                             Title = "Mr.",
                             UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserId = "Administrator-001",
+                            UserId = "Administrator",
                             Username = "admin",
                             Uuid = "00000000-0000-0000-0000-000000000001"
+                        });
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.OperatorLocation", b =>
+                {
+                    b.Property<short>("LocationId")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("OperatorId")
+                        .HasColumnType("smallint");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("integer");
+
+                    b.HasKey("LocationId", "OperatorId");
+
+                    b.HasIndex("OperatorId");
+
+                    b.ToTable("OperatorLocation");
+
+                    b.HasData(
+                        new
+                        {
+                            LocationId = (short)1,
+                            OperatorId = (short)1,
+                            Id = 1
                         });
                 });
 
@@ -3553,6 +3628,149 @@ namespace HIDAeroService.Migrations
                             Description = "Used with ACR_S_OPEN or ACR_S_CLOSE, to select tailgate mode: pulse (strk_sio:strk_number+1) relay for each user expected to enter",
                             Name = "Tailgate",
                             Value = (short)16
+                        });
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.SubFeature", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<short>("ComponentId")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("FeatureId")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FeatureId");
+
+                    b.ToTable("SubFeatures");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ComponentId = (short)1,
+                            FeatureId = (short)5,
+                            Name = "Operator",
+                            Path = "/operator"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ComponentId = (short)2,
+                            FeatureId = (short)5,
+                            Name = "Role",
+                            Path = "/role"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ComponentId = (short)3,
+                            FeatureId = (short)6,
+                            Name = "Hardwares",
+                            Path = "/hardware"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ComponentId = (short)4,
+                            FeatureId = (short)6,
+                            Name = "Modules",
+                            Path = "/module"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ComponentId = (short)5,
+                            FeatureId = (short)6,
+                            Name = "Control Points",
+                            Path = "/control"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ComponentId = (short)6,
+                            FeatureId = (short)6,
+                            Name = "Monitor Points",
+                            Path = "/monitor"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            ComponentId = (short)7,
+                            FeatureId = (short)6,
+                            Name = "Monitor Points Groups",
+                            Path = "/monitorgroup"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            ComponentId = (short)8,
+                            FeatureId = (short)11,
+                            Name = "Timezone",
+                            Path = "/timezone"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            ComponentId = (short)9,
+                            FeatureId = (short)11,
+                            Name = "Holidays",
+                            Path = "/holiday"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            ComponentId = (short)10,
+                            FeatureId = (short)11,
+                            Name = "Intervals",
+                            Path = "/interval"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            ComponentId = (short)11,
+                            FeatureId = (short)12,
+                            Name = "Trigger",
+                            Path = "/trigger"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            ComponentId = (short)12,
+                            FeatureId = (short)12,
+                            Name = "Action",
+                            Path = "/action"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            ComponentId = (short)13,
+                            FeatureId = (short)13,
+                            Name = "Transaction",
+                            Path = "/transaction"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            ComponentId = (short)14,
+                            FeatureId = (short)13,
+                            Name = "Audit Trail",
+                            Path = "/audit"
                         });
                 });
 
@@ -6201,13 +6419,6 @@ namespace HIDAeroService.Migrations
 
             modelBuilder.Entity("HIDAeroService.Entity.Operator", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Location", "Location")
-                        .WithMany("Operators")
-                        .HasForeignKey("LocationId")
-                        .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("HIDAeroService.Entity.Role", "Role")
                         .WithMany("Operators")
                         .HasForeignKey("RoleId")
@@ -6215,9 +6426,28 @@ namespace HIDAeroService.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.OperatorLocation", b =>
+                {
+                    b.HasOne("HIDAeroService.Entity.Location", "Location")
+                        .WithMany("OperatorLocations")
+                        .HasForeignKey("LocationId")
+                        .HasPrincipalKey("ComponentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HIDAeroService.Entity.Operator", "Operator")
+                        .WithMany("OperatorLocations")
+                        .HasForeignKey("OperatorId")
+                        .HasPrincipalKey("ComponentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Location");
 
-                    b.Navigation("Role");
+                    b.Navigation("Operator");
                 });
 
             modelBuilder.Entity("HIDAeroService.Entity.Reader", b =>
@@ -6322,6 +6552,18 @@ namespace HIDAeroService.Migrations
                     b.Navigation("Module");
                 });
 
+            modelBuilder.Entity("HIDAeroService.Entity.SubFeature", b =>
+                {
+                    b.HasOne("HIDAeroService.Entity.Feature", "Features")
+                        .WithMany("SubFeatures")
+                        .HasForeignKey("FeatureId")
+                        .HasPrincipalKey("ComponentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Features");
+                });
+
             modelBuilder.Entity("HIDAeroService.Entity.TimeZoneInterval", b =>
                 {
                     b.HasOne("HIDAeroService.Entity.Interval", "Interval")
@@ -6416,6 +6658,8 @@ namespace HIDAeroService.Migrations
             modelBuilder.Entity("HIDAeroService.Entity.Feature", b =>
                 {
                     b.Navigation("FeatureRoles");
+
+                    b.Navigation("SubFeatures");
                 });
 
             modelBuilder.Entity("HIDAeroService.Entity.Hardware", b =>
@@ -6463,7 +6707,7 @@ namespace HIDAeroService.Migrations
 
                     b.Navigation("MonitorPointsGroup");
 
-                    b.Navigation("Operators");
+                    b.Navigation("OperatorLocations");
 
                     b.Navigation("Readers");
 
@@ -6487,6 +6731,11 @@ namespace HIDAeroService.Migrations
                     b.Navigation("Sensors");
 
                     b.Navigation("Strikes");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.Operator", b =>
+                {
+                    b.Navigation("OperatorLocations");
                 });
 
             modelBuilder.Entity("HIDAeroService.Entity.Role", b =>

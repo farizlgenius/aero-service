@@ -26,7 +26,7 @@ namespace HIDAeroService.Service.Impl
             _minutes = int.Parse(cfg["Jwt:AccessTokenMinutes"] ?? "5");
         }
 
-        public string CreateAccessToken(string userId, string username, Location location, Role rol,string title,string email, string firstname, string middlename, string lastname)
+        public string CreateAccessToken(string userId, string username, List<Location> location, Role rol,string title,string email, string firstname, string middlename, string lastname)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secret));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -39,15 +39,15 @@ namespace HIDAeroService.Service.Impl
                 Lastname = lastname ?? "",
                 Email = email ?? "",
             };
-            var locations = new { 
-                LocationNo = location.ComponentId,
-                LocationName = location.LocationName
-            };
+            var locations = location.Select(x => x.ComponentId).ToList();
             var roles = new
             {
                 RoleNo = rol.ComponentId,
                 RoleName = rol.Name,
-                Features = rol.FeatureRoles.Select(x => x.FeatureId).ToList()
+                Features = rol.FeatureRoles
+                .Where(x => x.IsAllow == true)
+                .Select(x => x.FeatureId)
+                .ToList()
             };
 
 
@@ -60,7 +60,7 @@ namespace HIDAeroService.Service.Impl
                 // Custom Claims
                 new Claim("user",JsonSerializer.Serialize(users)),
                 new Claim("location",JsonSerializer.Serialize(locations)),
-                new Claim("role",JsonSerializer.Serialize(roles))
+                new Claim("rol",JsonSerializer.Serialize(roles))
             };
 
             var token = new JwtSecurityToken(

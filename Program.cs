@@ -4,6 +4,7 @@ using HIDAeroService.Data;
 using HIDAeroService.Hubs;
 using HIDAeroService.Service.Impl;
 using Microsoft.EntityFrameworkCore;
+
 using HIDAeroService.Mapper;
 using Serilog;
 using HIDAeroService.Exceptions.Middleware;
@@ -43,7 +44,11 @@ namespace HIDAeroService
             // Add services to the container.
 
             builder.Services.AddControllers();
-            builder.Services.AddDbContext<AppDbContext>(option => option.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseNpgsql(
+                    builder.Configuration.GetConnectionString("PostgresConnection"),
+                    npgsqlOptions => npgsqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
+                    ));
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
