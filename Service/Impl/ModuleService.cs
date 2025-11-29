@@ -21,7 +21,7 @@ using System.Net;
 
 namespace HIDAeroService.Service.Impl
 {
-    public class ModuleService(AppDbContext context, AeroCommand command, IHubContext<SioHub> hub, IHelperService<Module> helperService, IMapper mapper, ILogger<ModuleService> logger) : IModuleService
+    public class ModuleService(AppDbContext context, AeroCommand command, IHubContext<AeroHub> hub, IHelperService<Module> helperService, IMapper mapper, ILogger<ModuleService> logger) : IModuleService
     {
 
         public async Task<ResponseDto<IEnumerable<ModuleDto>>> GetAsync()
@@ -52,9 +52,13 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<bool>> GetStatusAsync(string mac, short Id)
         {
-            var entity = await context.Modules.AsNoTracking().Where(x => x.MacAddress == mac && x.Id == Id).FirstOrDefaultAsync();
+            var entity = await context.Modules
+                .AsNoTracking()
+                .Where(x => x.MacAddress == mac && x.ComponentId == Id)
+                .FirstOrDefaultAsync();
+
             if (entity is null) return ResponseHelper.NotFoundBuilder<bool>();
-            int id = await context.Hardwares.Where(d => d.MacAddress == mac).Select(d => d.Id).FirstOrDefaultAsync();
+            int id = await context.Hardwares.Where(d => d.MacAddress == mac).Select(d => d.ComponentId).FirstOrDefaultAsync();
             if (!await command.GetSioStatusAsync((short)id, Id))
             {
                 return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.C404));
@@ -100,6 +104,21 @@ namespace HIDAeroService.Service.Impl
         public async Task<ResponseDto<ModuleDto>> GetByComponentAsync(string mac, short component)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<ResponseDto<IEnumerable<ModuleDto>>> GetByLocationAsync(short location)
+        {
+            var dtos = await context.Modules
+                .AsNoTracking()
+                .Include(d => d.Readers)
+                .Include(d => d.Sensors)
+                .Include(d => d.Strikes)
+                .Include(d => d.ControlPoints)
+                .Include(d => d.MonitorPoints)
+                .Include(d => d.RequestExits)
+                .Where(s => s.LocationId == location)
+                .Select(d => MapperHelper.ModuleToDto(d)).ToArrayAsync();
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModuleDto>>(dtos);
         }
     }
 }

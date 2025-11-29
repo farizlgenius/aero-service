@@ -22,6 +22,13 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
+        [HttpGet("/api/v1/{location}/[controller]")]
+        public async Task<ActionResult<ResponseDto<IEnumerable<ModuleDto>>>> GetByLocationAsync(short location)
+        {
+            var res = await sioService.GetByLocationAsync(location);
+            return Ok(res);
+        }
+
         [HttpGet("{mac}/{component}")]
         public async Task<ActionResult<ResponseDto<ModuleDto>>> GetByComponentAsync(string mac,short component)
         {

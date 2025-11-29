@@ -55,7 +55,7 @@ namespace HIDAeroService.Mapper
             };
         }
 
-        public static Hardware CreateToHardware(CreateHardwareDto dto)
+        public static Hardware CreateToHardware(CreateHardwareDto dto,DateTime Created)
         {
             return new Hardware
             {
@@ -73,8 +73,8 @@ namespace HIDAeroService.Mapper
                         MacAddress = dto.MacAddress,
                         LocationId = dto.LocationId,
                         IsActive = dto.IsActive,
-                        CreatedDate = dto.CreatedDate,
-                        UpdatedDate = dto.UpdatedDate,
+                        CreatedDate =Created,
+                        UpdatedDate = Created,
 
                         // Detail
                         Model = Enum.Model.HIDAeroX1100.ToString(),

@@ -2,7 +2,7 @@
 
 namespace HIDAeroService.DTO.Hardware
 {
-    public sealed class CreateHardwareDto : BaseEntity
+    public sealed class CreateHardwareDto : BaseDto
     {
         public string Name { get; set; }
         public string Model { get; set; }

@@ -7,6 +7,7 @@ namespace HIDAeroService.Service
     public interface IModuleService
     {
         Task<ResponseDto<IEnumerable<ModuleDto>>> GetAsync();
+        Task<ResponseDto<IEnumerable<ModuleDto>>> GetByLocationAsync(short location);
         void GetSioStatus(int ScpId, int SioNo);
         Task<ResponseDto<bool>> GetStatusAsync(string mac, short component);
         Task<ResponseDto<ModuleDto>> CreateAsync(ModuleDto dto);

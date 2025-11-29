@@ -23,7 +23,7 @@ namespace HIDAeroService.Service.Impl
     public class HardwareService(AppDbContext context, AeroCommand command, IHubContext<AeroHub> hub,ITimeZoneService timeZoneService,ICardFormatService cardFormatService,IAccessLevelService accessLevelService, IHelperService<Hardware> helperService, CmndService cmndService, ICredentialService credentialService, IMapper mapper) : IHardwareService
     {
 
-        public virtual async Task<ResponseDto<IEnumerable<HardwareDto>>> GetAsync()
+        public async Task<ResponseDto<IEnumerable<HardwareDto>>> GetAsync()
         {
             var dtos = await context.Hardwares
                 .AsNoTracking()
@@ -33,6 +33,23 @@ namespace HIDAeroService.Service.Impl
                 .ThenInclude(s => s.Sensors)
                 .Include(s => s.Module)
                 .ThenInclude(s => s.Strikes)
+                .Select(s => MapperHelper.HardwareToHardwareDto(s))
+                .ToArrayAsync();
+
+            return ResponseHelper.SuccessBuilder<IEnumerable<HardwareDto>>(dtos);
+        }
+
+        public async Task<ResponseDto<IEnumerable<HardwareDto>>> GetByLocationAsync(short location)
+        {
+            var dtos = await context.Hardwares
+                 .AsNoTracking()
+                .Include(s => s.Module)
+                .ThenInclude(s => s.Readers)
+                .Include(s => s.Module)
+                .ThenInclude(s => s.Sensors)
+                .Include(s => s.Module)
+                .ThenInclude(s => s.Strikes)
+                .Where(s => s.LocationId == location)
                 .Select(s => MapperHelper.HardwareToHardwareDto(s))
                 .ToArrayAsync();
 
@@ -581,7 +598,7 @@ namespace HIDAeroService.Service.Impl
         public async Task<ResponseDto<bool>> CreateAsync(CreateHardwareDto dto)
         {
 
-            var hardware = MapperHelper.CreateToHardware(dto);
+            var hardware = MapperHelper.CreateToHardware(dto,DateTime.Now);
 
             await context.Hardwares.AddAsync(hardware);
             await context.SaveChangesAsync();

@@ -14,6 +14,7 @@ namespace HIDAeroService.Service
     {
         Task<ResponseDto<bool>> SetTransactionAsync(string mac, short IsOn);
         Task<ResponseDto<IEnumerable<HardwareDto>>> GetAsync();
+        Task<ResponseDto<IEnumerable<HardwareDto>>> GetByLocationAsync(short location);
         Task<ResponseDto<bool>> CreateAsync(CreateHardwareDto dto);
       Task<ResponseDto<HardwareDto>> DeleteAsync(string mac);
        Task<ResponseDto<HardwareDto>> UpdateAsync(HardwareDto dto);

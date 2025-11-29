@@ -1162,21 +1162,21 @@ namespace HIDAeroService.Data
 
             modelBuilder.Entity<FeatureRole>()
                 .HasData(
-                    new FeatureRole { FeatureId=1,RoleId=1,IsAllow=true,IsCreate=true,IsModify=true,IsDelete=true },
-                     new FeatureRole { FeatureId = 2, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
-                      new FeatureRole { FeatureId = 3, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
-                       new FeatureRole { FeatureId = 4, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
-                        new FeatureRole {  FeatureId = 5, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
-                         new FeatureRole { FeatureId = 6, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
-                          new FeatureRole { FeatureId = 7, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
-                           new FeatureRole {  FeatureId = 8, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
-                            new FeatureRole {  FeatureId = 9, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
-                             new FeatureRole {  FeatureId = 10, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
-                              new FeatureRole {  FeatureId = 11, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
-                               new FeatureRole {  FeatureId = 12, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
-                                new FeatureRole {  FeatureId = 13, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
-                                 new FeatureRole {  FeatureId = 14, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true },
-                                  new FeatureRole {  FeatureId = 15, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true }
+                    new FeatureRole { FeatureId=1,RoleId=1,IsAllow=true,IsCreate=true,IsModify=true,IsDelete=true,IsAction=true },
+                     new FeatureRole { FeatureId = 2, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true,IsAction=true },
+                      new FeatureRole { FeatureId = 3, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true,IsAction=true },
+                       new FeatureRole { FeatureId = 4, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true,IsAction=true },
+                        new FeatureRole {  FeatureId = 5, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true,IsAction=true },
+                         new FeatureRole { FeatureId = 6, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true,IsAction=true },
+                          new FeatureRole { FeatureId = 7, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true,IsAction=true },
+                           new FeatureRole {  FeatureId = 8, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true,IsAction=true },
+                            new FeatureRole {  FeatureId = 9, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true,IsAction=true },
+                             new FeatureRole {  FeatureId = 10, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true,IsAction=true },
+                              new FeatureRole {  FeatureId = 11, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true,IsAction=true },
+                               new FeatureRole {  FeatureId = 12, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true,IsAction=true },
+                                new FeatureRole {  FeatureId = 13, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true,IsAction=true },
+                                 new FeatureRole {  FeatureId = 14, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true,IsAction=true },
+                                  new FeatureRole {  FeatureId = 15, RoleId = 1, IsAllow = true, IsCreate=true,IsModify=true,IsDelete=true,IsAction=true }
                 );
 
             #endregion
