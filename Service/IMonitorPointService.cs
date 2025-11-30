@@ -5,7 +5,8 @@ namespace HIDAeroService.Service
 {
     public interface IMonitorPointService
     {
-        Task<ResponseDto<IEnumerable<MonitorPointDto>>> GetAsync();
+        Task<ResponseDto<IEnumerable<MonitorPointDto>>> GetAsync(); 
+            Task<ResponseDto<IEnumerable<MonitorPointDto>>> GetByLocationAsync(short location);
         Task<ResponseDto<bool>> CreateAsync(MonitorPointDto dto);
         Task<ResponseDto<bool>> DeleteAsync(string mac, short component);
         Task<ResponseDto<MonitorPointDto>> UpdateAsync(MonitorPointDto dto);

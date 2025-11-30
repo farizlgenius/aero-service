@@ -1,9 +1,10 @@
-﻿using HIDAeroService.DTO;
+﻿using HIDAeroService.Data;
+using HIDAeroService.DTO;
 using HIDAeroService.DTO.MonitorGroup;
 
 namespace HIDAeroService.Service.Impl
 {
-    public sealed class MonitorGroupService : IMonitorGroupService
+    public sealed class MonitorGroupService(AppDbContext context) : IMonitorGroupService
     {
         public Task<ResponseDto<MonitorGroupDto>> CreateAsync(MonitorGroupDto dto)
         {
@@ -20,7 +21,12 @@ namespace HIDAeroService.Service.Impl
             throw new NotImplementedException();
         }
 
-        public Task<ResponseDto<MonitorGroupDto>> UpdateAsync(MonitorGroupDto dto)
+        public Task<ResponseDto<IEnumerable<MonitorGroupDto>>> GetByLocationAsync(short location)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ResponseDto<MonitorGroupDto>> UpdateAsync(MonitorGroupDto dto)
         {
             throw new NotImplementedException();
         }

@@ -33,6 +33,17 @@ namespace HIDAeroService.Service.Impl
             return ResponseHelper.SuccessBuilder<IEnumerable<ControlPointDto>>(dtos);
         }
 
+        public async Task<ResponseDto<IEnumerable<ControlPointDto>>> GetByLocationAsync(short location)
+        {
+            var dtos = await context.ControlPoints
+                .AsNoTracking()
+                .Where(x => x.LocationId == location)
+                .Select(x => MapperHelper.ControlPointToDto(x))
+                .ToArrayAsync();
+
+            return ResponseHelper.SuccessBuilder<IEnumerable<ControlPointDto>>(dtos);
+        }
+
         private async Task<ResponseDto<IEnumerable<ModeDto>>> GetOfflineModeAsync()
         {
             var dtos = await context.OutputOfflineModes.AsNoTracking().Select(x => new ModeDto 

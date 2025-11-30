@@ -7,6 +7,8 @@ namespace HIDAeroService.Service
     public interface IControlPointService
     {
         Task<ResponseDto<IEnumerable<ControlPointDto>>> GetAsync();
+        Task<ResponseDto<IEnumerable<ControlPointDto>>> GetByLocationAsync(short location);
+        
         Task<ResponseDto<bool>> CreateOutputAsync(ControlPointDto dto);
         Task<ResponseDto<bool>> DeleteAsync(string mac, short component);
         Task<ResponseDto<ControlPointDto>> UpdateAsync(ControlPointDto dto);

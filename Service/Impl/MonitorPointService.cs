@@ -34,6 +34,19 @@ namespace HIDAeroService.Service.Impl
             return ResponseHelper.SuccessBuilder<IEnumerable<MonitorPointDto>>(dtos);
         }
 
+
+        public async Task<ResponseDto<IEnumerable<MonitorPointDto>>> GetByLocationAsync(short location)
+        {
+            var dtos = await context.MonitorPoints
+                .AsNoTracking()
+                .Where(x => x.LocationId == location)
+                .Select(x => MapperHelper.MonitorPointToDto(x))
+                .ToArrayAsync();
+
+            return ResponseHelper.SuccessBuilder<IEnumerable<MonitorPointDto>>(dtos);
+        }
+
+
         public async Task<ResponseDto<IEnumerable<short>>> GetAvailableIp(string mac, short sio)
         {
             var input = await context.Modules
