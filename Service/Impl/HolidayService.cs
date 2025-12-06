@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using HIDAeroService.AeroLibrary;
+﻿using HIDAeroService.AeroLibrary;
 using HIDAeroService.Constant;
 using HIDAeroService.Constants;
 using HIDAeroService.Data;
@@ -16,7 +15,7 @@ using System.Net;
 
 namespace HIDAeroService.Service.Impl
 {
-    public class HolidayService(AeroCommand command, AppDbContext context, IMapper mapper, IHelperService<Holiday> helperService) : IHolidayService
+    public class HolidayService(AeroCommand command, AppDbContext context, IHelperService<Holiday> helperService) : IHolidayService
     {
 
         public async Task<ResponseDto<IEnumerable<HolidayDto>>> GetAsync()
@@ -29,7 +28,7 @@ namespace HIDAeroService.Service.Impl
                     LocationId = p.LocationId,
                     IsActive = p.IsActive,
 
-                    // Detail
+                    // ExtendDesc
                     ComponentId = p.ComponentId,
                     Day = p.Day,
                     Month = p.Month,
@@ -70,7 +69,7 @@ namespace HIDAeroService.Service.Impl
                 LocationId = p.LocationId,
                 IsActive = p.IsActive,
 
-                // Detail
+                // ExtendDesc
                 Day = p.Day,
                 Month = p.Month,
                 Year = p.Year,
@@ -105,7 +104,7 @@ namespace HIDAeroService.Service.Impl
                 IsActive = true,
 
 
-                // Detail
+                // ExtendDesc
                 ComponentId = ComponentId,
                 Day = dto.Day,
                 Month = dto.Month,

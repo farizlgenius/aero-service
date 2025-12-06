@@ -29,7 +29,11 @@
         public static string C1853 = "Command 1853: SCP Structure Status Read";
         public static string C1121 = "Command 1121: Configure Access Area";
         public static string C303 = "Command 303: Set the Transaction Log Index";
-
+        public static string C120 = "Command 120: Configure Monitor Point Group";
+        public static string C321 = "Command 321: Monitor Point Group Arm/Disarm Command";
+        public static string C118 = "Command 118: Action Specification";
+        public static string C117 = "Command 117: Trigger Specification";
+        public static string C1117 = "Command 1117: Trigger Specification (Expanded Code Map)";
         public enum CommandFlags
         {
             enCcMpSrq = 405, // Request Sensor Status

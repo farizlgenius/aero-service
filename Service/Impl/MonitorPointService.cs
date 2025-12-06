@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using HID.Aero.ScpdNet.Wrapper;
+﻿using HID.Aero.ScpdNet.Wrapper;
 using HIDAeroService.AeroLibrary;
 using HIDAeroService.Constant;
 using HIDAeroService.Constants;
@@ -21,7 +20,7 @@ using MiNET.Entities.Passive;
 
 namespace HIDAeroService.Service.Impl
 {
-    public sealed class MonitorPointService(IHelperService<Sensor> helperService, AeroCommand command, AppDbContext context, IHubContext<AeroHub> hub, ILogger<MonitorPointService> logger, IMapper mapper) : IMonitorPointService
+    public sealed class MonitorPointService(IHelperService<Sensor> helperService, AeroCommand command, AppDbContext context, IHubContext<AeroHub> hub, ILogger<MonitorPointService> logger) : IMonitorPointService
     {
 
         public async Task<ResponseDto<IEnumerable<MonitorPointDto>>> GetAsync()

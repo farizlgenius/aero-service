@@ -53,6 +53,7 @@ namespace HIDAeroService.AeroLibrary
             using var scope = scopeFactory.CreateScope();
             var handle = scope.ServiceProvider.GetRequiredService<MessageHandler>();
             var scp = scope.ServiceProvider.GetRequiredService<IHardwareService>();
+            var tran = scope.ServiceProvider.GetRequiredService<ITransactionService>();
             var sio = scope.ServiceProvider.GetRequiredService<IModuleService>();
             var acr = scope.ServiceProvider.GetRequiredService<IDoorService>();
             var cp = scope.ServiceProvider.GetRequiredService<IControlPointService>();
@@ -70,7 +71,9 @@ namespace HIDAeroService.AeroLibrary
                     handle.SCPReplyNAKHandler(message);
                     break;
                 case (int)enSCPReplyType.enSCPReplyTransaction:
-                    handle.SCPReplyTransactionHandler(message,isWaitingCardScan,ScanScpId,ScanAcrNo); 
+                    handle.SCPReplyTransactionHandler(message,isWaitingCardScan,ScanScpId,ScanAcrNo);
+                    await tran.SaveToDatabase(message);
+                    tran.TriggerEventRecieve();
                     break;
                 case (int)enSCPReplyType.enSCPReplyCommStatus:
                     scp.TriggerDeviceStatus(helper.GetMacFromId((short)message.SCPId),message.comm.status);

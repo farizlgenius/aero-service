@@ -7,7 +7,6 @@ namespace HIDAeroService.Entity
     public sealed class Credential : NoMacBaseEntity,IComponentId
     {
         public short ComponentId { get; set; }
-        public short Flag { get; set; }
         public int Bits { get; set; }
         public int IssueCode{ get; set; }
         public int FacilityCode { get; set; }

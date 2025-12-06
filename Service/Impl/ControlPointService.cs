@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using HIDAeroService.AeroLibrary;
+﻿using HIDAeroService.AeroLibrary;
 using HIDAeroService.Constant;
 using HIDAeroService.Constants;
 using HIDAeroService.Data;
@@ -21,7 +20,7 @@ using System.Net;
 
 namespace HIDAeroService.Service.Impl
 {
-    public sealed class ControlPointService(AppDbContext context,IHelperService<Strike> helperService,AeroCommand command,ILogger<ControlPointService> logger,IMapper mapper,IHubContext<AeroHub> hub) : IControlPointService 
+    public sealed class ControlPointService(AppDbContext context,IHelperService<Strike> helperService,AeroCommand command,ILogger<ControlPointService> logger,IHubContext<AeroHub> hub) : IControlPointService 
     {
         public async Task<ResponseDto<IEnumerable<ControlPointDto>>> GetAsync()
         {

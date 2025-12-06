@@ -21,9 +21,9 @@ namespace HIDAeroService.Entity
         public ICollection<AccessArea> AccessAreas { get; set; }
         public ICollection<CardHolder> CardHolders { get; set; }
         public ICollection<Door> Doors { get; set; }
-        public ICollection<MonitorPointGroup> MonitorPointsGroup { get; set; }
+        public ICollection<MonitorGroup> MonitorPointsGroup { get; set; }
         public ICollection<OperatorLocation> OperatorLocations { get; set; }
-        public ICollection<Event> Events { get; set; }
+        public ICollection<Transaction> Events { get; set; }
         public ICollection<AeroStructureStatus> AeroStructureStatuses { get; set; }
         public ICollection<Credential> Credentials { get; set; }
         public ICollection<Holiday> Holidays { get; set; }
@@ -31,6 +31,9 @@ namespace HIDAeroService.Entity
         public ICollection<RequestExit> RequestExits { get; set; }
         public ICollection<Sensor> Sensors { get; set; }
         public ICollection<Strike> Strikes { get; set; }
+        public ICollection<Procedure> Procedures { get; set; }
+        public ICollection<Action> Actions { get; set; }
+        public ICollection<Trigger> Triggers { get; set; }
 
         public bool IsActive { get; set; } = true;
         public DateTime CreatedDate { get; set; }

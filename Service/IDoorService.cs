@@ -7,7 +7,8 @@ namespace HIDAeroService.Service
 {
     public interface IDoorService
     {
-        Task<ResponseDto<IEnumerable<DoorDto>>> GetAsync();
+        Task<ResponseDto<IEnumerable<DoorDto>>> GetAsync(); 
+            Task<ResponseDto<IEnumerable<DoorDto>>> GetByLocationIdAsync(short location);
         Task<ResponseDto<bool>> CreateAsync(DoorDto dto);
         Task<ResponseDto<bool>> DeleteAsync(string mac, short component);
         Task<ResponseDto<DoorDto>> UpdateAsync(DoorDto dto);

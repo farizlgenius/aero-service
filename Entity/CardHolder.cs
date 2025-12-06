@@ -19,6 +19,7 @@ namespace HIDAeroService.Entity
         public string Company {  get; set; } = string.Empty;
         public string Department { get; set; } = string.Empty;
         public string Position { get; set; } = string.Empty;
+        public short Flag { get; set; }
         public ICollection<CardHolderAdditional> Additional { get; set; }
         public string ImagePath { get; set; } = string.Empty;
         public ICollection<Credential> Credentials { get; set; }

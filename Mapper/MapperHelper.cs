@@ -24,6 +24,15 @@ using HIDAeroService.DTO.Operator;
 using HIDAeroService.DTO.Role;
 using HIDAeroService.DTO.Feature;
 using HIDAeroService.Helpers;
+using HIDAeroService.DTO.Transactions;
+using HIDAeroService.AeroLibrary;
+using HIDAeroService.Enums;
+using HIDAeroService.DTO.MonitorGroup;
+using HIDAeroService.Model;
+using HIDAeroService.Data;
+using HIDAeroService.DTO.Procedure;
+using HIDAeroService.DTO.Action;
+using HIDAeroService.DTO.Trigger;
 
 namespace HIDAeroService.Mapper
 {
@@ -43,7 +52,7 @@ namespace HIDAeroService.Mapper
                 LocationId = hardware.LocationId,
                 IsActive = hardware.IsActive,
 
-                // Detail
+                // ExtendDesc
                 Name = hardware.Name,
                 Model = hardware.Model,
                 IpAddress = hardware.IpAddress,
@@ -76,13 +85,13 @@ namespace HIDAeroService.Mapper
                         CreatedDate =Created,
                         UpdatedDate = Created,
 
-                        // Detail
-                        Model = Enum.Model.HIDAeroX1100.ToString(),
+                        // ExtendDesc
+                        Model = Enums.Model.HIDAeroX1100.ToString(),
                         Address = -1,
                         Port = 3,
-                        nInput = (short)Enum.InputComponents.HIDAeroX1100,
-                        nOutput = (short)Enum.OutputComponents.HIDAeroX1100,
-                        nReader = (short)Enum.ReaderComponents.HIDAeroX1100,
+                        nInput = (short)InputComponents.HIDAeroX1100,
+                        nOutput = (short)OutputComponents.HIDAeroX1100,
+                        nReader = (short)ReaderComponents.HIDAeroX1100,
                         Msp1No = 0,
                         BaudRate = -1,
                         nProtocol = 0,
@@ -116,7 +125,7 @@ namespace HIDAeroService.Mapper
                 CreatedDate = Create,
                 UpdatedDate= Create,
 
-                // Detail
+                // ExtendDesc
                 Model = dto.Model,
                 //Readers = dto.Readers.Select(x => DtoToReader(x,CreateAsync)).ToList(),
                 //Sensors = dto.Sensors.Select(x => DtoToSensor(x,CreateAsync)).ToList(),
@@ -148,7 +157,7 @@ namespace HIDAeroService.Mapper
                 LocationId = d.LocationId,
                 IsActive = d.IsActive,
 
-                // Detail
+                // ExtendDesc
                 Model = d.Model,
                 Readers = d.Readers is null ? null : d.Readers.Select(x => ReaderToDto(x)).ToList(),
                 Sensors = d.Sensors is null ? null : d.Sensors.Select(x => SensorToDto(x)).ToList(),
@@ -183,7 +192,7 @@ namespace HIDAeroService.Mapper
                 LocationId = x.LocationId,
                 IsActive = x.IsActive,
 
-                // Detail 
+                // ExtendDesc 
                 Name = x.Name,
                 ModuleId = x.ModuleId,
                 InputNo = x.InputNo,
@@ -211,7 +220,7 @@ namespace HIDAeroService.Mapper
                 CreatedDate = Create,
                 UpdatedDate = Create,
 
-                // Detail 
+                // ExtendDesc 
                 Name = dto.Name,
                 ModuleId = dto.ModuleId,
                 InputNo = dto.InputNo,
@@ -234,7 +243,7 @@ namespace HIDAeroService.Mapper
             input.IsActive = dto.IsActive;
             input.UpdatedDate = DateTime.Now;
 
-            // Detail
+            // ExtendDesc
             input.Name = dto.Name;
             input.ModuleId = dto.ModuleId;
             input.InputNo = dto.InputNo;
@@ -246,6 +255,80 @@ namespace HIDAeroService.Mapper
             input.DelayEntry = dto.DelayEntry;
             input.DelayExit = dto.DelayExit;
             input.IsMask = dto.IsMask;
+        }
+
+        #endregion
+
+        #region Monitor Group
+
+        public static MonitorGroupDto MonitorGroupToDto(MonitorGroup en)
+        {
+            return new MonitorGroupDto
+            {
+                // Base 
+                Uuid = en.Uuid,
+                ComponentId = en.ComponentId,
+                MacAddress = en.MacAddress,
+                LocationId = en.LocationId,
+                IsActive = en.IsActive,
+
+                // Detail
+                Name = en.Name,
+                nMpCount = en.nMpCount,
+                nMpList = en.nMpList.Select(x => MonitorGroupListToDto(x)).ToList(),
+            };
+        }
+
+        public static MonitorGroupListDto MonitorGroupListToDto(MonitorGroupList en)
+        {
+            return new MonitorGroupListDto
+            {
+                PointType = en.PointType,
+                PointNumber = en.PointNumber,
+                PointTypeDesc = en.PointTypeDesc,
+            };
+        }
+
+        public static MonitorGroup DtoToMonitorGroup(MonitorGroupDto dto,short ComponentId,DateTime Create)
+        {
+            return new MonitorGroup
+            {
+                // Base 
+                ComponentId = ComponentId,
+                MacAddress = dto.MacAddress,
+                LocationId = dto.LocationId,
+                IsActive = true,
+                CreatedDate = Create,
+                UpdatedDate = Create,
+
+                // Detail
+                Name = dto.Name,
+                nMpCount = dto.nMpCount,
+                nMpList = dto.nMpList.Select(x => DtoToMonitorGroupList(x,ComponentId)).ToList()
+            };
+        }
+
+        public static MonitorGroupList DtoToMonitorGroupList(MonitorGroupListDto dto,short MonitorGroupId)
+        {
+            return new MonitorGroupList
+            {
+                PointType = dto.PointType,
+                PointNumber = dto.PointNumber,
+                PointTypeDesc = dto.PointTypeDesc,
+                MonitorGroupId = MonitorGroupId
+            };
+        }
+
+        public static void UpdateMonitorGroup(MonitorGroup en,MonitorGroupDto dto)
+        {
+            // Base 
+            en.LocationId = dto.LocationId;
+            en.UpdatedDate = DateTime.Now;
+
+            // Detail
+            en.Name = dto.Name;
+            en.nMpCount = dto.nMpCount;
+            en.nMpList = dto.nMpList.Select(x => DtoToMonitorGroupList(x,dto.ComponentId)).ToList();
         }
 
         #endregion
@@ -264,7 +347,7 @@ namespace HIDAeroService.Mapper
 
                 IsActive = x.IsActive,
 
-                // Detail
+                // ExtendDesc
 
 
                 Name = x.Name,
@@ -287,7 +370,7 @@ namespace HIDAeroService.Mapper
                 CreatedDate = Create,
                 UpdatedDate = Create,
 
-                // Detail
+                // ExtendDesc
                 Name = dto.Name,
                 ModuleId = dto.ModuleId,
                 OutputNo = dto.OutputNo,
@@ -306,7 +389,7 @@ namespace HIDAeroService.Mapper
             output.IsActive = dto.IsActive;
             output.UpdatedDate = DateTime.Now;
 
-            // Detail
+            // ExtendDesc
             output.Name = dto.Name;
             output.ModuleId = dto.ModuleId;
             output.OutputNo = dto.OutputNo;
@@ -330,7 +413,7 @@ namespace HIDAeroService.Mapper
                 LocationId = x.LocationId,
                 IsActive = x.IsActive,
 
-                // Detail
+                // ExtendDesc
                 ModuleId= x.ModuleId,
                 ReaderNo = x.ReaderNo,
                 DataFormat = x.DataFormat,
@@ -357,7 +440,7 @@ namespace HIDAeroService.Mapper
                 CreatedDate = Create,
                 UpdatedDate = Create,
 
-                // Detail
+                // ExtendDesc
                 ModuleId = dto.ModuleId,
                 ReaderNo = dto.ReaderNo,
                 DataFormat = dto.DataFormat,
@@ -380,7 +463,7 @@ namespace HIDAeroService.Mapper
             reader.IsActive = dto.IsActive;
             reader.UpdatedDate = DateTime.Now;
 
-            // Detail
+            // ExtendDesc
             reader.ModuleId = dto.ModuleId;
             reader.ReaderNo = dto.ReaderNo;
             reader.DataFormat = dto.DataFormat;
@@ -409,7 +492,7 @@ namespace HIDAeroService.Mapper
                 LocationId = x.LocationId,
                 IsActive = x.IsActive,
 
-                // Detail
+                // ExtendDesc
                 ModuleId = x.ModuleId,
                 OutputNo = x.OutputNo,
                 RelayMode = x.RelayMode,
@@ -432,7 +515,7 @@ namespace HIDAeroService.Mapper
                 CreatedDate = Create,
                 UpdatedDate = Create,
 
-                // Detail
+                // ExtendDesc
                 ModuleId= dto.ModuleId,
                 OutputNo= dto.OutputNo,
                 RelayMode= dto.RelayMode,
@@ -458,7 +541,7 @@ namespace HIDAeroService.Mapper
                 LocationId = x.LocationId,
                 IsActive = x.IsActive,
 
-                // Detail
+                // ExtendDesc
                 ModuleId= x.ModuleId,
                 InputNo = x.InputNo,
                 InputMode = x.InputMode,
@@ -480,7 +563,7 @@ namespace HIDAeroService.Mapper
                 UpdatedDate = Create,
                 CreatedDate = Create,
 
-                // Detail
+                // ExtendDesc
                 ModuleId = dto.ModuleId,
                 InputNo= dto.InputNo,
                 InputMode= dto.InputMode,
@@ -506,7 +589,7 @@ namespace HIDAeroService.Mapper
                 LocationId = x.LocationId,
                 IsActive = x.IsActive,
 
-                // Detail
+                // ExtendDesc
                 ModuleId= x.ModuleId,
                 InputNo = x.InputNo,
                 InputMode = x.InputMode,
@@ -530,7 +613,7 @@ namespace HIDAeroService.Mapper
                 CreatedDate = Create,
                 UpdatedDate = Create,
 
-                // Detail
+                // ExtendDesc
                 ModuleId = dto.ModuleId,
                 InputNo = dto.InputNo,
                 InputMode = dto.InputMode,
@@ -555,7 +638,7 @@ namespace HIDAeroService.Mapper
                 LocationId = x.LocationId,
                 IsActive = x.IsActive,
 
-                // Detail
+                // ExtendDesc
                 Name = x.Name,
                 AccessConfig = x.AccessConfig,
                 PairDoorNo = x.PairDoorNo,
@@ -632,7 +715,7 @@ namespace HIDAeroService.Mapper
                 UpdatedDate = Create,
 
 
-                // Detail
+                // ExtendDesc
                 Name = dto.Name,
                 AccessConfig = dto.AccessConfig,
                 PairDoorNo = dto.PairDoorNo,
@@ -693,7 +776,7 @@ namespace HIDAeroService.Mapper
             door.IsActive = true;
             door.UpdatedDate = time;
 
-            // Detail
+            // ExtendDesc
             door.Name = dto.Name;
             door.AccessConfig = dto.AccessConfig;
             door.PairDoorNo = dto.PairDoorNo;
@@ -749,7 +832,8 @@ namespace HIDAeroService.Mapper
                 LocationId = entity.LocationId,
                 IsActive = entity.IsActive,
 
-                // Detail
+                // ExtendDesc
+                Flag = entity.Flag,
                 UserId = entity.UserId,
                 Title = entity.Title,
                 FirstName = entity.FirstName,
@@ -782,7 +866,8 @@ namespace HIDAeroService.Mapper
                 CreatedDate = Create,
                 UpdatedDate = Create,
 
-                // Detail
+                // ExtendDesc
+                Flag = dto.Flag,
                 UserId = dto.UserId,
                 Title = dto.Title,
                 FirstName = dto.FirstName,
@@ -862,9 +947,8 @@ namespace HIDAeroService.Mapper
                 LocationId = entity.LocationId,
                 IsActive = entity.IsActive,
 
-                // Detail
+                // ExtendDesc
                 ComponentId = entity.ComponentId,
-                Flag = entity.Flag,
                 Bits = entity.Bits,
                 IssueCode = entity.IssueCode,
                 FacilityCode = entity.FacilityCode,
@@ -887,8 +971,7 @@ namespace HIDAeroService.Mapper
                 CreatedDate = Create,
                 UpdatedDate = Create,
 
-                // Detail
-                Flag = dto.Flag,
+                // ExtendDesc
                 ComponentId = ComponentId,
                 Bits = dto.Bits,
                 IssueCode = dto.IssueCode,
@@ -925,7 +1008,7 @@ namespace HIDAeroService.Mapper
                 LocationId = entity.LocationId,
                 IsActive = entity.IsActive,
 
-                // Detail
+                // ExtendDesc
                 Name = entity.Name,
                 ComponentId = entity.ComponentId,
                 AccessLevelDoorTimeZoneDto = entity.AccessLevelDoorTimeZones
@@ -945,7 +1028,7 @@ namespace HIDAeroService.Mapper
                 CreatedDate= Create,
                 UpdatedDate= Create,
 
-                // Detail
+                // ExtendDesc
                 ComponentId= ComponentId,
                 Name= dto.Name,
                 AccessLevelDoorTimeZones=dto.CreateUpdateAccessLevelDoorTimeZoneDto
@@ -961,7 +1044,7 @@ namespace HIDAeroService.Mapper
             entity.IsActive = dto.IsActive;
             entity.UpdatedDate = DateTime.Now;
 
-            // Detail
+            // ExtendDesc
             entity.Name = dto.Name;
             entity.AccessLevelDoorTimeZones = dto.CreateUpdateAccessLevelDoorTimeZoneDto
                 .Select(x => DtoToAccessLevelDoorTimeZone(x,dto.ComponentId))
@@ -998,7 +1081,7 @@ namespace HIDAeroService.Mapper
                 // Base
                 IsActive = t.IsActive,
 
-                // Detail
+                // ExtendDesc
                 ComponentId = t.ComponentId,
                 Name = t.Name,
                 Mode = t.Mode,
@@ -1067,7 +1150,7 @@ namespace HIDAeroService.Mapper
                 // Base 
                 IsActive = p.IsActive,
 
-                // Detail
+                // ExtendDesc
                 ComponentId = p.ComponentId,
                 DaysDesc = p.DaysDesc,
                 StartTime = p.StartTime,
@@ -1095,7 +1178,7 @@ namespace HIDAeroService.Mapper
                 
                 IsActive = dto.IsActive,
 
-                // Detail
+                // ExtendDesc
                 ComponentId = dto.ComponentId,
                 DaysDesc = dto.DaysDesc,
                 StartTime = dto.StartTime,
@@ -1122,7 +1205,7 @@ namespace HIDAeroService.Mapper
                 IsActive = true,
                 UpdatedDate = DateTime.Now,
 
-                // Detail
+                // ExtendDesc
                 ComponentId = componentId,
                 DaysDesc = DaysDesc,
                 StartTime = dto.StartTime,
@@ -1146,7 +1229,7 @@ namespace HIDAeroService.Mapper
             interval.IsActive = dto.IsActive;
             interval.UpdatedDate = DateTime.Now;
 
-            // Detail
+            // ExtendDesc
             interval.ComponentId = dto.ComponentId;
             interval.Days.Sunday = dto.Days.Sunday;
             interval.Days.Monday = dto.Days.Monday;
@@ -1176,7 +1259,7 @@ namespace HIDAeroService.Mapper
                 CreatedDate = Create,
                 UpdatedDate = Create,
 
-                // Detail
+                // ExtendDesc
                 Name = dto.Name,
                 ComponentId = ComponentId,
                 Facility = dto.Facility,
@@ -1204,7 +1287,7 @@ namespace HIDAeroService.Mapper
                 Uuid = x.Uuid,
                 IsActive = x.IsActive,
 
-                // Detail
+                // ExtendDesc
                 Name = x.Name,
                 ComponentId = x.ComponentId,
                 Facility = x.Facility,
@@ -1243,25 +1326,6 @@ namespace HIDAeroService.Mapper
             card.ChLoc = dto.ChLoc;
             card.IcLn = dto.IcLn;
             card.IcLoc = dto.IcLoc;
-        }
-
-        #endregion
-
-        #region Event
-
-        public static EventDto EventToEventDto(Event even) 
-        {
-            EventDto dto = new EventDto();
-            dto.Date = even.Date;
-            dto.Time = even.Time;
-            //dto.SerialNumber = even.serial_number;
-            dto.Source = even.Source;
-            dto.SourceNumber = even.SourceNo;
-            //dto.Type = even.type;
-            dto.Description = even.Description;
-            dto.Additional = even.Additional;
-            return dto;
-
         }
 
         #endregion
@@ -1315,7 +1379,7 @@ namespace HIDAeroService.Mapper
                 IsActive = entity.IsActive,
                 ComponentId = entity.ComponentId,
 
-                // Detail
+                // ExtendDesc
                 Name = entity.Name,
                 MultiOccupancy = entity.MultiOccupancy,
                 AccessControl = entity.AccessControl,
@@ -1341,7 +1405,7 @@ namespace HIDAeroService.Mapper
                 CreatedDate = Create,
                 UpdatedDate = Create,
 
-                // Detail
+                // ExtendDesc
                 Name = dto.Name,
                 MultiOccupancy = dto.MultiOccupancy,
                 AccessControl = dto.AccessControl,
@@ -1361,7 +1425,7 @@ namespace HIDAeroService.Mapper
             entity.IsActive = dto.IsActive;
             entity.UpdatedDate = DateTime.Now;
 
-            // Detail
+            // ExtendDesc
             entity.Name = dto.Name;
             entity.MultiOccupancy = dto.MultiOccupancy;
             entity.AccessControl = dto.AccessControl;
@@ -1386,7 +1450,7 @@ namespace HIDAeroService.Mapper
                 LocationIds = entity.OperatorLocations.Select(x => x.Location.ComponentId).ToList(),
                 IsActive = entity.IsActive,
 
-                // Detail 
+                // ExtendDesc 
                 ComponentId = entity.ComponentId,
                 Username = entity.Username,
                 Email = entity.Email,
@@ -1409,7 +1473,7 @@ namespace HIDAeroService.Mapper
                 CreatedDate = Created,
                 UpdatedDate = Created,
 
-                // Detail
+                // ExtendDesc
                 UserId = dto.UserId,
                 ComponentId = ComponentId,
                 Username= dto.Username,
@@ -1430,7 +1494,7 @@ namespace HIDAeroService.Mapper
             en.OperatorLocations = dto.LocationIds.Select(x => new OperatorLocation { LocationId = x, OperatorId = en.ComponentId }).ToArray();
             en.UpdatedDate = DateTime.Now;
 
-            // Detail
+            // ExtendDesc
             en.ComponentId = dto.ComponentId;
             en.Username = dto.Username;
             en.Password = dto.Password;
@@ -1520,6 +1584,199 @@ namespace HIDAeroService.Mapper
                 Name = s.Name
             };
         }
+
+        #endregion
+
+        #region Transaction
+
+        public static TransactionDto TransactionToDto(HIDAeroService.Entity.Transaction en) 
+        {
+            return new TransactionDto
+            {
+                // Base 
+                Uuid = en.Uuid,
+                ComponentId = en.ComponentId,
+                MacAddress = en.MacAddress,
+                LocationId = en.LocationId,
+
+                // ExtendDesc
+                Date = en.Date,
+                Time = en.Time,
+                SerialNumber = en.SerialNumber,
+                Actor = en.Actor,
+                Source = en.Source,
+                Origin = en.Origin,
+                SourceModule = en.SourceModule,
+                Type = en.Type,
+                TypeDesc = en.TypeDesc,
+                TranCode = en.TranCode,
+                Image = en.ImagePath,
+                TranCodeDesc = en.TranCodeDesc,
+                ExtendDesc = en.ExtendDesc,
+                Remark = en.Remark,
+                TransactionFlags = en.TransactionFlags.Select(x => TransactionFlagToDto(x)).ToList(),
+
+            };
+        }
+
+        public static TransactionFlagDto TransactionFlagToDto(TransactionFlag flag)
+        {
+            return new TransactionFlagDto 
+            {
+                Topic = flag.Topic,
+                Name = flag.Name,
+                Description = flag.Description
+            };
+        }
+
+        #endregion
+
+        #region Procedure
+
+        public static ProcedureDto ProcedureToDto(Procedure en)
+        {
+            return new ProcedureDto
+            {
+                // Base
+                Uuid = en.Uuid,
+                ComponentId = en.ComponentId,
+                MacAddress = en.MacAddress,
+                LocationId = en.LocationId,
+                IsActive = en.IsActive,
+
+                // Detail
+                Name = en.Name,
+                Actions = en.Actions
+                .Select(x => ActionToDto(x))
+                .ToList()
+
+
+            };
+        }
+        
+        public static Procedure DtoToProcedure(ProcedureDto dto,short ComponentId,DateTime Create)
+        {
+            return new Procedure
+            {
+                // Base
+                ComponentId = ComponentId,
+                MacAddress = dto.MacAddress,
+                LocationId = dto.LocationId,
+                IsActive = true,
+                UpdatedDate = Create,
+                CreatedDate = Create,
+
+                // Detail
+                Name = dto.Name,
+                Actions = dto.Actions
+                .Select(x => DtoToAction(x,ComponentId,DateTime.Now))
+                .ToArray(),    
+            };
+        }
+
+        public static Entity.Action DtoToAction(ActionDto dto,short ComponentId,DateTime Create)
+        {
+            return new Entity.Action 
+            {
+                // Base
+                ComponentId = ComponentId,
+                MacAddress = dto.MacAddress,
+                LocationId = dto.LocationId,
+                IsActive = true,
+                UpdatedDate = Create,
+                CreatedDate = Create,
+
+                // Detail
+                ScpId = dto.ScpId,
+                ProcedureId = ComponentId,
+                ActionType = dto.ActionType,
+                ActionTypeDesc = dto.ActionTypeDesc,
+                Arg1 = dto.Arg1,
+                Arg2 = dto.Arg2,
+                Arg3 = dto.Arg3,
+                Arg4 = dto.Arg4,
+                Arg5 = dto.Arg5,
+                Arg6 = dto.Arg6,
+                Arg7 = dto.Arg7,
+                StrArg = dto.StrArg,
+
+            };
+        }
+
+        public static ActionDto ActionToDto(Entity.Action en)
+        {
+            return new ActionDto
+            {
+                // Base
+                Uuid = en.Uuid,
+                ComponentId = en.ComponentId,
+                MacAddress = en.MacAddress,
+                LocationId = en.LocationId,
+                IsActive = en.IsActive,
+
+                // Detail
+                ScpId= en.ScpId,
+                ActionType = en.ActionType,
+                ActionTypeDesc = en.ActionTypeDesc,
+                Arg1 = en.Arg1,
+                Arg2= en.Arg2,
+                Arg3= en.Arg3,
+                Arg4= en.Arg4,
+                Arg5= en.Arg5,
+                Arg6= en.Arg6,
+                Arg7= en.Arg7,
+                StrArg= en.StrArg
+            };
+        }
+
+        #endregion
+
+        #region Trigger
+
+        public static TriggerDto TriggerToDto(Entity.Trigger en)
+        {
+            return new TriggerDto
+            {
+                // Base
+                Uuid = en.Uuid,
+                LocationId = en.LocationId,
+                MacAddress = en.MacAddress,
+                IsActive = en.IsActive,
+                
+                // Detail
+                Command = en.Command,
+                ProcedureId = en.ProcedureId,
+                SourceNumber = en.SourceNumber,
+                SourceType = en.SourceType,
+                TranType =en.TranType,
+                CodeMap =en.CodeMap,
+                TimeZone=en.TimeZone,
+            };
+        }
+
+        public static Trigger DtoToTrigger(TriggerDto dto,short ComponentId,DateTime Create)
+        {
+            return new Trigger
+            {
+                // Base
+                LocationId = dto.LocationId,
+                MacAddress = dto.MacAddress,
+                IsActive = true,
+                CreatedDate = Create,
+                UpdatedDate = Create,
+
+                // Detail
+                
+                Command = dto.Command,
+                ProcedureId = dto.ProcedureId,
+                SourceNumber = dto.SourceNumber,
+                SourceType = dto.SourceType,
+                TranType = dto.TranType,
+                CodeMap = dto.CodeMap,
+                TimeZone = dto.TimeZone,
+            };
+        }
+
 
         #endregion
 

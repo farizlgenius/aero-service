@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using HIDAeroService.AeroLibrary;
+﻿using HIDAeroService.AeroLibrary;
 using HIDAeroService.Constant;
 using HIDAeroService.Constants;
 using HIDAeroService.Data;
@@ -12,7 +11,7 @@ using System.Net;
 
 namespace HIDAeroService.Service.Impl
 {
-    public class IdReportService(AeroCommand command, AeroMessage read, IMapper mapper, AppDbContext context, ILogger<IdReportService> logger)
+    public class IdReportService(AeroCommand command, AeroMessage read, AppDbContext context, ILogger<IdReportService> logger)
     {
 
         public async Task<ResponseDto<IEnumerable<IDReportDto>>> GetAsync()

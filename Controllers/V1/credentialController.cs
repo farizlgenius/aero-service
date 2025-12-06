@@ -53,6 +53,7 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
+
         [HttpDelete("card")]
         public async Task<ActionResult<ResponseDto<bool>>> DeleteCardAsync([FromBody] DeleteCardDto dto) 
         {

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using HIDAeroService.AeroLibrary;
+﻿using HIDAeroService.AeroLibrary;
 using HIDAeroService.Constant;
 using HIDAeroService.Constants;
 using HIDAeroService.Data;
@@ -21,7 +20,7 @@ using System.Net;
 
 namespace HIDAeroService.Service.Impl
 {
-    public class ModuleService(AppDbContext context, AeroCommand command, IHubContext<AeroHub> hub, IHelperService<Module> helperService, IMapper mapper, ILogger<ModuleService> logger) : IModuleService
+    public class ModuleService(AppDbContext context, AeroCommand command, IHubContext<AeroHub> hub, IHelperService<Module> helperService, ILogger<ModuleService> logger) : IModuleService
     {
 
         public async Task<ResponseDto<IEnumerable<ModuleDto>>> GetAsync()
@@ -69,13 +68,13 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<IEnumerable<ModuleDto>>> GetByMacAsync(string mac)
         {
-            var entities = await context.Modules.Where(x => x.MacAddress == mac).ToArrayAsync();
-            if (entities.Count() == 0) return ResponseHelper.NotFoundBuilder<IEnumerable < ModuleDto>> ();
-            List<ModuleDto> dtos = new List<ModuleDto>();
-            foreach(var entity in entities)
-            {
-                dtos.Add(mapper.Map<ModuleDto>(entity));
-            }
+            var dtos = await context.Modules
+                .AsNoTracking()
+                .Where(x => x.MacAddress == mac)
+                .Select(x => MapperHelper.ModuleToDto(x))
+                .ToArrayAsync();
+
+
             return ResponseHelper.SuccessBuilder<IEnumerable<ModuleDto>>(dtos);
         }
 

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿
 using HID.Aero.ScpdNet.Wrapper;
 using HIDAeroService.Constants;
 using HIDAeroService.Data;
@@ -18,7 +18,7 @@ using HIDAeroService.Mapper;
 namespace HIDAeroService.Service.Impl
 {
 
-    public class CardFormatService(AppDbContext context, IMapper mapper, ILogger<CardFormatService> logger, AeroCommand command, IHelperService<CardFormat> helperService) : ICardFormatService
+    public class CardFormatService(AppDbContext context, ILogger<CardFormatService> logger, AeroCommand command, IHelperService<CardFormat> helperService) : ICardFormatService
     {
 
         public async Task<ResponseDto<IEnumerable<CardFormatDto>>> GetAsync()

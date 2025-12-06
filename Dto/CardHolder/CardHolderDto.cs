@@ -18,6 +18,7 @@ namespace HIDAeroService.DTO.CardHolder
         public string Position { get; set; } = string.Empty;
         public string Department { get; set; } = string.Empty;
         public string ImagePath { get; set; } = string.Empty;
+        public short Flag { get; set; }
         public List<string> Additionals { get; set; }
         public List<CredentialDto> Credentials { get; set; }
         public List<AccessLevelDto>? AccessLevels { get; set; }

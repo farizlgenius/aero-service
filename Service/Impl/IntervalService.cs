@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using HIDAeroService.Constants;
+﻿using HIDAeroService.Constants;
 using HIDAeroService.Data;
 using HIDAeroService.DTO;
 using HIDAeroService.DTO.Interval;

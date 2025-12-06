@@ -1,10 +1,10 @@
-﻿using AutoMapper;
-using HID.Aero.ScpdNet.Wrapper;
+﻿using HID.Aero.ScpdNet.Wrapper;
 using HIDAeroService.AeroLibrary;
 using HIDAeroService.Constant;
 using HIDAeroService.Constants;
 using HIDAeroService.Data;
 using HIDAeroService.DTO;
+using HIDAeroService.DTO.AccessLevel;
 using HIDAeroService.DTO.Hardware;
 using HIDAeroService.DTO.Scp;
 using HIDAeroService.Entity;
@@ -20,7 +20,7 @@ using static HIDAeroService.AeroLibrary.Description;
 
 namespace HIDAeroService.Service.Impl
 {
-    public class HardwareService(AppDbContext context, AeroCommand command, IHubContext<AeroHub> hub,ITimeZoneService timeZoneService,ICardFormatService cardFormatService,IAccessLevelService accessLevelService, IHelperService<Hardware> helperService, CmndService cmndService, ICredentialService credentialService, IMapper mapper) : IHardwareService
+    public class HardwareService(AppDbContext context, AeroCommand command, IHubContext<AeroHub> hub,ITimeZoneService timeZoneService,ICardFormatService cardFormatService,IAccessLevelService accessLevelService, IHelperService<Hardware> helperService, CmndService cmndService, ICredentialService credentialService) : IHardwareService
     {
 
         public async Task<ResponseDto<IEnumerable<HardwareDto>>> GetAsync()
@@ -86,7 +86,7 @@ namespace HIDAeroService.Service.Impl
             context.Hardwares.Remove(entity);
             await context.SaveChangesAsync();
 
-            var dto = mapper.Map<HardwareDto>(entity);
+            var dto = MapperHelper.HardwareToHardwareDto(entity);
 
             return ResponseHelper.SuccessBuilder<HardwareDto>(dto);
 
@@ -202,41 +202,61 @@ namespace HIDAeroService.Service.Impl
             foreach(var module in hardware.Module)
             {
                 if (!await command.SioDriverConfigurationAsync(hardware.ComponentId, module.Msp1No, module.Port, module.BaudRate, module.nProtocol)) return false;
-                if (!await command.SioPanelConfigurationAsync(hardware.ComponentId, (short)module.ComponentId,Enum.Model.HIDAeroX1100,module.nInput,module.nOutput,module.nReader, module.Address, module.Msp1No, true)) return false;
+                if (!await command.SioPanelConfigurationAsync(hardware.ComponentId, (short)module.ComponentId,Enums.Model.HIDAeroX1100,module.nInput,module.nOutput,module.nReader, module.Address, module.Msp1No, true)) return false;
             }
 
 
 
-            var formats = await context.CardFormats.ToArrayAsync();
+            var formats = await context.CardFormats.AsNoTracking().ToArrayAsync();
             foreach (var format in formats)
             {
                 if (!await command.CardFormatterConfigurationAsync(hardware.ComponentId, format.ComponentId, format.Facility, 0, 1, 0, format.Bits, format.PeLn, format.PeLoc, format.PoLn, format.PoLoc, format.FcLn, format.FcLoc, format.ChLn, format.ChLoc, format.IcLn, format.IcLoc)) return false;
             }
 
 
-            //var timezones = await context.ArTimeZones.ToArrayAsync();
-            //foreach (var tz in timezones)
-            //{
-            //    if (!command.ExtendedTimeZoneActSpecification(ScpId, tz.TzNo, tz.Mode, (int)helperService.DateTimeToElapeSecond(tz.ActTime), (int)helperService.DateTimeToElapeSecond(tz.DeactTime), tz.Intervals, []))
-            //    {
-            //        _logger.LogError(Constants.Constant.EXTEND_TIME_ZONE_SPECIFICATION_UNSUCCESS);
-            //        //return AppContants.EXTEND_TIME_ZONE_SPECIFICATION_UNSUCCESS;
-            //    
-            //}
+            var timezones = await context.TimeZones
+                .AsNoTracking()
+                .Include(x => x.TimeZoneIntervals)
+                .ThenInclude(x => x.Interval)
+                .ThenInclude(x => x.Days)
+                .ToArrayAsync();
+
+            var intervals = timezones
+                .SelectMany(x => x.TimeZoneIntervals.Select(x => x.Interval))
+                .ToList();
+
+            foreach (var tz in timezones)
+            {
+                if (!await command.ExtendedTimeZoneActSpecificationAsync(hardware.ComponentId, tz, intervals, !string.IsNullOrEmpty(tz.ActiveTime) ? (int)helperService.DateTimeToElapeSecond(tz.ActiveTime) : 0, !string.IsNullOrEmpty(tz.DeactiveTime) ? (int)helperService.DateTimeToElapeSecond(tz.DeactiveTime) : 0)) return false;
+            }
 
 
-            // CreateAsync Access Level All
-            //IEnumerable<AccessLevels> acls = alvlService.GetAllSetting();
-            //foreach (var a in acls)
-            //{
-            //    if (!command.AccessLevelConfigurationExtended(ScpId, a.ComponentNo,a))
-            //    {
-            //        _logger.LogError(Constants.ResponseMessage.ACCESS_LEVEL_CONFIGURATION_UNSUCCESS);
-            //        //return AppContants.ACCESS_LEVEL_CONFIGURATION_UNSUCCESS;
-            //    }
-            //}
 
-            foreach(var module in hardware.Module)
+            var acls = await context.AccessLevels
+                .AsNoTracking()
+                .Include(x => x.AccessLevelDoorTimeZones)
+                .ToArrayAsync();
+
+            var tzs = acls.SelectMany(x => x.AccessLevelDoorTimeZones).Select(x => new CreateUpdateAccessLevelDoorTimeZoneDto
+            {
+                TimeZoneId = x.TimeZoneId,
+                DoorId = x.DoorId,
+            }).ToList();
+
+            foreach (var a in acls)
+            {
+                if(a.ComponentId == 1 || a.ComponentId == 2)
+                {
+                    if (!await command.AccessLevelConfigurationExtendedAsync(hardware.ComponentId, a.ComponentId, a.ComponentId == 1 ? (short)0 : (short)1)) return false;
+                }
+                else
+                {
+                    if (!await command.AccessLevelConfigurationExtendedCreateAsync(hardware.ComponentId, a.ComponentId, tzs)) return false;
+                }
+                
+            }
+
+            foreach (var module in hardware.Module)
             {
                 for (short i = 0; i < module.nInput; i++)
                 {
@@ -582,7 +602,7 @@ namespace HIDAeroService.Service.Impl
                     iDReport.OperMode = message.id.oper_mode;
                     iDReport.ScpIn3 = message.id.scp_in_3;
                     iDReport.CumulativeBldCnt = message.id.cumulative_bld_cnt;
-                    iDReport.Model = Enum.Model.HIDAeroX1100.ToString();
+                    iDReport.Model = Enums.Model.HIDAeroX1100.ToString();
                     return iDReport;
                 }
             }

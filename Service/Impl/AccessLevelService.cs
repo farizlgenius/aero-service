@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using HIDAeroService.AeroLibrary;
+﻿using HIDAeroService.AeroLibrary;
 using HIDAeroService.Constant;
 using HIDAeroService.Constants;
 using HIDAeroService.Data;
@@ -14,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HIDAeroService.Service.Impl
 {
-    public sealed class AccessLevelService(AeroCommand command, AppDbContext context, IHelperService<AccessLevel> helperService, IMapper mapper) : IAccessLevelService
+    public sealed class AccessLevelService(AeroCommand command, AppDbContext context, IHelperService<AccessLevel> helperService) : IAccessLevelService
     {
 
         public async Task<ResponseDto<IEnumerable<AccessLevelDto>>> GetAsync()
@@ -25,6 +24,20 @@ namespace HIDAeroService.Service.Impl
                     .ThenInclude(x => x.TimeZone)
                 .Include(x => x.AccessLevelDoorTimeZones)
                     .ThenInclude(x => x.Door)
+                .Select(x => MapperHelper.AccessLevelToDto(x))
+                .ToArrayAsync();
+            return ResponseHelper.SuccessBuilder<IEnumerable<AccessLevelDto>>(dtos);
+        }
+
+        public async Task<ResponseDto<IEnumerable<AccessLevelDto>>> GetByLocationIdAsync(short location)
+        {
+            var dtos = await context.AccessLevels
+                .AsNoTracking()
+                .Include(x => x.AccessLevelDoorTimeZones)
+                    .ThenInclude(x => x.TimeZone)
+                .Include(x => x.AccessLevelDoorTimeZones)
+                    .ThenInclude(x => x.Door)
+                .Where(x => x.LocationId == location)
                 .Select(x => MapperHelper.AccessLevelToDto(x))
                 .ToArrayAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<AccessLevelDto>>(dtos);

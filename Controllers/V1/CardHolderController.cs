@@ -32,6 +32,13 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
+        [HttpGet("/api/v1/{location}/[controller]")]
+        public async Task<ActionResult<ResponseDto<IEnumerable<CardHolderDto>>>> GetByLocationIdAsync(short location)
+        {
+            var res = await cardHolderService.GetByLocationIdAsync(location);
+            return Ok(res);
+        }
+
         [HttpGet("{UserId}")]
         public async Task<ActionResult<ResponseDto<CardHolderDto>>> GetByComponentAsync(string UserId)
         {

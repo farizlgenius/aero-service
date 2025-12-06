@@ -1,8 +1,10 @@
-﻿namespace HIDAeroService.DTO
+﻿using HIDAeroService.DTO.Transactions;
+
+namespace HIDAeroService.DTO
 {
-    public class PaginationDto<T>
+    public class PaginationDto
     {
-        public new T Data { get; set; }
+        public IEnumerable<TransactionDto> Data { get; set; }
 
         public PaginationData Page { get; set; }
     }

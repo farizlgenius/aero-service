@@ -2,8 +2,10 @@
 using HIDAeroService.Constants;
 using HIDAeroService.DTO.AccessLevel;
 using HIDAeroService.DTO.Acr;
+using HIDAeroService.DTO.Action;
 using HIDAeroService.DTO.CardFormat;
 using HIDAeroService.DTO.Interval;
+using HIDAeroService.DTO.Procedure;
 using HIDAeroService.DTO.Trigger;
 using HIDAeroService.Entity;
 using HIDAeroService.Model;
@@ -14,6 +16,7 @@ using MiNET.Entities.Passive;
 using Newtonsoft.Json.Linq;
 using System.Collections.Concurrent;
 using static MiNET.Net.McpeUpdateBlock;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace HIDAeroService.AeroLibrary
@@ -23,7 +26,6 @@ namespace HIDAeroService.AeroLibrary
         private readonly ConcurrentDictionary<int, TaskCompletionSource<bool>> _pendingCommands = new ConcurrentDictionary<int, TaskCompletionSource<bool>>();
         public int TagNo { get; private set; } = 0;
         public List<int> UploadCommandTags { get; private set; } = new List<int>();
-        public string UploadMessage { get; set; } = "";
         public string Command { get; private set; } = "";
         public int CommandTimeOut
         {
@@ -101,7 +103,7 @@ namespace HIDAeroService.AeroLibrary
         // Method: SendCommand to Driver
         // Target: For CreateAsync Channel
         // channelId: Channel ComponentId to create
-        // commuType: Communication Type ip-client / ip-server
+        // commuType: Communication TypeDesc ip-client / ip-server
         // port: Port number of driver that Controller need to set
         // controllerReplyTimeout: maximum controller Reply Waiting Before Timeout Default 3000ms
         //////
@@ -731,7 +733,7 @@ namespace HIDAeroService.AeroLibrary
             return flag;
         }
 
-        public async Task<bool> SioPanelConfigurationAsync(short ScpId, short SioNo, Enum.Model Model,short nInput,short nOutput,short nReader, short ModuleAddress, short SIODriverPort, bool isEnable)
+        public async Task<bool> SioPanelConfigurationAsync(short ScpId, short SioNo, Enums.Model Model,short nInput,short nOutput,short nReader, short ModuleAddress, short SIODriverPort, bool isEnable)
         {
 
             CC_SIO cc_sio = new CC_SIO();
@@ -1012,7 +1014,7 @@ namespace HIDAeroService.AeroLibrary
             }
         }
 
-        public async Task<bool> MonitorPointGroup(short ScpId,short MpgNo,MonitorGroupDetail list)
+        public async Task<bool> MonitorPointGroup(short ScpId,short MpgNo,MonitorGroupListDto list)
         {
             CC_MPG c = new CC_MPG();
             c.lastModified = 0;
@@ -1027,6 +1029,47 @@ namespace HIDAeroService.AeroLibrary
             return false;
         }
 
+
+        #endregion
+
+        #region Monitor Point Group
+
+        public async Task<bool> ConfigureMonitorPointGroup(short ScpId,short ComponentId,short nMonitor,List<MonitorGroupList> list)
+        {
+            CC_MPG c = new CC_MPG();
+            c.lastModified = 0;
+            c.scp_number = ScpId;
+            c.mpg_number = ComponentId;
+            c.nMpCount = nMonitor;
+            List<short> mplist = new List<short>();
+            foreach(var l in list)
+            {
+                mplist.Add(l.PointType);
+                mplist.Add(l.PointNumber);
+            }
+            c.nMpList = mplist.ToArray();
+            bool flag = SendCommand((short)enCfgCmnd.enCcMpg, c);
+            if (flag)
+            {
+                return await SendCommandAsync(SCPDLL.scpGetTagLastPosted(ScpId), _commandTimeout);
+            }
+            return false;
+        }
+
+        public async Task<bool> MonitorPointGroupArmDisarmAsync(short ScpId,short ComponentId,short Command,short Arg1)
+        {
+            CC_MPGSET c = new CC_MPGSET();
+            c.scp_number = ScpId;
+            c.mpg_number = ComponentId;
+            c.command = Command;
+            c.arg1 = Arg1;
+            bool flag = SendCommand((short)enCfgCmnd.enCcMpgSet, c);
+            if (flag)
+            {
+                return await SendCommandAsync(SCPDLL.scpGetTagLastPosted(ScpId),_commandTimeout);
+            }
+            return false;
+        }
 
         #endregion
 
@@ -1592,7 +1635,7 @@ namespace HIDAeroService.AeroLibrary
 
         #region Trigger
 
-        public async Task<bool> TriggerSpecification(short scpId, TriggerDto dto,short ComponentId)
+        public async Task<bool> TriggerSpecification(short scpId, Trigger dto,short ComponentId)
         {
             CC_TRGR cc = new CC_TRGR();
             cc.scp_number = scpId;
@@ -1600,11 +1643,11 @@ namespace HIDAeroService.AeroLibrary
             cc.command = dto.Command;
             cc.proc_num = dto.ProcedureId;
             cc.src_type = dto.SourceType;
-            cc.src_number = dto.SourceId;
-            cc.tran_type = dto.TransactionType;
+            cc.src_number = dto.SourceNumber;
+            cc.tran_type = dto.TranType;
             cc.code_map = dto.CodeMap;
-            cc.timezone = dto.TimeZoneId;
-            switch (dto.TransactionType)
+            cc.timezone = dto.TimeZone;
+            switch (dto.TranType)
             {
                 case (short)tranType.tranTypeCardFull:
                     break;
@@ -1627,7 +1670,7 @@ namespace HIDAeroService.AeroLibrary
             // Trigger Variable
             //cc.trig_var[0] = 0;
 
-            // Transaction Type Arg
+            // Transaction TypeDesc Arg
             //cc.arg[0] = 0;
 
             
@@ -1645,18 +1688,177 @@ namespace HIDAeroService.AeroLibrary
 
         #region Procedure
 
-        public async Task<bool> ActionSpecification(short scpId,ProcedureDto dto,short ComponentId)
+        public async Task<bool> ActionSpecification(short ComponentId,List<ActionDto> dto)
         {
-            CC_ACTN cc = new CC_ACTN(3);
-            
-            
-
-            bool flag = SendCommand((short)enCfgCmnd.enCcProc, cc);
-            if (flag)
+            foreach(var action in dto)
             {
-                return await SendCommandAsync(SCPDLL.scpGetTagLastPosted(scpId), _commandTimeout);
-            }
+                CC_ACTN c = new CC_ACTN(action.ActionType);
+                c.hdr.lastModified = 0;
+                c.hdr.scp_number = action.ScpId;
+                c.hdr.proc_number = ComponentId;
+                c.hdr.action_type = action.ActionType;
+                //c.hdr.arg
+                switch (action.ActionType)
+                {
+                    case 1:
+                        c.mp_mask.scp_number = action.ScpId;
+                        c.mp_mask.mp_number = action.Arg1;
+                        c.mp_mask.set_clear = action.Arg2;
+                        break;
+                    case 2:
+                        c.cp_ctl.scp_number = action.ScpId;
+                        c.cp_ctl.cp_number = action.Arg1;
+                        c.cp_ctl.command = action.Arg2;
+                        c.cp_ctl.on_time = action.Arg3;
+                        c.cp_ctl.off_time = action.Arg4;
+                        c.cp_ctl.repeat = action.Arg5;
+                        break;
+                    case 3:
+                        c.acr_mode.scp_number = action.ScpId;
+                        c.acr_mode.acr_number = action.Arg1;
+                        c.acr_mode.acr_mode = action.Arg2;
+                        break;
+                    case 4:
+                        c.fo_mask.scp_number = action.ScpId;
+                        c.fo_mask.acr_number = action.Arg1;
+                        c.fo_mask .set_clear = action.Arg2;
+                        break;
+                    case 5:
+                        c.ho_mask.scp_number = action.ScpId;
+                        c.ho_mask.acr_number = action.Arg1;
+                        c.ho_mask.set_clear = action.Arg2;
+                        break;
+                    case 6:
+                        c.unlock.scp_number = action.ScpId;
+                        c.unlock.acr_number = action.Arg1;
+                        c.unlock.floor_number = action.Arg2;
+                        c.unlock.strk_tm = action.Arg3;
+                        c.unlock.t_held = action.Arg4;
+                        c.unlock.t_held_pre = action.Arg5; 
+                        break;
+                    case 7:
+                        c.proc.scp_number = action.ScpId;
+                        c.proc.proc_number = action.Arg1;
+                        c.proc.command = action.Arg2;
+                        break;
+                    case 8:
+                        c.tv_ctl.scp_number = action.ScpId;
+                        c.tv_ctl.tv_number = action.Arg1;
+                        c.tv_ctl.set_clear = action.Arg2;
+                        break;
+                    case 9:
+                        c.tz_ctl.scp_number = action.ScpId;
+                        c.tz_ctl.tz_number = action.Arg1;
+                        c.tz_ctl.command = action.Arg2;
+                        break;
+                    case 10:
+                        c.led_mode.scp_number = action.ScpId;
+                        c.led_mode.acr_number = action.Arg1;
+                        c.led_mode.led_mode = action.Arg2;
+                        break;
+                    case 14:
+                        c.mpg_set.scp_number = action.ScpId;
+                        c.mpg_set.mpg_number = action.Arg1;
+                        c.mpg_set.command = action.Arg2;
+                        c.mpg_set.arg1 = action.Arg3;
+                        break;
+                    case 15:
+                        c.mpg_test_mask.scp_number = action.ScpId;
+                        c.mpg_test_mask.mpg_number = action.Arg1;
+                        c.mpg_test_mask.action_prefix_ifz = action.Arg2;
+                        c.mpg_test_mask.action_prefix_ifnz = action.Arg3;
+                        break;
+                    case 16:
+                        c.mpg_test_active.scp_number = action.ScpId;
+                        c.mpg_test_active.mpg_number = action.Arg1;
+                        c.mpg_test_active.action_prefix_ifnoactive = action.Arg2;
+                        c.mpg_test_active.action_prefix_ifactive = action.Arg3;
+                        break;
+                    case 17:
+                        c.area_set.scp_number = action.ScpId;
+                        c.area_set.area_number = action.Arg1;
+                        c.area_set.command = action.Arg2;
+                        c.area_set.occ_set = action.Arg3;
+                        break;
+                    case 18:
+                        c.unlock.scp_number = action.ScpId;
+                        c.unlock.acr_number = action.Arg1;
+                        c.unlock.floor_number = action.Arg2;
+                        c.unlock.strk_tm = action.Arg3;
+                        c.unlock.t_held = action.Arg4;
+                        c.unlock.t_held_pre = action.Arg5;
+                        break;
+                    case 19:
+                        c.rled_tmp.scp_number = action.ScpId;
+                        c.rled_tmp.acr_number = action.Arg1;
+                        c.rled_tmp.color_on = action.Arg2;
+                        c.rled_tmp.color_off = action.Arg3;
+                        c.rled_tmp.ticks_on = action.Arg4;
+                        c.rled_tmp.ticks_off = action.Arg5;
+                        c.rled_tmp.repeat = action.Arg6;
+                        c.rled_tmp.beeps = action.Arg7;
+                        break;
+                    case 20:
+                        //c.lcd_text.
+                        break;
+                    case 24:
+                        c.temp_acr_mode.scp_number = action.ScpId;
+                        c.temp_acr_mode.acr_number = action.Arg1;
+                        c.temp_acr_mode.acr_mode = action.Arg2;
+                        c.temp_acr_mode.time = action.Arg3;
+                        c.temp_acr_mode.nAuthModFlags = action.Arg4;
+                        break;
+                    case 25:
+                        c.card_sim.nScp = action.ScpId;
+                        c.card_sim.nCommand = 1;
+                        c.card_sim.nAcr = action.Arg1;
+                        c.card_sim.e_time = action.Arg2;
+                        c.card_sim.nFmtNum = action.Arg3;
+                        c.card_sim.nFacilityCode = action.Arg4;
+                        c.card_sim.nCardholderId = action.Arg5;
+                        c.card_sim.nIssueCode = action.Arg6;
+                        break;
+                    case 26:
+                        c.use_limit.scp_number = action.ScpId;
+                        c.use_limit.cardholder_id = action.Arg1;
+                        c.use_limit.new_limit = action.Arg2;
+                        break;
+                    case 27:
+                        c.oper_mode.scp_number = action.ScpId;
+                        c.oper_mode.oper_mode = action.Arg1;
+                        c.oper_mode.enforce_existing = action.Arg2;
+                        c.oper_mode.existing_mode = action.Arg3;
+                        break;
+                    case 28:
+                        c.key_sim.nScp = action.ScpId;
+                        c.key_sim.nAcr = action.Arg1;
+                        c.key_sim.e_time = action.Arg2;
+                        for(int i = 0;i < action.StrArg.Length; i++)
+                        {
+                            c.key_sim.keys[i] = action.StrArg[i];
+                        }
+                        break;
+                    case 30:
+                        c.batch_trans.nScpID = action.ScpId;
+                        c.batch_trans.trigNumber = (ushort)action.Arg1;
+                        c.batch_trans.actType = (ushort)action.Arg2;
+                        break;
+                    case 126:
+                    case 127:
+                        c.delay.delay_time = action.Arg1;
+                        break;
+                    default:
+                        break;
+                }
 
+                bool flag = SendCommand((short)enCfgCmnd.enCcProc,c);
+                if (flag)
+                {
+                    return await SendCommandAsync(SCPDLL.scpGetTagLastPosted(action.ScpId), _commandTimeout);
+                }
+                return false;
+
+            }
             return false;
         }
 

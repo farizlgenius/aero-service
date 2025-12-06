@@ -1,0 +1,14 @@
+﻿using HIDAeroService.DTO;
+using HIDAeroService.DTO.Procedure;
+
+namespace HIDAeroService.Service
+{
+    public interface IProcedureService
+    {
+        Task<ResponseDto<IEnumerable<ProcedureDto>>> GetAsync();
+        Task<ResponseDto<IEnumerable<ProcedureDto>>> GetByLocationIdAsync(short location);
+        Task<ResponseDto<bool>> CreateAsync(ProcedureDto dto);
+        Task<ResponseDto<bool>> DeleteAsync(string Mac,short ComponentId);
+        Task<ResponseDto<ProcedureDto>> UpdateAsync(ProcedureDto dto);
+    }
+}

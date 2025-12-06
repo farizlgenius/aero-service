@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using HIDAeroService.AeroLibrary;
+﻿using HIDAeroService.AeroLibrary;
 using HIDAeroService.Constant;
 using HIDAeroService.Constants;
 using HIDAeroService.Data;
@@ -16,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HIDAeroService.Service.Impl
 {
-    public class DoorService(AppDbContext context, AeroMessage read, AeroCommand command, IHelperService<Door> helperService, IHubContext<AeroHub> hub, IMapper mapper) : IDoorService
+    public class DoorService(AppDbContext context, AeroMessage read, AeroCommand command, IHelperService<Door> helperService, IHubContext<AeroHub> hub) : IDoorService
     {
         public async Task<ResponseDto<IEnumerable<DoorDto>>> GetAsync()
         {
@@ -26,6 +25,20 @@ namespace HIDAeroService.Service.Impl
                 .Include(x => x.Sensor)
                 .Include(x=>x.RequestExits)
                 .Include(x=>x.Strk)
+                .Select(x => MapperHelper.DoorToDto(x))
+                .ToArrayAsync();
+
+            return ResponseHelper.SuccessBuilder<IEnumerable<DoorDto>>(dtos);
+        }
+        public async Task<ResponseDto<IEnumerable<DoorDto>>> GetByLocationIdAsync(short location)
+        {
+            var dtos = await context.Doors
+                .AsNoTracking()
+                .Include(x => x.Readers)
+                .Include(x => x.Sensor)
+                .Include(x => x.RequestExits)
+                .Include(x => x.Strk)
+                .Where(x => x.LocationId == location)
                 .Select(x => MapperHelper.DoorToDto(x))
                 .ToArrayAsync();
 

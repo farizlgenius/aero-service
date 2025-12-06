@@ -6,6 +6,7 @@ using HIDAeroService.Entity.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using System.Xml.Linq;
 
@@ -69,10 +70,44 @@ namespace HIDAeroService.Data
         public DbSet<SubFeature> SubFeatures { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<FeatureRole> FeatureRoles { get; set; }
-        // Old 
 
-        public DbSet<Event> Events { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
+        public DbSet<FileType> FileTypes { get; set; }
+        public DbSet<MonitorGroup> MonitorGroups { get; set; }
+        public DbSet<MonitorGroupList> MonitorGroupLists { get; set; }
+
+        public DbSet<MonitorGroupType> MonitorGroupTypes { get; set; }
+        public DbSet<MonitorGroupCommand> MonitorGroupCommands { get; set; }
+        public DbSet<Procedure> Procedures { get; set; }
+        public DbSet<Entity.Action> Actions { get; set; }
+        public DbSet<Trigger> Triggers { get; set; }
+
+
+        // New
+        //public DbSet<TransactionFlag> TransactionFlagDetails { get; set; }
+        //public DbSet<TypeSys> TypeSys { get; set; }
+        //public DbSet<TypeWebActivity> TypeWebActivities { get; set; }
+        //public DbSet<TypeFileDownloadStatus> TypeFileDownloadStatuses { get; set; }
+        //public DbSet<TypeCos> TypeCoses { get; set; }
+        //public DbSet<TypeSioDiag> TypeSioDiags { get; set; }
+        //public DbSet<TypeSioComm> TypeSioComms { get; set; }
+        //public DbSet<TypeCardBin> TypeCardBins { get; set; }
+        //public DbSet<TypeCardBcd> TypeCardBcds { get; set; }
+        //public DbSet<TypeCardFull> TypeCardFulls { get; set; }
+        //public DbSet<TypeCardID> TypeCardIDs { get; set; }
+        //public DbSet<TypeREX> TypeREXes { get; set; }
+        //public DbSet<TypeUserCmnd> TypeUserCmnds { get; set; }
+        //public DbSet<TypeAcr> TypeAcrs { get; set; }
+        //public DbSet<TypeUseLimit> TypeUseLimits { get; set; }
+        //public DbSet<TypeCosElevator> TypeCosElevator { get; set; }
+        //public DbSet<TypeCosElevatorAccess> TypeCosElevatorAccesses { get; set; }
+        //public DbSet<TypeAcrExtFeatureStls> TypeAcrExtFeatureStls { get; set; }
+        //public DbSet<TypeAcrExtFeatureCoS> TypeAcrExtFeatureCoSes { get; set; }
+        //public DbSet<TypeMPG> TypeMPGs { get; set; }
+        //public DbSet<TypeArea> TypeAreas { get; set; }
+
+        // Old
         public DbSet<CommandStatus> ArCommandStatuses { get; set; }
 
         public DbSet<AeroStructureStatus> AeroStructureStatuses { get; set; }
@@ -164,6 +199,33 @@ namespace HIDAeroService.Data
                 new InputMode { Id = 3, Name = "Standard EOL 1", Value = 2, Description = "Standard (ROM’ed) EOL: 1 kΩ normal, 2 kΩ active" },
                 new InputMode { Id = 4, Name = "Standard EOL 2", Value = 3, Description = "Standard (ROM’ed) EOL: 2 kΩ normal, 1 kΩ active" }
                 );
+
+            #endregion
+
+            #region Monitor Group
+
+            modelBuilder.Entity<MonitorGroup>()
+                .HasMany(m => m.nMpList)
+                .WithOne(l => l.MonitorGroup)
+                .HasForeignKey(l => l.MonitorGroupId)
+                .HasPrincipalKey(x => x.ComponentId);
+
+            modelBuilder.Entity<MonitorGroupType>()
+                .HasData(
+                    new MonitorGroupType { Id=1,Name="Monitor Point",Value=1,Description="" },
+                    new MonitorGroupType { Id=2,Name="Forced Open",Value=2,Description=""},
+                    new MonitorGroupType { Id=3,Name="Held Open",Value=3,Description=""}
+                );
+
+            modelBuilder.Entity<MonitorGroupCommand>()
+                .HasData(
+                    new MonitorGroupCommand { Id=1,Name="Access",Value=1,Description= "If the mask count is zero, mask all monitor points and increment the mask count by one" },
+                    new MonitorGroupCommand { Id=2,Name="Override",Value=2,Description= "Set mask count to arg1. If arg1 is zero, then all points get unmasked. If arg1 is not zero, then all points get masked." },
+                    new MonitorGroupCommand { Id=3,Name="Force Arm",Value=3,Description= "Force Arm: If the mask count > 1 then decrement the mask count by 1. Otherwise, if the mask count is equal to 1, unmask all non-active monitor points and set the mask count to zero." },
+                    new MonitorGroupCommand { Id=4,Name="Arm",Value=4,Description= "If the mask count > 1 then decrement the mask count by one. Otherwise, if the mask count is equal to 1 and no monitor points are active, unmask all monitor points. and set the mask count to zero." },
+                    new MonitorGroupCommand { Id=5,Name="Override arm",Value=5,Description= "If the mask count > 1 then decrement the mask count by one, otherwise if the mask count is 1 unmask all monitor points and set the mask count to zero" }
+                );
+
 
             #endregion
 
@@ -366,10 +428,10 @@ namespace HIDAeroService.Data
                 new DoorSpareFlagOption {  Id=5,Name="Shunt Relay",Value=0x0020,Description= "ACR_FE_SHNTRLY\t0x0020\t\r\n🔹 Purpose: Defines a Shunt Relay used for suppressing door alarms during unlock events.\r\n🔹 Effect: When the door is unlocked:\r\n • The shunt relay activates 5 ms before the strike relay.\r\n • It deactivates 1 second after the door closes or the held-open timer expires.\r\n🔹 Note: The dc_held field (door-held timer) must be > 1 for this to function.\r\n🔹 Use Case: Used when connecting to alarm panels or to bypass door contacts during unlocks." },
                 new DoorSpareFlagOption { Id=6,Name="Floor Pin",Value=0x0040,Description= "ACR_FE_FLOOR_PIN\t0x0040\t\r\n🔹 Purpose: Enables Floor Selection via PIN for elevators in “Card + PIN” mode.\r\n🔹 Effect: Instead of entering a PIN code, users enter the floor number after presenting a card.\r\n🔹 Use Case: Simplifies elevator access when using a single reader for multiple floors." },
                 new DoorSpareFlagOption {  Id=7,Name="Link Mode",Value=0x0080,Description= "ACR_FE_LINK_MODE\t0x0080\t\r\n🔹 Purpose: Indicates that the reader is in linking mode (pairing with another device or reader).\r\n🔹 Effect: Set when acr_mode = 29 (start linking) and cleared when:\r\n • The reader is successfully linked, or\r\n • acr_mode = 30 (abort) or timeout occurs.\r\n🔹 Use Case: Used for configuring dual-reader systems (e.g., in/out readers or linked elevator panels)." },
-                new DoorSpareFlagOption {  Id=8,Name="Double Card Event",Value=0x0100,Description= "ACR_FE_DCARD\t0x0100\t\r\n🔹 Purpose: Enables Double Card Mode.\r\n🔹 Effect: If the same valid card is presented twice within 5 seconds, it generates a double card event.\r\n🔹 Use Case: Used for dual-authentication or special functions (e.g., manager override, arming/disarming security zones)." },
+                new DoorSpareFlagOption {  Id=8,Name="Double Card Transaction",Value=0x0100,Description= "ACR_FE_DCARD\t0x0100\t\r\n🔹 Purpose: Enables Double Card Mode.\r\n🔹 Effect: If the same valid card is presented twice within 5 seconds, it generates a double card event.\r\n🔹 Use Case: Used for dual-authentication or special functions (e.g., manager override, arming/disarming security zones)." },
                 new DoorSpareFlagOption { Id=9,Name="Allow Mode Override",Value=0x0200,Description= "ACR_FE_OVERRIDE\t0x0200\t\r\n🔹 Purpose: Indicates that the reader is operating in a Temporary ACR Mode Override.\r\n🔹 Effect: Typically means that a temporary mode (e.g., unlocked, lockdown) has been forced manually or by schedule.\r\n🔹 Use Case: Allows temporary override of normal access control logic without changing the base configuration." },
                 new DoorSpareFlagOption { Id=10,Name="Allow Super Card",Value=0x0400,Description= "ACR_FE_CRD_OVR_EN\t0x0400\t\r\n🔹 Purpose: Enables Override Credentials.\r\n🔹 Effect: Specific credentials (set in FFRM_FLD_ACCESSFLGS) can unlock the door even when it’s locked or access is disabled.\r\n🔹 Use Case: For emergency or master access cards (security, admin, fire personnel)." },
-                new DoorSpareFlagOption {  Id=11,Name="Disable Elevator",Value=0x0800,Description= "ACR_FE_ELV_DISABLE\t0x0800\t\r\n🔹 Purpose: Enables the ability to disable elevator floors using the offline_mode field.\r\n🔹 Effect: Only applies to Elevator Type 1 and 2 ACRs.\r\n🔹 Use Case: Temporarily disables access to certain floors when the elevator or reader is in offline or restricted mode." },
+                new DoorSpareFlagOption {  Id=11,Name="Disable Elevator",Value=0x0800,Description= "ACR_FE_ELV_DISABLE\t0x0800\t\r\n🔹 Purpose: Enables the ability to disable elevator floors using the offline_mode field.\r\n🔹 Effect: Only applies to Elevator TypeDesc 1 and 2 ACRs.\r\n🔹 Use Case: Temporarily disables access to certain floors when the elevator or reader is in offline or restricted mode." },
                 new DoorSpareFlagOption { Id=12,Name="Alternate Reader Link",Value=0x1000,Description= "ACR_FE_LINK_MODE_ALT\t0x1000\t\r\n🔹 Purpose: Similar to ACR_FE_LINK_MODE but for Alternate Reader Linking.\r\n🔹 Effect: Set when acr_mode = 32 (start link) and cleared when:\r\n  • Link successful, or\r\n  • acr_mode = 33 (abort) or timeout reached.\r\n🔹 Use Case: Used for alternate or backup reader pairing configurations." },
                 new DoorSpareFlagOption {  Id=13,Name="HOLD REX",Value=0x2000,Description= "🔹 Purpose: Extends the REX (Request-to-Exit) grant time while REX input is active.\r\n🔹 Effect: As long as the REX signal remains active (button pressed or motion detected), the door remains unlocked.\r\n🔹 Use Case: Ideal for long exit paths, large doors, or slow-moving personnel." },
                 new DoorSpareFlagOption { Id=14,Name="HOST Decision",Value=0x4000,Description= "ACR_FE_HOST_BYPASS\t0x4000\t\r\n🔹 Purpose: Enables host decision bypass for online authorization.\r\n🔹 Effect: Requires ACR_F_HOST_CBG to also be enabled.\r\n 1. Controller sends credential to host for decision.\r\n 2. If host replies in time → uses host’s decision.\r\n 3. If no reply (timeout): controller checks its local database.\r\n  • If credential valid → grant.\r\n  • If not → deny.\r\n🔹 Use Case: For real-time validation in networked systems but with local fallback during communication loss.\r\n🔹 Supports: Card + PIN readers, online decision making, hybrid access control." }
@@ -646,6 +708,24 @@ namespace HIDAeroService.Data
               .HasForeignKey(f => f.LocationId)
               .HasPrincipalKey(p => p.ComponentId);
 
+            modelBuilder.Entity<Location>()
+                .HasMany(l => l.Triggers)
+                .WithOne(c => c.Location)
+                .HasForeignKey(f => f.LocationId)
+                .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+    .HasMany(l => l.Procedures)
+    .WithOne(c => c.Location)
+    .HasForeignKey(f => f.LocationId)
+    .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+    .HasMany(l => l.Actions)
+    .WithOne(c => c.Location)
+    .HasForeignKey(f => f.LocationId)
+    .HasPrincipalKey(p => p.ComponentId);
+
             #endregion
 
             #region Transaction
@@ -673,28 +753,28 @@ namespace HIDAeroService.Data
 
             modelBuilder.Entity<TransactionSource>()
                 .HasData(
-                    new TransactionSource { Id = 1, Name = "SCP diagnostics", Value = 0x00 },
-                    new TransactionSource { Id = 2, Name = "SCP to HOST communication driver - not defined", Value = 0x01 },
-                    new TransactionSource { Id = 3, Name = "SCP local monitor points (tamper & power fault)", Value = 0x02 },
-                    new TransactionSource { Id = 4, Name = "SIO diagnostics", Value = 0x03 },
-                    new TransactionSource { Id = 5, Name = "SIO communication driver", Value = 0x04 },
-                    new TransactionSource { Id = 6, Name = "SIO cabinet tamper", Value = 0x05 },
-                    new TransactionSource { Id = 7, Name = "SIO power monitor", Value = 0x06 },
-                    new TransactionSource { Id = 8, Name = "Alarm monitor point", Value = 0x07 },
-                    new TransactionSource { Id = 9, Name = "Output control point", Value = 0x08 },
-                    new TransactionSource { Id = 10, Name = "Access Control Reader (ACR)", Value = 0x09 },
-                    new TransactionSource { Id = 11, Name = "ACR: reader tamper monitor", Value = 0x0A },
-                    new TransactionSource { Id = 12, Name = "ACR: door position sensor", Value = 0x0B },
-                    new TransactionSource { Id = 13, Name = "ACR: 1st \"Request to exit\" input", Value = 0x0D },
-                    new TransactionSource { Id = 14, Name = "ACR: 2nd \"Request to exit\" input", Value = 0x0E },
-                    new TransactionSource { Id = 15, Name = "Time zone", Value = 0x0F },
-                    new TransactionSource { Id = 16, Name = "Procedure (action list)", Value = 0x10 },
-                    new TransactionSource { Id = 17, Name = "Trigger", Value = 0x11 },
-                    new TransactionSource { Id = 18, Name = "Trigger variable", Value = 0x12 },
-                    new TransactionSource { Id = 19, Name = "Monitor point group", Value = 0x13 },
-                    new TransactionSource { Id = 20, Name = "Access area", Value = 0x14 },
-                    new TransactionSource { Id = 21, Name = "ACR: the alternate reader's tamper monitor source_number", Value = 0x15 },
-                    new TransactionSource { Id = 22, Name = "LoginDto Service", Value = 0x18 }
+                    new TransactionSource { Id = 1, Name = "SCP diagnostics", Value = 0x00,Source="Hardware" },
+                    new TransactionSource { Id = 2, Name = "SCP to HOST communication driver - not defined", Value = 0x01,Source="Hardware" },
+                    new TransactionSource { Id = 3, Name = "SCP local monitor points (tamper & power fault)", Value = 0x02,Source="Hardware" },
+                    new TransactionSource { Id = 4, Name = "SIO diagnostics", Value = 0x03,Source="Module" },
+                    new TransactionSource { Id = 5, Name = "SIO communication driver", Value = 0x04,Source="Module" },
+                    new TransactionSource { Id = 6, Name = "SIO cabinet tamper", Value = 0x05,Source="Module" },
+                    new TransactionSource { Id = 7, Name = "SIO power monitor", Value = 0x06,Source="Module" },
+                    new TransactionSource { Id = 8, Name = "Alarm monitor point", Value = 0x07,Source="Monitor Point" },
+                    new TransactionSource { Id = 9, Name = "Output control point", Value = 0x08,Source="Control Point" },
+                    new TransactionSource { Id = 10, Name = "Access Control Reader (ACR)", Value = 0x09,Source="Door" },
+                    new TransactionSource { Id = 11, Name = "ACR: reader tamper monitor", Value = 0x0A,Source="Door" },
+                    new TransactionSource { Id = 12, Name = "ACR: door position sensor", Value = 0x0B,Source="Door" },
+                    new TransactionSource { Id = 13, Name = "ACR: 1st \"Request to exit\" input", Value = 0x0D,Source="Door" },
+                    new TransactionSource { Id = 14, Name = "ACR: 2nd \"Request to exit\" input", Value = 0x0E,Source="Door" },
+                    new TransactionSource { Id = 15, Name = "Time zone", Value = 0x0F,Source="Time zone" },
+                    new TransactionSource { Id = 16, Name = "Procedure (action list)", Value = 0x10,Source="Procedure" },
+                    new TransactionSource { Id = 17, Name = "Trigger", Value = 0x11,Source="Trigger" },
+                    new TransactionSource { Id = 18, Name = "Trigger variable", Value = 0x12,Source="Trigger" },
+                    new TransactionSource { Id = 19, Name = "Monitor point group", Value = 0x13,Source="Monitor point group" },
+                    new TransactionSource { Id = 20, Name = "Access area", Value = 0x14 ,Source="Access area"},
+                    new TransactionSource { Id = 21, Name = "ACR: the alternate reader's tamper monitor source_number", Value = 0x15,Source="Door" },
+                    new TransactionSource { Id = 22, Name = "Login Service", Value = 0x18,Source="" }
                 );
 
             modelBuilder.Entity<TransactionType>()
@@ -711,7 +791,7 @@ namespace HIDAeroService.Data
                     new TransactionType { Id = 10, Name = "Procedure (command list) log", Value = 0x0A },
                     new TransactionType { Id = 11, Name = "User command request report", Value = 0x0B },
                     new TransactionType { Id = 12, Name = "Change of state: trigger variable, time zone, & triggers", Value = 0x0C },
-                    new TransactionType { Id = 13, Name = "ACR mode change", Value = 0x0D },
+                    new TransactionType { Id = 13, Name = "Door mode change", Value = 0x0D },
                     new TransactionType { Id = 14, Name = "Monitor point group status change", Value = 0x0E },
                     new TransactionType { Id = 15, Name = "Access area", Value = 0x0F },
                     new TransactionType { Id = 16, Name = "Extended user command", Value = 0x12 },
@@ -726,8 +806,8 @@ namespace HIDAeroService.Data
                     new TransactionType { Id = 25, Name = "Specify tranTypeCardFull (0x05) instead", Value = 0x25 },
                     new TransactionType { Id = 26, Name = "Specify tranTypeCardID (0x06) instead", Value = 0x26 },
                     new TransactionType { Id = 27, Name = "Specify tranTypeCardFull (0x05) instead", Value = 0x35 },
-                    new TransactionType { Id = 28, Name = "ACR extended feature stateless transition", Value = 0x40 },
-                    new TransactionType { Id = 29, Name = "ACR extended feature change-of-state", Value = 0x41 },
+                    new TransactionType { Id = 28, Name = "Door extended feature stateless transition", Value = 0x40 },
+                    new TransactionType { Id = 29, Name = "Door extended feature change-of-state", Value = 0x41 },
 
                     // New
                     new TransactionType { Id=30,Name= "Formatted card and user PIN was captured at an ACR", Value=0x42}
@@ -895,7 +975,7 @@ namespace HIDAeroService.Data
                     new TransactionCode { Id = 60, Name = "Request rejected", Description = "Card pending at another reader", Value = 41, TransactionTypeValue = 0x42 },
 
                     // TypeHostCardFullPin 
-                    //new TransactionCode { Id=61,Name= "Reporting that this Card and PIN pair is \"requesting access\"",Description= "Reporting that this Card and PIN pair is \"requesting access\"",Value=1,TransactionTypeValue=0x66 },
+                    //new TranCode { Id=61,Name= "Reporting that this Card and PIN pair is \"requesting access\"",TranCodeDesc= "Reporting that this Card and PIN pair is \"requesting access\"",Value=1,TransactionTypeValue=0x66 },
 
                     // TypeCoS
                     new TransactionCode { Id = 62, Name = "Disconnected", Description = "Disconnected (from an input point ID)", Value = 1, TransactionTypeValue = 0x07 },
@@ -998,9 +1078,9 @@ namespace HIDAeroService.Data
                     new TransactionCode { Id = 139, Name = "Diagnostic page saved", Description = "Diagnostic page saved", Value = 21, TransactionTypeValue = 0x14 },
                     new TransactionCode { Id = 140, Name = "Security options page saved", Description = "Security options page saved", Value = 22, TransactionTypeValue = 0x14 },
                     new TransactionCode { Id = 141, Name = "Add-on package page saved", Description = "Add-on package page saved", Value = 23, TransactionTypeValue = 0x14 },
-                    //new TransactionCode { Id = 142, Name = "Not used", Description = "Not used", Value = 24, TransactionTypeValue = 0x14 },
-                    //new TransactionCode { Id = 143, Name = "Not used", Description = "Not used", Value = 25, TransactionTypeValue = 0x14 },
-                    //new TransactionCode { Id = 144, Name = "Not used", Description = "Not used", Value = 26, TransactionTypeValue = 0x14 },
+                    //new TranCode { Id = 142, Name = "Not used", TranCodeDesc = "Not used", Value = 24, TransactionTypeValue = 0x14 },
+                    //new TranCode { Id = 143, Name = "Not used", TranCodeDesc = "Not used", Value = 25, TransactionTypeValue = 0x14 },
+                    //new TranCode { Id = 144, Name = "Not used", TranCodeDesc = "Not used", Value = 26, TransactionTypeValue = 0x14 },
                     new TransactionCode { Id = 145, Name = "Invalid login limit reached", Description = "Invalid login limit reached", Value = 27, TransactionTypeValue = 0x14 },
                     new TransactionCode { Id = 146, Name = "Firmware download initiated", Description = "Firmware download initiated", Value = 28, TransactionTypeValue = 0x14 },
                     new TransactionCode { Id = 147, Name = "Advanced networking routes saved", Description = "Advanced networking routes saved", Value = 29, TransactionTypeValue = 0x14 },
@@ -1047,6 +1127,216 @@ namespace HIDAeroService.Data
                     new TransactionCode { Id = 175, Name = "Alarm / Active", Description = "Alarm / Active", Value = 4, TransactionTypeValue = 0x41 }
 
                 );
+
+            modelBuilder.Entity<Transaction>()
+                .HasMany(x => x.TransactionFlags)
+                .WithOne(x => x.Transaction);
+
+            //// TypeSys
+            
+            //modelBuilder.Entity<Transaction>()
+            //    .HasOne(t => t.TypeSys)
+            //    .WithOne(t => t.Transaction); 
+
+            //modelBuilder.Entity<TypeSys>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeSys);
+
+            //// Type Web Activity
+
+            //modelBuilder.Entity<Transaction>()
+            //    .HasOne(t => t.TypeWebActivity)
+            //    .WithOne(t => t.Transaction);
+
+            //modelBuilder.Entity<TypeWebActivity>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeWebActivity);
+
+            //// Type File Download
+
+            //modelBuilder.Entity<Transaction>()
+            //    .HasOne(t => t.TypeFileDownloadStatus)
+            //    .WithOne(t => t.Transaction);
+
+            //modelBuilder.Entity<TypeFileDownloadStatus>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeFileDownloadStatus);
+
+            //// Type Cos
+
+            //modelBuilder.Entity<Transaction>()
+            //    .HasOne(t => t.TypeCos)
+            //    .WithOne(t => t.Transaction);
+
+            //modelBuilder.Entity<TypeCos>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeCos);
+
+            //// TypeSioDiag
+
+            //modelBuilder.Entity<Transaction>()
+            //    .HasOne(t => t.TypeSioDiag)
+            //    .WithOne(t => t.Transaction);
+
+            //modelBuilder.Entity<TypeSioDiag>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeSioDiag);
+
+            //// TypeSioComm
+
+            //modelBuilder.Entity<Transaction>()
+            //    .HasOne(t => t.TypeSioComm)
+            //    .WithOne(t => t.Transaction);
+
+            //modelBuilder.Entity<HIDAeroService.Entity.TypeSioComm>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeSioComm);
+
+            //// TypeCardBin
+
+            //modelBuilder.Entity<Transaction>()
+            //    .HasOne(t => t.TypeCardBin)
+            //    .WithOne(t => t.Transaction);
+
+            //modelBuilder.Entity<HIDAeroService.Entity.TypeCardBin>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeCardBin);
+
+            //// TypeCardBcd
+
+            //modelBuilder.Entity<Transaction>()
+            //    .HasOne(t => t.TypeCardBcd)
+            //    .WithOne(t => t.Transaction);
+
+            //modelBuilder.Entity<HIDAeroService.Entity.TypeCardBcd>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeCardBcd);
+
+            //// TypeCardFull
+            //modelBuilder.Entity<Transaction>()
+            //    .HasOne(t => t.TypeCardFull)
+            //    .WithOne(t => t.Transaction);
+
+            //modelBuilder.Entity<HIDAeroService.Entity.TypeCardFull>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeCardFull);
+
+
+            //// TypeCardID
+            //modelBuilder.Entity<Transaction>()
+            //    .HasOne(t => t.TypeCardID)
+            //    .WithOne(t => t.Transaction);
+
+            //modelBuilder.Entity<HIDAeroService.Entity.TypeCardID>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeCardID);
+
+            //// TypeREX
+            //modelBuilder.Entity<Transaction>()
+            //    .HasOne(t => t.TypeREX)
+            //    .WithOne(t => t.Transaction);
+
+            //modelBuilder.Entity<HIDAeroService.Entity.TypeREX>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeREX);
+
+            //// TypeUserCmnd
+            //modelBuilder.Entity<Transaction>()
+            //    .HasOne(t => t.TypeUserCmnd)
+            //    .WithOne(t => t.Transaction);
+
+            //modelBuilder.Entity<HIDAeroService.Entity.TypeUserCmnd>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeUserCmnd);
+
+            ////TypeAcr
+            //modelBuilder.Entity<Transaction>()
+            //   .HasOne(t => t.TypeAcr)
+            //   .WithOne(t => t.Transaction);
+
+            //modelBuilder.Entity<HIDAeroService.Entity.TypeAcr>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeAcr);
+
+            //// TypeUseLimit
+
+            //modelBuilder.Entity<Transaction>()
+            //   .HasOne(t => t.TypeUseLimit)
+            //   .WithOne(t => t.Transaction);
+
+            //modelBuilder.Entity<HIDAeroService.Entity.TypeUseLimit>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeUseLimit);
+
+            //// TypeCosElevator
+
+            //modelBuilder.Entity<Transaction>()
+            //   .HasOne(t => t.TypeCosElevator)
+            //   .WithOne(t => t.Transaction);
+
+            //modelBuilder.Entity<HIDAeroService.Entity.TypeCosElevator>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeCosElevator);
+
+            //// TypeCosElevatorAccess
+
+            //modelBuilder.Entity<Transaction>()
+            //   .HasOne(t => t.TypeCosElevatorAccess)
+            //   .WithOne(t => t.Transaction);
+
+            //modelBuilder.Entity<HIDAeroService.Entity.TypeCosElevatorAccess>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeCosElevatorAccess);
+
+            //// TypeAcrExtFeatureStls
+
+            //modelBuilder.Entity<Transaction>()
+            //   .HasOne(t => t.TypeAcrExtFeatureStls)
+            //   .WithOne(t => t.Transaction);
+
+            //modelBuilder.Entity<HIDAeroService.Entity.TypeAcrExtFeatureStls>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeAcrExtFeatureStls);
+
+            //// TypeAcrExtFeatureCoS
+
+            //modelBuilder.Entity<Transaction>()
+            //   .HasOne(t => t.TypeAcrExtFeatureCoS)
+            //   .WithOne(t => t.Transaction);
+
+            //modelBuilder.Entity<HIDAeroService.Entity.TypeAcrExtFeatureCoS>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeAcrExtFeatureCoS);
+
+            //// TypeCosDoor
+
+            //modelBuilder.Entity<Transaction>()
+            //   .HasOne(t => t.TypeCoSDoor)
+            //   .WithOne(t => t.Transaction);
+
+            //modelBuilder.Entity<HIDAeroService.Entity.TypeCoSDoor>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeCoSDoor);
+
+            //// TypeMPG
+
+            //modelBuilder.Entity<Transaction>()
+            //   .HasOne(t => t.TypeMPG)
+            //   .WithOne(t => t.Transaction);
+
+            //modelBuilder.Entity<HIDAeroService.Entity.TypeMPG>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeMPG);
+
+            //// TypeArea
+
+            //modelBuilder.Entity<Transaction>()
+            //   .HasOne(t => t.TypeArea)
+            //   .WithOne(t => t.Transaction);
+
+            //modelBuilder.Entity<HIDAeroService.Entity.TypeArea>()
+            //    .HasMany(x => x.TransactionFlags)
+            //    .WithOne(x => x.TypeArea);
 
 
             #endregion
@@ -1119,7 +1409,7 @@ namespace HIDAeroService.Data
             modelBuilder.Entity<Feature>()
                 .HasData(
                     new Feature { Id = 1, ComponentId = 1, Name = "Dashboard", Path = "/" },
-                    new Feature { Id = 2, ComponentId = 2, Name = "Events", Path = "/event" },
+                    new Feature { Id = 2, ComponentId = 2, Name = "Transactions", Path = "/event" },
                     new Feature { Id = 3, ComponentId = 3, Name = "Locations", Path = "/location" },
                     new Feature { Id = 4, ComponentId = 4, Name = "Alerts", Path = "/alert" },
                     new Feature { Id = 5, ComponentId = 5, Name = "Operators" },
@@ -1129,7 +1419,7 @@ namespace HIDAeroService.Data
                     new Feature { Id = 9, ComponentId = 9, Name = "Access Level", Path = "/level" },
                     new Feature { Id = 10, ComponentId = 10, Name = "Access Area", Path = "/area" },
                     new Feature { Id = 11, ComponentId = 11, Name = "Time" },
-                    new Feature { Id = 12, ComponentId = 12, Name = "Trigger & Action" },
+                    new Feature { Id = 12, ComponentId = 12, Name = "Trigger & Procedure" },
                     new Feature { Id = 13, ComponentId = 13, Name = "Reports" },
                     new Feature { Id = 14, ComponentId = 14, Name = "Settings", Path = "/setting" },
                     new Feature { Id = 15, ComponentId = 15, Name = "Maps", Path = "/map" }
@@ -1149,7 +1439,7 @@ namespace HIDAeroService.Data
                 new SubFeature { Id = 9, ComponentId = 9, Name = "Holidays", Path = "/holiday", FeatureId = 11 },
                 new SubFeature { Id = 10, ComponentId = 10, Name = "Intervals", Path = "/interval", FeatureId = 11 },
                 new SubFeature { Id = 11, ComponentId = 11, Name = "Trigger", Path = "/trigger", FeatureId = 12 },
-                new SubFeature { Id = 12, ComponentId = 12, Name = "Action", Path = "/action", FeatureId = 12 },
+                new SubFeature { Id = 12, ComponentId = 12, Name = "Procedure", Path = "/action", FeatureId = 12 },
                 new SubFeature { Id = 13, ComponentId = 13, Name = "Transaction", Path = "/transaction", FeatureId = 13 },
                 new SubFeature { Id = 14, ComponentId = 14, Name = "Audit Trail", Path = "/audit", FeatureId = 13 }
 
@@ -1250,6 +1540,122 @@ namespace HIDAeroService.Data
 
             #endregion
 
+            #region Procedure
+
+            modelBuilder.Entity<Procedure>()
+                .HasMany(x => x.Actions)
+                .WithOne(x => x.Procedure)
+                .HasForeignKey(x => x.ProcedureId)
+                .HasPrincipalKey(x => x.ComponentId);
+
+            #endregion
+
+            #region Trigger
+
+            modelBuilder.Entity<Trigger>()
+                .HasOne(x => x.Procedure)
+                .WithOne(x => x.Trigger)
+                .HasForeignKey<Trigger>(x => x.ProcedureId)
+                .HasPrincipalKey<Procedure>(x => x.ComponentId);
+
+            #endregion
+
+
+
+            #region File Type
+
+            modelBuilder.Entity<FileType>()
+               .HasData(
+                   new FileType
+                   {
+                       Id = 1,
+                       Value = 0,
+                       Name = "Host Comm certificate file. The file should be in the same format currently used by the default certificate (PEM)."
+                   },
+                   new FileType
+                   {
+                       Id = 2,
+                       Value = 1,
+                       Name = "User defined file. This file can contain any type of data, up to one block in size. This file can have a name on the SCP up to 259 bytes."
+                   },
+                   new FileType
+                   {
+                       Id = 3,
+                       Value = 2,
+                       Name = "License file. This file will be generated by HID and needed on only those products that require a license."
+                   },
+                   new FileType
+                   {
+                       Id = 4,
+                       Value = 3,
+                       Name = "Peer certificate"
+                   },
+                   new FileType
+                   {
+                       Id = 5,
+                       Value = 4,
+                       Name = "OSDP file transfer files"
+                   },
+                   new FileType
+                   {
+                       Id = 6,
+                       Value = 7,
+                       Name = "Linq certificate"
+                   },
+                   new FileType
+                   {
+                       Id = 7,
+                       Value = 8,
+                       Name = "Over-Watch certificate"
+                   },
+                   new FileType
+                   {
+                       Id = 8,
+                       Value = 9,
+                       Name = "Web server certificate"
+                   },
+                   new FileType
+                   {
+                       Id = 9,
+                       Value = 10,
+                       Name = "HID Origo™ certificate"
+                   },
+                   new FileType
+                   {
+                       Id = 10,
+                       Value = 11,
+                       Name = "Aperio certificate"
+                   },
+                   new FileType
+                   {
+                       Id = 11,
+                       Value = 12,
+                       Name = "Host translator service for OEM cloud certificate"
+                   },
+                   new FileType
+                   {
+                       Id = 12,
+                       Value = 13,
+                       Name = "Driver trust store"
+                   },
+                   new FileType
+                   {
+                       Id = 13,
+                       Value = 16,
+                       Name = "802.1x TLS authentication"
+                   },
+                   new FileType
+                   {
+                       Id = 14,
+                       Value = 18,
+                       Name = "HTS OEM cloud authentication"
+                   }
+               );
+
+
+            #endregion
+
+         
 
 
 

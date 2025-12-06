@@ -2,11 +2,10 @@
 
 namespace HIDAeroService.DTO.MonitorGroup
 {
-    public sealed class MonitorGroupDto
+    public sealed class MonitorGroupDto : BaseDto
     {
         public string Name { get; set; } = string.Empty;
-        public string Mac { get; set; } = string.Empty;
         public short nMpCount { get; set; }
-        public MonitorGroupDetail Details { get; set; }
+        public List<MonitorGroupListDto> nMpList { get; set; }
     }
 }

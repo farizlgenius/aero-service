@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿
 using HIDAeroService.Data;
 using HIDAeroService.Entity;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +22,7 @@ using HIDAeroService.Mapper;
 
 namespace HIDAeroService.Service.Impl
 {
-    public class TimeZoneService(AppDbContext context, IHelperService<Entity.TimeZone> helperService, AeroCommand command, IMapper mapper, ILogger<TimeZoneService> logger) : ITimeZoneService
+    public class TimeZoneService(AppDbContext context, IHelperService<Entity.TimeZone> helperService, AeroCommand command,  ILogger<TimeZoneService> logger) : ITimeZoneService
     {
         public async Task<ResponseDto<IEnumerable<TimeZoneDto>>> GetAsync()
         {

@@ -3,9 +3,9 @@
     public sealed class CreateUpdateAccessLevelDoorTimeZoneDto
     {
         public short DoorId { get; set; }
-        public string DoorName { get; set; }
-        public string DoorMacAddress { get; set; }
-        public string TimeZoneName { get; set; }
+        public string DoorName { get; set; } = string.Empty;
+        public string DoorMacAddress { get; set; } = string.Empty;
+        public string TimeZoneName { get; set; } = string.Empty;
         public short TimeZoneId { get; set; }
     }
 }

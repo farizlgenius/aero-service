@@ -166,5 +166,10 @@ namespace HIDAeroService.Utility
 
             return BitConverter.ToInt32(b, 0);
         }
+
+        public static bool IsBitSet(int value, int bit)
+        {
+            return (value & (1 << bit)) != 0;
+        }
     }
 }

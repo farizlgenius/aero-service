@@ -8,7 +8,6 @@ namespace HIDAeroService.DTO.Credential
     public sealed class CredentialDto : NoMacBaseDto,IComponentId
     {
         public short ComponentId { get; set; }
-        public short Flag { get; set; }
         public int Bits { get; set; }
         public int IssueCode { get; set; }
         public int FacilityCode { get; set; }

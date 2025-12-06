@@ -8,7 +8,7 @@ using static HIDAeroService.AeroLibrary.Description;
 
 namespace HIDAeroService.AeroLibrary
 {
-    public sealed class MessageHandler(EventService eventService ,IModuleService moduleService,IControlPointService cpService, IMonitorPointService mpService, IDoorService doorService, ICredentialService credentialService, CmndService cmndService, IHelperService<CommandStatus> helperService, IAccessLevelService accessLevelService, SysService sysService)
+    public sealed class MessageHandler(ITransactionService transactionService ,IModuleService moduleService,IControlPointService cpService, IMonitorPointService mpService, IDoorService doorService, ICredentialService credentialService, CmndService cmndService, IHelperService<CommandStatus> helperService, IAccessLevelService accessLevelService, SysService sysService)
     {
 
         public void SCPReplyNAKHandler(SCPReplyMessage message)
@@ -44,20 +44,21 @@ namespace HIDAeroService.AeroLibrary
 
         public void SCPReplyTransactionHandler(SCPReplyMessage message,bool isWaitingCardScan,short ScanScpId,short ScanAcrNo)
         {
+
             switch (message.tran.tran_type)
             {      
                 case (short)tranType.tranTypeSys:
-                    ProcessTransaction.ProcessTypeSys(message, eventService);
+                    ProcessTransaction.ProcessTypeSys(message);
                     break;
                 case (short)tranType.tranTypeSioComm:
                     moduleService.GetSioStatus(message.SCPId, message.tran.source_number);
-                    ProcessTransaction.ProcessTypeSioComm(message, eventService);
+                    ProcessTransaction.ProcessTypeSioComm(message);
                     break;
                 case (short)tranType.tranTypeCardBin:
-                    ProcessTransaction.ProcessTypeCardBin(message, eventService);
+                    ProcessTransaction.ProcessTypeCardBin(message);
                     break;
                 case (short)tranType.tranTypeCardBcd:
-                    ProcessTransaction.ProcessTypeCardBcd(message, eventService);
+                    ProcessTransaction.ProcessTypeCardBcd(message);
                     break;
                 case (short)tranType.tranTypeCardFull:
                     if (isWaitingCardScan && ScanScpId == message.SCPId && ScanAcrNo == message.tran.source_number)
@@ -67,7 +68,7 @@ namespace HIDAeroService.AeroLibrary
                         ScanAcrNo = -1;
                         ScanScpId = -1;
                     }
-                    ProcessTransaction.ProcessTypeCardFull(message, eventService);
+                    ProcessTransaction.ProcessTypeCardFull(message);
                     break;
                 case (short)tranType.tranTypeDblCardFull:
                     if (isWaitingCardScan && ScanScpId == message.SCPId && ScanAcrNo == message.tran.source_number)
@@ -77,7 +78,7 @@ namespace HIDAeroService.AeroLibrary
                         ScanAcrNo = -1;
                         ScanScpId = -1;
                     }
-                    ProcessTransaction.ProcessTypeDblCardFull(message, eventService);
+                    ProcessTransaction.ProcessTypeDblCardFull(message);
                     break;
                 case (short)tranType.tranTypeI64CardFull:
                     if (isWaitingCardScan && ScanScpId == message.SCPId && ScanAcrNo == message.tran.source_number)
@@ -87,7 +88,7 @@ namespace HIDAeroService.AeroLibrary
                         ScanAcrNo = -1;
                         ScanScpId = -1;
                     }
-                    ProcessTransaction.ProcessTypei64CardFull(message, eventService);
+                    ProcessTransaction.ProcessTypei64CardFull(message);
                     break;
                 case (short)tranType.tranTypeI64CardFullIc32:
                     if (isWaitingCardScan && ScanScpId == message.SCPId && ScanAcrNo == message.tran.source_number)
@@ -97,16 +98,16 @@ namespace HIDAeroService.AeroLibrary
                         ScanAcrNo = -1;
                         ScanScpId = -1;
                     }
-                    ProcessTransaction.ProcessTypei64CardFullc32(message, eventService);
+                    ProcessTransaction.ProcessTypei64CardFullc32(message);
                     break;
                 case (short)tranType.tranTypeCardID:
-                    ProcessTransaction.ProcessTypeCardID(message,eventService);
+                    ProcessTransaction.ProcessTypeCardID(message);
                     break;
                 case (short)tranType.tranTypeDblCardID:
-                    ProcessTransaction.ProcessTypeDblCardID(message,eventService);
+                    ProcessTransaction.ProcessTypeDblCardID(message);
                     break;
                 case (short)tranType.tranTypeI64CardID:
-                    ProcessTransaction.tranTypei64CardID(message,eventService);
+                    ProcessTransaction.tranTypei64CardID(message);
                     break;
                 case (short)tranType.tranTypeCoS:
                     switch (message.tran.source_type)
@@ -123,60 +124,60 @@ namespace HIDAeroService.AeroLibrary
                         default:
                             break;
                     }
-                    ProcessTransaction.tranTypeCos(message, eventService);
+                    ProcessTransaction.tranTypeCos(message);
                     break;
                 case (short)tranType.tranTypeREX:
-                    ProcessTransaction.tranTypeRex(message, eventService);
+                    ProcessTransaction.tranTypeRex(message);
                     break;
                 case (short)tranType.tranTypeCoSDoor:
                     doorService.TriggerDeviceStatusAsync(message.SCPId,message.tran.source_number,"",Description.GetAccessPointStatusFlagResult(message.tran.door.ap_status));
-                    ProcessTransaction.tranTypeCosDoor(message, eventService);
+                    ProcessTransaction.tranTypeCosDoor(message);
                     break;
                 case (short)tranType.tranTypeProcedure:
-                    ProcessTransaction.tranTypeProcedure(message, eventService);
+                    ProcessTransaction.tranTypeProcedure(message);
                     break;
                 case (short)tranType.tranTypeUserCmnd:
-                    ProcessTransaction.tranTypeUserCmnd(message,eventService);
+                    ProcessTransaction.tranTypeUserCmnd(message);
                     break;
                 case (short)tranType.tranTypeActivate:
-                    ProcessTransaction.tranTypeActivate(message,eventService);
+                    ProcessTransaction.tranTypeActivate(message);
                     break;
                 case (short)tranType.tranTypeAcr:
                     doorService.TriggerDeviceStatusAsync(message.SCPId, message.tran.source_number, Description.GetACRModeForStatus(message.tran.tran_code), "");
-                    ProcessTransaction.tranTypeAcr(message, eventService);
+                    ProcessTransaction.tranTypeAcr(message);
                     break;
                 case (short)tranType.tranTypeMpg:
-                    ProcessTransaction.tranTypeMpg(message, eventService);
+                    ProcessTransaction.tranTypeMpg(message);
                     break;
                 case (short)tranType.tranTypeArea:
-                    ProcessTransaction.tranTypeArea(message, eventService);
+                    ProcessTransaction.tranTypeArea(message);
                     break;
                 case (short)tranType.tranTypeUseLimit:
-                    ProcessTransaction.tranTypeUseLimit(message,eventService);
+                    ProcessTransaction.tranTypeUseLimit(message);
                     break;
                 case (short)tranType.tranTypeWebActivity:
-                    ProcessTransaction.tranTypeWebActivity(message,eventService);
+                    ProcessTransaction.tranTypeWebActivity(message);
                     break;
                 case (short)tranType.tranTypeOperatingMode:
-                    ProcessTransaction.tranTypeOperatingMode(message,eventService);
+                    ProcessTransaction.tranTypeOperatingMode(message);
                     break;
                 case (short)tranType.tranTypeCoSElevator:
-                    ProcessTransaction.tranTypeCoSElevator(message,eventService);
+                    ProcessTransaction.tranTypeCoSElevator(message);
                     break;
                 case (short)tranType.tranTypeFileDownloadStatus:
-                    ProcessTransaction.tranTypeFileDownloadStatus(message,eventService);
+                    ProcessTransaction.tranTypeFileDownloadStatus(message);
                     break;
                 case (short)tranType.tranTypeCoSElevatorAccess:
-                    ProcessTransaction.tranTypeCoSElevatorAccess(message,eventService);
+                    ProcessTransaction.tranTypeCoSElevatorAccess(message);
                     break;
                 case (short)tranType.tranTypeAcrExtFeatureStls:
-                    ProcessTransaction.tranTypeAcrExtFeatureStls(message, eventService);
+                    ProcessTransaction.tranTypeAcrExtFeatureStls(message);
                     break;
                 case (short)tranType.tranTypeAcrExtFeatureCoS:
-                    ProcessTransaction.tranTypeAcrExtFeatureCoS(message, eventService);
+                    ProcessTransaction.tranTypeAcrExtFeatureCoS(message);
                     break;
                 case (short)tranType.tranTypeAsci:
-                    ProcessTransaction.tranTypeAsci(message,eventService);
+                    ProcessTransaction.tranTypeAsci(message);
                     break;
                 case (short)tranType.tranTypeSioDiag:
                     ProcessTransaction.tranTypeSioDiag(message);
@@ -189,7 +190,7 @@ namespace HIDAeroService.AeroLibrary
 
         public void SCPReplyCommStatus(SCPReplyMessage message)
         {
-            Console.WriteLine("###### SCPReplyCommStatus Detail ######");
+            Console.WriteLine("###### SCPReplyCommStatus ExtendDesc ######");
             Console.WriteLine($"status: {message.comm.status}");
             Console.WriteLine($"status_desc: {Description.GetReplyStatusDesc(message.comm.status)}");
             Console.WriteLine($"error_code: {message.comm.error_code}");
@@ -203,12 +204,12 @@ namespace HIDAeroService.AeroLibrary
             Console.WriteLine($"current_alternate_comm_desc: : {Description.GetCommStatusDesc(message.comm.current_alternate_comm)}");
             Console.WriteLine($"previous_alternate_comm: : {message.comm.previous_alternate_comm}");
             Console.WriteLine($"previous_alternate_comm_desc: : {Description.GetCommStatusDesc(message.comm.previous_alternate_comm)}");
-            Console.WriteLine("###### SCPReplyCommStatus Detail End ######");
+            Console.WriteLine("###### SCPReplyCommStatus ExtendDesc End ######");
         }
 
         public void SCPReplyIDReport(SCPReplyMessage message)
         {
-            Console.WriteLine("###### SCPReplyIDReport Detail ######");
+            Console.WriteLine("###### SCPReplyIDReport ExtendDesc ######");
             Console.WriteLine($"device_id: {message.id.device_id}");
             Console.WriteLine($"device_ver: {message.id.device_ver}");
             Console.WriteLine($"sft_rev_major: {message.id.sft_rev_major}");
@@ -236,36 +237,36 @@ namespace HIDAeroService.AeroLibrary
             Console.WriteLine($"scp_in_3: {message.id.scp_in_3}");
             Console.WriteLine($"cumulative_bld_cnt: {message.id.cumulative_bld_cnt}");
             
-            Console.WriteLine("###### SCPReplyIDReport Detail End ######");
+            Console.WriteLine("###### SCPReplyIDReport ExtendDesc End ######");
         }
 
         public void SCPReplyTranStatus(SCPReplyMessage message)
         {
-            Console.WriteLine("###### SCPReplyTranStatus Detail ######");
+            Console.WriteLine("###### SCPReplyTranStatus ExtendDesc ######");
             Console.WriteLine($"capacity: {message.tran_sts.capacity}");
             Console.WriteLine($"oldest: {message.tran_sts.oldest}");
             Console.WriteLine($"last_rprtd: {message.tran_sts.last_rprtd}");
             Console.WriteLine($"last_loggd: {message.tran_sts.last_loggd}");
             Console.WriteLine($"disabled: {message.tran_sts.disabled}");
             Console.WriteLine($"disabled_desc: {Description.GetStatusTranReportDesc(message.tran_sts.disabled)}");      
-            Console.WriteLine("###### SCPReplyTranStatus Detail End ######");
+            Console.WriteLine("###### SCPReplyTranStatus ExtendDesc End ######");
         }
 
         public void SCPReplySrMsp1Drvr(SCPReplyMessage message)
         {
-            Console.WriteLine("###### SCPReplySrMsp1Drvr Detail ######");
+            Console.WriteLine("###### SCPReplySrMsp1Drvr ExtendDesc ######");
             Console.WriteLine($"number: {message.sts_drvr.number}");
             Console.WriteLine($"port: {message.sts_drvr.port}");
             Console.WriteLine($"mode: {message.sts_drvr.mode}");
             Console.WriteLine($"baud_rate: {message.sts_drvr.baud_rate}");
             Console.WriteLine($"disabled: {message.sts_drvr.throughput}");
-            Console.WriteLine("###### SCPReplySrMsp1Drvr Detail End ######");
+            Console.WriteLine("###### SCPReplySrMsp1Drvr ExtendDesc End ######");
         }
 
         public void SCPReplySrSio(SCPReplyMessage message)
         {
             
-            Console.WriteLine("###### SCPReplySrSio Detail ######");
+            Console.WriteLine("###### SCPReplySrSio ExtendDesc ######");
             Console.WriteLine($"number: {message.sts_sio.number}");
             Console.WriteLine($"com_status: {message.sts_sio.com_status}");
             Console.WriteLine($"com_status_desc: {Description.GetTranCodeTypeSioCommDesc(message.sts_sio.com_status)}");
@@ -354,13 +355,13 @@ namespace HIDAeroService.AeroLibrary
                 Console.WriteLine($"mac_addr: {UtilityHelper.ByteToHexStr(message.sts_sio.mac_addr)}");
                 Console.WriteLine($"emg_stat: {message.sts_sio.emg_stat}");
             }
-            Console.WriteLine("###### SCPReplySrSio Detail End ######");
+            Console.WriteLine("###### SCPReplySrSio ExtendDesc End ######");
         }
 
         public void SCPReplySrMp(SCPReplyMessage message)
         {
             
-            Console.WriteLine("###### SCPReplySrMp Detail ######");
+            Console.WriteLine("###### SCPReplySrMp ExtendDesc ######");
             Console.WriteLine($"first: {message.sts_mp.first}");
             Console.WriteLine($"count: {message.sts_mp.count}");
             Console.WriteLine($"status: ");
@@ -377,13 +378,13 @@ namespace HIDAeroService.AeroLibrary
                 }
                 i++;
             }
-            Console.WriteLine("###### SCPReplySrMp Detail End ######");
+            Console.WriteLine("###### SCPReplySrMp ExtendDesc End ######");
         }
 
         public void SCPReplySrCp(SCPReplyMessage message)
         {
             
-            Console.WriteLine("###### SCPReplySrCp Detail ######");
+            Console.WriteLine("###### SCPReplySrCp ExtendDesc ######");
             Console.WriteLine($"first: {message.sts_cp.first}");
             Console.WriteLine($"count: {message.sts_cp.count}");
             Console.WriteLine($"status: ");
@@ -401,13 +402,13 @@ namespace HIDAeroService.AeroLibrary
                 
                 i++;
             }
-            Console.WriteLine("###### SCPReplySrCp Detail End ######");
+            Console.WriteLine("###### SCPReplySrCp ExtendDesc End ######");
         }
 
         public void SCPReplySrAcr(SCPReplyMessage message)
         {
             
-            Console.WriteLine("###### SCPReplySrAcr Detail ######");
+            Console.WriteLine("###### SCPReplySrAcr ExtendDesc ######");
             Console.WriteLine($"number: {message.sts_acr.number}");
             Console.WriteLine($"mode: {message.sts_acr.mode}");
             Console.WriteLine($"mode_desc: {Description.GetAcrAccessModeDesc(message.sts_acr.mode)}");
@@ -456,12 +457,12 @@ namespace HIDAeroService.AeroLibrary
             Console.WriteLine($"nHardwareType_desc: {Description.GetNHardwareTypeDesc(message.sts_acr.nHardwareType)}");
             Console.WriteLine($"nExtFeatureStatus: : {message.sts_acr.nExtFeatureStatus}"); 
             Console.WriteLine($"nAuthModFlags: : {message.sts_acr.nAuthModFlags}");
-            Console.WriteLine("###### SCPReplySrAcr Detail End ######");
+            Console.WriteLine("###### SCPReplySrAcr ExtendDesc End ######");
         }
 
         public void SCPReplySrTz(SCPReplyMessage message)
         {
-            Console.WriteLine("###### SCPReplySrTz Detail ######");
+            Console.WriteLine("###### SCPReplySrTz ExtendDesc ######");
             Console.WriteLine($"first: {message.sts_tz.first}");
             Console.WriteLine($"count: {message.sts_tz.count}");
             Console.WriteLine($"status:");
@@ -470,12 +471,12 @@ namespace HIDAeroService.AeroLibrary
             {
                 Console.WriteLine(i+" : " + Description.GetTimeZoneStatus(s));
             }
-            Console.WriteLine("###### SCPReplySrTz Detail End ######");
+            Console.WriteLine("###### SCPReplySrTz ExtendDesc End ######");
         }
 
         public void SCPReplySrTv(SCPReplyMessage message)
         {
-            Console.WriteLine("###### SCPReplySrTv Detail ######");
+            Console.WriteLine("###### SCPReplySrTv ExtendDesc ######");
             Console.WriteLine($"first: {message.sts_tv.first}");
             Console.WriteLine($"count: {message.sts_tv.count}");
             Console.WriteLine($"status:");
@@ -484,12 +485,12 @@ namespace HIDAeroService.AeroLibrary
             {
                 Console.WriteLine(i + " : " + Description.GetTriggerVariableStatus(s));
             }
-            Console.WriteLine("###### SCPReplySrTv Detail End ######");
+            Console.WriteLine("###### SCPReplySrTv ExtendDesc End ######");
         }
 
         public void SCPReplySrMpg(SCPReplyMessage message)
         {
-            Console.WriteLine("###### SCPReplySrMpg Detail ######");
+            Console.WriteLine("###### SCPReplySrMpg ExtendDesc ######");
             Console.WriteLine($"number: {message.sts_mpg.number}");
             Console.WriteLine($"mask_count: {message.sts_mpg.mask_count}");
             Console.WriteLine($"num_active: {message.sts_mpg.num_active}");
@@ -499,22 +500,22 @@ namespace HIDAeroService.AeroLibrary
             {
                 Console.WriteLine(i + " : " + s);
             }
-            Console.WriteLine("###### SCPReplySrMpg Detail End ######");
+            Console.WriteLine("###### SCPReplySrMpg ExtendDesc End ######");
         }
 
         public void SCPReplySrArea(SCPReplyMessage message)
         {
-            Console.WriteLine("###### SCPReplySrArea Detail ######");
+            Console.WriteLine("###### SCPReplySrArea ExtendDesc ######");
             Console.WriteLine($"number: {message.sts_area.number}");
             Console.WriteLine($"flags: {message.sts_area.flags}");
             Console.WriteLine($"flags_desc: {Description.GetAreaFlagsDesc(message.sts_area.flags)}");
             Console.WriteLine($"occupancy: {message.sts_area.occupancy}");
-            Console.WriteLine("###### SCPReplySrArea Detail End ######");
+            Console.WriteLine("###### SCPReplySrArea ExtendDesc End ######");
         }
 
         public void SCPReplySioRelayCounts(SCPReplyMessage message)
         {
-            Console.WriteLine("###### SCPReplySioRelayCounts Detail ######");
+            Console.WriteLine("###### SCPReplySioRelayCounts ExtendDesc ######");
             Console.WriteLine($"sio_number: {message.sio_relay_counts.sio_number}");
             Console.WriteLine($"num_relays: {message.sio_relay_counts.num_relays}");
             int i = 1;
@@ -523,12 +524,12 @@ namespace HIDAeroService.AeroLibrary
                 Console.WriteLine(i + " : " + s);
             }
             Console.WriteLine($"occupancy: {message.sts_area.occupancy}");
-            Console.WriteLine("###### SCPReplySioRelayCounts Detail End ######");
+            Console.WriteLine("###### SCPReplySioRelayCounts ExtendDesc End ######");
         }
 
         public void SCPReplyStrStatus(SCPReplyMessage message)
         {
-            Console.WriteLine("###### SCPReplyStrStatus Detail ######");
+            Console.WriteLine("###### SCPReplyStrStatus ExtendDesc ######");
             Console.WriteLine(message.str_sts.nListLength);
             foreach(var i in message.str_sts.sStrSpec)
             {
@@ -537,27 +538,27 @@ namespace HIDAeroService.AeroLibrary
                 Console.WriteLine("nRecSize: " + i.nRecSize);
                 Console.WriteLine("nActive: " + i.nActive);
             }
-            Console.WriteLine("###### SCPReplyStrStatus Detail End ######");
+            Console.WriteLine("###### SCPReplyStrStatus ExtendDesc End ######");
         }
 
         public void SCPReplyCmndStatus(SCPReplyMessage message,AeroCommand write)
         {
             
-            Console.WriteLine("###### SCPReplyCmndStatus Detail ######");
+            Console.WriteLine("###### SCPReplyCmndStatus ExtendDesc ######");
             Console.WriteLine(message.cmnd_sts.status);
             Console.WriteLine(message.cmnd_sts.sequence_number);
             Console.WriteLine(message.cmnd_sts.nak);
             Console.WriteLine(message.cmnd_sts.nak.reason);
             Console.WriteLine(write.TagNo);
             Console.WriteLine(write.Command);
-            Console.WriteLine("###### SCPReplyCmndStatus Detail End ######");
+            Console.WriteLine("###### SCPReplyCmndStatus ExtendDesc End ######");
 
 
         }
 
         internal void SCPReplyWebConfigNetwork(SCPReplyMessage message)
         {
-            Console.WriteLine("###### SCPReplyWebConfigNetwork Detail ######");
+            Console.WriteLine("###### SCPReplyWebConfigNetwork ExtendDesc ######");
             Console.WriteLine(message.web_network.method);
             Console.WriteLine(UtilityHelper.IntegerToIp(message.web_network.cIpAddr));
             Console.WriteLine(UtilityHelper.IntegerToIp(message.web_network.cSubnetMask));
@@ -570,7 +571,7 @@ namespace HIDAeroService.AeroLibrary
                 Console.Write(s);
             }
             Console.WriteLine("");
-            Console.WriteLine("###### SCPReplyWebConfigNetwork Detail End ######");
+            Console.WriteLine("###### SCPReplyWebConfigNetwork ExtendDesc End ######");
         }
     }
 }

@@ -389,7 +389,7 @@ namespace HIDAeroService.AeroLibrary
             return s switch
             {
                 0 => "HID Aero",
-                _ => "Other Type"
+                _ => "Other TypeDesc"
             };
         }
 

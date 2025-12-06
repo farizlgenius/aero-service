@@ -109,18 +109,6 @@ namespace HIDAeroService
             );
             builder.Services.AddAuthorization();
 
-            // AutoMapper
-            builder.Services.AddAutoMapper(cfg =>
-            {
-                cfg.AddProfile<CardFormatProfile>();
-                cfg.AddProfile<ScpProfile>();
-                cfg.AddProfile<IdReportProfile>();
-                cfg.AddProfile<SioProfile>();
-                cfg.AddProfile<HolidayProfile>();
-                cfg.AddProfile<AcrProfile>();
-                cfg.AddProfile<AccessAreaProfile>();
-                // Add more profiles here if needed
-            });
 
             // SeriLog
             // Read Serilog config from appsettings.json
@@ -158,10 +146,14 @@ namespace HIDAeroService
             builder.Services.AddScoped<IFeatureService, FeatureService>();
             builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
             builder.Services.AddScoped<IRefreshTokenStore, RefreshTokenStore>();
+            builder.Services.AddScoped<ITransactionService, TransactionService>();
+            builder.Services.AddScoped<IProcedureService, ProcedureService>();
+            builder.Services.AddScoped<ITriggerService, TriggerService>();
+            builder.Services.AddScoped<IMonitorGroupService, MonitorGroupService>();
 
 
             //
-            builder.Services.AddScoped<EventService>();
+
             builder.Services.AddScoped<MessageHandler>();
 
             

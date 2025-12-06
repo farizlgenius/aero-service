@@ -21,6 +21,13 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
+        [HttpGet("/api/v1/{location}/[controller]")]
+        public async Task<ActionResult<ResponseDto<IEnumerable<DoorDto>>>> GetByLocationIdAsync(short location)
+        {
+            var res = await doorService.GetByLocationIdAsync(location);
+            return Ok(res);
+        }
+
         [HttpGet("{mac}")]
         public async Task<ActionResult<ResponseDto<DoorDto>>> GetByMacAsync(string mac)
         {

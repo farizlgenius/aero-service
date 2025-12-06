@@ -8,6 +8,7 @@ namespace HIDAeroService.Entity
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public short Value { get; set; }
+        public string Source { get; set; }
         public ICollection<TransactionSourceType> TransactionSourceTypes { get; set; }
     }
 }

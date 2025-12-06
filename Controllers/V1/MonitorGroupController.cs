@@ -17,10 +17,38 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
+        [HttpGet("/api/{location}/[controller]")]
+        public async Task<ActionResult<ResponseDto<IEnumerable<MonitorGroupDto>>>> GetByLocationIdAsync(short location)
+        {
+            var res = await service.GetByLocationAsync(location);
+            return Ok(res);
+        }
+
+        [HttpGet("command")]
+        public async Task<ActionResult<ResponseDto<ModeDto>>> GetCommandAsync()
+        {
+            var res = await service.GetCommandAsync();
+            return Ok(res);
+        }
+
+        [HttpGet("type")]
+        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetTypeAsync()
+        {
+            var res = await service.GetTypeAsync();
+            return Ok(res);
+        }
+
         [HttpPost]
-        public async Task<ActionResult<ResponseDto<MonitorGroupDto>>> CreateAsync(MonitorGroupDto dto)
+        public async Task<ActionResult<ResponseDto<MonitorGroupDto>>> CreateAsync([FromBody] MonitorGroupDto dto)
         {
             var res = await service.CreateAsync(dto);
+            return Ok(res);
+        }
+
+        [HttpPost("command")]
+        public async Task<ActionResult<ResponseDto<bool>>> MonitorGroupCommand([FromBody] MonitorGroupCommandDto dto )
+        {
+            var res = await service.MonitorGroupCommandAsync(dto);
             return Ok(res);
         }
 

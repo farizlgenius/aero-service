@@ -1,6 +1,4 @@
-﻿
-using AutoMapper;
-using HID.Aero.ScpdNet.Wrapper;
+﻿using HID.Aero.ScpdNet.Wrapper;
 using HIDAeroService.AeroLibrary;
 using HIDAeroService.Constant;
 using HIDAeroService.Constants;
