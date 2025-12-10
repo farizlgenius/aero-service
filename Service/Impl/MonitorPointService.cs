@@ -248,5 +248,16 @@ namespace HIDAeroService.Service.Impl
 
             return ResponseHelper.SuccessBuilder(dto);
         }
+
+        public async Task<ResponseDto<IEnumerable<MonitorPointDto>>> GetByIdAndMacAsync(string mac)
+        {
+            var dtos = await context.MonitorPoints
+                .AsNoTracking()
+                .Where(x => x.MacAddress == mac)
+                .Select(x => MapperHelper.MonitorPointToDto(x))
+                .ToArrayAsync();
+
+            return ResponseHelper.SuccessBuilder<IEnumerable<MonitorPointDto>>(dtos);
+        }
     }
 }

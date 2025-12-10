@@ -1402,6 +1402,37 @@ namespace HIDAeroService.AeroLibrary
             SCPSID_FILE_SYSTEM = 35
         }
 
+        public static string ScpStructureToText(ScpStructure n)
+        {
+            return n switch
+            {
+                ScpStructure.SCPSID_TRAN => "Transactions",
+                ScpStructure.SCPSID_TZ => "Time Zones",
+                ScpStructure.SCPSID_HOL => "Holidays",
+                ScpStructure.SCPSID_MSP1 => "MSP1 ports",
+                ScpStructure.SCPSID_SIO => "Modules",
+                ScpStructure.SCPSID_MP => "Monitor Points",
+                ScpStructure.SCPSID_CP => "Control Points",
+                ScpStructure.SCPSID_ACR => "Access Control Readers",
+                ScpStructure.SCPSID_ALVL => "Access Levels",
+                ScpStructure.SCPSID_TRIG => "Triggers",
+                ScpStructure.SCPSID_PROC => "Procedures",
+                ScpStructure.SCPSID_MPG => "Monitor Point Groups",
+                ScpStructure.SCPSID_AREA => "Areas",
+                ScpStructure.SCPSID_EAL => "Elevator Access Levels",
+                ScpStructure.SCPSID_CRDB => "Credentials",
+                ScpStructure.SCPSID_FLASH => "Flash",
+                ScpStructure.SCPSID_BSQN => "Build Sequence No",
+                ScpStructure.SCPSID_SAVE_STAT => "Auto Save Status",
+                ScpStructure.SCPSID_MAB1_FREE => "Memory Configuration Database",
+                ScpStructure.SCPSID_MAB2_FREE => "Memory Card Database",
+                ScpStructure.SCPSID_ARQ_BUFFER => "Access Request Buffer",
+                ScpStructure.SCPSID_LOGIN_STANDARD => "Login",
+                ScpStructure.SCPSID_FILE_SYSTEM => "File Version",
+                _ => "Not used",
+            };
+        }
+
         #endregion
 
     }

@@ -6,6 +6,7 @@ namespace HIDAeroService.Entity
     public sealed class Module : BaseEntity
     {
         public string Model { get; set; } = string.Empty;
+        public short ModelNo { get; set; }
         public Hardware Hardware { get; set; }
         // Component 
         public ICollection<Reader>? Readers { get; set; }

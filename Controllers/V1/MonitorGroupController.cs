@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HIDAeroService.Controllers.V1
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class MonitorGroupController(IMonitorGroupService service) : ControllerBase
     {
@@ -17,7 +17,7 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
-        [HttpGet("/api/{location}/[controller]")]
+        [HttpGet("/api/v1/{location}/[controller]")]
         public async Task<ActionResult<ResponseDto<IEnumerable<MonitorGroupDto>>>> GetByLocationIdAsync(short location)
         {
             var res = await service.GetByLocationAsync(location);

@@ -133,7 +133,7 @@ namespace HIDAeroService
             builder.Services.AddScoped<IIntervalService, IntervalService>();
             builder.Services.AddScoped<IMonitorPointService, MonitorPointService>();
             builder.Services.AddScoped<IModuleService, ModuleService>();
-            builder.Services.AddScoped<ICommand, CommandService>();
+            builder.Services.AddScoped<ICommandService, CommandService>();
             builder.Services.AddScoped<ICredentialService, CredentialService>();
             builder.Services.AddScoped<ICardHolderService, CardHolderService>();
             builder.Services.AddScoped<IControlPointService, ControlPointService>();
@@ -150,6 +150,7 @@ namespace HIDAeroService
             builder.Services.AddScoped<IProcedureService, ProcedureService>();
             builder.Services.AddScoped<ITriggerService, TriggerService>();
             builder.Services.AddScoped<IMonitorGroupService, MonitorGroupService>();
+            builder.Services.AddScoped<ICommandService, CommandService>();
 
 
             //
@@ -161,7 +162,7 @@ namespace HIDAeroService
             builder.Services.AddScoped(typeof(IHelperService<>), typeof(HelperService<>));
 
             
-            builder.Services.AddScoped<CmndService>();
+            builder.Services.AddScoped<CommandService>();
             builder.Services.AddSignalR();
             builder.Services.AddScoped<IdReportService>();
             builder.Services.AddTransient<ExceptionHandlingMiddleware>();
@@ -251,14 +252,6 @@ namespace HIDAeroService
 
             app.MapControllers();
             app.MapHub<AeroHub>(HubConstants.WEB_SOCKET_HUB);
-            app.MapHub<EventHub>(HubConstants.EVENT_HUB);
-            app.MapHub<ScpHub>(HubConstants.SCP_HUB);
-            app.MapHub<SioHub>(HubConstants.SIO_HUB);
-            app.MapHub<CpHub>(HubConstants.CP_HUB);
-            app.MapHub<MpHub>(HubConstants.MP_HUB);
-            app.MapHub<AcrHub>(HubConstants.ACR_HUB);
-            app.MapHub<CredentialHub>(HubConstants.CREDENTIAL_HUB);
-            app.MapHub<CmndHub>(HubConstants.CMND_HUB);
 
 
             app.Run();

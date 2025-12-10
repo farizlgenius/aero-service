@@ -58,12 +58,8 @@ namespace HIDAeroService.AeroLibrary
             var acr = scope.ServiceProvider.GetRequiredService<IDoorService>();
             var cp = scope.ServiceProvider.GetRequiredService<IControlPointService>();
             var mp = scope.ServiceProvider.GetRequiredService<IMonitorPointService>();
-            var tz = scope.ServiceProvider.GetRequiredService<ITimeZoneService>();
-            var cfmt = scope.ServiceProvider.GetRequiredService<ICardFormatService>();
-            var alvl = scope.ServiceProvider.GetRequiredService<IAccessLevelService>();
             var helper = scope.ServiceProvider.GetRequiredService<IHelperService>();
-            var sys = scope.ServiceProvider.GetRequiredService<SysService>();
-            var cmnd = scope.ServiceProvider.GetRequiredService<CmndService>();
+            var cmnd = scope.ServiceProvider.GetRequiredService<ICommandService>();
             switch (message.ReplyType)
             {
                 // Occur when command to SCP not success
@@ -87,7 +83,7 @@ namespace HIDAeroService.AeroLibrary
                 case (int)enSCPReplyType.enSCPReplyIDReport:
                     handle.SCPReplyIDReport(message);
                     // If Controller not register yet
-                    iDReport = await scp.HandleFoundHardware(message,tz,cfmt,alvl);
+                    iDReport = await scp.HandleFoundHardware(message);
                     if(iDReport != null)
                     {
                         iDReports.Add(iDReport);

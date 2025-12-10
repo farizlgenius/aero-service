@@ -12,6 +12,7 @@ namespace HIDAeroService.DTO.Module
     public sealed class ModuleDto : BaseDto
     {
         public string Model { get; set; } = string.Empty;
+        public short ModelNo { get; set; }
         // Component 
         public List<ReaderDto>? Readers { get; set; }
         public List<SensorDto>? Sensors { get; set; }

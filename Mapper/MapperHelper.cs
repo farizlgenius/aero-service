@@ -87,6 +87,7 @@ namespace HIDAeroService.Mapper
 
                         // ExtendDesc
                         Model = Enums.Model.HIDAeroX1100.ToString(),
+                        ModelNo = (short)Enums.Model.HIDAeroX1100,
                         Address = -1,
                         Port = 3,
                         nInput = (short)InputComponents.HIDAeroX1100,
@@ -127,6 +128,7 @@ namespace HIDAeroService.Mapper
 
                 // ExtendDesc
                 Model = dto.Model,
+                ModelNo = dto.ModelNo,
                 //Readers = dto.Readers.Select(x => DtoToReader(x,CreateAsync)).ToList(),
                 //Sensors = dto.Sensors.Select(x => DtoToSensor(x,CreateAsync)).ToList(),
                 //Strikes = dto.Strikes.Select(x => DtotoStrike(x,CreateAsync)).ToList(),
@@ -159,6 +161,7 @@ namespace HIDAeroService.Mapper
 
                 // ExtendDesc
                 Model = d.Model,
+                ModelNo = d.ModelNo,
                 Readers = d.Readers is null ? null : d.Readers.Select(x => ReaderToDto(x)).ToList(),
                 Sensors = d.Sensors is null ? null : d.Sensors.Select(x => SensorToDto(x)).ToList(),
                 Strikes = d.Strikes is null ? null : d.Strikes.Select(x => StrikeToDto(x)).ToList(),
@@ -884,7 +887,7 @@ namespace HIDAeroService.Mapper
                 .Select(x => DtoToAdditional(dto.UserId, x))
                 .ToList(),
                 Credentials = dto.Credentials.Select((x, i) => DtoToCredential(x, ComponentIds[i], Create)).ToList(),
-                CardHolderAccessLevels = dto.AccessLevels is not null ? dto.AccessLevels.Select(x => DtoToCardHolderAccessLevel(x.ComponentId, dto.UserId)).ToList() : new List<CardHolderAccessLevel>()
+                AccessLevels = dto.AccessLevels is not null ? dto.AccessLevels.Select(x => DtoToCardHolderAccessLevel(x.ComponentId, dto.UserId)).ToList() : new List<CardHolderAccessLevel>()
             };
         }
 

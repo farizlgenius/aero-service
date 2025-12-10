@@ -4,6 +4,7 @@ using HIDAeroService.Logging;
 using HIDAeroService.Model;
 using System.Net;
 using System.Text;
+using static HIDAeroService.AeroLibrary.Description;
 
 
 namespace HIDAeroService.Utility
@@ -171,5 +172,6 @@ namespace HIDAeroService.Utility
         {
             return (value & (1 << bit)) != 0;
         }
+
     }
 }

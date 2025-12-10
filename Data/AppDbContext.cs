@@ -82,6 +82,8 @@ namespace HIDAeroService.Data
         public DbSet<Procedure> Procedures { get; set; }
         public DbSet<Entity.Action> Actions { get; set; }
         public DbSet<Trigger> Triggers { get; set; }
+        public DbSet<CardHolderAdditional> CardHolderAdditionals { get; set; }
+        public DbSet<CardHolderAccessLevel> CardHolderAccessLevels { get; set; }
 
 
         // New
@@ -328,9 +330,9 @@ namespace HIDAeroService.Data
                 .HasPrincipalKey(x => x.ComponentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            var NoAccess = new AccessLevel { Id = 1, Uuid = SeedDefaults.SystemGuid, Name = "No Access", ComponentId = 1,LocationId=1, IsActive = true };
+            var NoAccess = new AccessLevel { Id = 1, Uuid = SeedDefaults.SystemGuid, Name = "No Access", ComponentId = 1,LocationId=0, IsActive = true };
 
-            var FullAccess = new AccessLevel { Id = 2, Uuid = SeedDefaults.SystemGuid, Name = "Full Access", ComponentId = 2,LocationId=1, IsActive = true };
+            var FullAccess = new AccessLevel { Id = 2, Uuid = SeedDefaults.SystemGuid, Name = "Full Access", ComponentId = 2,LocationId=0, IsActive = true };
 
 
             modelBuilder.Entity<AccessLevel>().HasData(
@@ -361,7 +363,7 @@ namespace HIDAeroService.Data
 
 
             modelBuilder.Entity<Entity.TimeZone>().HasData(
-                new Entity.TimeZone { Id = 1, Uuid = SeedDefaults.SystemGuid, Name = "Always", ComponentId = 1, Mode = 1, ActiveTime = "", DeactiveTime = "", IsActive = true }
+                new Entity.TimeZone { Id = 1, Uuid = SeedDefaults.SystemGuid, Name = "Always", ComponentId = 1, Mode = 1, ActiveTime = "", DeactiveTime = "", IsActive = true,LocationId=0 }
                );
 
             modelBuilder.Entity<TimeZoneMode>().HasData(
@@ -526,7 +528,7 @@ namespace HIDAeroService.Data
 
             modelBuilder.Entity<CardHolderAccessLevel>()
                 .HasOne(e => e.CardHolder)
-                .WithMany(e => e.CardHolderAccessLevels)
+                .WithMany(e => e.AccessLevels)
                 .HasForeignKey(e => e.CardHolderId)
                 .HasPrincipalKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -597,7 +599,8 @@ namespace HIDAeroService.Data
 
             modelBuilder.Entity<Location>()
                 .HasData(
-                new Location { Id=1,ComponentId=1,LocationName="Main",Description="Main Location",CreatedDate=SeedDefaults.SystemDate,UpdatedDate=SeedDefaults.SystemDate,Uuid=SeedDefaults.SystemGuid,IsActive=true }
+                new Location { Id = 1, ComponentId = 0, LocationName = "Central", Description = "Central Location", CreatedDate = SeedDefaults.SystemDate, UpdatedDate = SeedDefaults.SystemDate, Uuid = SeedDefaults.SystemGuid, IsActive = true },
+                new Location { Id = 2, ComponentId = 1, LocationName = "Main", Description = "Main Location", CreatedDate = SeedDefaults.SystemDate, UpdatedDate = SeedDefaults.SystemDate, Uuid = SeedDefaults.SystemGuid, IsActive = true }
                 );
 
             modelBuilder.Entity<Location>()
@@ -715,16 +718,28 @@ namespace HIDAeroService.Data
                 .HasPrincipalKey(p => p.ComponentId);
 
             modelBuilder.Entity<Location>()
-    .HasMany(l => l.Procedures)
-    .WithOne(c => c.Location)
-    .HasForeignKey(f => f.LocationId)
-    .HasPrincipalKey(p => p.ComponentId);
+                .HasMany(l => l.Procedures)
+                .WithOne(c => c.Location)
+                .HasForeignKey(f => f.LocationId)
+                .HasPrincipalKey(p => p.ComponentId);
 
             modelBuilder.Entity<Location>()
-    .HasMany(l => l.Actions)
-    .WithOne(c => c.Location)
-    .HasForeignKey(f => f.LocationId)
-    .HasPrincipalKey(p => p.ComponentId);
+                .HasMany(l => l.Actions)
+                .WithOne(c => c.Location)
+                .HasForeignKey(f => f.LocationId)
+                .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+                .HasMany(l => l.Intervals)
+                .WithOne(c => c.Location)
+                .HasForeignKey(f => f.LocationId)
+                .HasPrincipalKey(p => p.ComponentId);
+
+            modelBuilder.Entity<Location>()
+                .HasMany(l => l.TimeZones)
+                .WithOne(c => c.Location)
+                .HasForeignKey(f => f.LocationId)
+                .HasPrincipalKey(p => p.ComponentId);
 
             #endregion
 
@@ -1506,10 +1521,6 @@ namespace HIDAeroService.Data
                 .HasPrincipalKey(x => x.ComponentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<OperatorLocation>()
-                .HasData(
-                    new OperatorLocation { Id=1,LocationId=1,OperatorId=1 }
-                );
 
             modelBuilder.Entity<Operator>()
                 .HasOne(o => o.Role)
@@ -1537,6 +1548,11 @@ namespace HIDAeroService.Data
                 .HasData(
                     new Operator { Id = 1,ComponentId=1,UserId="Administrator",Username = "admin", Password = "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY", Email = "support@honorsupplying.com", Title = "Mr.", FirstName = "Administrator", MiddleName = "", LastName = "", Phone = "", ImagePath = "", RoleId = 1,Uuid=SeedDefaults.SystemGuid,CreatedDate=SeedDefaults.SystemDate,UpdatedDate=SeedDefaults.SystemDate,IsActive=true }
                 );
+
+            modelBuilder.Entity<OperatorLocation>()
+            .HasData(
+                new OperatorLocation { Id = 1, LocationId = 1, OperatorId = 1 }
+            );
 
             #endregion
 

@@ -24,15 +24,17 @@ namespace HIDAeroService.Service
        Task<ResponseDto<HardwareDto>> GetByMacAsync(string mac);
         Task<ResponseDto<bool>> ResetAsync(string mac);
         Task<ResponseDto<bool>> ResetAsync(short id);
-        Task<ResponseDto<bool>> UploadConfigAsync(string mac);
-        Task<bool> VerifySystemConfigurationAsync(short id);
-        Task<ResponseDto<HardwareStatus>> GetStatusAsync(string mac,short id);
+        Task<ResponseDto<bool>> UploadComponentConfigurationAsync(string mac);
+        Task<ResponseDto<bool>> VerifyMemoryAllocateAsyncWithResponse(string mac);
+        Task<bool> VerifyMemoryAllocateAsync(string mac);
+        Task<ResponseDto<IEnumerable<VerifyHardwareDeviceConfigDto>>> VerifyComponentConfigurationAsync(string mac);
+        Task<ResponseDto<HardwareStatus>> GetStatusAsync(string mac);
         void TriggerDeviceStatus(string ScpMac, int CommStatus);
         void TriggerIdReport(List<IdReport> IdReports);
         Task VerifyAllocateHardwareMemoryAsync(SCPReplyMessage message);
         void HandleUploadCommand(AeroCommand command, SCPReplyMessage message);
         void AssignIpToIdReport(SCPReplyMessage message, List<IdReport> iDReports);
-        Task<IdReport> HandleFoundHardware(SCPReplyMessage message, ITimeZoneService tz, ICardFormatService cfmt, IAccessLevelService alvl);
+        Task<IdReport> HandleFoundHardware(SCPReplyMessage message);
 
     }
 }

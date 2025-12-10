@@ -23,6 +23,6 @@ namespace HIDAeroService.Entity
         public ICollection<CardHolderAdditional> Additional { get; set; }
         public string ImagePath { get; set; } = string.Empty;
         public ICollection<Credential> Credentials { get; set; }
-        public ICollection<CardHolderAccessLevel> CardHolderAccessLevels { get; set; }
+        public ICollection<CardHolderAccessLevel> AccessLevels { get; set; }
     }
 }

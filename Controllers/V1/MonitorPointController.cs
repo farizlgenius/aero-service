@@ -36,6 +36,13 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
+        [HttpGet("{mac}")]
+        public async Task<ActionResult<ResponseDto<IEnumerable<MonitorPointDto>>>> GetByMacAsync(string mac)
+        {
+            var res = await mpService.GetByIdAndMacAsync(mac);
+            return Ok(res);
+        }
+
         [HttpPost]
         public async Task<ActionResult<ResponseDto<MonitorPointDto>>> CreateAsync([FromBody] MonitorPointDto dto)
         {

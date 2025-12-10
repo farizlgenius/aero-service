@@ -37,10 +37,10 @@ namespace HIDAeroService.Controllers.V1
         }
 
 
-        [HttpGet("status/{mac}/{id}")]
-        public async Task<ActionResult<ResponseDto<HardwareStatus>>> GetStatusAsync(string mac, short id)
+        [HttpGet("status/{mac}")]
+        public async Task<ActionResult<ResponseDto<HardwareStatus>>> GetStatusAsync(string mac)
         {
-            var res = await hardwareService.GetStatusAsync(mac, id);
+            var res = await hardwareService.GetStatusAsync(mac);
             return Ok(res);
         }
 
@@ -84,15 +84,22 @@ namespace HIDAeroService.Controllers.V1
         [HttpPost("upload/{mac}")]
         public async Task<ActionResult<ResponseDto<bool>>> UploadConfigAsync(string mac)
         {
-            var res = await hardwareService.UploadConfigAsync(mac);
+            var res = await hardwareService.UploadComponentConfigurationAsync(mac);
             return Ok(res);
         }
 
 
-        [HttpPost("verify/{id}")]
-        public async Task<ActionResult<ResponseDto<bool>>> VerifySystemConfigurationByIdAsync(short id)
+        [HttpPost("verify/mem/{mac}")]
+        public async Task<ActionResult<ResponseDto<bool>>> VerifyMemoryAllocateAsync(string mac)
         {
-            var res = await hardwareService.VerifySystemConfigurationAsync(id);
+            var res = await hardwareService.VerifyMemoryAllocateAsyncWithResponse(mac);
+            return Ok(res);
+        }
+
+        [HttpPost("verify/com/{mac}")]
+        public async Task<ActionResult<ResponseDto<bool>>> VerifyComponentConfigurationAsync(string mac)
+        {
+            var res = await hardwareService.VerifyComponentConfigurationAsync(mac);
             return Ok(res);
         }
 
@@ -102,10 +109,10 @@ namespace HIDAeroService.Controllers.V1
             throw new NotImplementedException();
         }
 
-        [HttpPost("{mac}/{isOn}")]
-        public async Task<ActionResult<ResponseDto<bool>>> SetTransactionAsync(string mac,short isOn)
+        [HttpPost("{mac}/{parameter}")]
+        public async Task<ActionResult<ResponseDto<bool>>> SetTransactionAsync(string mac,short parameter)
         {
-            var res = await hardwareService.SetTransactionAsync(mac,isOn);
+            var res = await hardwareService.SetTransactionAsync(mac, parameter);
             return Ok(res);
         }
     }

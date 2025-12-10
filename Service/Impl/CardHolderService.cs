@@ -10,6 +10,7 @@ using HIDAeroService.Helpers;
 using HIDAeroService.Mapper;
 using HIDAeroService.Utility;
 using Microsoft.EntityFrameworkCore;
+using MiNET.Utils.IO;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HIDAeroService.Service.Impl
@@ -23,14 +24,17 @@ namespace HIDAeroService.Service.Impl
             List<string> errors = new List<string>();
             // Send data 
             var ScpIds = await context.Hardwares.Select(x => new { x.ComponentId,x.MacAddress }).ToArrayAsync();
-            foreach (var cred in dto.Credentials)
+
+            var entity = MapperHelper.DtoToCardHolder(dto, CredentialComponentId, DateTime.Now);
+
+            foreach (var cred in entity.Credentials)
             {
                 CredentialComponentId.Add(await helperService.GetLowestUnassignedNumberNoLimitAsync<Credential>(context));
                 cred.IssueCode = await credentialService.GetLowestUnassignedIssueCodeAsync(userId:dto.UserId);
 
                 foreach (var id in ScpIds)
                 {
-                    if (!await command.AccessDatabaseCardRecordAsync(id.ComponentId, dto.Flag,cred.CardNo,cred.IssueCode,cred.Pin,dto.AccessLevels, (int)helperService.DateTimeToElapeSecond(cred.ActiveDate), (int)helperService.DateTimeToElapeSecond(cred.DeactiveDate)))
+                    if (!await command.AccessDatabaseCardRecordAsync(id.ComponentId, dto.Flag,cred.CardNo,cred.IssueCode,cred.Pin, entity.AccessLevels.Select(x => x.AccessLevel).ToList(), (int)helperService.DateTimeToElapeSecond(cred.ActiveDate), (int)helperService.DateTimeToElapeSecond(cred.DeactiveDate)))
                     {
                         errors.Add(MessageBuilder.Unsuccess(id.MacAddress, Command.C8304));
                     }
@@ -39,9 +43,6 @@ namespace HIDAeroService.Service.Impl
             }
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
-
-
-            var entity = MapperHelper.DtoToCardHolder(dto, CredentialComponentId, DateTime.Now);
 
 
             await context.CardHolders.AddAsync(entity);
@@ -95,7 +96,7 @@ namespace HIDAeroService.Service.Impl
             var dtos = await context.CardHolders
                 .Include(x => x.Additional)
                 .Include(x => x.Credentials)
-                .Include(x => x.CardHolderAccessLevels)
+                .Include(x => x.AccessLevels)
                 .ThenInclude(x => x.AccessLevel)
                 .Select(x => MapperHelper.CardHolderToDto(x))
                 .ToArrayAsync();
@@ -109,7 +110,7 @@ namespace HIDAeroService.Service.Impl
             var dtos = await context.CardHolders
                 .Include(x => x.Additional)
                 .Include(x => x.Credentials)
-                .Include(x => x.CardHolderAccessLevels)
+                .Include(x => x.AccessLevels)
                 .ThenInclude(x => x.AccessLevel)
                 .Where(x => x.LocationId == location)
                 .Select(x => MapperHelper.CardHolderToDto(x))
@@ -124,7 +125,7 @@ namespace HIDAeroService.Service.Impl
             var dto = await context.CardHolders
                 .Include(x => x.Additional)
                 .Include(x => x.Credentials)
-                .Include(x => x.CardHolderAccessLevels)
+                .Include(x => x.AccessLevels)
                 .ThenInclude(x => x.AccessLevel)
                 .Select(x => MapperHelper.CardHolderToDto(x))
                 .FirstOrDefaultAsync();
@@ -136,11 +137,26 @@ namespace HIDAeroService.Service.Impl
         {
             List<string> errors = new List<string>();
             var entity = await context.CardHolders
+                .Include(x => x.AccessLevels)
+                .ThenInclude(x => x.AccessLevel)
+                .Include(x => x.Additional)
+                .Include(x => x.Credentials)
                 .Where(x => x.UserId == dto.UserId)
                 .FirstOrDefaultAsync();
 
             if (entity is null) return ResponseHelper.NotFoundBuilder<CardHolderDto>();
             List<short> CredentialComponentId = new List<short>();
+
+            context.CardHolderAdditionals.RemoveRange(entity.Additional);
+            context.CardHolderAccessLevels.RemoveRange(entity.AccessLevels);
+
+            for(int i = 0;i < dto.Credentials.Count(); i++)
+            {
+                CredentialComponentId.Add(await helperService.GetLowestUnassignedNumberNoLimitAsync<Credential>(context));
+            }
+
+            MapperHelper.UpdateCardHolder(entity, dto, CredentialComponentId);
+
             // DeleteAsync Old 
             var macs = entity.Credentials.SelectMany(x => x.HardwareCredentials.Select(x => x.MacAddress)).ToList();
             foreach(var mac in macs)
@@ -158,12 +174,11 @@ namespace HIDAeroService.Service.Impl
 
             // Send data 
             var ScpIds = await context.Hardwares.Select(x => new { x.ComponentId, x.MacAddress }).ToArrayAsync();
-            foreach (var cred in dto.Credentials)
-            {
-                CredentialComponentId.Add(await helperService.GetLowestUnassignedNumberNoLimitAsync<Credential>(context));
+            foreach (var cred in entity.Credentials)
+            {     
                 foreach (var id in ScpIds)
                 {
-                    if (!await command.AccessDatabaseCardRecordAsync(id.ComponentId, dto.Flag, cred.CardNo, cred.IssueCode,string.IsNullOrEmpty(cred.Pin) ? "" : cred.Pin, dto.AccessLevels is null ? new List<AccessLevelDto>() : dto.AccessLevels, (int)helperService.DateTimeToElapeSecond(cred.ActiveDate), (int)helperService.DateTimeToElapeSecond(cred.DeactiveDate)))
+                    if (!await command.AccessDatabaseCardRecordAsync(id.ComponentId, dto.Flag, cred.CardNo, cred.IssueCode,string.IsNullOrEmpty(cred.Pin) ? "" : cred.Pin, entity.AccessLevels is null ? new List<AccessLevel>() : entity.AccessLevels.Select(x => x.AccessLevel).ToList(), (int)helperService.DateTimeToElapeSecond(cred.ActiveDate), (int)helperService.DateTimeToElapeSecond(cred.DeactiveDate)))
                     {
                         errors.Add(MessageBuilder.Unsuccess(id.MacAddress, Command.C8304));
                     }
@@ -172,9 +187,6 @@ namespace HIDAeroService.Service.Impl
             }
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<CardHolderDto>(ResponseMessage.COMMAND_UNSUCCESS, errors);
-
-
-            MapperHelper.DtoToCardHolder(dto, CredentialComponentId, DateTime.Now);
 
 
             context.CardHolders.Update(entity);

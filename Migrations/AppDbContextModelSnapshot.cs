@@ -272,7 +272,7 @@ namespace HIDAeroService.Migrations
                             ComponentId = (short)1,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            LocationId = (short)1,
+                            LocationId = (short)0,
                             Name = "No Access",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Uuid = "00000000-0000-0000-0000-000000000001"
@@ -283,7 +283,7 @@ namespace HIDAeroService.Migrations
                             ComponentId = (short)2,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            LocationId = (short)1,
+                            LocationId = (short)0,
                             Name = "Full Access",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Uuid = "00000000-0000-0000-0000-000000000001"
@@ -822,7 +822,7 @@ namespace HIDAeroService.Migrations
 
                     b.HasIndex("CardHolderId");
 
-                    b.ToTable("CardHolderAccessLevel");
+                    b.ToTable("CardHolderAccessLevels");
                 });
 
             modelBuilder.Entity("HIDAeroService.Entity.CardHolderAdditional", b =>
@@ -848,7 +848,7 @@ namespace HIDAeroService.Migrations
 
                     b.HasIndex("CardHolderId");
 
-                    b.ToTable("CardHolderAdditional");
+                    b.ToTable("CardHolderAdditionals");
                 });
 
             modelBuilder.Entity("HIDAeroService.Entity.CommandStatus", b =>
@@ -2415,6 +2415,9 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<short>("LocationId")
+                        .HasColumnType("smallint");
+
                     b.Property<string>("StartTime")
                         .IsRequired()
                         .HasColumnType("text");
@@ -2432,6 +2435,8 @@ namespace HIDAeroService.Migrations
 
                     b.HasIndex("ComponentId")
                         .IsUnique();
+
+                    b.HasIndex("LocationId");
 
                     b.ToTable("Intervals");
                 });
@@ -2480,6 +2485,17 @@ namespace HIDAeroService.Migrations
                         new
                         {
                             Id = 1,
+                            ComponentId = (short)0,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Central Location",
+                            IsActive = true,
+                            LocationName = "Central",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Uuid = "00000000-0000-0000-0000-000000000001"
+                        },
+                        new
+                        {
+                            Id = 2,
                             ComponentId = (short)1,
                             CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Main Location",
@@ -2525,6 +2541,9 @@ namespace HIDAeroService.Migrations
                     b.Property<string>("Model")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<short>("ModelNo")
+                        .HasColumnType("smallint");
 
                     b.Property<short>("Msp1No")
                         .HasColumnType("smallint");
@@ -4220,6 +4239,9 @@ namespace HIDAeroService.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<short>("LocationId")
+                        .HasColumnType("smallint");
+
                     b.Property<short>("Mode")
                         .HasColumnType("smallint");
 
@@ -4238,6 +4260,8 @@ namespace HIDAeroService.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LocationId");
+
                     b.ToTable("TimeZones");
 
                     b.HasData(
@@ -4249,6 +4273,7 @@ namespace HIDAeroService.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DeactiveTime = "",
                             IsActive = true,
+                            LocationId = (short)0,
                             Mode = (short)1,
                             Name = "Always",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -6684,7 +6709,7 @@ namespace HIDAeroService.Migrations
                         .IsRequired();
 
                     b.HasOne("HIDAeroService.Entity.CardHolder", "CardHolder")
-                        .WithMany("CardHolderAccessLevels")
+                        .WithMany("AccessLevels")
                         .HasForeignKey("CardHolderId")
                         .HasPrincipalKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -6885,6 +6910,18 @@ namespace HIDAeroService.Migrations
                 {
                     b.HasOne("HIDAeroService.Entity.Location", "Location")
                         .WithMany("Holidays")
+                        .HasForeignKey("LocationId")
+                        .HasPrincipalKey("ComponentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Location");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.Interval", b =>
+                {
+                    b.HasOne("HIDAeroService.Entity.Location", "Location")
+                        .WithMany("Intervals")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -7118,6 +7155,18 @@ namespace HIDAeroService.Migrations
                     b.Navigation("Features");
                 });
 
+            modelBuilder.Entity("HIDAeroService.Entity.TimeZone", b =>
+                {
+                    b.HasOne("HIDAeroService.Entity.Location", "Location")
+                        .WithMany("TimeZones")
+                        .HasForeignKey("LocationId")
+                        .HasPrincipalKey("ComponentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Location");
+                });
+
             modelBuilder.Entity("HIDAeroService.Entity.TimeZoneInterval", b =>
                 {
                     b.HasOne("HIDAeroService.Entity.Interval", "Interval")
@@ -7232,9 +7281,9 @@ namespace HIDAeroService.Migrations
 
             modelBuilder.Entity("HIDAeroService.Entity.CardHolder", b =>
                 {
-                    b.Navigation("Additional");
+                    b.Navigation("AccessLevels");
 
-                    b.Navigation("CardHolderAccessLevels");
+                    b.Navigation("Additional");
 
                     b.Navigation("Credentials");
                 });
@@ -7301,6 +7350,8 @@ namespace HIDAeroService.Migrations
 
                     b.Navigation("Holidays");
 
+                    b.Navigation("Intervals");
+
                     b.Navigation("Modules");
 
                     b.Navigation("MonitorPoints");
@@ -7318,6 +7369,8 @@ namespace HIDAeroService.Migrations
                     b.Navigation("Sensors");
 
                     b.Navigation("Strikes");
+
+                    b.Navigation("TimeZones");
 
                     b.Navigation("Triggers");
                 });

@@ -218,7 +218,28 @@ namespace HIDAeroService.Service.Impl
 
             short ScpId = await helperService.GetIdFromMacAsync(dto.MacAddress);
 
-            foreach(var reader in dto.Readers)
+            var door = MapperHelper.DtoToDoor(
+                dto,
+                DoorId,
+                await context.DoorModes
+                .AsNoTracking()
+                .Where(x => x.Value == dto.Mode)
+                .Select(x => x.Name)
+                .FirstOrDefaultAsync() ?? "",
+                await context.DoorModes
+                .AsNoTracking()
+                .Where(x => x.Value == dto.OfflineMode)
+                .Select(x => x.Name)
+                .FirstOrDefaultAsync() ?? "",
+                await context.DoorModes
+                .AsNoTracking()
+                .Where(x => x.Value == dto.DefaultMode)
+                .Select(x => x.Name)
+                .FirstOrDefaultAsync() ?? "",
+                DateTime.Now
+            );
+
+            foreach (var reader in door.Readers)
             {
                 if (string.IsNullOrEmpty(reader.MacAddress)) continue;
                 short readerInOsdpFlag = 0x00;
@@ -242,10 +263,10 @@ namespace HIDAeroService.Service.Impl
 
                 var ReaderInId = await helperService.GetIdFromMacAsync(reader.MacAddress);
                 var ReaderComponentId = await helperService.GetLowestUnassignedNumberNoLimitAsync<Reader>(context);
-                reader.ComponentId = ReaderInId;
+                reader.ComponentId = ReaderComponentId;
                 if (!await command.ReaderSpecificationAsync(ReaderInId, reader.ModuleId, reader.ReaderNo, reader.DataFormat, reader.KeypadMode, readerLedDriveMode, readerInOsdpFlag))
                 {
-                    return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.MacAddress, Command.C112));
+                    return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.MacAddress, Command.C112));
                 }
             }
 
@@ -253,23 +274,23 @@ namespace HIDAeroService.Service.Impl
 
             // Strike Strike Config
             var StrikeComponentId = await helperService.GetLowestUnassignedNumberNoLimitAsync<Strike>(context);
-            dto.Strk.ComponentId = StrikeComponentId;
-            var StrikeId = await helperService.GetIdFromMacAsync(dto.Strk.MacAddress);
-            if (!await command.OutputPointSpecificationAsync(StrikeId, dto.Strk.ModuleId, dto.Strk.OutputNo, dto.Strk.RelayMode))
+            door.Strk.ComponentId = StrikeComponentId;
+            var StrikeId = await helperService.GetIdFromMacAsync(door.Strk.MacAddress);
+            if (!await command.OutputPointSpecificationAsync(StrikeId, door.Strk.ModuleId, door.Strk.OutputNo, door.Strk.RelayMode))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.MacAddress, Command.C111));
+                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.MacAddress, Command.C111));
             }
 
             // Door Sensor Config
-            var SensorId = await helperService.GetIdFromMacAsync(dto.Sensor.MacAddress);
+            var SensorId = await helperService.GetIdFromMacAsync(door.Sensor.MacAddress);
             var SensorComponentId = await helperService.GetLowestUnassignedNumberNoLimitAsync<Sensor>(context);
-            dto.Sensor.ComponentId = SensorComponentId;
-            if (!await command.InputPointSpecificationAsync(SensorId, dto.Sensor.ModuleId, dto.Sensor.InputNo, dto.Sensor.InputMode, dto.Sensor.Debounce, dto.Sensor.HoldTime))
+            door.Sensor.ComponentId = SensorComponentId;
+            if (!await command.InputPointSpecificationAsync(SensorId, door.Sensor.ModuleId, door.Sensor.InputNo, door.Sensor.InputMode, door.Sensor.Debounce, door.Sensor.HoldTime))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.MacAddress, Command.C110));
+                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.MacAddress, Command.C110));
             }
 
-            foreach (var rex in dto.RequestExits)
+            foreach (var rex in door.RequestExits)
             {
                 if (string.IsNullOrEmpty(rex.MacAddress)) continue;
                 var Rex0Id = await helperService.GetIdFromMacAsync(rex.MacAddress);
@@ -277,34 +298,16 @@ namespace HIDAeroService.Service.Impl
                 rex.ComponentId = rexComponentId;
                 if (!await command.InputPointSpecificationAsync(Rex0Id, rex.ModuleId, rex.InputNo, rex.InputMode, rex.Debounce, rex.HoldTime))
                 {
-                    return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.MacAddress, Command.C110));
+                    return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.MacAddress, Command.C110));
                 }
             }
 
-            if (!await command.AccessControlReaderConfigurationAsync(ScpId, DoorId, dto))
+            if (!await command.AccessControlReaderConfigurationAsync(ScpId, DoorId, door))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.MacAddress, Command.C115));
+                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.MacAddress, Command.C115));
             }
 
-            var door = MapperHelper.DtoToDoor(
-                dto, 
-                DoorId,
-                await context.DoorModes
-                .AsNoTracking()
-                .Where(x => x.Value == dto.Mode)
-                .Select(x => x.Name)
-                .FirstOrDefaultAsync() ?? "",
-                await context.DoorModes
-                .AsNoTracking()
-                .Where(x => x.Value == dto.OfflineMode)
-                .Select(x => x.Name)
-                .FirstOrDefaultAsync() ?? "",
-                await context.DoorModes
-                .AsNoTracking()
-                .Where(x => x.Value == dto.DefaultMode)
-                .Select(x => x.Name)
-                .FirstOrDefaultAsync() ?? "",
-                DateTime.Now);
+
 
             await context.Doors.AddAsync(door);
             await context.SaveChangesAsync();
@@ -334,7 +337,25 @@ namespace HIDAeroService.Service.Impl
             if (door is null) return ResponseHelper.NotFoundBuilder<DoorDto>();
             short ScpId = await helperService.GetIdFromMacAsync(dto.MacAddress);
 
-            foreach (var reader in dto.Readers)
+            MapperHelper.UpdateDoor(door, dto,
+                 await context.DoorModes
+                .AsNoTracking()
+                .Where(x => x.Value == dto.Mode)
+                .Select(x => x.Name)
+                .FirstOrDefaultAsync() ?? "",
+                await context.DoorModes
+                .AsNoTracking()
+                .Where(x => x.Value == dto.OfflineMode)
+                .Select(x => x.Name)
+                .FirstOrDefaultAsync() ?? "",
+                await context.DoorModes
+                .AsNoTracking()
+                .Where(x => x.Value == dto.DefaultMode)
+                .Select(x => x.Name)
+                .FirstOrDefaultAsync() ?? ""
+             );
+
+            foreach (var reader in door.Readers)
             {
                 if (string.IsNullOrEmpty(reader.MacAddress)) continue;
                 short readerInOsdpFlag = 0x00;
@@ -358,25 +379,25 @@ namespace HIDAeroService.Service.Impl
                 var ReaderInId = await helperService.GetIdFromMacAsync(reader.MacAddress);
                 if (!await command.ReaderSpecificationAsync(ReaderInId, reader.ModuleId, reader.ReaderNo, reader.DataFormat, reader.KeypadMode, readerLedDriveMode, readerInOsdpFlag))
                 {
-                    return ResponseHelper.UnsuccessBuilder<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.MacAddress, Command.C112));
+                    return ResponseHelper.UnsuccessBuilder<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.MacAddress, Command.C112));
                 }
             }
 
             // Strike Strike Config
-            var StrkId = await helperService.GetIdFromMacAsync(dto.Strk.MacAddress);
-            if (!await command.OutputPointSpecificationAsync(StrkId, dto.Strk.ModuleId, dto.Strk.OutputNo, dto.Strk.RelayMode))
+            var StrkId = await helperService.GetIdFromMacAsync(door.Strk.MacAddress);
+            if (!await command.OutputPointSpecificationAsync(StrkId, door.Strk.ModuleId, door.Strk.OutputNo, door.Strk.RelayMode))
             {
-                return ResponseHelper.UnsuccessBuilder<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.MacAddress, Command.C111));
+                return ResponseHelper.UnsuccessBuilder<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.MacAddress, Command.C111));
             }
 
             // Door Sensor Config
-            var SensorId = await helperService.GetIdFromMacAsync(dto.Sensor.MacAddress);
-            if (!await command.InputPointSpecificationAsync(SensorId, dto.Sensor.ModuleId, dto.Sensor.InputNo, dto.Sensor.InputMode, dto.Sensor.Debounce, dto.Sensor.HoldTime))
+            var SensorId = await helperService.GetIdFromMacAsync(door.Sensor.MacAddress);
+            if (!await command.InputPointSpecificationAsync(SensorId, door.Sensor.ModuleId, door.Sensor.InputNo, door.Sensor.InputMode, door.Sensor.Debounce, door.Sensor.HoldTime))
             {
-                return ResponseHelper.UnsuccessBuilder<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.MacAddress, Command.C110));
+                return ResponseHelper.UnsuccessBuilder<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.MacAddress, Command.C110));
             }
 
-            foreach (var rex in dto.RequestExits)
+            foreach (var rex in door.RequestExits)
             {
                 if (string.IsNullOrEmpty(rex.MacAddress)) continue;
                 var Rex0Id = await helperService.GetIdFromMacAsync(rex.MacAddress);
@@ -386,9 +407,9 @@ namespace HIDAeroService.Service.Impl
                 }
             }
 
-            if (!await command.AccessControlReaderConfigurationAsync(ScpId, dto.ComponentId, dto))
+            if (!await command.AccessControlReaderConfigurationAsync(ScpId, dto.ComponentId, door))
             {
-                return ResponseHelper.UnsuccessBuilder<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.MacAddress, Command.C115));
+                return ResponseHelper.UnsuccessBuilder<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.MacAddress, Command.C115));
             }
 
             // DeleteAsync old 
@@ -396,24 +417,6 @@ namespace HIDAeroService.Service.Impl
             if(door.RequestExits is not null)context.RequestExits.RemoveRange(door.RequestExits);
             context.Readers.RemoveRange(door.Readers);
             context.Strikes.Remove(door.Strk);
-
-
-            MapperHelper.UpdateDoor(door,dto,
-                 await context.DoorModes
-                .AsNoTracking()
-                .Where(x => x.Value == dto.Mode)
-                .Select(x => x.Name)
-                .FirstOrDefaultAsync() ?? "",
-                await context.DoorModes
-                .AsNoTracking()
-                .Where(x => x.Value == dto.OfflineMode)
-                .Select(x => x.Name)
-                .FirstOrDefaultAsync() ?? "",
-                await context.DoorModes
-                .AsNoTracking()
-                .Where(x => x.Value == dto.DefaultMode)
-                .Select(x => x.Name)
-                .FirstOrDefaultAsync() ?? "");
 
             context.Doors.Update(door);
             await context.SaveChangesAsync();

@@ -34,6 +34,8 @@ namespace HIDAeroService.Entity
         public ICollection<Procedure> Procedures { get; set; }
         public ICollection<Action> Actions { get; set; }
         public ICollection<Trigger> Triggers { get; set; }
+        public ICollection<Interval> Intervals { get; set; }
+        public ICollection<TimeZone> TimeZones { get; set; }
 
         public bool IsActive { get; set; } = true;
         public DateTime CreatedDate { get; set; }

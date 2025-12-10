@@ -1,63 +1,46 @@
-﻿
-using HID.Aero.ScpdNet.Wrapper;
+﻿using HID.Aero.ScpdNet.Wrapper;
+using HIDAeroService.AeroLibrary;
+using HIDAeroService.Data;
 using HIDAeroService.DTO.Scp;
+using HIDAeroService.Entity;
+using HIDAeroService.Hubs;
+using Microsoft.AspNetCore.SignalR;
 using MiNET.Entities.Passive;
-using SixLabors.Fonts.Tables.AdvancedTypographic;
-using System.Collections.Concurrent;
-using static HIDAeroService.Constants.Command;
+using Org.BouncyCastle.Crypto.Parameters;
+using static HID.Aero.ScpdNet.Wrapper.SCPReplyMessage;
 
 namespace HIDAeroService.Service.Impl
 {
-    public class CommandService : ICommand
+    public sealed class CommandService(ILogger<CommandService> logger, AppDbContext context, IHelperService<CommandStatus> helperService, AeroCommand write) : ICommandService
     {
-        private readonly ConcurrentDictionary<int, TaskCompletionSource<bool>> _pendingCommands = new ConcurrentDictionary<int, TaskCompletionSource<bool>>();
-      
-        public async Task<bool> ExecuteAsync<T>(CommandFlags CommandFlag,T Data)
+
+
+        public void Save(int ScpId, string ScpMac, short TagNo, short CommandStatus, string Command, SCPReplyNAK nak)
         {
-            switch (Data)
+            CommandStatus s = new CommandStatus();
+            s.CreatedDate = DateTime.Now;
+            s.UpdatedDate = DateTime.Now;
+            s.ScpMac = ScpMac;
+            s.TagNo = TagNo;
+            s.Status = CommandStatus == 1 ? 'S' : 'F';
+            s.Command = Command;
+            s.NakReason = Description.GetNakReasonDescription(nak.reason);
+            s.NakDescCode = nak.description_code;
+            s.ScpId = ScpId;
+            context.ArCommandStatuses.Add(s);
+            context.SaveChanges();
+        }
+
+
+        public void HandleSaveFailCommand(AeroCommand write, SCPReplyMessage message)
+        {
+            if (message.cmnd_sts.status == 2)
             {
-                case CommandFlags.enCcMpSrq: // Request Sensor Status from Controller
-                    if(Data is HardwareDto)
-                    {
-                        //CC_MPSRQ cfg = new CC_MPSRQ();
-                        //cfg.scp_number = ScpId;
-                        //cfg.first = MpNo;
-                        //cfg.count = Count;
-                        //bool flag = Send((short)enCfgCmnd.enCcMpSrq, cfg);
-                        //if (flag) return await SendCommandAsync(SCPDLL.scpGetTagLastPosted(ScpId), TimeOut);        
-                    }
-                    return false;
-                default:
-                    break;
+                // Save to database 
+                Save(message.SCPId, helperService.GetMacFromId((short)message.SCPId) == null ? "" : helperService.GetMacFromId((short)message.SCPId), (short)message.cmnd_sts.sequence_number, message.cmnd_sts.status, write.Command, message.cmnd_sts.nak);
             }
-            return true;
         }
 
-        private bool Send(short command, IConfigCommand cfg)
-        {
-            SCPConfig scp = new SCPConfig();
-            bool success = scp.scpCfgCmndEx(command, cfg);
-            return success;
-        }
 
-        private Task<bool> SendCommandAsync(int tag, int timeout)
-        {
-
-            TimeSpan span = TimeSpan.FromSeconds(timeout);
-            var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-
-            if (!_pendingCommands.TryAdd(tag, tcs))
-                throw new InvalidOperationException($"Command with tag {tag} already exists");
-
-            // Timeout
-            var cts = new CancellationTokenSource(span);
-            cts.Token.Register(() => {
-                if (_pendingCommands.TryRemove(tag, out var source))
-                    source.TrySetException(new TimeoutException("Command time out"));
-            });
-
-            return tcs.Task;
-
-        }
     }
 }

@@ -132,7 +132,7 @@ namespace HIDAeroService.Service.Impl
 
             if (!await command.OutputPointSpecificationAsync(scpId, dto.ModuleId, dto.OutputNo, modeNo))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(dto.MacAddress, Command.C111));
+                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.MacAddress, Command.C111));
             }
 
 

@@ -130,7 +130,7 @@ namespace HIDAeroService.AeroLibrary
 
         #region Configuring the intelligent controller: pre-connection
 
-        public bool SCPDeviceSpecification(short ScpId, SystemSetting setting)
+        public async Task<bool> SCPDeviceSpecification(short ScpId, SystemSetting setting)
         {
             var _commandValue = (short)enCfgCmnd.enCcScpScp;
             CC_SCP_SCP cc_scp_scp = new CC_SCP_SCP();
@@ -163,61 +163,11 @@ namespace HIDAeroService.AeroLibrary
             bool flag = SendCommand(_commandValue, cc_scp_scp);
             if (flag)
             {
-                TagNo = SCPDLL.scpGetTagLastPosted(ScpId);
-                Console.WriteLine("Command Tag : " + TagNo);
-                //insert code to store the command tag and associated cmnd struct.
-                //cmnd struct and tag can be deleted upon receipt of
-                //successful command delivery notification
+                return await SendCommandAsync(SCPDLL.scpGetTagLastPosted(ScpId), _commandTimeout);
             }
             return flag;
         }
 
-        public bool AccessDatabaseSpecification(short ScpID, SystemSetting setting)
-        {
-            var _commandValue = (short)enCfgCmnd.enCcScpAdbSpec;
-            CC_SCP_ADBS cc_scp_adbs = new CC_SCP_ADBS();
-            cc_scp_adbs.lastModified = 0;
-            cc_scp_adbs.nScpID = ScpID;
-            cc_scp_adbs.nCards = setting.nCard;
-            //cc_scp_adbs.nCards = 100;
-            cc_scp_adbs.nAlvl = 32;
-            // Pin Constant = 1
-            cc_scp_adbs.nPinDigits = 324;
-            cc_scp_adbs.bIssueCode = 2;
-            cc_scp_adbs.bApbLocation = 1;
-            cc_scp_adbs.bActDate = 2;
-            cc_scp_adbs.bDeactDate = 2;
-            cc_scp_adbs.bVacationDate = 1;
-            cc_scp_adbs.bUpgradeDate = 0;
-            cc_scp_adbs.bUserLevel = 0;
-            cc_scp_adbs.bUseLimit = 1;
-            cc_scp_adbs.bSupportTimedApb = 1;
-            cc_scp_adbs.nTz = 64;
-            cc_scp_adbs.bAssetGroup = 0;
-            cc_scp_adbs.nHostResponseTimeout = 5;
-            cc_scp_adbs.nMxmTypeIndex = 0;
-            cc_scp_adbs.nAlvlUse4Arq = 0;
-            cc_scp_adbs.nFreeformBlockSize = 0;
-            cc_scp_adbs.nEscortTimeout = 15;
-            cc_scp_adbs.nMultiCardTimeout = 15;
-            cc_scp_adbs.nAssetTimeout = 0;
-            cc_scp_adbs.bAccExceptionList = 0;
-            cc_scp_adbs.adbFlags = 1;
-            bool flag = SendCommand(_commandValue, cc_scp_adbs);
-            if (flag)
-            {
-                TagNo = SCPDLL.scpGetTagLastPosted(ScpID);
-                Console.WriteLine("Command Tag : " + TagNo);
-                //insert code to store the command tag and associated cmnd struct.
-                //cmnd struct and tag can be deleted upon receipt of
-                //successful command delivery notification
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
 
         public async Task<bool> AccessDatabaseSpecificationAsync(short ScpID, SystemSetting setting)
         {
@@ -254,10 +204,7 @@ namespace HIDAeroService.AeroLibrary
             {
                 return await SendCommandAsync(SCPDLL.scpGetTagLastPosted(ScpID), _commandTimeout);
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         //public bool ElevatorAccessLevelSpecification(short ScpId,short MaxElvAvl,short MaxFloor)
@@ -733,7 +680,7 @@ namespace HIDAeroService.AeroLibrary
             return flag;
         }
 
-        public async Task<bool> SioPanelConfigurationAsync(short ScpId, short SioNo, Enums.Model Model,short nInput,short nOutput,short nReader, short ModuleAddress, short SIODriverPort, bool isEnable)
+        public async Task<bool> SioPanelConfigurationAsync(short ScpId, short SioNo, short Model,short nInput,short nOutput,short nReader, short ModuleAddress, short SIODriverPort, bool isEnable)
         {
 
             CC_SIO cc_sio = new CC_SIO();
@@ -743,7 +690,7 @@ namespace HIDAeroService.AeroLibrary
             cc_sio.nInputs = nInput;
             cc_sio.nOutputs = nOutput;
             cc_sio.nReaders = nReader;
-            cc_sio.model = (short)Model;
+            cc_sio.model = Model;
             cc_sio.revision = 0;
             cc_sio.ser_num_low = 0;
             cc_sio.ser_num_high = -1;
@@ -1105,7 +1052,7 @@ namespace HIDAeroService.AeroLibrary
 
         #region Access Control Reader (ACR)
 
-        public async Task<bool> AccessControlReaderConfigurationAsync(short ScpId, short AcrNo, DoorDto dto)
+        public async Task<bool> AccessControlReaderConfigurationAsync(short ScpId, short AcrNo, Door dto)
         {
             CC_ACR cc_acr = new CC_ACR();
             cc_acr.lastModified = 0;
@@ -1113,8 +1060,8 @@ namespace HIDAeroService.AeroLibrary
             cc_acr.acr_number = AcrNo;
             cc_acr.access_cfg = dto.AccessConfig;
             cc_acr.pair_acr_number = dto.PairDoorNo;
-            cc_acr.rdr_sio = dto.Readers[0].ModuleId;
-            cc_acr.rdr_number = dto.Readers[0].ModuleId;
+            cc_acr.rdr_sio = dto.Readers.ElementAt(0).ModuleId;
+            cc_acr.rdr_number = dto.Readers.ElementAt(0).ModuleId;
             cc_acr.strk_sio = dto.Strk.ModuleId;
             cc_acr.strk_number = dto.Strk.OutputNo;
             cc_acr.strike_t_min = dto.Strk.StrkMin;
@@ -1125,20 +1072,20 @@ namespace HIDAeroService.AeroLibrary
             cc_acr.dc_held = dto.Sensor.DcHeld;
             if(dto.RequestExits is not null)
             {
-                cc_acr.rex0_sio = dto.RequestExits[0].ModuleId;
-                cc_acr.rex0_number = dto.RequestExits[0].InputNo;
-                cc_acr.rex_tzmask[0] = dto.RequestExits[0].MaskTimeZone;
+                cc_acr.rex0_sio = dto.RequestExits.ElementAt(0).ModuleId;
+                cc_acr.rex0_number = dto.RequestExits.ElementAt(0).InputNo;
+                cc_acr.rex_tzmask[0] = dto.RequestExits.ElementAt(0).MaskTimeZone;
                 if(dto.RequestExits.Count > 1)
                 {
-                    cc_acr.rex1_sio = dto.RequestExits[1].ModuleId;
-                    cc_acr.rex1_number = dto.RequestExits[1].InputNo;
-                    cc_acr.rex_tzmask[1] = dto.RequestExits[1].MaskTimeZone;
+                    cc_acr.rex1_sio = dto.RequestExits.ElementAt(1).ModuleId;
+                    cc_acr.rex1_number = dto.RequestExits.ElementAt(1).InputNo;
+                    cc_acr.rex_tzmask[1] = dto.RequestExits.ElementAt(1).MaskTimeZone;
                 }
             }
             if(dto.Readers.Count > 1)
             {
-                cc_acr.altrdr_sio = dto.Readers[1].ModuleId;
-                cc_acr.altrdr_number = dto.Readers[1].ReaderNo;
+                cc_acr.altrdr_sio = dto.Readers.ElementAt(1).ModuleId;
+                cc_acr.altrdr_number = dto.Readers.ElementAt(1).ReaderNo;
                 cc_acr.altrdr_spec = dto.ReaderOutConfiguration;
             }
             cc_acr.cd_format = dto.CardFormat;
@@ -1363,7 +1310,7 @@ namespace HIDAeroService.AeroLibrary
 
         #region Credentials
 
-        public async Task<bool> AccessDatabaseCardRecordAsync(short ScpId, short Flags, long CardNumber, int IssueCode, string Pin, List<AccessLevelDto> AccessLevel, int Active, int Deactive = 2085970000)
+        public async Task<bool> AccessDatabaseCardRecordAsync(short ScpId, short Flags, long CardNumber, int IssueCode, string Pin, List<AccessLevel> AccessLevel, int Active, int Deactive = 2085970000)
         {
             var _commandValue = (short)enCfgCmnd.enCcAdbCardI64DTic32;
             CC_ADBC_I64DTIC32 cc = new CC_ADBC_I64DTIC32();
@@ -1501,11 +1448,12 @@ namespace HIDAeroService.AeroLibrary
             CC_RESET cc_reset = new CC_RESET();
             cc_reset.scp_number = ScpId;
             bool flag = SendCommand((short)enCfgCmnd.enCcReset, cc_reset);
-            if (flag)
-            {
-                return await SendCommandAsync(SCPDLL.scpGetTagLastPosted(ScpId), _commandTimeout);
-            }
-            return false;
+            //if (flag)
+            //{
+            //    return await SendCommandAsync(SCPDLL.scpGetTagLastPosted(ScpId), _commandTimeout);
+            //}
+            //return false;
+            return flag;
         }
 
         public async Task<bool> GetIdReportAsync(short ScpId)

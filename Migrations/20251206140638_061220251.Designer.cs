@@ -6680,14 +6680,14 @@ namespace HIDAeroService.Migrations
             modelBuilder.Entity("HIDAeroService.Entity.CardHolderAccessLevel", b =>
                 {
                     b.HasOne("HIDAeroService.Entity.AccessLevel", "AccessLevel")
-                        .WithMany("CardHolderAccessLevels")
+                        .WithMany("AccessLevels")
                         .HasForeignKey("AccessLevelId")
                         .HasPrincipalKey("ComponentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("HIDAeroService.Entity.CardHolder", "CardHolder")
-                        .WithMany("CardHolderAccessLevels")
+                        .WithMany("AccessLevels")
                         .HasForeignKey("CardHolderId")
                         .HasPrincipalKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -7230,14 +7230,14 @@ namespace HIDAeroService.Migrations
                 {
                     b.Navigation("AccessLevelDoorTimeZones");
 
-                    b.Navigation("CardHolderAccessLevels");
+                    b.Navigation("AccessLevels");
                 });
 
             modelBuilder.Entity("HIDAeroService.Entity.CardHolder", b =>
                 {
                     b.Navigation("Additional");
 
-                    b.Navigation("CardHolderAccessLevels");
+                    b.Navigation("AccessLevels");
 
                     b.Navigation("Credentials");
                 });
