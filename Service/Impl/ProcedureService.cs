@@ -60,6 +60,20 @@ namespace HIDAeroService.Service.Impl
             return ResponseHelper.SuccessBuilder<bool>(true);
         }
 
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetActionType()
+        {
+            var dtos = await context.ActionTypes
+                .AsNoTracking()
+                .Select(x => new ModeDto 
+                {
+                    Name = x.Name,
+                    Value = x.Value,
+                    Description = x.Description,
+                }).ToArrayAsync();
+
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+        }
+
         public async Task<ResponseDto<IEnumerable<ProcedureDto>>> GetAsync()
         {
             var dtos = await context.Procedures

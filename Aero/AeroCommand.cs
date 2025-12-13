@@ -988,13 +988,13 @@ namespace HIDAeroService.AeroLibrary
             c.scp_number = ScpId;
             c.mpg_number = ComponentId;
             c.nMpCount = nMonitor;
-            List<short> mplist = new List<short>();
+            int i = 0;
             foreach(var l in list)
             {
-                mplist.Add(l.PointType);
-                mplist.Add(l.PointNumber);
+                c.nMpList[i] = l.PointType;
+                i += 1;
+                c.nMpList[i] = l.PointNumber;
             }
-            c.nMpList = mplist.ToArray();
             bool flag = SendCommand((short)enCfgCmnd.enCcMpg, c);
             if (flag)
             {

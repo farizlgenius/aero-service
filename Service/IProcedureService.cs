@@ -1,5 +1,6 @@
 ﻿using HIDAeroService.DTO;
 using HIDAeroService.DTO.Procedure;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HIDAeroService.Service
 {
@@ -10,5 +11,6 @@ namespace HIDAeroService.Service
         Task<ResponseDto<bool>> CreateAsync(ProcedureDto dto);
         Task<ResponseDto<bool>> DeleteAsync(string Mac,short ComponentId);
         Task<ResponseDto<ProcedureDto>> UpdateAsync(ProcedureDto dto);
+        Task<ResponseDto<IEnumerable<ModeDto>>> GetActionType();
     }
 }

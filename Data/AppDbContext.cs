@@ -84,6 +84,7 @@ namespace HIDAeroService.Data
         public DbSet<Trigger> Triggers { get; set; }
         public DbSet<CardHolderAdditional> CardHolderAdditionals { get; set; }
         public DbSet<CardHolderAccessLevel> CardHolderAccessLevels { get; set; }
+        public DbSet<ActionType> ActionTypes { get; set; }
 
 
         // New
@@ -1563,6 +1564,49 @@ namespace HIDAeroService.Data
                 .WithOne(x => x.Procedure)
                 .HasForeignKey(x => x.ProcedureId)
                 .HasPrincipalKey(x => x.ComponentId);
+
+            modelBuilder.Entity<ActionType>()
+                .HasData(
+                    new ActionType { Id = 1, Name = "Delete all actions", Value = 0, Description = "Deletes all configured actions" },
+
+                    new ActionType { Id = 2, Name = "Monitor Point Mask", Value = 1, Description = "Command 306: Monitor Point Mask" },
+                    new ActionType { Id = 3, Name = "Control Point Command", Value = 2, Description = "Command 307: Control Point Command" },
+                    new ActionType { Id = 4, Name = "ACR Mode", Value = 3, Description = "Command 308: ACR Mode" },
+                    new ActionType { Id = 5, Name = "Forced Open Mask", Value = 4, Description = "Command 309: Forced Open Mask" },
+                    new ActionType { Id = 6, Name = "Held Open Mask", Value = 5, Description = "Command 310: Held Open Mask Control" },
+                    new ActionType { Id = 7, Name = "Momentary Unlock", Value = 6, Description = "Command 311: Momentary Unlock" },
+                    new ActionType { Id = 8, Name = "Procedure Control Command", Value = 7, Description = "Command 312: Procedure Control Command" },
+                    new ActionType { Id = 9, Name = "Trigger Variable Control", Value = 8, Description = "Command 313: Trigger Variable Control Command" },
+                    new ActionType { Id = 10, Name = "Time Zone Control", Value = 9, Description = "Command 314: Time Zone Control" },
+                    new ActionType { Id = 11, Name = "Reader LED Mode Control", Value = 10, Description = "Command 315: Reader LED Mode Control" },
+
+                    new ActionType { Id = 12, Name = "Anti-passback Control", Value = 11, Description = "Command 3319: Anti-passback Control (free pass only)" },
+
+                    new ActionType { Id = 13, Name = "Monitor Point Group Arm/Disarm", Value = 14, Description = "Command 321: Monitor Point Group Arm/Disarm" },
+
+                    new ActionType { Id = 14, Name = "Set Action Type by Mask Count", Value = 15, Description = "Set action_type prefix based on mask_count" },
+                    new ActionType { Id = 15, Name = "Set Action Type by Active Points", Value = 16, Description = "Set action_type prefix based on active points" },
+
+                    new ActionType { Id = 16, Name = "Modify Access Area Configuration", Value = 17, Description = "Command 322: Modify Access Area Configuration" },
+
+                    new ActionType { Id = 17, Name = "Abort Wait For Door Open", Value = 18, Description = "Abort pending access request (turnstile mode)" },
+
+                    new ActionType { Id = 18, Name = "Temporary Reader LED Control", Value = 19, Description = "Command 325: Temporary Reader LED Control" },
+                    new ActionType { Id = 19, Name = "LCD Text Output", Value = 20, Description = "Command 326: Text Output to LCD Terminal" },
+
+                    new ActionType { Id = 20, Name = "Temporary ACR Mode", Value = 24, Description = "Command 334: Temporary ACR Mode" },
+                    new ActionType { Id = 21, Name = "Host Simulated Card Read", Value = 25, Description = "Command 331: Host Simulated Card Read" },
+                    new ActionType { Id = 22, Name = "Set Cardholder Use Limit", Value = 26, Description = "Command 3323: Set Cardholder Use Limit (all only)" },
+                    new ActionType { Id = 23, Name = "Set Operating Mode", Value = 27, Description = "Command 335: Set Operating Mode" },
+                    new ActionType { Id = 24, Name = "Host Simulated Key Press", Value = 28, Description = "Command 339: Host Simulated Key Press" },
+
+                    new ActionType { Id = 25, Name = "Filter Trigger Transaction", Value = 29, Description = "Filter transaction in calling trigger" },
+                    new ActionType { Id = 26, Name = "Trigger Activation Summary", Value = 30, Description = "Command 1820: Trigger Activation Summary" },
+
+                    new ActionType { Id = 27, Name = "Delay (0.1 Second)", Value = 126, Description = "Delay in 0.1 second increments" },
+                    new ActionType { Id = 28, Name = "Delay (Seconds)", Value = 127, Description = "Delay in seconds" }
+                );
+
 
             #endregion
 

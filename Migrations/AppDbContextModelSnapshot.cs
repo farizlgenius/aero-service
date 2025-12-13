@@ -395,6 +395,228 @@ namespace HIDAeroService.Migrations
                     b.ToTable("Actions");
                 });
 
+            modelBuilder.Entity("HIDAeroService.Entity.ActionType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("Value")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ActionTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Deletes all configured actions",
+                            Name = "Delete all actions",
+                            Value = (short)0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Command 306: Monitor Point Mask",
+                            Name = "Monitor Point Mask",
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Command 307: Control Point Command",
+                            Name = "Control Point Command",
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Command 308: ACR Mode",
+                            Name = "ACR Mode",
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Command 309: Forced Open Mask",
+                            Name = "Forced Open Mask",
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "Command 310: Held Open Mask Control",
+                            Name = "Held Open Mask",
+                            Value = (short)5
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Description = "Command 311: Momentary Unlock",
+                            Name = "Momentary Unlock",
+                            Value = (short)6
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Description = "Command 312: Procedure Control Command",
+                            Name = "Procedure Control Command",
+                            Value = (short)7
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Description = "Command 313: Trigger Variable Control Command",
+                            Name = "Trigger Variable Control",
+                            Value = (short)8
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Description = "Command 314: Time Zone Control",
+                            Name = "Time Zone Control",
+                            Value = (short)9
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Description = "Command 315: Reader LED Mode Control",
+                            Name = "Reader LED Mode Control",
+                            Value = (short)10
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Description = "Command 3319: Anti-passback Control (free pass only)",
+                            Name = "Anti-passback Control",
+                            Value = (short)11
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Description = "Command 321: Monitor Point Group Arm/Disarm",
+                            Name = "Monitor Point Group Arm/Disarm",
+                            Value = (short)14
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Description = "Set action_type prefix based on mask_count",
+                            Name = "Set Action Type by Mask Count",
+                            Value = (short)15
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Description = "Set action_type prefix based on active points",
+                            Name = "Set Action Type by Active Points",
+                            Value = (short)16
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Description = "Command 322: Modify Access Area Configuration",
+                            Name = "Modify Access Area Configuration",
+                            Value = (short)17
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Description = "Abort pending access request (turnstile mode)",
+                            Name = "Abort Wait For Door Open",
+                            Value = (short)18
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Description = "Command 325: Temporary Reader LED Control",
+                            Name = "Temporary Reader LED Control",
+                            Value = (short)19
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Description = "Command 326: Text Output to LCD Terminal",
+                            Name = "LCD Text Output",
+                            Value = (short)20
+                        },
+                        new
+                        {
+                            Id = 20,
+                            Description = "Command 334: Temporary ACR Mode",
+                            Name = "Temporary ACR Mode",
+                            Value = (short)24
+                        },
+                        new
+                        {
+                            Id = 21,
+                            Description = "Command 331: Host Simulated Card Read",
+                            Name = "Host Simulated Card Read",
+                            Value = (short)25
+                        },
+                        new
+                        {
+                            Id = 22,
+                            Description = "Command 3323: Set Cardholder Use Limit (all only)",
+                            Name = "Set Cardholder Use Limit",
+                            Value = (short)26
+                        },
+                        new
+                        {
+                            Id = 23,
+                            Description = "Command 335: Set Operating Mode",
+                            Name = "Set Operating Mode",
+                            Value = (short)27
+                        },
+                        new
+                        {
+                            Id = 24,
+                            Description = "Command 339: Host Simulated Key Press",
+                            Name = "Host Simulated Key Press",
+                            Value = (short)28
+                        },
+                        new
+                        {
+                            Id = 25,
+                            Description = "Filter transaction in calling trigger",
+                            Name = "Filter Trigger Transaction",
+                            Value = (short)29
+                        },
+                        new
+                        {
+                            Id = 26,
+                            Description = "Command 1820: Trigger Activation Summary",
+                            Name = "Trigger Activation Summary",
+                            Value = (short)30
+                        },
+                        new
+                        {
+                            Id = 27,
+                            Description = "Delay in 0.1 second increments",
+                            Name = "Delay (0.1 Second)",
+                            Value = (short)126
+                        },
+                        new
+                        {
+                            Id = 28,
+                            Description = "Delay in seconds",
+                            Name = "Delay (Seconds)",
+                            Value = (short)127
+                        });
+                });
+
             modelBuilder.Entity("HIDAeroService.Entity.AeroStructureStatus", b =>
                 {
                     b.Property<int>("Id")

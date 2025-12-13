@@ -24,6 +24,13 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
+        [HttpGet("type")]
+        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetActionType()
+        {
+            var res = await service.GetActionType();
+            return Ok(res);
+        }
+
         [HttpPost]
         public async Task<ActionResult<ResponseDto<bool>>> CreateAsync(ProcedureDto dto)
         {
