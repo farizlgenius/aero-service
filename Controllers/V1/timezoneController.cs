@@ -56,5 +56,12 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
+        [HttpGet("command")]
+        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetCommandAsync()
+        {
+            var res = await baseService.GetCommandAsync();
+            return Ok(res);
+        }
+
     }
 }

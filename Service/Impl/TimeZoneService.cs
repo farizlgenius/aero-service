@@ -177,6 +177,16 @@ namespace HIDAeroService.Service.Impl
             return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetCommandAsync()
+        {
+            var dtos = await context.TimeZoneCommands.AsNoTracking().Select(s => new ModeDto
+            {
+                Name = s.Name,
+                Value = s.Value,
+                Description = s.Description,
 
+            }).ToArrayAsync();
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+        }
     }
 }

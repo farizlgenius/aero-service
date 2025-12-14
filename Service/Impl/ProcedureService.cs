@@ -19,12 +19,39 @@ namespace HIDAeroService.Service.Impl
         {
             var ComponentId = await helperService.GetLowestUnassignedNumberAsync<Procedure>(context,128);
 
-            if(!await command.ActionSpecification(ComponentId,dto.Actions))
+            foreach(var ac in dto.Actions)
+            {
+                if(ac.ActionType == 9)
+                {
+                    ac.ScpId = 0;
+                }
+                else
+                {
+                    ac.ScpId = await helperService.GetIdFromMacAsync(ac.MacAddress);
+                }
+               
+            }
+
+            var en = MapperHelper.DtoToProcedure(dto, ComponentId, DateTime.Now);
+
+
+            var ids = await context.Hardwares.AsNoTracking().Select(x => x.ComponentId).ToListAsync();
+            foreach(var ac in en.Actions)
+            {
+                if(ac.ActionType == 9)
+                {
+                    if (!await command.ActionSpecificationAsyncForAllHW(ComponentId, ac, ids))
+                    {
+                        return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
+                    }
+                }
+            }
+
+            if (!await command.ActionSpecificationAsync(ComponentId, en.Actions.ToList()))
             {
                 return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
             }
 
-            var en = MapperHelper.DtoToProcedure(dto,ComponentId,DateTime.Now);
 
             await context.Procedures.AddAsync(en);
             await context.SaveChangesAsync();
@@ -43,13 +70,12 @@ namespace HIDAeroService.Service.Impl
 
             if (en is null) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var ac = new ActionDto
+            var ac = new Entity.Action
             {
                 ActionType = 0,
-                
             };
 
-            if(!await command.ActionSpecification(ComponentId, [ac]))
+            if(!await command.ActionSpecificationAsync(ComponentId, [ac]))
             {
                 return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
             }

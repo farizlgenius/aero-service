@@ -3,6 +3,7 @@ using System;
 using HIDAeroService.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HIDAeroService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251214014919_141220251")]
+    partial class _141220251
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -442,6 +445,20 @@ namespace HIDAeroService.Migrations
                         },
                         new
                         {
+                            Id = 5,
+                            Description = "Command 309: Forced Open Mask",
+                            Name = "Forced Open Mask",
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "Command 310: Held Open Mask Control",
+                            Name = "Held Open Mask",
+                            Value = (short)5
+                        },
+                        new
+                        {
                             Id = 7,
                             Description = "Command 311: Momentary Unlock",
                             Name = "Momentary Unlock",
@@ -463,10 +480,17 @@ namespace HIDAeroService.Migrations
                         },
                         new
                         {
-                            Id = 20,
-                            Description = "Command 334: Temporary ACR Mode",
-                            Name = "Temporary Door Mode",
-                            Value = (short)24
+                            Id = 14,
+                            Description = "Set action_type prefix based on mask_count",
+                            Name = "Set Action Type by Mask Count",
+                            Value = (short)15
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Description = "Set action_type prefix based on active points",
+                            Name = "Set Action Type by Active Points",
+                            Value = (short)16
                         },
                         new
                         {
@@ -474,6 +498,20 @@ namespace HIDAeroService.Migrations
                             Description = "Command 331: Host Simulated Card Read",
                             Name = "Host Simulated Card Read",
                             Value = (short)25
+                        },
+                        new
+                        {
+                            Id = 22,
+                            Description = "Command 3323: Set Cardholder Use Limit (all only)",
+                            Name = "Set Cardholder Use Limit",
+                            Value = (short)26
+                        },
+                        new
+                        {
+                            Id = 27,
+                            Description = "Delay in 0.1 second increments",
+                            Name = "Delay (0.1 Second)",
+                            Value = (short)126
                         },
                         new
                         {
@@ -4367,74 +4405,6 @@ namespace HIDAeroService.Migrations
                             Name = "Always",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Uuid = "00000000-0000-0000-0000-000000000001"
-                        });
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.TimeZoneCommand", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("Value")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TimeZoneCommands");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Temporary Clear - Deactivate Time Zone until it would normally change. Next interval change will clear the override.",
-                            Name = "Temporary Clear",
-                            Value = (short)1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Temporary Set - Activate Time Zone until it would normally change. Next interval change will clear the override.",
-                            Name = "Temporary Set",
-                            Value = (short)2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Override Clear - Deactivate Time Zone until next command 314",
-                            Name = "Override Clear",
-                            Value = (short)3
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Description = "Override Set - Activate Time Zone until next command 314",
-                            Name = "Override Set",
-                            Value = (short)4
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Description = "Release Time Zone (Return to Normal). Will take the time zone out of the temporary or override mode and put it in the proper state.",
-                            Name = "Release",
-                            Value = (short)5
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Description = "Refresh - causes time zone state to be logged to the transaction log. Commonly used for triggers.",
-                            Name = "Refresh",
-                            Value = (short)6
                         });
                 });
 

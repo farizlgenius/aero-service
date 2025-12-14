@@ -3,6 +3,7 @@ using System;
 using HIDAeroService.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HIDAeroService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251214032533_141220252")]
+    partial class _141220252
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -4367,74 +4370,6 @@ namespace HIDAeroService.Migrations
                             Name = "Always",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Uuid = "00000000-0000-0000-0000-000000000001"
-                        });
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.TimeZoneCommand", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("Value")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TimeZoneCommands");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Temporary Clear - Deactivate Time Zone until it would normally change. Next interval change will clear the override.",
-                            Name = "Temporary Clear",
-                            Value = (short)1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Temporary Set - Activate Time Zone until it would normally change. Next interval change will clear the override.",
-                            Name = "Temporary Set",
-                            Value = (short)2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Override Clear - Deactivate Time Zone until next command 314",
-                            Name = "Override Clear",
-                            Value = (short)3
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Description = "Override Set - Activate Time Zone until next command 314",
-                            Name = "Override Set",
-                            Value = (short)4
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Description = "Release Time Zone (Return to Normal). Will take the time zone out of the temporary or override mode and put it in the proper state.",
-                            Name = "Release",
-                            Value = (short)5
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Description = "Refresh - causes time zone state to be logged to the transaction log. Commonly used for triggers.",
-                            Name = "Refresh",
-                            Value = (short)6
                         });
                 });
 

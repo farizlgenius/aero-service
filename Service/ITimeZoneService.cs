@@ -11,5 +11,6 @@ namespace HIDAeroService.Service
         Task<ResponseDto<bool>> DeleteAsync(short component);
         Task<ResponseDto<TimeZoneDto>> UpdateAsync(TimeZoneDto dto);
         Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param);
+        Task<ResponseDto<IEnumerable<ModeDto>>> GetCommandAsync();
     }
 }
