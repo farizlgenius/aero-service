@@ -38,9 +38,16 @@ namespace HIDAeroService.Service.Impl
             var ids = await context.Hardwares.AsNoTracking().Select(x => x.ComponentId).ToListAsync();
             foreach(var ac in en.Actions)
             {
-                if(ac.ActionType == 9)
+                if (ac.ActionType == 9)
                 {
                     if (!await command.ActionSpecificationAsyncForAllHW(ComponentId, ac, ids))
+                    {
+                        return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
+                    }
+                }
+                else if (ac.DelayTime != 0) 
+                {
+                    if(!await command.ActionSpecificationDelayAsync(ComponentId, ac))
                     {
                         return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
                     }

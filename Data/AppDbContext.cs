@@ -70,13 +70,10 @@ namespace HIDAeroService.Data
         public DbSet<SubFeature> SubFeatures { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<FeatureRole> FeatureRoles { get; set; }
-
         public DbSet<Transaction> Transactions { get; set; }
-
         public DbSet<FileType> FileTypes { get; set; }
         public DbSet<MonitorGroup> MonitorGroups { get; set; }
         public DbSet<MonitorGroupList> MonitorGroupLists { get; set; }
-
         public DbSet<MonitorGroupType> MonitorGroupTypes { get; set; }
         public DbSet<MonitorGroupCommand> MonitorGroupCommands { get; set; }
         public DbSet<Procedure> Procedures { get; set; }
@@ -86,6 +83,8 @@ namespace HIDAeroService.Data
         public DbSet<CardHolderAccessLevel> CardHolderAccessLevels { get; set; }
         public DbSet<ActionType> ActionTypes { get; set; }
         public DbSet<TimeZoneCommand> TimeZoneCommands { get; set; }
+        public DbSet<TriggerCommand> TriggerCommands { get; set; }
+        public DbSet<TriggerTranCode> TriggerTranCodes { get; set; }
 
 
         // New
@@ -113,11 +112,7 @@ namespace HIDAeroService.Data
 
         // Old
         public DbSet<CommandStatus> ArCommandStatuses { get; set; }
-
         public DbSet<AeroStructureStatus> AeroStructureStatuses { get; set; }
-
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -801,7 +796,7 @@ namespace HIDAeroService.Data
                     new TransactionSource { Id = 19, Name = "Monitor point group", Value = 0x13,Source="Monitor point group" },
                     new TransactionSource { Id = 20, Name = "Access area", Value = 0x14 ,Source="Access area"},
                     new TransactionSource { Id = 21, Name = "ACR: the alternate reader's tamper monitor source_number", Value = 0x15,Source="Door" },
-                    new TransactionSource { Id = 22, Name = "Login Service", Value = 0x18,Source="" }
+                    new TransactionSource { Id = 22, Name = "Login Service", Value = 0x18,Source="Hardware" }
                 );
 
             modelBuilder.Entity<TransactionType>()
@@ -1628,6 +1623,26 @@ namespace HIDAeroService.Data
                 .WithOne(x => x.Trigger)
                 .HasForeignKey<Trigger>(x => x.ProcedureId)
                 .HasPrincipalKey<Procedure>(x => x.ComponentId);
+
+            modelBuilder.Entity<Trigger>()
+                .HasMany(x => x.CodeMap)
+                .WithOne(x => x.Trigger)
+                .HasForeignKey(x => x.Value)
+                .HasPrincipalKey(x => x.ComponentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<TriggerCommand>()
+                .HasData(
+                    new TriggerCommand { Id=1,Name= "Abort a delayed procedure", Description= "Abort a delayed procedure", Value=1},
+                    new TriggerCommand { Id = 2, Name = "Execute actions with prefix 0", Description = "Execute actions with prefix 0", Value = 2 },
+                    new TriggerCommand { Id = 3, Name = "Resume a delayed procedure and execute actions with prefix 0", Description = "Resume a delayed procedure and execute actions with prefix 0", Value = 3 },
+                    new TriggerCommand { Id = 4, Name = "Execute actions with prefix 256", Description = "Execute actions with prefix 256", Value = 4 },
+                    new TriggerCommand { Id = 5, Name = "Execute actions with prefix 512", Description = "Execute actions with prefix 512", Value = 5 },
+                    new TriggerCommand { Id = 6, Name = "Execute actions with prefix 1024", Description = "Execute actions with prefix 1024", Value = 6 },
+                    new TriggerCommand { Id = 7, Name = "Resume a delayed procedure and execute actions with prefix 256", Description = "Resume a delayed procedure and execute actions with prefix 256", Value = 7 },
+                    new TriggerCommand { Id = 8, Name = "Resume a delayed procedure and execute actions with prefix 512", Description = "Resume a delayed procedure and execute actions with prefix 512", Value = 8 },
+                    new TriggerCommand { Id = 9, Name = "Resume a delayed procedure and execute actions with prefix 1024", Description = "Resume a delayed procedure and execute actions with prefix 1024", Value = 9 }
+                );
 
             #endregion
 

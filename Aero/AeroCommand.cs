@@ -14,6 +14,7 @@ using HIDAeroService.Utility;
 using LibNoise.Modifier;
 using MiNET.Entities.Passive;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Concurrent;
 using static MiNET.Net.McpeUpdateBlock;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -1090,9 +1091,9 @@ namespace HIDAeroService.AeroLibrary
             }
             cc_acr.cd_format = dto.CardFormat;
             cc_acr.apb_mode = dto.AntiPassbackMode;
-            cc_acr.apb_in = dto.AntiPassBackIn;
-            cc_acr.apb_to = dto.AntiPassBackOut;
-            if(dto.SpareTags != -1) cc_acr.spare = dto.SpareTags;
+            if(dto.AntiPassBackIn > 0) cc_acr.apb_in = (short)dto.AntiPassBackIn;
+            if(dto.AntiPassBackOut > 0) cc_acr.apb_to = (short)dto.AntiPassBackOut!;
+            if (dto.SpareTags != -1) cc_acr.spare = dto.SpareTags;
             if(dto.AccessControlFlags != -1) cc_acr.actl_flags = dto.AccessControlFlags;
             cc_acr.offline_mode = dto.OfflineMode;
             cc_acr.default_mode = dto.DefaultMode;
@@ -1593,7 +1594,10 @@ namespace HIDAeroService.AeroLibrary
             cc.src_type = dto.SourceType;
             cc.src_number = dto.SourceNumber;
             cc.tran_type = dto.TranType;
-            cc.code_map = dto.CodeMap;
+            foreach(var code in dto.CodeMap)
+            {
+                cc.code_map += (int)Math.Pow(2, code.Value);
+            }
             cc.timezone = dto.TimeZone;
             switch (dto.TranType)
             {
@@ -1811,14 +1815,30 @@ namespace HIDAeroService.AeroLibrary
             return false;
         }
 
+        public async Task<bool> ActionSpecificationDelayAsync(short ComponentId,Entity.Action action)
+        {
 
-        
+            CC_ACTN c = new CC_ACTN(127);
+            c.hdr.lastModified = 0;
+            c.hdr.scp_number = action.ScpId;
+            c.hdr.proc_number = ComponentId;
+            c.hdr.action_type = 127;
+            c.delay.delay_time = action.Arg1;
+            //c.hdr.arg
+            bool flag = SendCommand((short)enCfgCmnd.enCcProc, c);
+            if (flag)
+            {
+                return await SendCommandAsync(SCPDLL.scpGetTagLastPosted(action.ScpId), _commandTimeout);
+            }
+            return false;
+        }
+
 
         public async Task<bool> ActionSpecificationAsync(short ComponentId,List<Entity.Action> en)
         {
             foreach(var action in en)
             {
-                if (action.ActionType == 9) continue;
+                if (action.ActionType == 9 || action.ActionType == 127) continue;
                 CC_ACTN c = new CC_ACTN(action.ActionType);
                 c.hdr.lastModified = 0;
                 c.hdr.scp_number = action.ScpId;

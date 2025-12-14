@@ -25,10 +25,10 @@ namespace HIDAeroService.Entity
         public ICollection<RequestExit>? RequestExits { get; set; }
         public short CardFormat { get; set; } = 255;
         public short AntiPassbackMode { get; set; }
-        public short AntiPassBackIn { get; set; }
-        public AccessArea AreaIn { get; set; }
-        public short AntiPassBackOut { get; set; }
-        public AccessArea AreaOut { get; set; }
+        public short? AntiPassBackIn { get; set; }
+        public AccessArea? AreaIn { get; set; }
+        public short? AntiPassBackOut { get; set; }
+        public AccessArea? AreaOut { get; set; }
         public short SpareTags { get; set; }
         public short AccessControlFlags { get; set; }
         public short Mode { get; set; }

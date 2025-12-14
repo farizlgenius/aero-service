@@ -357,6 +357,9 @@ namespace HIDAeroService.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasDefaultValueSql("now()");
 
+                    b.Property<short>("DelayTime")
+                        .HasColumnType("smallint");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
@@ -1372,10 +1375,10 @@ namespace HIDAeroService.Migrations
                     b.Property<short>("AccessControlFlags")
                         .HasColumnType("smallint");
 
-                    b.Property<short>("AntiPassBackIn")
+                    b.Property<short?>("AntiPassBackIn")
                         .HasColumnType("smallint");
 
-                    b.Property<short>("AntiPassBackOut")
+                    b.Property<short?>("AntiPassBackOut")
                         .HasColumnType("smallint");
 
                     b.Property<short>("AntiPassbackDelay")
@@ -6243,7 +6246,7 @@ namespace HIDAeroService.Migrations
                         {
                             Id = 22,
                             Name = "Login Service",
-                            Source = "",
+                            Source = "Hardware",
                             Value = (short)24
                         });
                 });
@@ -6699,9 +6702,6 @@ namespace HIDAeroService.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<short>("CodeMap")
-                        .HasColumnType("smallint");
-
                     b.Property<short>("Command")
                         .HasColumnType("smallint");
 
@@ -6720,6 +6720,10 @@ namespace HIDAeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<string>("MacAddress")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -6755,6 +6759,124 @@ namespace HIDAeroService.Migrations
                         .IsUnique();
 
                     b.ToTable("Triggers");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.TriggerCommand", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("Value")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TriggerCommands");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Abort a delayed procedure",
+                            Name = "Abort a delayed procedure",
+                            Value = (short)1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Execute actions with prefix 0",
+                            Name = "Execute actions with prefix 0",
+                            Value = (short)2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Resume a delayed procedure and execute actions with prefix 0",
+                            Name = "Resume a delayed procedure and execute actions with prefix 0",
+                            Value = (short)3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Execute actions with prefix 256",
+                            Name = "Execute actions with prefix 256",
+                            Value = (short)4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Execute actions with prefix 512",
+                            Name = "Execute actions with prefix 512",
+                            Value = (short)5
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "Execute actions with prefix 1024",
+                            Name = "Execute actions with prefix 1024",
+                            Value = (short)6
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Description = "Resume a delayed procedure and execute actions with prefix 256",
+                            Name = "Resume a delayed procedure and execute actions with prefix 256",
+                            Value = (short)7
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Description = "Resume a delayed procedure and execute actions with prefix 512",
+                            Name = "Resume a delayed procedure and execute actions with prefix 512",
+                            Value = (short)8
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Description = "Resume a delayed procedure and execute actions with prefix 1024",
+                            Name = "Resume a delayed procedure and execute actions with prefix 1024",
+                            Value = (short)9
+                        });
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.TriggerTranCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("TriggerId")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("Value")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Value");
+
+                    b.ToTable("TriggerTranCodes");
                 });
 
             modelBuilder.Entity("HIDAeroService.Entity.AccessArea", b =>
@@ -6947,16 +7069,12 @@ namespace HIDAeroService.Migrations
                     b.HasOne("HIDAeroService.Entity.AccessArea", "AreaIn")
                         .WithMany("DoorsIn")
                         .HasForeignKey("AntiPassBackIn")
-                        .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasPrincipalKey("ComponentId");
 
                     b.HasOne("HIDAeroService.Entity.AccessArea", "AreaOut")
                         .WithMany("DoorsOut")
                         .HasForeignKey("AntiPassBackOut")
-                        .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasPrincipalKey("ComponentId");
 
                     b.HasOne("HIDAeroService.Entity.Location", "Location")
                         .WithMany("Doors")
@@ -7422,6 +7540,18 @@ namespace HIDAeroService.Migrations
                     b.Navigation("Procedure");
                 });
 
+            modelBuilder.Entity("HIDAeroService.Entity.TriggerTranCode", b =>
+                {
+                    b.HasOne("HIDAeroService.Entity.Trigger", "Trigger")
+                        .WithMany("CodeMap")
+                        .HasForeignKey("Value")
+                        .HasPrincipalKey("ComponentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Trigger");
+                });
+
             modelBuilder.Entity("HIDAeroService.Entity.AccessArea", b =>
                 {
                     b.Navigation("DoorsIn");
@@ -7606,6 +7736,11 @@ namespace HIDAeroService.Migrations
                     b.Navigation("TransactionSourceTypes");
 
                     b.Navigation("transactionCodes");
+                });
+
+            modelBuilder.Entity("HIDAeroService.Entity.Trigger", b =>
+                {
+                    b.Navigation("CodeMap");
                 });
 #pragma warning restore 612, 618
         }

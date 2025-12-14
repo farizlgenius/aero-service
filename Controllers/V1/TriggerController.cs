@@ -24,6 +24,41 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
+        [HttpGet("command")]
+        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetCommandAsync()
+        {
+            var res = await service.GetCommandAsync();
+            return Ok(res);
+        }
+
+        [HttpGet("source")]
+        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetSourceTypeAsync()
+        {
+            var res = await service.GetSourceTypeAsync();
+            return Ok(res);
+        }
+
+        [HttpGet("tran/{source}")]
+        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetTypeBySourceAsync(short source)
+        {
+            var res = await service.GetTypeBySourceAsync(source);
+            return Ok(res);
+        }
+
+        [HttpGet("code/{tran}")]
+        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetCodeByTranAsync(short tran)
+        {
+            var res = await service.GetCodeByTranAsync(tran);
+            return Ok(res);
+        }
+
+        [HttpGet("/api/v1/{location}/[controller]/device/{source}")]
+        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetDeviceBySource(short location, short source)
+        {
+            var res = await service.GetDeviceBySourceAsync(location,source);
+            return Ok(res);
+        }
+
         [HttpPost]
         public async Task<ActionResult<ResponseDto<bool>>> CreateAsync(TriggerDto dto)
         {
@@ -44,5 +79,7 @@ namespace HIDAeroService.Controllers.V1
             var res = await service.DeleteAsync(Mac,ComponentId);
             return Ok(res);
         }
+
+
     }
 }

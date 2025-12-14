@@ -13,5 +13,6 @@
         public short Arg6 { get; set; }
         public short Arg7 { get; set; }
         public string StrArg { get; set; } = string.Empty;
+        public short DelayTime { get; set; }
     }
 }

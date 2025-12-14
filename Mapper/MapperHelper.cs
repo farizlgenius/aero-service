@@ -668,8 +668,8 @@ namespace HIDAeroService.Mapper
 
                 CardFormat = x.CardFormat,
                 AntiPassbackMode = x.AntiPassbackMode,
-                AntiPassBackIn = x.AntiPassBackIn,
-                AntiPassBackOut = x.AntiPassBackOut,
+                AntiPassBackIn = (short)(x.AntiPassBackIn is null ? 0 : (short)x.AntiPassBackIn),
+                AntiPassBackOut = (short)(x.AntiPassBackOut is null ? 0 : (short)x.AntiPassBackOut),
                 SpareTags = x.SpareTags,
                 AccessControlFlags = x.AccessControlFlags,
                 Mode = x.Mode,
@@ -706,7 +706,7 @@ namespace HIDAeroService.Mapper
             string DefaultModeDesc,
             DateTime Create) 
         {
-            return new Door
+            var door = new Door
             {
                 // Base
                 ComponentId = ComponentId,
@@ -737,8 +737,8 @@ namespace HIDAeroService.Mapper
                 ReaderOutConfiguration = dto.ReaderOutConfiguration,
                 CardFormat = dto.CardFormat,
                 AntiPassbackMode = dto.AntiPassbackMode,
-                AntiPassBackIn = dto.AntiPassBackIn,
-                AntiPassBackOut = dto.AntiPassBackOut,
+                //AntiPassBackIn = dto.AntiPassBackIn,
+                //AntiPassBackOut = dto.AntiPassBackOut,
                 SpareTags = dto.SpareTags,
                 AccessControlFlags = dto.AccessControlFlags,
                 Mode = dto.Mode,
@@ -762,10 +762,13 @@ namespace HIDAeroService.Mapper
                 IlPBOutNum = dto.IlPBOutNum,
                 DfOfFilterTime = dto.DfOfFilterTime,
                 MaskHeldOpen = dto.MaskHeldOpen,
-                MaskForceOpen = dto.MaskForceOpen,
-                
+                MaskForceOpen = dto.MaskForceOpen,     
 
             };
+
+            if (dto.AntiPassBackIn > 0) door.AntiPassBackIn = dto.AntiPassBackIn;
+            if (dto.AntiPassBackOut > 0) door.AntiPassBackOut = dto.AntiPassBackOut;
+            return door;
         }
 
         public static void UpdateDoor(Door door,DoorDto dto,string ModeDesc,string OfflineModeDesc,string DefaultModeDesc) 
@@ -1702,6 +1705,7 @@ namespace HIDAeroService.Mapper
                 Arg6 = dto.Arg6,
                 Arg7 = dto.Arg7,
                 StrArg = dto.StrArg,
+                DelayTime = dto.DelayTime,
 
             };
         }
@@ -1728,7 +1732,8 @@ namespace HIDAeroService.Mapper
                 Arg5= en.Arg5,
                 Arg6= en.Arg6,
                 Arg7= en.Arg7,
-                StrArg= en.StrArg
+                StrArg= en.StrArg,
+                DelayTime = en.DelayTime,
             };
         }
 
@@ -1745,15 +1750,21 @@ namespace HIDAeroService.Mapper
                 LocationId = en.LocationId,
                 MacAddress = en.MacAddress,
                 IsActive = en.IsActive,
-                
+
                 // Detail
+                Name = en.Name,
                 Command = en.Command,
                 ProcedureId = en.ProcedureId,
                 SourceNumber = en.SourceNumber,
                 SourceType = en.SourceType,
-                TranType =en.TranType,
-                CodeMap =en.CodeMap,
-                TimeZone=en.TimeZone,
+                TranType = en.TranType,
+                CodeMap = en.CodeMap.Select(x => new TransactionCodeDto 
+                {
+                    Name = x.Name,
+                    Value = x.Value,
+                    Description = x.Description
+                }).ToList(),
+                TimeZone = en.TimeZone,
             };
         }
 
@@ -1769,13 +1780,20 @@ namespace HIDAeroService.Mapper
                 UpdatedDate = Create,
 
                 // Detail
-                
+                ComponentId = ComponentId,
+                Name = dto.Name,
                 Command = dto.Command,
                 ProcedureId = dto.ProcedureId,
                 SourceNumber = dto.SourceNumber,
                 SourceType = dto.SourceType,
                 TranType = dto.TranType,
-                CodeMap = dto.CodeMap,
+                CodeMap = dto.CodeMap.Select(x => new TriggerTranCode 
+                {
+                    TriggerId = ComponentId,
+                    Name = x.Name,
+                    Description = x.Description,
+                    Value = x.Value,
+                }).ToArray(),
                 TimeZone = dto.TimeZone,
             };
         }
