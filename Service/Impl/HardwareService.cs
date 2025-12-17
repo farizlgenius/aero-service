@@ -1370,13 +1370,41 @@ namespace HIDAeroService.Service.Impl
         public async Task<ResponseDto<bool>> SetTransactionAsync(string mac,short IsOn)
         {
             var ScpId = helperService.GetIdFromMac(mac);
-            if(await command.SetTransactionLogIndexAsync(ScpId,IsOn == 1 ? true : false))
+            if (ScpId == 0) return ResponseHelper.NotFoundBuilder<bool>();
+            if (await command.SetTransactionLogIndexAsync(ScpId,IsOn == 1 ? true : false))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>("", "");
+                return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(mac,Command.C303),[]);
             }
             return ResponseHelper.SuccessBuilder(true);
         }
 
+        public async Task<ResponseDto<bool>> GetTransactionLogStatusAsync(string mac)
+        {
+            var id = await helperService.GetIdFromMacAsync(mac);
+            if (id == 0) return ResponseHelper.NotFoundBuilder<bool>();
 
+            if(!await command.GetTransactionLogStatusAsync(id))
+            {
+                return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(mac,Command.C402),[]);
+            }
+
+            return ResponseHelper.SuccessBuilder(true);
+        }
+
+        public async void TriggerTranStatus(SCPReplyMessage message)
+        {
+            TranStatusDto tran = new TranStatusDto
+            {
+                MacAddress = await helperService.GetMacFromIdAsync((short)message.SCPId),
+                Capacity = message.tran_sts.capacity,
+                Oldest = message.tran_sts.oldest,
+                LastLog = message.tran_sts.last_loggd,
+                LastReport = message.tran_sts.last_rprtd,
+                Disabled = message.tran_sts.disabled,
+                Status = message.tran_sts.disabled == 0 ? "Enable" : "Disable"
+
+            };
+            await hub.Clients.All.SendAsync("TranStatus",tran);
+        }
     }
 }

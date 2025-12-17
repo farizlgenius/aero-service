@@ -36,6 +36,7 @@
         public static string C1117 = "Command 1117: Trigger Specification (Expanded Code Map)";
         public static string C108 = "Command 108: Driver Configuration";
         public static string C109 = "Command 109: SIO Panel Configuration";
+        public static string C402 = "Command 402: enCcTranSrq";
         public enum CommandFlags
         {
             enCcMpSrq = 405, // Request Sensor Status

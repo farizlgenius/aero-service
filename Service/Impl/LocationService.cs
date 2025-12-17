@@ -68,7 +68,18 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<LocationDto>> UpdateAsync(LocationDto dto)
         {
-            throw new NotImplementedException();
+            var en = await context.Locations
+                .Where(x => x.ComponentId == dto.ComponentId)
+                .FirstOrDefaultAsync();
+
+            if (en is null) return ResponseHelper.NotFoundBuilder<LocationDto>();
+
+            MapperHelper.UpdateLocation(en,dto);
+
+            context.Locations.Update(en);
+            await context.SaveChangesAsync();
+
+            return ResponseHelper.SuccessBuilder<LocationDto>(dto);
         }
     }
 }

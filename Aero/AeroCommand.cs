@@ -330,6 +330,18 @@ namespace HIDAeroService.AeroLibrary
 
         #region Transaction
 
+        public async Task<bool> GetTransactionLogStatusAsync(short ScpId)
+        {
+            CC_TRANSRQ c = new CC_TRANSRQ();
+            c.scp_number = ScpId;
+            bool flag = SendCommand((short)enCfgCmnd.enCcTranSrq,c);
+            if (flag)
+            {
+                return await SendCommandAsync(SCPDLL.scpGetTagLastPosted(ScpId),_commandTimeout);
+            }
+            return flag;
+        }
+
         public async Task<bool> SetTransactionLogIndexAsync(short scpID, bool isEnable)
         {
             var _commandValue = (short)enCfgCmnd.enCcTranIndex;
@@ -346,10 +358,7 @@ namespace HIDAeroService.AeroLibrary
                 //successful command delivery notification
                 return await SendCommandAsync(SCPDLL.scpGetTagLastPosted(scpID), _commandTimeout);
             }
-            else
-            {
-                return false;
-            }
+            return flag;
         }
 
         #endregion

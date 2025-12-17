@@ -31,10 +31,12 @@ namespace HIDAeroService.Service
         Task<ResponseDto<HardwareStatus>> GetStatusAsync(string mac);
         void TriggerDeviceStatus(string ScpMac, int CommStatus);
         void TriggerIdReport(List<IdReport> IdReports);
+        void TriggerTranStatus(SCPReplyMessage message);
         Task VerifyAllocateHardwareMemoryAsync(SCPReplyMessage message);
         void HandleUploadCommand(AeroCommand command, SCPReplyMessage message);
         void AssignIpToIdReport(SCPReplyMessage message, List<IdReport> iDReports);
         Task<IdReport> HandleFoundHardware(SCPReplyMessage message);
+        Task<ResponseDto<bool>> GetTransactionLogStatusAsync(string mac);
 
     }
 }

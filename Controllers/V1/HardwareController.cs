@@ -44,6 +44,13 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
+        [HttpGet("tran/{mac}")]
+        public async Task<ActionResult<ResponseDto<bool>>> GetTransactionLogStatusAsync(string mac)
+        {
+            var res = await hardwareService.GetTransactionLogStatusAsync(mac);
+            return Ok(res);
+        }
+
         [HttpPost]
         public async Task<ActionResult<ResponseDto<HardwareDto>>> CreateAsync([FromBody] CreateHardwareDto dto)
         {
@@ -115,5 +122,6 @@ namespace HIDAeroService.Controllers.V1
             var res = await hardwareService.SetTransactionAsync(mac, parameter);
             return Ok(res);
         }
+
     }
 }

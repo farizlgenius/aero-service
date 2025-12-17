@@ -52,14 +52,14 @@ namespace HIDAeroService.AeroLibrary
         {
             using var scope = scopeFactory.CreateScope();
             var handle = scope.ServiceProvider.GetRequiredService<MessageHandler>();
-            var scp = scope.ServiceProvider.GetRequiredService<IHardwareService>();
-            var tran = scope.ServiceProvider.GetRequiredService<ITransactionService>();
-            var sio = scope.ServiceProvider.GetRequiredService<IModuleService>();
-            var acr = scope.ServiceProvider.GetRequiredService<IDoorService>();
-            var cp = scope.ServiceProvider.GetRequiredService<IControlPointService>();
-            var mp = scope.ServiceProvider.GetRequiredService<IMonitorPointService>();
-            var helper = scope.ServiceProvider.GetRequiredService<IHelperService>();
-            var cmnd = scope.ServiceProvider.GetRequiredService<ICommandService>();
+            var hardwareService = scope.ServiceProvider.GetRequiredService<IHardwareService>();
+            var transactionService = scope.ServiceProvider.GetRequiredService<ITransactionService>();
+            var moduleService = scope.ServiceProvider.GetRequiredService<IModuleService>();
+            var doorService = scope.ServiceProvider.GetRequiredService<IDoorService>();
+            var controlPointService = scope.ServiceProvider.GetRequiredService<IControlPointService>();
+            var monitorPointService = scope.ServiceProvider.GetRequiredService<IMonitorPointService>();
+            var helperService = scope.ServiceProvider.GetRequiredService<IHelperService>();
+            var commandService = scope.ServiceProvider.GetRequiredService<ICommandService>();
             switch (message.ReplyType)
             {
                 // Occur when command to SCP not success
@@ -68,48 +68,49 @@ namespace HIDAeroService.AeroLibrary
                     break;
                 case (int)enSCPReplyType.enSCPReplyTransaction:
                     handle.SCPReplyTransactionHandler(message,isWaitingCardScan,ScanScpId,ScanAcrNo);
-                    await tran.SaveToDatabase(message);
-                    tran.TriggerEventRecieve();
+                    await transactionService.SaveToDatabase(message);
+                    transactionService.TriggerEventRecieve();
                     break;
                 case (int)enSCPReplyType.enSCPReplyCommStatus:
-                    scp.TriggerDeviceStatus(helper.GetMacFromId((short)message.SCPId),message.comm.status);
+                    hardwareService.TriggerDeviceStatus(helperService.GetMacFromId((short)message.SCPId),message.comm.status);
                     if (message.comm.status != 2)
                     {
                         iDReports.RemoveAll(obj => obj.ScpId == message.SCPId);
-                        scp.TriggerIdReport(iDReports);
+                        hardwareService.TriggerIdReport(iDReports);
                     }
                     handle.SCPReplyCommStatus(message);
                     break;
                 case (int)enSCPReplyType.enSCPReplyIDReport:
                     handle.SCPReplyIDReport(message);
                     // If Controller not register yet
-                    iDReport = await scp.HandleFoundHardware(message);
+                    iDReport = await hardwareService.HandleFoundHardware(message);
                     if(iDReport != null)
                     {
                         iDReports.Add(iDReport);
                     }
                     break;
                 case (int)enSCPReplyType.enSCPReplyTranStatus:
+                    hardwareService.TriggerTranStatus(message);
                     handle.SCPReplyTranStatus(message);
                     break;
                 case (int)enSCPReplyType.enSCPReplySrMsp1Drvr:
                     handle.SCPReplySrMsp1Drvr(message);
                     break;
                 case (int)enSCPReplyType.enSCPReplySrSio:
-                    sio.TriggerDeviceStatus(message.SCPId, message.sts_sio.number, DecodeHelper.TypeSioCommTranCodeDecode(message.sts_sio.com_status), DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_sio.ip_stat[4])), DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_sio.ip_stat[5])), DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_sio.ip_stat[6])));
+                    moduleService.TriggerDeviceStatus(message.SCPId, message.sts_sio.number, DecodeHelper.TypeSioCommTranCodeDecode(message.sts_sio.com_status), DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_sio.ip_stat[4])), DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_sio.ip_stat[5])), DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_sio.ip_stat[6])));
                     handle.SCPReplySrSio(message);
                     break;
                 case (int)enSCPReplyType.enSCPReplySrMp:
-                    mp.TriggerDeviceStatus(message.SCPId, message.sts_mp.first,DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_mp.status[0])));
+                    monitorPointService.TriggerDeviceStatus(message.SCPId, message.sts_mp.first,DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_mp.status[0])));
                     handle.SCPReplySrMp(message);
                     break;
                 case (int)enSCPReplyType.enSCPReplySrCp:
                     handle.SCPReplySrCp(message);
-                    cp.TriggerDeviceStatus(helper.GetMacFromId((short)message.SCPId), message.sts_cp.first, DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_cp.status[0])));
+                    controlPointService.TriggerDeviceStatus(helperService.GetMacFromId((short)message.SCPId), message.sts_cp.first, DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_cp.status[0])));
                     break;
                 case (int)enSCPReplyType.enSCPReplySrAcr:
                     handle.SCPReplySrAcr(message);
-                    acr.TriggerDeviceStatus(message.SCPId, message.sts_acr.number, Description.GetACRModeForStatus(message.sts_acr.door_status), Description.GetAccessPointStatusFlagResult((byte)message.sts_acr.ap_status));
+                    doorService.TriggerDeviceStatus(message.SCPId, message.sts_acr.number, Description.GetACRModeForStatus(message.sts_acr.door_status), Description.GetAccessPointStatusFlagResult((byte)message.sts_acr.ap_status));
                     break;
                 case (int)enSCPReplyType.enSCPReplySrTz:
                     handle.SCPReplySrTz(message);
@@ -128,18 +129,18 @@ namespace HIDAeroService.AeroLibrary
                     break;
                 case (int)enSCPReplyType.enSCPReplyStrStatus:
                     handle.SCPReplyStrStatus(message);
-                    await scp.VerifyAllocateHardwareMemoryAsync(message);
+                    await hardwareService.VerifyAllocateHardwareMemoryAsync(message);
                      break;
                 case (int)enSCPReplyType.enSCPReplyCmndStatus:
                     // Save to DB if fail
-                    cmnd.HandleSaveFailCommand(command,message);
-                    scp.HandleUploadCommand(command,message);
+                    commandService.HandleSaveFailCommand(command,message);
+                    hardwareService.HandleUploadCommand(command,message);
                     handle.SCPReplyCmndStatus(message,command);
                     command.CommandResultTrigger(message.cmnd_sts.sequence_number,message.cmnd_sts.status == 1 ? true : false);
                         break;
                 case (int)enSCPReplyType.enSCPReplyWebConfigNetwork:
                     handle.SCPReplyWebConfigNetwork(message);
-                    scp.AssignIpToIdReport(message, iDReports);
+                    hardwareService.AssignIpToIdReport(message, iDReports);
                     
                     break;
                     

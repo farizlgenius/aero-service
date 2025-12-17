@@ -52,7 +52,7 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
-        [HttpDelete]
+        [HttpDelete("{mac}/{component}")]
         public async Task<ActionResult<ResponseDto<MonitorGroupDto>>> DeleteAsync(string mac,short component)
         {
             var res = await service.DeleteAsync(mac,component);
