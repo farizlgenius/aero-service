@@ -23,8 +23,7 @@ namespace HIDAeroService.Entity
         public ICollection<Door> Doors { get; set; }
         public ICollection<MonitorGroup> MonitorPointsGroup { get; set; }
         public ICollection<OperatorLocation> OperatorLocations { get; set; }
-        public ICollection<Transaction> Events { get; set; }
-        public ICollection<AeroStructureStatus> AeroStructureStatuses { get; set; }
+        public ICollection<Transaction> Transactions { get; set; }
         public ICollection<Credential> Credentials { get; set; }
         public ICollection<Holiday> Holidays { get; set; }
         public ICollection<Reader> Readers { get; set; }

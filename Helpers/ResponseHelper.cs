@@ -39,6 +39,18 @@ namespace HIDAeroService.Helpers
             };
         }
 
+        public static ResponseDto<T> UnsuccessBuilder<T>(T data)
+        {
+            return new ResponseDto<T>()
+            {
+                code = HttpStatusCode.InternalServerError,
+                timestamp = DateTime.UtcNow,
+                message = ResponseMessage.UNSUCCESS,
+                details = Enumerable.Empty<string>(),
+                data = data
+            };
+        }
+
         public static ResponseDto<T> NotFoundBuilder<T>()
         {
             return new ResponseDto<T>()
@@ -71,6 +83,18 @@ namespace HIDAeroService.Helpers
                 timestamp = DateTime.UtcNow,
                 message = ResponseMessage.FOUND_RELATE_REFERENCE,
                 details = Enumerable.Empty<string>(),
+                data = default
+            };
+        }
+
+        public static ResponseDto<T> FoundReferenceBuilder<T>(IEnumerable<string> message)
+        {
+            return new ResponseDto<T>()
+            {
+                code = HttpStatusCode.InternalServerError,
+                timestamp = DateTime.UtcNow,
+                message = ResponseMessage.FOUND_RELATE_REFERENCE,
+                details = message,
                 data = default
             };
         }
@@ -120,6 +144,18 @@ namespace HIDAeroService.Helpers
                 timestamp = DateTime.UtcNow,
                 message = ResponseMessage.UNAUTHORIZED,
                 details = message,
+                data = default
+            };
+        }
+
+        public static ResponseDto<T> DefaultRecord<T>()
+        {
+            return new ResponseDto<T>()
+            {
+                code = HttpStatusCode.NotAcceptable,
+                timestamp = DateTime.UtcNow,
+                message = ResponseMessage.DELETE_DEFAULT,
+                details = Enumerable.Empty<string>(),
                 data = default
             };
         }

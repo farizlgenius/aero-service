@@ -272,7 +272,7 @@ namespace HIDAeroService.Migrations
                             ComponentId = (short)1,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            LocationId = (short)0,
+                            LocationId = (short)1,
                             Name = "No Access",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Uuid = "00000000-0000-0000-0000-000000000001"
@@ -283,7 +283,7 @@ namespace HIDAeroService.Migrations
                             ComponentId = (short)2,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
-                            LocationId = (short)0,
+                            LocationId = (short)1,
                             Name = "Full Access",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Uuid = "00000000-0000-0000-0000-000000000001"
@@ -485,94 +485,6 @@ namespace HIDAeroService.Migrations
                             Name = "Delay (Seconds)",
                             Value = (short)127
                         });
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.AeroStructureStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<string>("IpAddress")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<short>("LocationId")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("MacAddress")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("RecAllocAcr")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RecAllocAlvl")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RecAllocArea")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RecAllocCardActive")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RecAllocCp")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RecAllocCrdb")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RecAllocEal")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RecAllocHoliday")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RecAllocMp")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RecAllocMpg")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RecAllocProc")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RecAllocSioPort")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RecAllocTimezone")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RecAllocTransaction")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RecAllocTrig")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<string>("Uuid")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LocationId");
-
-                    b.ToTable("AeroStructureStatuses");
                 });
 
             modelBuilder.Entity("HIDAeroService.Entity.AntipassbackMode", b =>
@@ -2577,17 +2489,6 @@ namespace HIDAeroService.Migrations
                         new
                         {
                             Id = 1,
-                            ComponentId = (short)0,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Central Location",
-                            IsActive = true,
-                            LocationName = "Central",
-                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Uuid = "00000000-0000-0000-0000-000000000001"
-                        },
-                        new
-                        {
-                            Id = 2,
                             ComponentId = (short)1,
                             CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Main Location",
@@ -4365,7 +4266,7 @@ namespace HIDAeroService.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DeactiveTime = "",
                             IsActive = true,
-                            LocationId = (short)0,
+                            LocationId = (short)1,
                             Mode = (short)1,
                             Name = "Always",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -6885,7 +6786,7 @@ namespace HIDAeroService.Migrations
                         .WithMany("AccessAreas")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Location");
@@ -6897,7 +6798,7 @@ namespace HIDAeroService.Migrations
                         .WithMany("AccessLevels")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Location");
@@ -6939,7 +6840,7 @@ namespace HIDAeroService.Migrations
                         .WithMany("Actions")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HIDAeroService.Entity.Procedure", "Procedure")
@@ -6954,25 +6855,13 @@ namespace HIDAeroService.Migrations
                     b.Navigation("Procedure");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.AeroStructureStatus", b =>
-                {
-                    b.HasOne("HIDAeroService.Entity.Location", "Location")
-                        .WithMany("AeroStructureStatuses")
-                        .HasForeignKey("LocationId")
-                        .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Location");
-                });
-
             modelBuilder.Entity("HIDAeroService.Entity.CardHolder", b =>
                 {
                     b.HasOne("HIDAeroService.Entity.Location", "Location")
                         .WithMany("CardHolders")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Location");
@@ -7016,7 +6905,7 @@ namespace HIDAeroService.Migrations
                         .WithMany("ControlPoints")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HIDAeroService.Entity.Module", "Module")
@@ -7044,7 +6933,7 @@ namespace HIDAeroService.Migrations
                         .WithMany("Credentials")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("CardHolder");
@@ -7080,7 +6969,7 @@ namespace HIDAeroService.Migrations
                         .WithMany("Doors")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HIDAeroService.Entity.Sensor", "Sensor")
@@ -7135,7 +7024,7 @@ namespace HIDAeroService.Migrations
                         .WithMany("Hardwares")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Location");
@@ -7153,7 +7042,7 @@ namespace HIDAeroService.Migrations
                         .WithMany("HardwareAccessLevels")
                         .HasForeignKey("MacAddress")
                         .HasPrincipalKey("MacAddress")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("AccessLevel");
@@ -7173,7 +7062,7 @@ namespace HIDAeroService.Migrations
                         .WithMany("HardwareCredentials")
                         .HasForeignKey("HardwareCredentialId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Credential");
@@ -7187,7 +7076,7 @@ namespace HIDAeroService.Migrations
                         .WithMany("Holidays")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Location");
@@ -7199,7 +7088,7 @@ namespace HIDAeroService.Migrations
                         .WithMany("Intervals")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Location");
@@ -7211,14 +7100,14 @@ namespace HIDAeroService.Migrations
                         .WithMany("Modules")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HIDAeroService.Entity.Hardware", "Hardware")
                         .WithMany("Module")
                         .HasForeignKey("MacAddress")
                         .HasPrincipalKey("MacAddress")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Hardware");
@@ -7232,7 +7121,7 @@ namespace HIDAeroService.Migrations
                         .WithMany("MonitorPointsGroup")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Location");
@@ -7256,7 +7145,7 @@ namespace HIDAeroService.Migrations
                         .WithMany("MonitorPoints")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HIDAeroService.Entity.Module", "Module")
@@ -7310,7 +7199,7 @@ namespace HIDAeroService.Migrations
                         .WithMany("Procedures")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Location");
@@ -7329,7 +7218,7 @@ namespace HIDAeroService.Migrations
                         .WithMany("Readers")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HIDAeroService.Entity.Module", "Module")
@@ -7359,7 +7248,7 @@ namespace HIDAeroService.Migrations
                         .WithMany("RequestExits")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HIDAeroService.Entity.Module", "Module")
@@ -7382,7 +7271,7 @@ namespace HIDAeroService.Migrations
                         .WithMany("Sensors")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HIDAeroService.Entity.Module", "Module")
@@ -7403,7 +7292,7 @@ namespace HIDAeroService.Migrations
                         .WithMany("Strikes")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HIDAeroService.Entity.Module", "Module")
@@ -7436,7 +7325,7 @@ namespace HIDAeroService.Migrations
                         .WithMany("TimeZones")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Location");
@@ -7466,10 +7355,10 @@ namespace HIDAeroService.Migrations
             modelBuilder.Entity("HIDAeroService.Entity.Transaction", b =>
                 {
                     b.HasOne("HIDAeroService.Entity.Location", "Location")
-                        .WithMany("Events")
+                        .WithMany("Transactions")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.Navigation("Location");
@@ -7525,7 +7414,7 @@ namespace HIDAeroService.Migrations
                         .WithMany("Triggers")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HIDAeroService.Entity.Procedure", "Procedure")
@@ -7621,8 +7510,6 @@ namespace HIDAeroService.Migrations
 
                     b.Navigation("Actions");
 
-                    b.Navigation("AeroStructureStatuses");
-
                     b.Navigation("CardHolders");
 
                     b.Navigation("ControlPoints");
@@ -7630,8 +7517,6 @@ namespace HIDAeroService.Migrations
                     b.Navigation("Credentials");
 
                     b.Navigation("Doors");
-
-                    b.Navigation("Events");
 
                     b.Navigation("Hardwares");
 
@@ -7658,6 +7543,8 @@ namespace HIDAeroService.Migrations
                     b.Navigation("Strikes");
 
                     b.Navigation("TimeZones");
+
+                    b.Navigation("Transactions");
 
                     b.Navigation("Triggers");
                 });

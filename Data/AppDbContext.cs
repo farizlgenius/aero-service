@@ -112,7 +112,6 @@ namespace HIDAeroService.Data
 
         // Old
         public DbSet<CommandStatus> ArCommandStatuses { get; set; }
-        public DbSet<AeroStructureStatus> AeroStructureStatuses { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -163,7 +162,7 @@ namespace HIDAeroService.Data
                 .WithOne(p => p.Hardware)
                 .HasForeignKey(p => p.MacAddress)
                 .HasPrincipalKey(p => p.MacAddress)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<HardwareCredential>()
                 .HasKey(p => new { p.MacAddress, p.HardwareCredentialId });
@@ -173,14 +172,14 @@ namespace HIDAeroService.Data
                 .WithMany(e => e.HardwareCredentials)
                 .HasForeignKey(e => e.HardwareCredentialId)
                 .HasPrincipalKey(e => e.ComponentId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<HardwareAccessLevel>()
                 .HasOne(e => e.Hardware)
                 .WithMany(e => e.HardwareAccessLevels)
                 .HasForeignKey(e => e.MacAddress)
                 .HasPrincipalKey(e => e.MacAddress)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             #endregion
 
@@ -327,9 +326,9 @@ namespace HIDAeroService.Data
                 .HasPrincipalKey(x => x.ComponentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            var NoAccess = new AccessLevel { Id = 1, Uuid = SeedDefaults.SystemGuid, Name = "No Access", ComponentId = 1,LocationId=0, IsActive = true };
+            var NoAccess = new AccessLevel { Id = 1, Uuid = SeedDefaults.SystemGuid, Name = "No Access", ComponentId = 1,LocationId=1, IsActive = true };
 
-            var FullAccess = new AccessLevel { Id = 2, Uuid = SeedDefaults.SystemGuid, Name = "Full Access", ComponentId = 2,LocationId=0, IsActive = true };
+            var FullAccess = new AccessLevel { Id = 2, Uuid = SeedDefaults.SystemGuid, Name = "Full Access", ComponentId = 2,LocationId=1, IsActive = true };
 
 
             modelBuilder.Entity<AccessLevel>().HasData(
@@ -360,7 +359,7 @@ namespace HIDAeroService.Data
 
 
             modelBuilder.Entity<Entity.TimeZone>().HasData(
-                new Entity.TimeZone { Id = 1, Uuid = SeedDefaults.SystemGuid, Name = "Always", ComponentId = 1, Mode = 1, ActiveTime = "", DeactiveTime = "", IsActive = true,LocationId=0 }
+                new Entity.TimeZone { Id = 1, Uuid = SeedDefaults.SystemGuid, Name = "Always", ComponentId = 1, Mode = 1, ActiveTime = "", DeactiveTime = "", IsActive = true,LocationId=1 }
                );
 
             modelBuilder.Entity<TimeZoneMode>().HasData(
@@ -606,147 +605,164 @@ namespace HIDAeroService.Data
 
             modelBuilder.Entity<Location>()
                 .HasData(
-                new Location { Id = 1, ComponentId = 0, LocationName = "Central", Description = "Central Location", CreatedDate = SeedDefaults.SystemDate, UpdatedDate = SeedDefaults.SystemDate, Uuid = SeedDefaults.SystemGuid, IsActive = true },
-                new Location { Id = 2, ComponentId = 1, LocationName = "Main", Description = "Main Location", CreatedDate = SeedDefaults.SystemDate, UpdatedDate = SeedDefaults.SystemDate, Uuid = SeedDefaults.SystemGuid, IsActive = true }
+                new Location { Id = 1, ComponentId = 1, LocationName = "Main", Description = "Main Location", CreatedDate = SeedDefaults.SystemDate, UpdatedDate = SeedDefaults.SystemDate, Uuid = SeedDefaults.SystemGuid, IsActive = true }
                 );
 
             modelBuilder.Entity<Location>()
                 .HasMany(l => l.Hardwares)
                 .WithOne(h => h.Location)
                 .HasForeignKey(f => f.LocationId)
-                .HasPrincipalKey(p => p.ComponentId);
+                .HasPrincipalKey(p => p.ComponentId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Location>()
                 .HasMany(l => l.Modules)
                 .WithOne(h => h.Location)
                 .HasForeignKey(f => f.LocationId)
-                .HasPrincipalKey(p => p.ComponentId);
+                .HasPrincipalKey(p => p.ComponentId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Location>()
                 .HasMany(l => l.ControlPoints)
                 .WithOne(h => h.Location)
                 .HasForeignKey(f => f.LocationId)
-                .HasPrincipalKey(p => p.ComponentId);
+                .HasPrincipalKey(p => p.ComponentId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Location>()
                .HasMany(l => l.MonitorPoints)
                .WithOne(h => h.Location)
                .HasForeignKey(f => f.LocationId)
-               .HasPrincipalKey(p => p.ComponentId);
+               .HasPrincipalKey(p => p.ComponentId)
+               .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Location>()
                .HasMany(l => l.AccessLevels)
                .WithOne(h => h.Location)
                .HasForeignKey(f => f.LocationId)
-               .HasPrincipalKey(p => p.ComponentId);
+               .HasPrincipalKey(p => p.ComponentId)
+               .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Location>()
                .HasMany(l => l.AccessAreas)
                .WithOne(h => h.Location)
                .HasForeignKey(f => f.LocationId)
-               .HasPrincipalKey(p => p.ComponentId);
+               .HasPrincipalKey(p => p.ComponentId)
+               .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Location>()
                .HasMany(l => l.CardHolders)
                .WithOne(h => h.Location)
                .HasForeignKey(f => f.LocationId)
-               .HasPrincipalKey(p => p.ComponentId);
+               .HasPrincipalKey(p => p.ComponentId)
+               .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Location>()
                .HasMany(l => l.Doors)
                .WithOne(h => h.Location)
                .HasForeignKey(f => f.LocationId)
-               .HasPrincipalKey(p => p.ComponentId);
+               .HasPrincipalKey(p => p.ComponentId)
+               .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Location>()
                .HasMany(l => l.MonitorPointsGroup)
                .WithOne(h => h.Location)
                .HasForeignKey(f => f.LocationId)
-               .HasPrincipalKey(p => p.ComponentId);
+               .HasPrincipalKey(p => p.ComponentId)
+               .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Location>()
-                .HasMany(l => l.Events)
+                .HasMany(l => l.Transactions)
                 .WithOne(c => c.Location)
                  .HasForeignKey(f => f.LocationId)
-               .HasPrincipalKey(p => p.ComponentId);
+               .HasPrincipalKey(p => p.ComponentId)
+               .OnDelete(DeleteBehavior.SetNull);
 
-            modelBuilder.Entity<Location>()
-               .HasMany(l => l.AeroStructureStatuses)
-               .WithOne(c => c.Location)
-               .HasForeignKey(f => f.LocationId)
-               .HasPrincipalKey(p => p.ComponentId);
 
             modelBuilder.Entity<Location>()
               .HasMany(l => l.Credentials)
               .WithOne(c => c.Location)
               .HasForeignKey(f => f.LocationId)
-              .HasPrincipalKey(p => p.ComponentId);
+              .HasPrincipalKey(p => p.ComponentId)
+              .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Location>()
               .HasMany(l => l.Credentials)
               .WithOne(c => c.Location)
               .HasForeignKey(f => f.LocationId)
-              .HasPrincipalKey(p => p.ComponentId);
+              .HasPrincipalKey(p => p.ComponentId)
+              .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Location>()
               .HasMany(l => l.Holidays)
               .WithOne(c => c.Location)
               .HasForeignKey(f => f.LocationId)
-              .HasPrincipalKey(p => p.ComponentId);
+              .HasPrincipalKey(p => p.ComponentId)
+              .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Location>()
               .HasMany(l => l.Readers)
               .WithOne(c => c.Location)
               .HasForeignKey(f => f.LocationId)
-              .HasPrincipalKey(p => p.ComponentId);
+              .HasPrincipalKey(p => p.ComponentId)
+              .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Location>()
               .HasMany(l => l.RequestExits)
               .WithOne(c => c.Location)
               .HasForeignKey(f => f.LocationId)
-              .HasPrincipalKey(p => p.ComponentId);
+              .HasPrincipalKey(p => p.ComponentId)
+              .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Location>()
               .HasMany(l => l.Sensors)
               .WithOne(c => c.Location)
               .HasForeignKey(f => f.LocationId)
-              .HasPrincipalKey(p => p.ComponentId);
+              .HasPrincipalKey(p => p.ComponentId)
+              .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Location>()
               .HasMany(l => l.Strikes)
               .WithOne(c => c.Location)
               .HasForeignKey(f => f.LocationId)
-              .HasPrincipalKey(p => p.ComponentId);
+              .HasPrincipalKey(p => p.ComponentId)
+              .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Location>()
                 .HasMany(l => l.Triggers)
                 .WithOne(c => c.Location)
                 .HasForeignKey(f => f.LocationId)
-                .HasPrincipalKey(p => p.ComponentId);
+                .HasPrincipalKey(p => p.ComponentId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Location>()
                 .HasMany(l => l.Procedures)
                 .WithOne(c => c.Location)
                 .HasForeignKey(f => f.LocationId)
-                .HasPrincipalKey(p => p.ComponentId);
+                .HasPrincipalKey(p => p.ComponentId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Location>()
                 .HasMany(l => l.Actions)
                 .WithOne(c => c.Location)
                 .HasForeignKey(f => f.LocationId)
-                .HasPrincipalKey(p => p.ComponentId);
+                .HasPrincipalKey(p => p.ComponentId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Location>()
                 .HasMany(l => l.Intervals)
                 .WithOne(c => c.Location)
                 .HasForeignKey(f => f.LocationId)
-                .HasPrincipalKey(p => p.ComponentId);
+                .HasPrincipalKey(p => p.ComponentId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Location>()
                 .HasMany(l => l.TimeZones)
                 .WithOne(c => c.Location)
                 .HasForeignKey(f => f.LocationId)
-                .HasPrincipalKey(p => p.ComponentId);
+                .HasPrincipalKey(p => p.ComponentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
 
             #endregion
 
@@ -1645,8 +1661,6 @@ namespace HIDAeroService.Data
                 );
 
             #endregion
-
-
 
             #region File Type
 

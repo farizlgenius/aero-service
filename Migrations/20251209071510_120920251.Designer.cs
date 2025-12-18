@@ -7191,7 +7191,7 @@ namespace HIDAeroService.Migrations
             modelBuilder.Entity("HIDAeroService.Entity.Transaction", b =>
                 {
                     b.HasOne("HIDAeroService.Entity.Location", "Location")
-                        .WithMany("Events")
+                        .WithMany("Transactions")
                         .HasForeignKey("LocationId")
                         .HasPrincipalKey("ComponentId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -7344,7 +7344,7 @@ namespace HIDAeroService.Migrations
 
                     b.Navigation("Doors");
 
-                    b.Navigation("Events");
+                    b.Navigation("Transactions");
 
                     b.Navigation("Hardwares");
 

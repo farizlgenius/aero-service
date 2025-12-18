@@ -6,12 +6,14 @@ namespace HIDAeroService.Constant
     {
 
         public static string COMMAND_UNSUCCESS = "Send Command to Controller failed.";
+        public static string UNSUCCESS = "Unsuccess";
 
         // ResponseDto message
         public static string SCP_NOT_FOUND = "NO Main Controller In System";
         public static string DOOR_NOT_FOUND = "AccessLevelDoorTimeZones not found in the System.";
         public static string COMPONENT_EXCEED_LIMIT = "Component Exceed The Limit,Please Remove Some Before CreateAsync New Component";
         public static string SCP_ALREADY_REGISTER = "Controller Already Register in System";
+        public static string DELETE_DEFAULT = "Default record";
 
 
 

@@ -14,6 +14,7 @@ namespace HIDAeroService.Controllers.V1
     public class LocationController(ILocationService locationService) : ControllerBase
     {
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<LocationDto>>>> GetAsync()
         {
             var res = await locationService.GetAsync();
@@ -29,16 +30,25 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<LocationDto>>> UpdateAsync([FromBody] LocationDto dto) 
         {
             var res = await locationService.UpdateAsync(dto);
             return Ok(res);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<ResponseDto<bool>>> DeleteByIdAsync(short id)
+        [HttpDelete("{component}")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<bool>>> DeleteByIdAsync(short component)
         {
-            var res = await locationService.DeleteByIdAsync(id);
+            var res = await locationService.DeleteByIdAsync(component);
+            return Ok(res);
+        }
+
+        [HttpPost("delete/range")]
+        public async Task<ActionResult<ResponseDto<bool>>> DeleteRangeAsync([FromBody] List<short> dtos)
+        {
+            var res = await locationService.DeleteRangeAsync(dtos);
             return Ok(res);
         }
 
