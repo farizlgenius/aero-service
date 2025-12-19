@@ -3,6 +3,7 @@ using System;
 using HIDAeroService.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HIDAeroService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251219040917_191220251")]
+    partial class _191220251
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3335,45 +3338,6 @@ namespace HIDAeroService.Migrations
                             Description = "Relay energized",
                             Name = "Active",
                             Value = (short)2
-                        });
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.PasswordRule", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsDigit")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsLower")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsSymbol")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsUpper")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("Len")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PasswordRules");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            IsDigit = false,
-                            IsLower = false,
-                            IsSymbol = false,
-                            IsUpper = false,
-                            Len = 4
                         });
                 });
 
@@ -6819,54 +6783,6 @@ namespace HIDAeroService.Migrations
                     b.ToTable("TriggerTranCodes");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.WeakPassword", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("PasswordRuleId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Pattern")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PasswordRuleId");
-
-                    b.ToTable("WeakPasswords");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            PasswordRuleId = 1,
-                            Pattern = "P@ssw0rd"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            PasswordRuleId = 1,
-                            Pattern = "password"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            PasswordRuleId = 1,
-                            Pattern = "admin"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            PasswordRuleId = 1,
-                            Pattern = "123456"
-                        });
-                });
-
             modelBuilder.Entity("HIDAeroService.Entity.AccessArea", b =>
                 {
                     b.HasOne("HIDAeroService.Entity.Location", "Location")
@@ -7528,17 +7444,6 @@ namespace HIDAeroService.Migrations
                     b.Navigation("Trigger");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.WeakPassword", b =>
-                {
-                    b.HasOne("HIDAeroService.Entity.PasswordRule", "PasswordRule")
-                        .WithMany("Weaks")
-                        .HasForeignKey("PasswordRuleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("PasswordRule");
-                });
-
             modelBuilder.Entity("HIDAeroService.Entity.AccessArea", b =>
                 {
                     b.Navigation("DoorsIn");
@@ -7670,11 +7575,6 @@ namespace HIDAeroService.Migrations
             modelBuilder.Entity("HIDAeroService.Entity.Operator", b =>
                 {
                     b.Navigation("OperatorLocations");
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.PasswordRule", b =>
-                {
-                    b.Navigation("Weaks");
                 });
 
             modelBuilder.Entity("HIDAeroService.Entity.Procedure", b =>

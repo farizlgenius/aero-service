@@ -1497,7 +1497,10 @@ namespace HIDAeroService.Mapper
 
         public static void UpdateOperator(Operator en,CreateOperatorDto dto) 
         {
-            en.OperatorLocations = dto.LocationIds.Select(x => new OperatorLocation { LocationId = x, OperatorId = en.ComponentId }).ToArray();
+            foreach(var id in dto.LocationIds)
+            {
+                en.OperatorLocations.Add(new OperatorLocation { LocationId = id, OperatorId = en.ComponentId });
+            }
             en.UpdatedDate = DateTime.Now;
 
             // ExtendDesc
@@ -1513,6 +1516,33 @@ namespace HIDAeroService.Mapper
             en.ImagePath = dto.ImagePath;
             en.RoleId = dto.RoleId;
         }
+
+        public static PasswordRuleDto PasswordRuleToDto(PasswordRule en)
+        {
+            return new PasswordRuleDto
+            {
+                Len = en.Len,
+                IsDigit = en.IsDigit,
+                IsLower = en.IsLower,
+                IsSymbol = en.IsSymbol,
+                IsUpper = en.IsUpper,
+                Weaks = en.Weaks.Select(x => x.Pattern).ToList()
+            };
+        }
+
+        public static void UpdatePasswordRule(PasswordRule en,PasswordRuleDto dto)
+        {
+            en.Len = dto.Len;
+            en.IsLower = dto.IsLower;
+            en.IsDigit = dto.IsDigit;
+            en.IsSymbol = dto.IsSymbol;
+            en.IsUpper = dto.IsUpper;
+            en.Weaks.Clear();
+            foreach(var w in dto.Weaks)
+            {
+                en.Weaks.Add(new WeakPassword {Pattern = w });
+            }
+        } 
 
         #endregion
 
@@ -1559,7 +1589,11 @@ namespace HIDAeroService.Mapper
         {
             en.Name = dto.Name;
             en.UpdatedDate = DateTime.Now;
-            en.FeatureRoles = dto.Features.Select(fr => DtoToFeatureRole(fr, dto.ComponentId)).ToArray();
+            en.FeatureRoles.Clear();
+            foreach(var id in dto.Features)
+            {
+                en.FeatureRoles.Add(DtoToFeatureRole(id,dto.ComponentId));
+            }
         }
 
         #endregion

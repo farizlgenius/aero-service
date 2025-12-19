@@ -210,7 +210,7 @@ namespace HIDAeroService.Service.Impl
             {
                 var re = await DeleteByIdAsync(id);
                 if (re.code != HttpStatusCode.OK) flag = false;
-                data.Add(await DeleteByIdAsync(id));
+                data.Add(re);
             }
 
             if (!flag) return ResponseHelper.UnsuccessBuilder<IEnumerable<ResponseDto<bool>>>(data);

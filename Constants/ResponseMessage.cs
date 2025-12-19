@@ -47,6 +47,10 @@ namespace HIDAeroService.Constant
         public static string UPLOAD_CONTROL_POINT = "Upload Control Point...";
         public static string UPLOAD_SUCCESS = "Upload Successful";
 
+        // Password message 
+        public static string OLD_PASSPORT_INCORRECT = "Old password incorrect";
+        public static string PASSWORD_UNASSIGN = "Password unassign";
+
 
     }
 }

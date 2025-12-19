@@ -5,6 +5,7 @@ using HIDAeroService.Entity;
 using HIDAeroService.Helpers;
 using HIDAeroService.Mapper;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace HIDAeroService.Service.Impl
 {
@@ -25,16 +26,39 @@ namespace HIDAeroService.Service.Impl
         public async Task<ResponseDto<bool>> DeleteByComponentIdAsync(short ComponentId)
         {
             var en = await context.Roles
+                .Include(x => x.FeatureRoles)
                 .Where(r => r.ComponentId == ComponentId)
                 .OrderBy(x => x.ComponentId)
                 .FirstOrDefaultAsync();
 
             if (en is null) return ResponseHelper.NotFoundBuilder<bool>();
 
+            if (await context.Roles.AnyAsync(x => x.ComponentId == ComponentId && x.Operators.Any())) return ResponseHelper.FoundReferenceBuilder<bool>(["Found operator related"]);
+
+            context.FeatureRoles.RemoveRange(en.FeatureRoles);
+
             context.Roles.Remove(en);
             await context.SaveChangesAsync();
 
             return ResponseHelper.SuccessBuilder<bool>(true);
+        }
+
+        public async Task<ResponseDto<IEnumerable<ResponseDto<bool>>>> DeleteRangeAsync(List<short> dtos)
+        {
+            bool flag = true;
+            List<ResponseDto<bool>> data = new List<ResponseDto<bool>>();
+            foreach (var dto in dtos)
+            {
+                var re = await DeleteByComponentIdAsync(dto);
+                if (re.code != HttpStatusCode.OK) flag = false;
+                data.Add(re);
+            }
+
+            if (!flag) return ResponseHelper.UnsuccessBuilder<IEnumerable<ResponseDto<bool>>>(data);
+
+            var res = ResponseHelper.SuccessBuilder<IEnumerable<ResponseDto<bool>>>(data);
+
+            return res;
         }
 
         public async Task<ResponseDto<IEnumerable<RoleDto>>> GetAsync()
@@ -73,6 +97,9 @@ namespace HIDAeroService.Service.Impl
                 .FirstOrDefaultAsync();
 
             if(en is null) return ResponseHelper.NotFoundBuilder<RoleDto>();
+
+            // Delete Old Feature Role
+            context.FeatureRoles.RemoveRange(en.FeatureRoles);
 
             MapperHelper.UpdateRole(en, dto);
 

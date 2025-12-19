@@ -1,6 +1,7 @@
 ﻿using HIDAeroService.DTO;
 using HIDAeroService.DTO.Role;
 using HIDAeroService.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Crypto;
@@ -25,6 +26,13 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
+        [HttpPost("delete/range")]
+        public async Task<ActionResult<ResponseDto<IEnumerable<ResponseDto<bool>>>>> DeleteRangeAsync([FromBody] List<short> dtos)
+        {
+            var res = await roleService.DeleteRangeAsync(dtos);
+            return Ok(res);
+        }
+
         [HttpPut]
         public async Task<ActionResult<ResponseDto<RoleDto>>> UpdateAsync([FromBody] RoleDto dto)
         {
@@ -32,17 +40,18 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
-        [HttpDelete("{Id}")]
-        public async Task<ActionResult<ResponseDto<bool>>> DeleteByIdAsync(short Id)
+        [HttpDelete("{component}")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<bool>>> DeleteByIdAsync(short component)
         {
-            var res = await roleService.DeleteByComponentIdAsync(Id);
+            var res = await roleService.DeleteByComponentIdAsync(component);
             return Ok(res);
         }
 
-        [HttpGet("{Id}")]
-        public async Task<ActionResult<ResponseDto<RoleDto>>> GetByIdAsync(short Id)
+        [HttpGet("{component}")]
+        public async Task<ActionResult<ResponseDto<RoleDto>>> GetByIdAsync(short component)
         {
-            var res = await roleService.GetByComponentIdAsync(Id);
+            var res = await roleService.GetByComponentIdAsync(component);
             return Ok(res);
         }
 

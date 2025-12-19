@@ -151,6 +151,7 @@ namespace HIDAeroService
             builder.Services.AddScoped<ITriggerService, TriggerService>();
             builder.Services.AddScoped<IMonitorGroupService, MonitorGroupService>();
             builder.Services.AddScoped<ICommandService, CommandService>();
+            builder.Services.AddScoped<ISettingService, SettingService>();
 
 
             //

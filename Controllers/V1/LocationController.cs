@@ -46,7 +46,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpPost("delete/range")]
-        public async Task<ActionResult<ResponseDto<bool>>> DeleteRangeAsync([FromBody] List<short> dtos)
+        public async Task<ActionResult<ResponseDto<IEnumerable<ResponseDto<bool>>>>> DeleteRangeAsync([FromBody] List<short> dtos)
         {
             var res = await locationService.DeleteRangeAsync(dtos);
             return Ok(res);

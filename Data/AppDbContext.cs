@@ -85,6 +85,9 @@ namespace HIDAeroService.Data
         public DbSet<TimeZoneCommand> TimeZoneCommands { get; set; }
         public DbSet<TriggerCommand> TriggerCommands { get; set; }
         public DbSet<TriggerTranCode> TriggerTranCodes { get; set; }
+        public DbSet<OperatorLocation> OperatorLocations { get; set; }
+        public DbSet<WeakPassword> WeakPasswords { get; set; }
+        public DbSet<PasswordRule> PasswordRules { get; set; }
 
 
         // New
@@ -1527,6 +1530,13 @@ namespace HIDAeroService.Data
             //    .HasPrincipalKey(r => r.ComponentId)
             //    .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<PasswordRule>()
+                .HasMany(x => x.Weaks)
+                .WithOne(x => x.PasswordRule)
+                .HasForeignKey(x => x.PasswordRuleId)
+                .HasPrincipalKey(x => x.Id)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<OperatorLocation>()
                 .HasKey(x => new { x.LocationId, x.OperatorId });
 
@@ -1550,7 +1560,7 @@ namespace HIDAeroService.Data
                 .WithMany(r => r.Operators)
                 .HasForeignKey(o => o.RoleId)
                 .HasPrincipalKey(r => r.ComponentId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<FeatureRole>()
                 .HasKey(e => new { e.RoleId, e.FeatureId });
@@ -1566,6 +1576,19 @@ namespace HIDAeroService.Data
                 .WithMany(e => e.FeatureRoles)
                 .HasForeignKey(e => e.FeatureId)
                 .HasPrincipalKey(e => e.ComponentId);
+
+            modelBuilder.Entity<PasswordRule>()
+                .HasData(
+                new PasswordRule { Id=1,Len=4,IsDigit=false,IsLower=false,IsSymbol=false,IsUpper=false }
+                );
+
+            modelBuilder.Entity<WeakPassword>()
+                .HasData(
+                new WeakPassword { Id = 1,Pattern="P@ssw0rd",PasswordRuleId=1},
+                new WeakPassword { Id=2,Pattern="password",PasswordRuleId=1},
+                new WeakPassword { Id=3,Pattern="admin",PasswordRuleId=1},
+                new WeakPassword { Id=4,Pattern="123456",PasswordRuleId=1}
+                );
 
             modelBuilder.Entity<Operator>()
                 .HasData(
