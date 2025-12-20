@@ -4,6 +4,7 @@ using HIDAeroService.Service.Impl;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using HIDAeroService.Service;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HIDAeroService.Controllers.V1
 {
@@ -12,13 +13,15 @@ namespace HIDAeroService.Controllers.V1
     public class SettingController(ISettingService service ) : ControllerBase
     {
         [HttpGet("password/rule")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<PasswordRuleDto>>> GetPasswordRuleAsync()
         {
             var res = await service.GetPasswordRuleAsync();
             return Ok(res);
         }
 
-        [HttpPut("password/rule")]
+        [HttpPost("password/rule")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<bool>>> UpdatePasswordRuleAsync([FromBody] PasswordRuleDto dto)
         {
             var res = await service.UpdatePasswordRuleAsync(dto);

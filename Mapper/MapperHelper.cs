@@ -1537,7 +1537,14 @@ namespace HIDAeroService.Mapper
             en.IsDigit = dto.IsDigit;
             en.IsSymbol = dto.IsSymbol;
             en.IsUpper = dto.IsUpper;
-            en.Weaks.Clear();
+            if (en.Weaks is not null && en.Weaks.Any())
+            {
+                en.Weaks.Clear();
+            }
+            else
+            {
+                en.Weaks = new List<WeakPassword>();
+            }
             foreach(var w in dto.Weaks)
             {
                 en.Weaks.Add(new WeakPassword {Pattern = w });

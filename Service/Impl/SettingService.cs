@@ -26,6 +26,7 @@ namespace HIDAeroService.Service.Impl
         {
             var en = await context.PasswordRules
                 .OrderBy(x => x.Id)
+                .Include(x => x.Weaks)
                 .FirstOrDefaultAsync();
 
             if (en is null) return ResponseHelper.NotFoundBuilder<PasswordRuleDto>();
