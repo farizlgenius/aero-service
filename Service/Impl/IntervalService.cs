@@ -1,4 +1,6 @@
-﻿using HIDAeroService.Constants;
+﻿using HIDAeroService.AeroLibrary;
+using HIDAeroService.Constant;
+using HIDAeroService.Constants;
 using HIDAeroService.Data;
 using HIDAeroService.DTO;
 using HIDAeroService.DTO.Interval;
@@ -17,17 +19,16 @@ using System.Net;
 
 namespace HIDAeroService.Service.Impl
 {
-    public class IntervalService(AppDbContext context, IHelperService<Interval> helperService) : IIntervalService
+    public class IntervalService(AppDbContext context, IHelperService<Interval> helperService,AeroCommand command) : IIntervalService
     {
         public async Task<ResponseDto<IEnumerable<IntervalDto>>> GetAsync()
         {
             var dtos = await context.Intervals
                 .AsNoTracking()
                 .Include(s => s.Days)
-                .Select(p => MapperHelper.IntervalToIntervalDto(p))
+                .Select(p => MapperHelper.IntervalToDto(p))
                 .ToArrayAsync();
             
-            if (dtos.Count() == 0) return ResponseHelper.NotFoundBuilder<IEnumerable<IntervalDto>>();
             return ResponseHelper.SuccessBuilder<IEnumerable<IntervalDto>>(dtos);
         }
         public async Task<ResponseDto<IntervalDto>> GetByIdAsync(short Id)
@@ -36,11 +37,22 @@ namespace HIDAeroService.Service.Impl
                 .AsNoTracking()
                 .Include(s => s.Days)
                 .Where(x => x.Id == Id)
-                .Select(p => MapperHelper.IntervalToIntervalDto(p))
+                .Select(p => MapperHelper.IntervalToDto(p))
                 .FirstOrDefaultAsync();
 
             if(dto is null) return ResponseHelper.NotFoundBuilder<IntervalDto>();
             return ResponseHelper.SuccessBuilder(dto);
+        }
+        public async Task<ResponseDto<IEnumerable<IntervalDto>>> GetByLocationAsync(short location)
+        {
+            var dtos = await context.Intervals
+                .AsNoTracking()
+                .Include(s => s.Days)
+                .Where(x => x.LocationId == location)
+                .Select(x => MapperHelper.IntervalToDto(x))
+                .ToArrayAsync();
+
+            return ResponseHelper.SuccessBuilder<IEnumerable<IntervalDto>>(dtos);
         }
         public async Task<ResponseDto<bool>> CreateAsync(CreateIntervalDto dto)
         {
@@ -67,15 +79,22 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<bool>> DeleteAsync(short component)
         {
-            var exists = await context.Intervals.AsNoTracking().AnyAsync(x => x.ComponentId == component);
-            if (!exists) return ResponseHelper.NotFoundBuilder<bool>();
-            var link = await context.TimeZoneIntervals.AsNoTracking().Where(x => x.IntervalId == component).AnyAsync();
+            var en = await context.Intervals
+                .Include(x => x.TimeZoneIntervals)
+                .OrderBy(x => x.Id)
+                .Where(x => x.ComponentId == component)
+                .FirstOrDefaultAsync();
+
+            if (en is null) return ResponseHelper.NotFoundBuilder<bool>();
+            
+            var link = await context.Intervals
+                .AsNoTracking()
+                .AnyAsync(x => x.ComponentId == component && x.TimeZoneIntervals.Any());
             if (link) return ResponseHelper.FoundReferenceBuilder<bool>();
 
             // DeleteAsync using a lightweight tracked entity
-            var interval = new Interval { Id = await context.Intervals.Where(x => x.ComponentId == component).Select(x => x.Id).FirstOrDefaultAsync() };
-            context.Intervals.Attach(interval);
-            context.Intervals.Remove(interval);
+            context.TimeZoneIntervals.RemoveRange(en.TimeZoneIntervals);
+            context.Intervals.Remove(en);
             await context.SaveChangesAsync();
 
             return ResponseHelper.SuccessBuilder(true);
@@ -83,12 +102,51 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<IntervalDto>> UpdateAsync(IntervalDto dto)
         {
-            var interval = await context.Intervals.Include(p => p.Days).FirstOrDefaultAsync(p => p.ComponentId == dto.ComponentId);
-            if (interval is null) return ResponseHelper.NotFoundBuilder<IntervalDto>();
+            // Update is need to send the time zone command again 
+            List<string> errors = new List<string>();
+            var en = await context.Intervals
+                .Include(x => x.Days)
+                .Include(x => x.TimeZoneIntervals)
+                .OrderBy(x => x.Id)
+                .Where(x => x.ComponentId == dto.ComponentId)
+                .FirstOrDefaultAsync();
 
+            if (en is null) return ResponseHelper.NotFoundBuilder<IntervalDto>();
 
-            context.Intervals.Update(MapperHelper.IntervalDtoMapInterval(dto,interval));
+            MapperHelper.UpdateInterval(en, dto);
+
+            context.Intervals.Update(en);
             await context.SaveChangesAsync();
+
+            var hws = await context.Hardwares
+                .AsNoTracking()
+                .Where(x => x.LocationId == en.LocationId)
+                .Select(x => x.ComponentId)
+                .ToArrayAsync();
+
+            foreach (var id in hws)
+            {
+                foreach (var tzs in en.TimeZoneIntervals)
+                {
+                    var tz = await context.TimeZones
+                        .AsNoTracking()
+                        .Include(x => x.TimeZoneIntervals)
+                        .ThenInclude(x => x.Interval)
+                        .OrderBy(x => x.Id)
+                        .Where(x => x.ComponentId == tzs.TimeZoneId)
+                        .FirstOrDefaultAsync();
+
+                    long active = helperService.DateTimeToElapeSecond(tz.ActiveTime);
+                    long deactive = helperService.DateTimeToElapeSecond(tz.DeactiveTime);
+                    if (!await command.ExtendedTimeZoneActSpecificationAsync(id,tz,tz.TimeZoneIntervals.Select(x => x.Interval).ToList(),(int)active,(int)deactive))
+                    {
+                        errors.Add(MessageBuilder.Unsuccess(await helperService.GetMacFromIdAsync(id),Command.C3103));
+                    }
+                }
+            }
+
+            if (errors.Count > 0) ResponseHelper.UnsuccessBuilder<IntervalDto>(ResponseMessage.COMMAND_UNSUCCESS,errors);
+
             return ResponseHelper.SuccessBuilder(dto);
         }
 
@@ -179,7 +237,22 @@ namespace HIDAeroService.Service.Impl
             return startMinutes;
         }
 
+        public async Task<ResponseDto<IEnumerable<ResponseDto<bool>>>> DeleteRangeAsync(List<short> components)
+        {
+            bool flag = true;
+            List<ResponseDto<bool>> data = new List<ResponseDto<bool>>();
+            foreach (var dto in components)
+            {
+                var re = await DeleteAsync(dto);
+                if (re.code != HttpStatusCode.OK) flag = false;
+                data.Add(re);
+            }
 
+            if (!flag) return ResponseHelper.UnsuccessBuilder<IEnumerable<ResponseDto<bool>>>(data);
 
+            var res = ResponseHelper.SuccessBuilder<IEnumerable<ResponseDto<bool>>>(data);
+
+            return res;
+        }
     }
 }

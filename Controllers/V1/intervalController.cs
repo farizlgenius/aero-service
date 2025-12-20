@@ -4,6 +4,7 @@ using HIDAeroService.DTO.Interval;
 using HIDAeroService.Entity;
 using HIDAeroService.Service;
 using HIDAeroService.Service.Impl;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections;
@@ -13,41 +14,60 @@ namespace HIDAeroService.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public sealed class IntervalController(IIntervalService baseService) : ControllerBase
+    public sealed class IntervalController(IIntervalService service) : ControllerBase
     {
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<IntervalDto>>>> GetAsync()
         {
-            var res = await baseService.GetAsync();
+            var res = await service.GetAsync();
+            return Ok(res);
+        }
+
+        [HttpGet("/api/v1/{location}/[controller]")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<IEnumerable<IntervalDto>>>> GetByLocationAsync(short location)
+        {
+            var res = await service.GetByLocationAsync(location);
             return Ok(res);
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IntervalDto>>> CreateAsync([FromBody] CreateIntervalDto dto)
         {
-            var res = await baseService.CreateAsync(dto);
+            var res = await service.CreateAsync(dto);
             return Ok(res);
         }
 
         [HttpDelete("{component}")]
         public async Task<ActionResult<ResponseDto<IntervalDto>>> DeleteAsync(short component) 
         {
-            var res = await baseService.DeleteAsync(component);
+            var res = await service.DeleteAsync(component);
+            return Ok(res);
+        }
+
+        [HttpPost("delete/range")]
+        public async Task<ActionResult<ResponseDto<IEnumerable<ResponseDto<bool>>>>> DeleteRangeAsync([FromBody] List<short> components)
+        {
+            var res = await service.DeleteRangeAsync(components);
             return Ok(res);
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IntervalDto>>> UpdateAsync([FromBody] IntervalDto dto)
         {
-            var res = await baseService.UpdateAsync(dto);
+            var res = await service.UpdateAsync(dto);
             return Ok(res);
         }
 
         [HttpGet("{component}")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IntervalDto>>> GetByComponentAsync(short component)
         {
-            var res = await baseService.GetByIdAsync(component);
+            var res = await service.GetByIdAsync(component);
             return Ok(res);
         }
     }

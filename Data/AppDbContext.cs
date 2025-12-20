@@ -347,17 +347,33 @@ namespace HIDAeroService.Data
             modelBuilder.Entity<TimeZoneInterval>()
                 .HasKey(e => new { e.TimeZoneId, e.IntervalId });
 
-            modelBuilder.Entity<TimeZoneInterval>()
-                .HasOne(e => e.TimeZone)
-                .WithMany(s => s.TimeZoneIntervals)
-                .HasForeignKey(e => e.TimeZoneId)
-                .HasPrincipalKey(s => s.ComponentId);
+            //modelBuilder.Entity<TimeZoneInterval>()
+            //    .HasOne(e => e.TimeZone)
+            //    .WithMany(s => s.TimeZoneIntervals)
+            //    .HasForeignKey(e => e.TimeZoneId)
+            //    .HasPrincipalKey(s => s.ComponentId);
 
-            modelBuilder.Entity<TimeZoneInterval>()
-                .HasOne(e => e.Interval)
-                .WithMany(s => s.TimeZoneIntervals)
+
+            //modelBuilder.Entity<TimeZoneInterval>()
+            //    .HasOne(e => e.Interval)
+            //    .WithMany(s => s.TimeZoneIntervals)
+            //    .HasForeignKey(e => e.IntervalId)
+            //    .HasPrincipalKey(e => e.ComponentId);
+
+            modelBuilder.Entity<Entity.TimeZone>()
+                .HasMany(e => e.TimeZoneIntervals)
+                .WithOne(s => s.TimeZone)
+                .HasForeignKey(e => e.TimeZoneId)
+                .HasPrincipalKey(s => s.ComponentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+            modelBuilder.Entity<Interval>()
+                .HasMany(e => e.TimeZoneIntervals)
+                .WithOne(s => s.Interval)
                 .HasForeignKey(e => e.IntervalId)
-                .HasPrincipalKey(e => e.ComponentId);
+                .HasPrincipalKey(e => e.ComponentId)
+                .OnDelete(DeleteBehavior.Cascade);
 
 
 

@@ -24,7 +24,7 @@ namespace HIDAeroService.AeroLibrary
 {
     public sealed class AeroCommand
     {
-        private readonly ConcurrentDictionary<int, TaskCompletionSource<bool>> _pendingCommands = new ConcurrentDictionary<int, TaskCompletionSource<bool>>();
+        protected readonly ConcurrentDictionary<int, TaskCompletionSource<bool>> _pendingCommands = new ConcurrentDictionary<int, TaskCompletionSource<bool>>();
         public int TagNo { get; private set; } = 0;
         public List<int> UploadCommandTags { get; private set; } = new List<int>();
         public string Command { get; private set; } = "";

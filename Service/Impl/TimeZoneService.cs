@@ -19,10 +19,11 @@ using HIDAeroService.DTO;
 using HIDAeroService.DTO.TimeZone;
 using HIDAeroService.DTO.Interval;
 using HIDAeroService.Mapper;
+using HIDAeroService.Aero.CommandService;
 
 namespace HIDAeroService.Service.Impl
 {
-    public class TimeZoneService(AppDbContext context, IHelperService<Entity.TimeZone> helperService, AeroCommand command,  ILogger<TimeZoneService> logger) : ITimeZoneService
+    public class TimeZoneService(AppDbContext context, IHelperService<Entity.TimeZone> helperService, ITimezoneCommandService command,  ILogger<TimeZoneService> logger) : ITimeZoneService
     {
         public async Task<ResponseDto<IEnumerable<TimeZoneDto>>> GetAsync()
         {
@@ -34,7 +35,6 @@ namespace HIDAeroService.Service.Impl
                 .Select(x => MapperHelper.TimeZoneToDto(x))
                 .ToArrayAsync();
 
-            if (dtos.Count() == 0) return ResponseHelper.NotFoundBuilder<IEnumerable<TimeZoneDto>>();
             return ResponseHelper.SuccessBuilder<IEnumerable<TimeZoneDto>>(dtos);
         }
 
@@ -64,7 +64,7 @@ namespace HIDAeroService.Service.Impl
             List<Interval> intervals = new List<Interval>();
             foreach(var interval in dto.Intervals)
             {
-                intervals.Add(MapperHelper.IntervalDtoToInterval(interval));
+                intervals.Add(MapperHelper.DtoToInterval(interval));
             }
             
 
@@ -75,10 +75,10 @@ namespace HIDAeroService.Service.Impl
                 short id = await helperService.GetIdFromMacAsync(mac);
                 long active = helperService.DateTimeToElapeSecond(dto.ActiveTime);
                 long deactive = helperService.DateTimeToElapeSecond(dto.DeactiveTime);
-                if (!await command.ExtendedTimeZoneActSpecificationAsync(id, timezone,intervals, (int)active, (int)deactive))
-                {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C3103));
-                }
+                //if (!await command.ExtendedTimeZoneActSpecificationAsync(id, timezone,intervals, (int)active, (int)deactive))
+                //{
+                //    errors.Add(MessageBuilder.Unsuccess(mac, Command.C3103));
+                //}
             }
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
 
@@ -108,8 +108,28 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<bool>> DeleteAsync(short component)
         {
-            var entity = await context.TimeZones.Include(s => s.TimeZoneIntervals).FirstOrDefaultAsync(x => x.ComponentId == component);
+            List<string> errors = new List<string>();
+            var entity = await context.TimeZones
+                .Include(s => s.TimeZoneIntervals)
+                .FirstOrDefaultAsync(x => x.ComponentId == component);
+
             if (entity is null) return ResponseHelper.NotFoundBuilder<bool>();
+
+            var hw = await context.Hardwares
+                .AsNoTracking()
+                .Where(x => x.LocationId == entity.LocationId)
+                .Select(x => x.ComponentId)
+                .ToArrayAsync();
+
+            foreach(var id in hw)
+            {
+                //if (!await command.TimeZoneControlAsync(id,component,3))
+                //{
+                //    errors.Add(MessageBuilder.Unsuccess(await helperService.GetMacFromIdAsync(id),Command.C314));
+                //}
+            }
+
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
 
             context.TimeZones.Remove(entity);
             await context.SaveChangesAsync();
@@ -127,7 +147,7 @@ namespace HIDAeroService.Service.Impl
             if (entity is null) return ResponseHelper.NotFoundBuilder<TimeZoneDto>();
 
             entity = MapperHelper.TimeZoneDtoMapTimeZone(dto,entity);
-            var intervals = dto.Intervals.Select(s => MapperHelper.IntervalDtoToInterval(s)).ToList();
+            var intervals = dto.Intervals.Select(s => MapperHelper.DtoToInterval(s)).ToList();
 
             List<string> macs = await context.Hardwares.AsNoTracking().Select(x => x.MacAddress).ToListAsync();
             foreach (var mac in macs)
@@ -135,10 +155,10 @@ namespace HIDAeroService.Service.Impl
                 short id = await helperService.GetIdFromMacAsync(mac);
                 long active = helperService.DateTimeToElapeSecond(dto.ActiveTime);
                 long deactive = helperService.DateTimeToElapeSecond(dto.DeactiveTime);
-                if (!await command.ExtendedTimeZoneActSpecificationAsync(id, entity, intervals, (int)active, (int)deactive))
-                {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C3103));
-                }
+                //if (!await command.ExtendedTimeZoneActSpecificationAsync(id, entity, intervals, (int)active, (int)deactive))
+                //{
+                //    errors.Add(MessageBuilder.Unsuccess(mac, Command.C3103));
+                //}
             }
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<TimeZoneDto>(ResponseMessage.COMMAND_UNSUCCESS,errors);
 
@@ -187,6 +207,20 @@ namespace HIDAeroService.Service.Impl
 
             }).ToArrayAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+        }
+
+        public async Task<ResponseDto<IEnumerable<TimeZoneDto>>> GetByLocationAsync(short location)
+        {
+            var dtos = await context.TimeZones
+                .AsNoTracking()
+                .Include(c => c.TimeZoneIntervals)
+                .ThenInclude(x => x.Interval)
+                .ThenInclude(x => x.Days)
+                .Where(x => x.LocationId == location)
+                .Select(x => MapperHelper.TimeZoneToDto(x))
+                .ToArrayAsync();
+
+            return ResponseHelper.SuccessBuilder<IEnumerable<TimeZoneDto>>(dtos);
         }
     }
 }

@@ -37,6 +37,7 @@
         public static string C108 = "Command 108: Driver Configuration";
         public static string C109 = "Command 109: SIO Panel Configuration";
         public static string C402 = "Command 402: enCcTranSrq";
+        public static string C314 = "ommand 314: Time Zone Control";
         public enum CommandFlags
         {
             enCcMpSrq = 405, // Request Sensor Status

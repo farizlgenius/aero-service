@@ -1095,7 +1095,7 @@ namespace HIDAeroService.Mapper
                 DeactiveTime = t.DeactiveTime,
                 Intervals = t.TimeZoneIntervals is null ? null : t.TimeZoneIntervals
                 .Select(s => s.Interval)
-                .Select(s => IntervalToIntervalDto(s))
+                .Select(s => IntervalToDto(s))
                 .ToList(),
 
             };
@@ -1149,12 +1149,13 @@ namespace HIDAeroService.Mapper
 
         #region Interval
 
-        public static IntervalDto IntervalToIntervalDto(Interval p)
+        public static IntervalDto IntervalToDto(Interval p)
         {
             return new IntervalDto
             {
                 // Base 
                 IsActive = p.IsActive,
+                LocationId = p.LocationId,
 
                 // ExtendDesc
                 ComponentId = p.ComponentId,
@@ -1175,7 +1176,7 @@ namespace HIDAeroService.Mapper
             };
         }
 
-        public static Interval IntervalDtoToInterval(IntervalDto dto)
+        public static Interval DtoToInterval(IntervalDto dto)
         {
             return new Interval 
             {
@@ -1210,6 +1211,7 @@ namespace HIDAeroService.Mapper
                 
                 IsActive = true,
                 UpdatedDate = DateTime.Now,
+                LocationId = dto.LocationId,
 
                 // ExtendDesc
                 ComponentId = componentId,
@@ -1249,6 +1251,25 @@ namespace HIDAeroService.Mapper
             interval.EndTime = dto.EndTime;
 
             return interval;
+        }
+
+        public static void UpdateInterval(Interval en,IntervalDto dto) 
+        {
+            // Base
+            en.UpdatedDate = DateTime.Now;
+
+            // Detail
+            en.DaysDesc = dto.DaysDesc;
+            en.StartTime = dto.StartTime;
+            en.EndTime = dto.EndTime;
+            en.Days.Sunday = dto.Days.Sunday;
+            en.Days.Monday = dto.Days.Monday;
+            en.Days.Tuesday = dto.Days.Tuesday;
+            en.Days.Wednesday = dto.Days.Wednesday;
+            en.Days.Thursday = dto.Days.Thursday;
+            en.Days.Friday = dto.Days.Friday;
+            en.Days.Saturday = dto.Days.Saturday;
+
         }
 
         #endregion

@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using StackExchange.Redis;
+using HIDAeroService.Aero.CommandService;
+using HIDAeroService.Aero.CommandService.Impl;
 
 namespace HIDAeroService
 {
@@ -152,6 +154,9 @@ namespace HIDAeroService
             builder.Services.AddScoped<IMonitorGroupService, MonitorGroupService>();
             builder.Services.AddScoped<ICommandService, CommandService>();
             builder.Services.AddScoped<ISettingService, SettingService>();
+
+            // Command Service
+            builder.Services.AddScoped<ITimezoneCommandService, TimezoneCommandService>();
 
 
             //
