@@ -2,8 +2,8 @@
 {
     public class BaseTransactionType
     {
-        public int Id { get; set; }
-        public ICollection<TransactionFlag> TransactionFlags { get; set; }
-        public Transaction Transaction { get; set; }
+        public int id { get; set; }
+        public ICollection<TransactionFlag> transaction_flags { get; set; }
+        public Transaction transaction { get; set; }
     }
 }

@@ -5,14 +5,14 @@ namespace HIDAeroService.Entity
 {
     public sealed class Sensor : BaseEntity
     {
-        public Module Module { get; set; }
-        public Door SensorDoor { get; set; }
-        public short ModuleId { get; set; }
-        public short InputNo { get; set; }
-        public short InputMode { get; set; }
-        public short Debounce { get; set; }
-        public short HoldTime { get; set; }
-        public short DcHeld { get; set; }
+        public Module module { get; set; }
+        public Door sensor_door { get; set; }
+        public short module_id { get; set; }
+        public short input_no { get; set; }
+        public short input_mode { get; set; }
+        public short debounce { get; set; }
+        public short holdtime { get; set; }
+        public short dc_held { get; set; }
 
     }
 }

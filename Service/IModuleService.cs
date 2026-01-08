@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using HIDAeroService.DTO;
 using HIDAeroService.DTO.Module;
+using HID.Aero.ScpdNet.Wrapper;
 
 namespace HIDAeroService.Service
 {
@@ -17,5 +18,8 @@ namespace HIDAeroService.Service
         Task<ResponseDto<ModuleDto>> GetByComponentAsync(string mac, short component);
         Task<ResponseDto<IEnumerable<ModuleDto>>> GetByMacAsync(string mac);
         void TriggerDeviceStatus(int ScpId, short SioNo, string Status, string Tamper, string Ac, string Batt);
+        Task<ResponseDto<IEnumerable<ModeDto>>> GetBaudrateAsync();
+        Task<ResponseDto<IEnumerable<ModeDto>>> GetProtocolAsync();
+        Task HandleFoundModuleAsync(SCPReplyMessage message);
     }
 }

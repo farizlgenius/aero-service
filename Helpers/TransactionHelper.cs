@@ -19,27 +19,27 @@ namespace HIDAeroService.Helpers
         {
             return src switch 
             {
-                tranSrc.tranSrcScpDiag => "Hardware",
-                tranSrc.tranSrcScpCom => "Hardware",
-                tranSrc.tranSrcScpLcl => "Hardware",
-                tranSrc.tranSrcSioDiag => "Module",
-                tranSrc.tranSrcSioCom => "Module",
-                tranSrc.tranSrcSioTmpr => "Module",
-                tranSrc.tranSrcSioPwr => "Module",
+                tranSrc.tranSrcScpDiag => "hardware",
+                tranSrc.tranSrcScpCom => "hardware",
+                tranSrc.tranSrcScpLcl => "hardware",
+                tranSrc.tranSrcSioDiag => "modules",
+                tranSrc.tranSrcSioCom => "modules",
+                tranSrc.tranSrcSioTmpr => "modules",
+                tranSrc.tranSrcSioPwr => "modules",
                 tranSrc.tranSrcMP => "Monitor Point",
                 tranSrc.tranSrcCP => "Control Point",
-                tranSrc.tranSrcACR => "Door",
-                tranSrc.tranSrcAcrTmpr => "Door",
-                tranSrc.tranSrcAcrDoor => "Door",
-                tranSrc.tranSrcAcrRex0 => "Door REX",
-                tranSrc.tranSrcAcrRex1 => "Door REX",
-                tranSrc.tranSrcTimeZone => "Time Zone",
-                tranSrc.tranSrcProcedure => "Procedure",
-                tranSrc.tranSrcTrigger => "Trigger",
-                tranSrc.tranSrcTrigVar => "Trigger",
+                tranSrc.tranSrcACR => "door",
+                tranSrc.tranSrcAcrTmpr => "door",
+                tranSrc.tranSrcAcrDoor => "door",
+                tranSrc.tranSrcAcrRex0 => "door REX",
+                tranSrc.tranSrcAcrRex1 => "door REX",
+                tranSrc.tranSrcTimeZone => "time Zone",
+                tranSrc.tranSrcProcedure => "procedure",
+                tranSrc.tranSrcTrigger => "trigger",
+                tranSrc.tranSrcTrigVar => "trigger",
                 tranSrc.tranSrcMPG => "Monitor Group",
                 tranSrc.tranSrcArea => "Area",
-                tranSrc.tranSrcAcrTmprAlt => "Door",
+                tranSrc.tranSrcAcrTmprAlt => "door",
                 tranSrc.tranSrcLoginService => "Login Service",
                 _ => "Unknown"
             };
@@ -63,10 +63,10 @@ namespace HIDAeroService.Helpers
                 tranSrc.tranSrcAcrDoor => "ACR: door position sensor",
                 tranSrc.tranSrcAcrRex0 => "ACR: 1st \"Request to exit\" input",
                 tranSrc.tranSrcAcrRex1 => "ACR: 2nd \"Request to exit\" input",
-                tranSrc.tranSrcTimeZone => "Time Zone",
-                tranSrc.tranSrcProcedure => "Procedure (action list)",
-                tranSrc.tranSrcTrigger => "Trigger",
-                tranSrc.tranSrcTrigVar => "Trigger variable",
+                tranSrc.tranSrcTimeZone => "time Zone",
+                tranSrc.tranSrcProcedure => "procedure (action list)",
+                tranSrc.tranSrcTrigger => "trigger",
+                tranSrc.tranSrcTrigVar => "trigger variable",
                 tranSrc.tranSrcMPG => "Monitor point group",
                 tranSrc.tranSrcArea => "Access area",
                 tranSrc.tranSrcAcrTmprAlt => "ACR: the alternate reader's tamper monitor source_number",
@@ -95,13 +95,13 @@ namespace HIDAeroService.Helpers
                 tranType.tranTypeDblCardID => "52-bit CSN",
                 tranType.tranTypeI64CardID => "64-bit CSN",
                 tranType.tranTypeHostCardFullPin => "Card & PIN",
-                tranType.tranTypeCoS => "Status change",
+                tranType.tranTypeCoS => "status change",
                 tranType.tranTypeREX => "REX used",
-                tranType.tranTypeCoSDoor => "Door status",
-                tranType.tranTypeProcedure => "Procedure",
-                tranType.tranTypeUserCmnd => "User Command",
-                tranType.tranTypeActivate => "Trigger & Timezone state",
-                tranType.tranTypeAcr => "Door mode",
+                tranType.tranTypeCoSDoor => "door status",
+                tranType.tranTypeProcedure => "procedure",
+                tranType.tranTypeUserCmnd => "User command",
+                tranType.tranTypeActivate => "trigger & Timezone state",
+                tranType.tranTypeAcr => "door mode",
                 tranType.tranTypeMpg => "Monitor Group",
                 tranType.tranTypeArea => "Access Area",
                 tranType.tranTypeUseLimit => "Use limit",
@@ -110,10 +110,10 @@ namespace HIDAeroService.Helpers
                 tranType.tranTypeCoSElevator => "Elevator relay",
                 tranType.tranTypeFileDownloadStatus => "File download",
                 tranType.tranTypeCoSElevatorAccess => "Elevator floor",
-                tranType.tranTypeAcrExtFeatureStls => "Door EXT Feature",
-                tranType.tranTypeAcrExtFeatureCoS => "Door EXT Status",
+                tranType.tranTypeAcrExtFeatureStls => "door EXT feature",
+                tranType.tranTypeAcrExtFeatureCoS => "door EXT status",
                 tranType.tranTypeAsci => "ASCII Msg diagnostics",
-                tranType.tranTypeSioDiag => "Module diagnostics",
+                tranType.tranTypeSioDiag => "modules diagnostics",
                 _ => "Unknown"
             };
         }
@@ -132,7 +132,7 @@ namespace HIDAeroService.Helpers
                         1 => ["Power Up","SCP power-up diagnostics"],
                         2 => ["Offline","Host communications offline"],
                         3 => ["Online","Host communications online"],
-                        4 => ["Exceed Limit","Transaction count exceeds the preset limit"],
+                        4 => ["Exceed Limit","transaction count exceeds the preset limit"],
                         5 => ["Config Saved","Configuration database save complete"],
                         6 => ["Card Saved","Card database save complete"],
                         7 => ["Card Cleared","Card database cleared due to SRAM buffer overflow"],
@@ -143,8 +143,8 @@ namespace HIDAeroService.Helpers
                     {
                         1 =>["Disabled", "ommunication disabled (result of host command)"],
                         2 => ["Offline", "Timeout (no/bad response from unit)"],
-                        3 => ["Offline", "Invalid identification from Module"],
-                        4 => ["Offline","Command too long"],
+                        3 => ["Offline", "Invalid identification from modules"],
+                        4 => ["Offline","command too long"],
                         5 => ["Online","Normal connection"],
                         6 => ["HexLoad", "ser_num is address loaded (-1 = last record)"],
                         _ => ["",""]
@@ -173,10 +173,10 @@ namespace HIDAeroService.Helpers
                         4 => ["Request rejected", "Invalid facility code extension"],
                         5 => ["Request rejected", "Not in card file"],
                         6 => ["Request rejected", "Invalid issue code"],
-                        7 => ["Request granted", "Facility code verified, not used"],
-                        8 => ["Request granted", "Facility code verified, door used"],
+                        7 => ["Request granted", "facility code verified, not used"],
+                        8 => ["Request granted", "facility code verified, door used"],
                         9 => ["Access denied", "Asked for host approval, then timed out"],
-                        10 => ["Host approval pending", "Card is about to get access granted (waiting for Command 329 host response)"],
+                        10 => ["Host approval pending", "Card is about to get access granted (waiting for command 329 host response)"],
                         11 => ["Access denied", "Access denied count exceeded"],
                         12 => ["Access denied", "Asked for host approval, then host denied"],
                         13 => ["Request rejected", "Airlock is busy"],
@@ -240,12 +240,12 @@ namespace HIDAeroService.Helpers
                 case tranType.tranTypeREX:
                     return code switch
                     {
-                        1 => ["Exit cycle", "Door use not verified"],
-                        2 => ["Exit cycle","Door not used"],
-                        3 => ["Exit cycle","Door used"],
-                        4 => ["Host initiated request", "Door use not verified"],
-                        5 => ["Host initiated request", "Door not used"],
-                        6 => ["Host initiated request", "Door used"],
+                        1 => ["Exit cycle", "door use not verified"],
+                        2 => ["Exit cycle","door not used"],
+                        3 => ["Exit cycle","door used"],
+                        4 => ["Host initiated request", "door use not verified"],
+                        5 => ["Host initiated request", "door not used"],
+                        6 => ["Host initiated request", "door used"],
                         9 => ["Exit Cycle","Started"],
                         _ => ["",""]
                     };
@@ -271,13 +271,13 @@ namespace HIDAeroService.Helpers
                         7 => ["Resume", "Resume procedure with prefix 256 actions"],
                         8 => ["Resume", "Resume procedure with prefix 512 actions"],
                         9 => ["Resume", "Resume procedure with prefix 1024 actions"],
-                        10 => ["Issued", "Command was issued to procedure with no actions - (NOP)"],
+                        10 => ["Issued", "command was issued to procedure with no actions - (NOP)"],
                         _ => ["",""]
                     };
                 case tranType.tranTypeUserCmnd:
                     return code switch
                     {
-                        1 => ["Command","Command entered by the user"],
+                        1 => ["command","command entered by the user"],
                         _ => ["", ""]
                     };
                 case tranType.tranTypeActivate:
@@ -325,7 +325,7 @@ namespace HIDAeroService.Helpers
                         4 => ["Reach Max", "Occupancy count reached the \"downward-limit\""],
                         5 => ["Reach Min", "Occupancy count reached the \"upward-limit\""],
                         6 => ["Exceed Limit", "Occupancy count reached the \"max-occupancy-limit\""],
-                        7 => ["Mode change", "Multi-occupancy mode changed"],
+                        7 => ["mode change", "Multi-occupancy mode changed"],
                         _ => ["",""]
                     };
                 case tranType.tranTypeUseLimit:
@@ -363,7 +363,7 @@ namespace HIDAeroService.Helpers
                         25 => ["Web", "Not used"],
                         26 => ["Web", "Not used"],
                         27 => ["Web", "Invalid login limit reached"],
-                        28 => ["Web", "Firmware download initiated"],
+                        28 => ["Web", "firmware download initiated"],
                         29 => ["Web", "Advanced networking routes saved"],
                         30 => ["Web", "Advanced networking reversion timer started"],
                         31 => ["Web", "Advanced networking reversion timer elapsed"],
@@ -375,14 +375,14 @@ namespace HIDAeroService.Helpers
                 case tranType.tranTypeOperatingMode:
                     return code switch
                     {
-                        1 => ["Mode changed", "Operating mode changed to mode 0"],
-                        2 => ["Mode changed", "Operating mode changed to mode 1"],
-                        3 => ["Mode changed", "Operating mode changed to mode 2"],
-                        4 => ["Mode changed", "Operating mode changed to mode 3"],
-                        5 => ["Mode changed", "Operating mode changed to mode 4"],
-                        6 => ["Mode changed", "Operating mode changed to mode 5"],
-                        7 => ["Mode changed", "Operating mode changed to mode 6"],
-                        8 => ["Mode changed", "Operating mode changed to mode 7"],
+                        1 => ["mode changed", "Operating mode changed to mode 0"],
+                        2 => ["mode changed", "Operating mode changed to mode 1"],
+                        3 => ["mode changed", "Operating mode changed to mode 2"],
+                        4 => ["mode changed", "Operating mode changed to mode 3"],
+                        5 => ["mode changed", "Operating mode changed to mode 4"],
+                        6 => ["mode changed", "Operating mode changed to mode 5"],
+                        7 => ["mode changed", "Operating mode changed to mode 6"],
+                        8 => ["mode changed", "Operating mode changed to mode 7"],
                         _ => ["", ""]
                     };
                 case tranType.tranTypeCoSElevator:
@@ -451,12 +451,12 @@ namespace HIDAeroService.Helpers
         public static List<TransactionFlag> TypeSysErrorFlag(short error_code)
         {
             var flag = new List<TransactionFlag>();
-            if (UtilityHelper.IsBitSet(error_code, 2)) flag.Add(new TransactionFlag { Topic="Error Flag", Name = "External Reset", Description = "The reset button was pressed" });
-            if (UtilityHelper.IsBitSet(error_code, 3)) flag.Add(new TransactionFlag { Topic = "Error Flag", Name = "Power on Reset", Description = "A reset that occurs during power up." });
-            if (UtilityHelper.IsBitSet(error_code, 4)) flag.Add(new TransactionFlag { Topic = "Error Flag", Name = "Watchdog Timer", Description = "A watchdog reset occurs when the CPU detects that a task is hogging the CPU for an extended period, so it performs a reboot to correct the issue." });
-            if (UtilityHelper.IsBitSet(error_code, 5)) flag.Add(new TransactionFlag { Topic = "Error Flag", Name = "Software", Description = "Software caused the reset to occur. This can be through a valid means where the board needed to be rebooted, for example during a firmware download or applying settings on the web page, or could occur due to a software crash" });
-            if (UtilityHelper.IsBitSet(error_code, 6)) flag.Add(new TransactionFlag { Topic = "Error Flag", Name = "Low Voltage", Description = "The reset was caused by a low voltage detection" });
-            if (UtilityHelper.IsBitSet(error_code, 7)) flag.Add(new TransactionFlag { Topic = "Error Flag", Name = "Fault", Description = "A software fault/crash caused the reset" });
+            if (UtilityHelper.IsBitSet(error_code, 2)) flag.Add(new TransactionFlag { topic="Error flag", name = "External Reset", description = "The reset button was pressed" });
+            if (UtilityHelper.IsBitSet(error_code, 3)) flag.Add(new TransactionFlag { topic = "Error flag", name = "Power on Reset", description = "A reset that occurs during power up." });
+            if (UtilityHelper.IsBitSet(error_code, 4)) flag.Add(new TransactionFlag { topic = "Error flag", name = "Watchdog Timer", description = "A watchdog reset occurs when the CPU detects that a task is hogging the CPU for an extended period, so it performs a reboot to correct the issue." });
+            if (UtilityHelper.IsBitSet(error_code, 5)) flag.Add(new TransactionFlag { topic = "Error flag", name = "Software", description = "Software caused the reset to occur. This can be through a valid means where the board needed to be rebooted, for example during a firmware download or applying settings on the web page, or could occur due to a software crash" });
+            if (UtilityHelper.IsBitSet(error_code, 6)) flag.Add(new TransactionFlag { topic = "Error flag", name = "Low Voltage", description = "The reset was caused by a low voltage detection" });
+            if (UtilityHelper.IsBitSet(error_code, 7)) flag.Add(new TransactionFlag { topic = "Error flag", name = "Fault", description = "A software fault/crash caused the reset" });
             return flag;
         }
 
@@ -532,12 +532,12 @@ namespace HIDAeroService.Helpers
         public static List<TransactionFlag> TypeCosStatus(short status,short Source, tranSrc src)
         {
             var flag = new List<TransactionFlag>();
-            flag.Add(new TransactionFlag { Name = TypeCoseStatusFirstThree(status, Source,src), Description = TypeCoseStatusFirstThree(status, Source,src) });
-            if (UtilityHelper.IsBitSet(status, 0x08)) flag.Add(new TransactionFlag { Topic="Status", Name = "Offline", Description = "Communication to the input point is not valid" });
-            if (UtilityHelper.IsBitSet(status, 0x10)) flag.Add(new TransactionFlag { Topic = "Status", Name = "Mask flag", Description = "Set if the monitor point is MASKed" });
-            if (UtilityHelper.IsBitSet(status, 0x20)) flag.Add(new TransactionFlag { Topic = "Status", Name = "Local mask flag", Description = "Entry or exit delay in progress" });
-            if (UtilityHelper.IsBitSet(status, 0x40)) flag.Add(new TransactionFlag { Topic = "Status", Name = "Entry delay in progress", Description = "Entry delay in progress" });
-            if (UtilityHelper.IsBitSet(status, 0x80)) flag.Add(new TransactionFlag { Topic = "Status", Name = "Not attached ", Description = "he monitor point is not linked to an Input" });
+            flag.Add(new TransactionFlag { name = TypeCoseStatusFirstThree(status, Source,src), description = TypeCoseStatusFirstThree(status, Source,src) });
+            if (UtilityHelper.IsBitSet(status, 0x08)) flag.Add(new TransactionFlag { topic="status", name = "Offline", description = "Communication to the input point is not valid" });
+            if (UtilityHelper.IsBitSet(status, 0x10)) flag.Add(new TransactionFlag { topic = "status", name = "Mask flag", description = "Set if the monitor point is MASKed" });
+            if (UtilityHelper.IsBitSet(status, 0x20)) flag.Add(new TransactionFlag { topic = "status", name = "Local mask flag", description = "Entry or exit delay in progress" });
+            if (UtilityHelper.IsBitSet(status, 0x40)) flag.Add(new TransactionFlag { topic = "status", name = "Entry delay in progress", description = "Entry delay in progress" });
+            if (UtilityHelper.IsBitSet(status, 0x80)) flag.Add(new TransactionFlag { topic = "status", name = "Not attached ", description = "he monitor point is not linked to an Input" });
 
             return flag;
         }
@@ -636,8 +636,8 @@ namespace HIDAeroService.Helpers
             var low = i & 0x0F;
             var high = (i >> 4) & 0x0F;
             var flag = new List<TransactionFlag>();
-            flag.Add(new TransactionFlag { Topic="Hardware Component", Name = "HARDWARE_COMP_CRYPTO", Description = TypeSioCommCrypto(low) });
-            flag.Add(new TransactionFlag { Topic = "Hardware Component", Name = "HARDWARE_COMP_PHY", Description = TypeSioCommPhy(high) });
+            flag.Add(new TransactionFlag { topic="hardware HardwareComponent", name = "HARDWARE_COMP_CRYPTO", description = TypeSioCommCrypto(low) });
+            flag.Add(new TransactionFlag { topic = "hardware HardwareComponent", name = "HARDWARE_COMP_PHY", description = TypeSioCommPhy(high) });
             return flag;
             
             
@@ -673,14 +673,14 @@ namespace HIDAeroService.Helpers
         public static List<TransactionFlag> TypeCardIDCardTypeFlag(short i)
         {
             var flag = new List<TransactionFlag>();
-            if (UtilityHelper.IsBitSet(i, 0)) flag.Add(new TransactionFlag { Name = "Escort", Description = "Escort" });
-            if (UtilityHelper.IsBitSet(i, 1)) flag.Add(new TransactionFlag { Name = "Requires Escort", Description = "Requires Escort" });
+            if (UtilityHelper.IsBitSet(i, 0)) flag.Add(new TransactionFlag { name = "Escort", description = "Escort" });
+            if (UtilityHelper.IsBitSet(i, 1)) flag.Add(new TransactionFlag { name = "Requires Escort", description = "Requires Escort" });
             return flag;
         }
 
         public static string ContructFullName(CardHolder card)
         {
-            return $"{card.Title} {card.FirstName} {card.MiddleName} {card.LastName}";
+            return $"{card.title} {card.first_name} {card.middle_name} {card.last_name}";
         }
 
         #endregion
@@ -692,40 +692,40 @@ namespace HIDAeroService.Helpers
             var flags = new List<TransactionFlag>();
 
             if ((s & 0x0001) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_F_DCR", Description = "Decrement use limits on access" });
+                flags.Add(new TransactionFlag { name = "ACR_F_DCR", description = "Decrement use limits on access" });
 
             if ((s & 0x0002) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_F_CUL", Description = "Require use limit to be non-zero" });
+                flags.Add(new TransactionFlag { name = "ACR_F_CUL", description = "Require use limit to be non-zero" });
 
             if ((s & 0x0004) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_F_DRSS", Description = "Deny duress request instead of granting" });
+                flags.Add(new TransactionFlag { name = "ACR_F_DRSS", description = "Deny duress request instead of granting" });
 
             if ((s & 0x0008) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_F_ALLUSED", Description = "Log access as used immediately" });
+                flags.Add(new TransactionFlag { name = "ACR_F_ALLUSED", description = "Log access as used immediately" });
 
             if ((s & 0x0010) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_F_QEXIT", Description = "Do not pulse door strike on REX (quiet exit)" });
+                flags.Add(new TransactionFlag { name = "ACR_F_QEXIT", description = "Do not pulse door strike on REX (quiet exit)" });
 
             if ((s & 0x0020) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_F_FILTER", Description = "Filter change-of-state door transactions" });
+                flags.Add(new TransactionFlag { name = "ACR_F_FILTER", description = "Filter change-of-state door transactions" });
 
             if ((s & 0x0040) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_F_2CARD", Description = "Require two-card control at this reader" });
+                flags.Add(new TransactionFlag { name = "ACR_F_2CARD", description = "Require two-card control at this reader" });
 
             if ((s & 0x0400) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_F_HOST_CBG", Description = "Check with HOST before granting access (online)" });
+                flags.Add(new TransactionFlag { name = "ACR_F_HOST_CBG", description = "Check with HOST before granting access (online)" });
 
             if ((s & 0x0800) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_F_HOST_SFT", Description = "If HOST is offline/timeouts, still grant access" });
+                flags.Add(new TransactionFlag { name = "ACR_F_HOST_SFT", description = "If HOST is offline/timeouts, still grant access" });
 
             if ((s & 0x1000) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_F_CIPHER", Description = "Enable cipher keypad mode for card entry" });
+                flags.Add(new TransactionFlag { name = "ACR_F_CIPHER", description = "Enable cipher keypad mode for card entry" });
 
             if ((s & 0x4000) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_F_LOG_EARLY", Description = "Log access grant immediately, then used/not-used" });
+                flags.Add(new TransactionFlag { name = "ACR_F_LOG_EARLY", description = "Log access grant immediately, then used/not-used" });
 
             if ((s & 0x8000) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_F_CNIF_WAIT", Description = "Show 'wait' pattern for card-not-in-file" });
+                flags.Add(new TransactionFlag { name = "ACR_F_CNIF_WAIT", description = "Show 'wait' pattern for card-not-in-file" });
 
             return flags;
         }
@@ -735,49 +735,49 @@ namespace HIDAeroService.Helpers
             var flags = new List<TransactionFlag>();
 
             if ((s & 0x0001) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_FE_NOEXTEND", Description = "Do not resume the extended door held open timer on new access grant" });
+                flags.Add(new TransactionFlag { name = "ACR_FE_NOEXTEND", description = "Do not resume the extended door held open timer on new access grant" });
 
             if ((s & 0x0002) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_FE_NOPINCARD", Description = "Card+PIN mode: Do not accept PIN followed by card (card must be first)" });
+                flags.Add(new TransactionFlag { name = "ACR_FE_NOPINCARD", description = "Card+PIN mode: Do not accept PIN followed by card (card must be first)" });
 
             if ((s & 0x0008) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_FE_DFO_FLTR", Description = "Enable Door Forced Open Filter (door opens within 3 seconds of closing won't count)" });
+                flags.Add(new TransactionFlag { name = "ACR_FE_DFO_FLTR", description = "Enable door Forced Open Filter (door opens within 3 seconds of closing won't count)" });
 
             if ((s & 0x0010) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_FE_NO_ARQ", Description = "Do not process access requests; all requests reported as ‘Access Denied, Door Locked’" });
+                flags.Add(new TransactionFlag { name = "ACR_FE_NO_ARQ", description = "Do not process access requests; all requests reported as ‘Access Denied, door Locked’" });
 
             if ((s & 0x0020) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_FE_SHNTRLY", Description = "Enable shunt relay behavior linked to door unlock and close timing" });
+                flags.Add(new TransactionFlag { name = "ACR_FE_SHNTRLY", description = "Enable shunt relay behavior linked to door unlock and close timing" });
 
             if ((s & 0x0040) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_FE_FLOOR_PIN", Description = "Enable floor/output selection via PIN when in elevator Type 1 + Card+PIN mode" });
+                flags.Add(new TransactionFlag { name = "ACR_FE_FLOOR_PIN", description = "Enable floor/output selection via PIN when in elevator hardware_type 1 + Card+PIN mode" });
 
             if ((s & 0x0080) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_FE_LINK_MODE", Description = "ACR is in linking mode (acr_mode 29 starts, 30 aborts)" });
+                flags.Add(new TransactionFlag { name = "ACR_FE_LINK_MODE", description = "ACR is in linking mode (acr_mode 29 starts, 30 aborts)" });
 
             if ((s & 0x0100) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_FE_DCARD", Description = "Enable double card function (two valid reads within 5 seconds)" });
+                flags.Add(new TransactionFlag { name = "ACR_FE_DCARD", description = "Enable double card function (two valid reads within 5 seconds)" });
 
             if ((s & 0x0200) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_FE_OVERRIDE", Description = "ACR is in a temporary mode override" });
+                flags.Add(new TransactionFlag { name = "ACR_FE_OVERRIDE", description = "ACR is in a temporary mode override" });
 
             if ((s & 0x0400) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_FE_CRD_OVR_EN", Description = "Allow override credentials to gain access even when locked" });
+                flags.Add(new TransactionFlag { name = "ACR_FE_CRD_OVR_EN", description = "Allow override credential to gain access even when locked" });
 
             if ((s & 0x0800) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_FE_ELV_DISABLE", Description = "ACR supports disabling elevator floors via offline_mode (Type 1 & 2 only)" });
+                flags.Add(new TransactionFlag { name = "ACR_FE_ELV_DISABLE", description = "ACR supports disabling elevator floors via offline_mode (hardware_type 1 & 2 only)" });
 
             if ((s & 0x1000) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_FE_LINK_MODE_ALT", Description = "ACR is in alternate reader linking mode (acr_mode 32/33)" });
+                flags.Add(new TransactionFlag { name = "ACR_FE_LINK_MODE_ALT", description = "ACR is in alternate reader linking mode (acr_mode 32/33)" });
 
             if ((s & 0x2000) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_FE_REX_HOLD", Description = "Extend REX grant time while REX input is active" });
+                flags.Add(new TransactionFlag { name = "ACR_FE_REX_HOLD", description = "extend REX grant time while REX input is active" });
 
             if ((s & 0x4000) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_FE_HOST_BYPASS", Description = "Bypass local DB and use HOST for grant decisions (requires ACR_F_HOST_CBG)" });
+                flags.Add(new TransactionFlag { name = "ACR_FE_HOST_BYPASS", description = "Bypass local DB and use HOST for grant decisions (requires ACR_F_HOST_CBG)" });
 
             if ((s & 0x4000) != 0)
-                flags.Add(new TransactionFlag { Name = "ACR_FE_REX_EARLYTXN", Description = "Flag to enable generating a transaction at the start of the REX cycle." });
+                flags.Add(new TransactionFlag { name = "ACR_FE_REX_EARLYTXN", description = "flag to enable generating a transaction at the start of the REX cycle." });
 
             return flags;
         }
@@ -789,7 +789,7 @@ namespace HIDAeroService.Helpers
                 1 => "Disabled",
                 2 => "Unlocked",
                 3 => "Locked (exit request enabled)",
-                4 => "Facility code only",
+                4 => "facility code only",
                 5 => "Card only",
                 6 => "PIN only",
                 7 => "Card and PIN",
@@ -836,14 +836,14 @@ namespace HIDAeroService.Helpers
         public static List<TransactionFlag> TypeCosDoorAccessPointStatus(short s)
         {
             var flags = new List<TransactionFlag>();
-            if ((s & 0x01) != 0) flags.Add(new TransactionFlag { Name = "Ap", Description = "unlocked" });
-            if ((s & 0x02) != 0) flags.Add(new TransactionFlag { Name = "Ap", Description = "access (exit) cycle in progress" });
-            if ((s & 0x04) != 0) flags.Add(new TransactionFlag { Name = "Ap", Description = "forced open" });
-            if ((s & 0x08) != 0) flags.Add(new TransactionFlag { Name = "Ap", Description = "forced open mask" });
-            if ((s & 0x10) != 0) flags.Add(new TransactionFlag { Name = "Ap", Description = "held open" });
-            if ((s & 0x20) != 0) flags.Add(new TransactionFlag { Name = "Ap", Description = "held open mask" });
-            if ((s & 0x40) != 0) flags.Add(new TransactionFlag { Name = "Ap", Description = "held open pre-alarm status" });
-            if ((s & 0x80) != 0) flags.Add(new TransactionFlag { Name = "Ap", Description = "door is in \"extended held open\" mode" });
+            if ((s & 0x01) != 0) flags.Add(new TransactionFlag { name = "Ap", description = "unlocked" });
+            if ((s & 0x02) != 0) flags.Add(new TransactionFlag { name = "Ap", description = "access (exit) cycle in progress" });
+            if ((s & 0x04) != 0) flags.Add(new TransactionFlag { name = "Ap", description = "forced open" });
+            if ((s & 0x08) != 0) flags.Add(new TransactionFlag { name = "Ap", description = "forced open mask" });
+            if ((s & 0x10) != 0) flags.Add(new TransactionFlag { name = "Ap", description = "held open" });
+            if ((s & 0x20) != 0) flags.Add(new TransactionFlag { name = "Ap", description = "held open mask" });
+            if ((s & 0x40) != 0) flags.Add(new TransactionFlag { name = "Ap", description = "held open pre-alarm status" });
+            if ((s & 0x80) != 0) flags.Add(new TransactionFlag { name = "Ap", description = "door is in \"extended held open\" mode" });
             return flags;
         }
 

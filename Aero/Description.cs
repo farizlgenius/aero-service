@@ -25,7 +25,7 @@ namespace HIDAeroService.AeroLibrary
                 case 3:
                     return "Invalid command type (firmware revision mismatch)";
                 case 4:
-                    return "Command content error";
+                    return "command content error";
                 case 5:
                     return "Cannot execute - requires password logon";
                 case 6:
@@ -33,7 +33,7 @@ namespace HIDAeroService.AeroLibrary
                 case 7:
                     return "Failed logon - password and/or encryption key";
                 case 8:
-                    return "Command not accepted, controller is running in degraded mode and only a limited number of commands are accepted";
+                    return "command not accepted, controller is running in degraded mode and only a limited number of commands are accepted";
                 default:
                     return "";
             }
@@ -73,13 +73,13 @@ namespace HIDAeroService.AeroLibrary
                 case (short)tranSrc.tranSrcAcrRex1:
                     return "ACR: 2nd \"Request to exit\" input";
                 case (short)tranSrc.tranSrcTimeZone:
-                    return "Time zone";
+                    return "time zone";
                 case (short)tranSrc.tranSrcProcedure:
-                    return "Procedure (action list)";
+                    return "procedure (action list)";
                 case (short)tranSrc.tranSrcTrigger:
-                    return "Trigger";
+                    return "trigger";
                 case (short)tranSrc.tranSrcTrigVar:
-                    return "Trigger variable";
+                    return "trigger variable";
                 case (short)tranSrc.tranSrcMPG:
                     return "Monitor point group";
                 case (short)tranSrc.tranSrcArea:
@@ -124,13 +124,13 @@ namespace HIDAeroService.AeroLibrary
                 case (short)tranType.tranTypeREX:
                     return "REX";
                 case (short)tranType.tranTypeCoSDoor:
-                    return "Door status monitor change-of-state";
+                    return "door status monitor change-of-state";
                 case (short)tranType.tranTypeProcedure:
-                    return "Procedure log";
+                    return "procedure log";
                 case (short)tranType.tranTypeUserCmnd:
-                    return "CardHolder command request";
+                    return "card_holder command request";
                 case (short)tranType.tranTypeActivate:
-                    return "Trigger or time zone change of state";
+                    return "trigger or time zone change of state";
                 case (short)tranType.tranTypeAcr:
                     return "ACR mode changes";
                 case (short)tranType.tranTypeMpg:
@@ -247,9 +247,9 @@ namespace HIDAeroService.AeroLibrary
             switch (t)
             {
                 case 0:
-                    return "Transaction reporting enabled";
+                    return "transaction reporting enabled";
                 default:
-                    return "Transaction reporting disabled";
+                    return "transaction reporting disabled";
             }
         }
 
@@ -295,7 +295,7 @@ namespace HIDAeroService.AeroLibrary
                 case 3:
                     return "Locked (no access, REX active)";
                 case 4:
-                    return "Facility code only";
+                    return "facility code only";
                 case 5:
                     return "Card only";
                 case 6:
@@ -317,7 +317,7 @@ namespace HIDAeroService.AeroLibrary
                 case 30:
                     return "Abort linking mode (Clear “ACR_FE_LINK_MODE” extended actl_flags)";
                 case 31:
-                    return "Extended Feature Change";
+                    return "Extended feature Change";
                 case 32:
                     return "Start linking mode for Alternate Reader (Set “ACR_FE_LINK_MODE_ALT” extended actl_flags)";
                 case 33:
@@ -339,7 +339,7 @@ namespace HIDAeroService.AeroLibrary
                 case 3:
                     return "Locked (no access, REX active)";
                 case 4:
-                    return "Facility code only";
+                    return "facility code only";
                 case 5:
                     return "Card only";
                 case 6:
@@ -361,7 +361,7 @@ namespace HIDAeroService.AeroLibrary
                 case 30:
                     return "Abort linking mode (Clear “ACR_FE_LINK_MODE” extended actl_flags)";
                 case 31:
-                    return "Extended Feature Change";
+                    return "Extended feature Change";
                 case 32:
                     return "Start linking mode for Alternate Reader (Set “ACR_FE_LINK_MODE_ALT” extended actl_flags)";
                 case 33:
@@ -389,7 +389,7 @@ namespace HIDAeroService.AeroLibrary
             return s switch
             {
                 0 => "HID Aero",
-                _ => "Other TypeDesc"
+                _ => "Other type_desc"
             };
         }
 
@@ -463,7 +463,7 @@ namespace HIDAeroService.AeroLibrary
                 case 3:
                     return "Host communications online";
                 case 4:
-                    return "Transaction count exceeds the preset limit";
+                    return "transaction count exceeds the preset limit";
                 case 5:
                     return "Configuration database save complete";
                 case 6:
@@ -622,7 +622,7 @@ namespace HIDAeroService.AeroLibrary
                 case 9:
                     return "Access denied - asked for host approval, then timed out";
                 case 10:
-                    return "Reporting that this card is \"about to get access granted\" (expecting Command 329: Send Host ResponseDto host response)";
+                    return "Reporting that this card is \"about to get access granted\" (expecting command 329: Send Host ResponseDto host response)";
                 case 11:
                     return "Access denied count exceeded";
                 case 12:
@@ -938,7 +938,7 @@ namespace HIDAeroService.AeroLibrary
 
             //if (s.HasFlag(AccessPointStatus.ExtendedHeldOpenMode))
             //{
-            //    result.Add("Extend Held Open");
+            //    result.Add("extend Held Open");
             //}
 
 
@@ -949,21 +949,21 @@ namespace HIDAeroService.AeroLibrary
             switch (b)
             {
                 case 0x01:
-                    return "Flag: set if access point is unlocked";
+                    return "flag: set if access point is unlocked";
                 case 0x02:
-                    return "Flag: access (exit) cycle in progress";
+                    return "flag: access (exit) cycle in progress";
                 case 0x04:
-                    return "Flag: forced open status";
+                    return "flag: forced open status";
                 case 0x08:
-                    return "Flag: forced open mask status";
+                    return "flag: forced open mask status";
                 case 0x10:
-                    return "Flag: held open status";
+                    return "flag: held open status";
                 case 0x20:
-                    return "Flag: held open mask status";
+                    return "flag: held open mask status";
                 case 0x40:
-                    return "Flag: held open pre-alarm status";
+                    return "flag: held open pre-alarm status";
                 case 0x80:
-                    return "Flag: door is in \"extended held open\" mode";
+                    return "flag: door is in \"extended held open\" mode";
                 default:
                     return "";
             }
@@ -997,7 +997,7 @@ namespace HIDAeroService.AeroLibrary
                 case 9:
                     return "Resume procedure with prefix 1024 actions";
                 case 10:
-                    return "Command was issued to procedure with no actions - (NOP)";
+                    return "command was issued to procedure with no actions - (NOP)";
                 default:
                     return "";
             }
@@ -1012,7 +1012,7 @@ namespace HIDAeroService.AeroLibrary
             switch (t)
             {
                 case 1:
-                    return "Command entered by the user";
+                    return "command entered by the user";
                 default:
                     return "";
             }
@@ -1050,7 +1050,7 @@ namespace HIDAeroService.AeroLibrary
                 case 3:
                     return "Locked (exit request enabled)";
                 case 4:
-                    return "Facility code only";
+                    return "facility code only";
                 case 5:
                     return "Card only";
                 case 6:
@@ -1079,7 +1079,7 @@ namespace HIDAeroService.AeroLibrary
                 case 10:
                     return "Do not pulse the door strike on REX cycle. Used for “quiet” exit.";
                 case 20:
-                    return "Filter Change-of-state Door transactions. This flag is normally set, unless detailed door sequence notifications are required.";
+                    return "Filter Change-of-state door transactions. This flag is normally set, unless detailed door sequence notifications are required.";
                 case 40:
                     return "Require two-card control at this reader";
                 case 400:
@@ -1087,11 +1087,11 @@ namespace HIDAeroService.AeroLibrary
                 case 800:
                     return "If HOST is not available (offline or timeout) proceed with GRANT. See remarks.";
                 case 1000:
-                    return "Enable cipher mode (if user command fits a card format then use it as card). Allows user to enter digits through the keypad as card number. See Command 1117: Trigger Specification (Expanded code Map).";
+                    return "Enable cipher mode (if user command fits a card format then use it as card). Allows user to enter digits through the keypad as card number. See command 1117: trigger Specification (Expanded code Map).";
                 case 4000:
                     return "If set, log access grant transaction right away, then log used/not-used. This feature disabled when the ACR_F_ALLUSED (0x0008) access control flag is set.";
                 case 8000:
-                    return "If set, show “wait” pattern on “card not in file” instead of “denied” response. See Command 122: Reader LED/Buzzer Function Specs “wait” state.";
+                    return "If set, show “wait” pattern on “card not in file” instead of “denied” response. See command 122: Reader LED/Buzzer Function Specs “wait” state.";
                 default:
                     return "";
             }
@@ -1376,19 +1376,19 @@ namespace HIDAeroService.AeroLibrary
 
         public enum ScpStructure
         {
-            SCPSID_TRAN = 1,            // Transactions
-            SCPSID_TZ = 2,              // Time zones
-            SCPSID_HOL = 3,             // Holidays
+            SCPSID_TRAN = 1,            // transaction
+            SCPSID_TZ = 2,              // time zones
+            SCPSID_HOL = 3,             // holiday
             SCPSID_MSP1 = 4,            // Msp1 ports (SIO drivers)
             SCPSID_SIO = 5,             // SIOs
             SCPSID_MP = 6,              // Monitor points
             SCPSID_CP = 7,              // Control points
-            SCPSID_ACR = 8,             // Access control readers
+            SCPSID_ACR = 8,             // Access control reader
             SCPSID_ALVL = 9,            // Access levels
-            SCPSID_TRIG = 10,           // Triggers
-            SCPSID_PROC = 11,           // Procedures
+            SCPSID_TRIG = 10,           // trigger
+            SCPSID_PROC = 11,           // procedure
             SCPSID_MPG = 12,            // Monitor point groups
-            SCPSID_AREA = 13,           // Access areas
+            SCPSID_AREA = 13,           // Access area
             SCPSID_EAL = 14,            // Elevator access levels
             SCPSID_CRDB = 15,           // Cardholder database
             SCPSID_FLASH = 20,          // FLASH specs: nRecords==MfgID, nRecSize==BlockSize, nActive==FlashSize
@@ -1406,24 +1406,24 @@ namespace HIDAeroService.AeroLibrary
         {
             return n switch
             {
-                ScpStructure.SCPSID_TRAN => "Transactions",
-                ScpStructure.SCPSID_TZ => "Time Zones",
-                ScpStructure.SCPSID_HOL => "Holidays",
+                ScpStructure.SCPSID_TRAN => "transaction",
+                ScpStructure.SCPSID_TZ => "time Zones",
+                ScpStructure.SCPSID_HOL => "holiday",
                 ScpStructure.SCPSID_MSP1 => "MSP1 ports",
-                ScpStructure.SCPSID_SIO => "Modules",
+                ScpStructure.SCPSID_SIO => "modules",
                 ScpStructure.SCPSID_MP => "Monitor Points",
                 ScpStructure.SCPSID_CP => "Control Points",
-                ScpStructure.SCPSID_ACR => "Access Control Readers",
+                ScpStructure.SCPSID_ACR => "Access Control reader",
                 ScpStructure.SCPSID_ALVL => "Access Levels",
-                ScpStructure.SCPSID_TRIG => "Triggers",
-                ScpStructure.SCPSID_PROC => "Procedures",
+                ScpStructure.SCPSID_TRIG => "trigger",
+                ScpStructure.SCPSID_PROC => "procedure",
                 ScpStructure.SCPSID_MPG => "Monitor Point Groups",
                 ScpStructure.SCPSID_AREA => "Areas",
                 ScpStructure.SCPSID_EAL => "Elevator Access Levels",
-                ScpStructure.SCPSID_CRDB => "Credentials",
+                ScpStructure.SCPSID_CRDB => "credential",
                 ScpStructure.SCPSID_FLASH => "Flash",
                 ScpStructure.SCPSID_BSQN => "Build Sequence No",
-                ScpStructure.SCPSID_SAVE_STAT => "Auto Save Status",
+                ScpStructure.SCPSID_SAVE_STAT => "Auto Save status",
                 ScpStructure.SCPSID_MAB1_FREE => "Memory Configuration Database",
                 ScpStructure.SCPSID_MAB2_FREE => "Memory Card Database",
                 ScpStructure.SCPSID_ARQ_BUFFER => "Access Request Buffer",

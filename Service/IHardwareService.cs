@@ -1,10 +1,13 @@
-﻿using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.AeroLibrary;
+﻿using AeroService.DTO.Hardware;
+using HID.Aero.ScpdNet.Wrapper;
+using HIDAeroService.Aero.CommandService;
+using HIDAeroService.Aero.CommandService.Impl;
+using HIDAeroService.Data;
 using HIDAeroService.DTO;
 using HIDAeroService.DTO.Hardware;
+using HIDAeroService.DTO.IdReport;
 using HIDAeroService.DTO.Scp;
 using HIDAeroService.Entity;
-using HIDAeroService.Model;
 using LibNoise.Combiner;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,11 +15,12 @@ namespace HIDAeroService.Service
 {
     public interface IHardwareService
     {
-        Task<ResponseDto<bool>> SetTransactionAsync(string mac, short IsOn);
+        
         Task<ResponseDto<IEnumerable<HardwareDto>>> GetAsync();
+        Task<ResponseDto<IEnumerable<ModeDto>>> GetHardwareTypeAsync();
         Task<ResponseDto<IEnumerable<HardwareDto>>> GetByLocationAsync(short location);
         Task<ResponseDto<bool>> CreateAsync(CreateHardwareDto dto);
-      Task<ResponseDto<HardwareDto>> DeleteAsync(string mac);
+      Task<ResponseDto<bool>> DeleteAsync(string mac);
        Task<ResponseDto<HardwareDto>> UpdateAsync(HardwareDto dto);
 
       Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param);
@@ -30,13 +34,16 @@ namespace HIDAeroService.Service
         Task<ResponseDto<IEnumerable<VerifyHardwareDeviceConfigDto>>> VerifyComponentConfigurationAsync(string mac);
         Task<ResponseDto<HardwareStatus>> GetStatusAsync(string mac);
         void TriggerDeviceStatus(string ScpMac, int CommStatus);
-        void TriggerIdReport(List<IdReport> IdReports);
+        void TriggerIdReport(List<IdReportDto> IdReports);
         void TriggerTranStatus(SCPReplyMessage message);
         Task VerifyAllocateHardwareMemoryAsync(SCPReplyMessage message);
-        void HandleUploadCommand(AeroCommand command, SCPReplyMessage message);
-        void AssignIpToIdReport(SCPReplyMessage message, List<IdReport> iDReports);
-        Task<IdReport> HandleFoundHardware(SCPReplyMessage message);
+        Task AssignPort(SCPReplyMessage message);
+        Task AssignIpAddress(SCPReplyMessage message);
+        Task HandleFoundHardware(SCPReplyMessage message);
         Task<ResponseDto<bool>> GetTransactionLogStatusAsync(string mac);
+        Task<IEnumerable<IdReportDto>> RemoveIdReportAsync(SCPReplyMessage message);
+        Task<ResponseDto<bool>> SetTransactionAsync(string mac, short IsOn);
+        Task<ResponseDto<IEnumerable<ResponseDto<bool>>>> SetRangeTransactionAsync(List<SetTranDto> tran);
 
     }
 }

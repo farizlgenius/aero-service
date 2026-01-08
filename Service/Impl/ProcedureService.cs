@@ -1,4 +1,5 @@
-﻿using HIDAeroService.AeroLibrary;
+﻿using HIDAeroService.Aero.CommandService;
+using HIDAeroService.Aero.CommandService.Impl;
 using HIDAeroService.Constant;
 using HIDAeroService.Constants;
 using HIDAeroService.Data;
@@ -13,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HIDAeroService.Service.Impl
 {
-    public sealed class ProcedureService(AppDbContext context,AeroCommand command,IHelperService<Procedure> helperService) : IProcedureService
+    public sealed class ProcedureService(AppDbContext context,AeroCommandService command,IHelperService<Procedure> helperService) : IProcedureService
     {
         public async Task<ResponseDto<bool>> CreateAsync(ProcedureDto dto)
         {
@@ -27,7 +28,7 @@ namespace HIDAeroService.Service.Impl
                 }
                 else
                 {
-                    ac.ScpId = await helperService.GetIdFromMacAsync(ac.MacAddress);
+                    ac.ScpId = await helperService.GetIdFromMacAsync(ac.Mac);
                 }
                
             }
@@ -35,32 +36,32 @@ namespace HIDAeroService.Service.Impl
             var en = MapperHelper.DtoToProcedure(dto, ComponentId, DateTime.Now);
 
 
-            var ids = await context.Hardwares.AsNoTracking().Select(x => x.ComponentId).ToListAsync();
-            foreach(var ac in en.Actions)
+            var ids = await context.hardware.AsNoTracking().Select(x => x.component_id).ToListAsync();
+            foreach(var ac in en.actions)
             {
-                if (ac.ActionType == 9)
+                if (ac.action_type == 9)
                 {
-                    if (!await command.ActionSpecificationAsyncForAllHW(ComponentId, ac, ids))
+                    if (!command.ActionSpecificationAsyncForAllHW(ComponentId, ac, ids))
                     {
                         return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
                     }
                 }
-                else if (ac.DelayTime != 0) 
+                else if (ac.delay_time != 0) 
                 {
-                    if(!await command.ActionSpecificationDelayAsync(ComponentId, ac))
+                    if(!command.ActionSpecificationDelayAsync(ComponentId, ac))
                     {
                         return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
                     }
                 }
             }
 
-            if (!await command.ActionSpecificationAsync(ComponentId, en.Actions.ToList()))
+            if (!command.ActionSpecificationAsync(ComponentId, en.actions.ToList()))
             {
                 return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
             }
 
 
-            await context.Procedures.AddAsync(en);
+            await context.procedure.AddAsync(en);
             await context.SaveChangesAsync();
 
             return ResponseHelper.SuccessBuilder<bool>(true);
@@ -70,24 +71,24 @@ namespace HIDAeroService.Service.Impl
         public async Task<ResponseDto<bool>> DeleteAsync(string Mac,short ComponentId)
         {
             var en = await context
-                .Procedures
+                .procedure
                 .AsNoTracking()
-                .Where(x => x.MacAddress == Mac && x.ComponentId == ComponentId)
+                .Where(x => x.hardware_mac == Mac && x.component_id == ComponentId)
                 .FirstOrDefaultAsync();
 
             if (en is null) return ResponseHelper.NotFoundBuilder<bool>();
 
             var ac = new Entity.Action
             {
-                ActionType = 0,
+                action_type = 0,
             };
 
-            if(!await command.ActionSpecificationAsync(ComponentId, [ac]))
+            if(!command.ActionSpecificationAsync(ComponentId, [ac]))
             {
                 return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
             }
 
-            context.Procedures.Remove(en);
+            context.procedure.Remove(en);
             await context.SaveChangesAsync();
 
             return ResponseHelper.SuccessBuilder<bool>(true);
@@ -95,13 +96,13 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<IEnumerable<ModeDto>>> GetActionType()
         {
-            var dtos = await context.ActionTypes
+            var dtos = await context.action_type
                 .AsNoTracking()
                 .Select(x => new ModeDto 
                 {
-                    Name = x.Name,
-                    Value = x.Value,
-                    Description = x.Description,
+                    Name = x.name,
+                    Value = x.value,
+                    Description = x.description,
                 }).ToArrayAsync();
 
             return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
@@ -109,10 +110,49 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<IEnumerable<ProcedureDto>>> GetAsync()
         {
-            var dtos = await context.Procedures
+            var dtos = await context.procedure
                 .AsNoTracking()
-                .Include(x => x.Actions)
-                .Select(x => MapperHelper.ProcedureToDto(x))
+                .Include(x => x.actions)
+                .Select(x => new ProcedureDto
+                {
+                    // Base
+                    Uuid = x.uuid,
+                    ComponentId = x.component_id,
+                    Mac = x.trigger.hardware_mac,
+                    HardwareName = x.trigger.hardware.name,
+                    LocationId = x.location_id,
+                    IsActive = x.is_active,
+
+                    // Detail
+                    Name = x.name,
+                    Actions = x.actions
+                .Select(en => new ActionDto
+                {
+                    // Base
+                    Uuid = en.uuid,
+                    ComponentId = en.component_id,
+                    Mac = x.trigger.hardware_mac,
+                    LocationId = en.location_id,
+                    IsActive = en.is_active,
+
+                    // Detail
+                    ScpId = en.hardware_id,
+                    ActionType = en.action_type,
+                    ActionTypeDesc = en.action_type_desc,
+                    Arg1 = en.arg1,
+                    Arg2 = en.arg2,
+                    Arg3 = en.arg3,
+                    Arg4 = en.arg4,
+                    Arg5 = en.arg5,
+                    Arg6 = en.arg6,
+                    Arg7 = en.arg7,
+                    StrArg = en.str_arg,
+                    DelayTime = en.delay_time,
+                })
+                .ToList()
+
+
+                })
                 .ToArrayAsync();
 
             return ResponseHelper.SuccessBuilder<IEnumerable<ProcedureDto>>(dtos);
@@ -120,11 +160,50 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<IEnumerable<ProcedureDto>>> GetByLocationIdAsync(short location)
         {
-            var dtos = await context.Procedures
+            var dtos = await context.procedure
                 .AsNoTracking()
-                .Include(x => x.Actions)
-                .Where(x => x.LocationId == location)
-                .Select(x => MapperHelper.ProcedureToDto(x))
+                .Include(x => x.actions)
+                .Where(x => x.location_id == location)
+                .Select(x => new ProcedureDto
+                {
+                    // Base
+                    Uuid = x.uuid,
+                    ComponentId = x.component_id,
+                    Mac = x.trigger.hardware_mac,
+                    HardwareName = x.trigger.hardware.name,
+                    LocationId = x.location_id,
+                    IsActive = x.is_active,
+
+                    // Detail
+                    Name = x.name,
+                    Actions = x.actions
+                .Select(en => new ActionDto
+                {
+                    // Base
+                    Uuid = en.uuid,
+                    ComponentId = en.component_id,
+                    Mac = x.trigger.hardware_mac,
+                    LocationId = en.location_id,
+                    IsActive = en.is_active,
+
+                    // Detail
+                    ScpId = en.hardware_id,
+                    ActionType = en.action_type,
+                    ActionTypeDesc = en.action_type_desc,
+                    Arg1 = en.arg1,
+                    Arg2 = en.arg2,
+                    Arg3 = en.arg3,
+                    Arg4 = en.arg4,
+                    Arg5 = en.arg5,
+                    Arg6 = en.arg6,
+                    Arg7 = en.arg7,
+                    StrArg = en.str_arg,
+                    DelayTime = en.delay_time,
+                })
+                .ToList()
+
+
+                })
                 .ToArrayAsync();
 
             return ResponseHelper.SuccessBuilder<IEnumerable<ProcedureDto>>(dtos);

@@ -12,7 +12,7 @@ namespace HIDAeroService.Controllers.V1
     public class IdReportController(IdReportService idReportService) : ControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult<ResponseDto<IEnumerable<IDReportDto>>>> GetAsync()
+        public async Task<ActionResult<ResponseDto<IEnumerable<IdReportDto>>>> GetAsync()
         {
             var res = await idReportService.GetAsync();
             return Ok(res);

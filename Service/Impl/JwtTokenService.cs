@@ -39,14 +39,14 @@ namespace HIDAeroService.Service.Impl
                 Lastname = lastname ?? "",
                 Email = email ?? "",
             };
-            var locations = location.Select(x => x.ComponentId).ToList();
+            var locations = location.Select(x => x.component_id).ToList();
             var roles = new
             {
-                RoleNo = rol.ComponentId,
-                RoleName = rol.Name,
-                Features = rol.FeatureRoles
-                .Where(x => x.IsAllow == true)
-                .Select(x => x.FeatureId)
+                RoleNo = rol.component_id,
+                RoleName = rol.name,
+                Features = rol.feature_roles
+                .Where(x => x.is_allow == true)
+                .Select(x => x.feature_id)
                 .ToList()
             };
 

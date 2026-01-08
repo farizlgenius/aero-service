@@ -1,4 +1,6 @@
-﻿using HIDAeroService.AeroLibrary;
+﻿using HIDAeroService.Aero.CommandService;
+using HIDAeroService.Aero.CommandService.Impl;
+using HIDAeroService.AeroLibrary;
 using HIDAeroService.Constant;
 using HIDAeroService.Constants;
 using HIDAeroService.Data;
@@ -19,13 +21,13 @@ using System.Net;
 
 namespace HIDAeroService.Service.Impl
 {
-    public class IntervalService(AppDbContext context, IHelperService<Interval> helperService,AeroCommand command) : IIntervalService
+    public class IntervalService(AppDbContext context, IHelperService<Interval> helperService,ITimeZoneCommandService timeZoneCommandService) : IIntervalService
     {
         public async Task<ResponseDto<IEnumerable<IntervalDto>>> GetAsync()
         {
-            var dtos = await context.Intervals
+            var dtos = await context.interval
                 .AsNoTracking()
-                .Include(s => s.Days)
+                .Include(s => s.days)
                 .Select(p => MapperHelper.IntervalToDto(p))
                 .ToArrayAsync();
             
@@ -33,10 +35,10 @@ namespace HIDAeroService.Service.Impl
         }
         public async Task<ResponseDto<IntervalDto>> GetByIdAsync(short Id)
         {
-            var dto = await context.Intervals
+            var dto = await context.interval
                 .AsNoTracking()
-                .Include(s => s.Days)
-                .Where(x => x.Id == Id)
+                .Include(s => s.days)
+                .Where(x => x.id == Id)
                 .Select(p => MapperHelper.IntervalToDto(p))
                 .FirstOrDefaultAsync();
 
@@ -45,10 +47,10 @@ namespace HIDAeroService.Service.Impl
         }
         public async Task<ResponseDto<IEnumerable<IntervalDto>>> GetByLocationAsync(short location)
         {
-            var dtos = await context.Intervals
+            var dtos = await context.interval
                 .AsNoTracking()
-                .Include(s => s.Days)
-                .Where(x => x.LocationId == location)
+                .Include(s => s.days)
+                .Where(x => x.location_id == location)
                 .Select(x => MapperHelper.IntervalToDto(x))
                 .ToArrayAsync();
 
@@ -57,44 +59,44 @@ namespace HIDAeroService.Service.Impl
         public async Task<ResponseDto<bool>> CreateAsync(CreateIntervalDto dto)
         {
 
-            if (await context.Intervals.AnyAsync(p => 
-            p.StartTime == dto.StartTime && 
-            p.EndTime == dto.EndTime && 
-            p.Days.Sunday == dto.Days.Sunday &&
-            p.Days.Monday == dto.Days.Monday &&
-            p.Days.Tuesday == dto.Days.Tuesday &&
-            p.Days.Wednesday == dto.Days.Wednesday &&
-            p.Days.Thursday == dto.Days.Thursday &&
-            p.Days.Friday == dto.Days.Friday &&
-            p.Days.Saturday == dto.Days.Saturday
+            if (await context.interval.AnyAsync(p => 
+            p.start_time == dto.StartTime && 
+            p.end_time == dto.EndTime && 
+            p.days.sunday == dto.Days.Sunday &&
+            p.days.monday == dto.Days.Monday &&
+            p.days.tuesday == dto.Days.Tuesday &&
+            p.days.wednesday == dto.Days.Wednesday &&
+            p.days.thursday == dto.Days.Thursday &&
+            p.days.friday == dto.Days.Friday &&
+            p.days.saturday == dto.Days.Saturday
             )) return ResponseHelper.Duplicate<bool>();
 
             var componentId = await helperService.GetLowestUnassignedNumberNoLimitAsync<Interval>(context);
 
             var interval = MapperHelper.CreateToInterval(dto, componentId, DaysInWeekToString(dto.Days));
-            context.Intervals.Add(interval);
+            context.interval.Add(interval);
             await context.SaveChangesAsync();
             return ResponseHelper.SuccessBuilder(true);
         }
 
         public async Task<ResponseDto<bool>> DeleteAsync(short component)
         {
-            var en = await context.Intervals
-                .Include(x => x.TimeZoneIntervals)
-                .OrderBy(x => x.Id)
-                .Where(x => x.ComponentId == component)
+            var en = await context.interval
+                .Include(x => x.timezone_intervals)
+                .OrderBy(x => x.id)
+                .Where(x => x.component_id == component)
                 .FirstOrDefaultAsync();
 
             if (en is null) return ResponseHelper.NotFoundBuilder<bool>();
             
-            var link = await context.Intervals
+            var link = await context.interval
                 .AsNoTracking()
-                .AnyAsync(x => x.ComponentId == component && x.TimeZoneIntervals.Any());
+                .AnyAsync(x => x.component_id == component && x.timezone_intervals.Any());
             if (link) return ResponseHelper.FoundReferenceBuilder<bool>();
 
             // DeleteAsync using a lightweight tracked entity
-            context.TimeZoneIntervals.RemoveRange(en.TimeZoneIntervals);
-            context.Intervals.Remove(en);
+            context.timezone_interval.RemoveRange(en.timezone_intervals);
+            context.interval.Remove(en);
             await context.SaveChangesAsync();
 
             return ResponseHelper.SuccessBuilder(true);
@@ -104,41 +106,41 @@ namespace HIDAeroService.Service.Impl
         {
             // Update is need to send the time zone command again 
             List<string> errors = new List<string>();
-            var en = await context.Intervals
-                .Include(x => x.Days)
-                .Include(x => x.TimeZoneIntervals)
-                .OrderBy(x => x.Id)
-                .Where(x => x.ComponentId == dto.ComponentId)
+            var en = await context.interval
+                .Include(x => x.days)
+                .Include(x => x.timezone_intervals)
+                .OrderBy(x => x.id)
+                .Where(x => x.component_id == dto.ComponentId)
                 .FirstOrDefaultAsync();
 
             if (en is null) return ResponseHelper.NotFoundBuilder<IntervalDto>();
 
             MapperHelper.UpdateInterval(en, dto);
 
-            context.Intervals.Update(en);
+            context.interval.Update(en);
             await context.SaveChangesAsync();
 
-            var hws = await context.Hardwares
+            var hws = await context.hardware
                 .AsNoTracking()
-                .Where(x => x.LocationId == en.LocationId)
-                .Select(x => x.ComponentId)
+                .Where(x => x.location_id == en.location_id)
+                .Select(x => x.component_id)
                 .ToArrayAsync();
 
             foreach (var id in hws)
             {
-                foreach (var tzs in en.TimeZoneIntervals)
+                foreach (var tzs in en.timezone_intervals)
                 {
-                    var tz = await context.TimeZones
+                    var tz = await context.timezone
                         .AsNoTracking()
-                        .Include(x => x.TimeZoneIntervals)
-                        .ThenInclude(x => x.Interval)
-                        .OrderBy(x => x.Id)
-                        .Where(x => x.ComponentId == tzs.TimeZoneId)
+                        .Include(x => x.timezone_intervals)
+                        .ThenInclude(x => x.interval)
+                        .OrderBy(x => x.id)
+                        .Where(x => x.component_id == tzs.timezone_id)
                         .FirstOrDefaultAsync();
 
-                    long active = helperService.DateTimeToElapeSecond(tz.ActiveTime);
-                    long deactive = helperService.DateTimeToElapeSecond(tz.DeactiveTime);
-                    if (!await command.ExtendedTimeZoneActSpecificationAsync(id,tz,tz.TimeZoneIntervals.Select(x => x.Interval).ToList(),(int)active,(int)deactive))
+                    long active = helperService.DateTimeToElapeSecond(tz.active_time);
+                    long deactive = helperService.DateTimeToElapeSecond(tz.deactive_time);
+                    if (!await timeZoneCommandService.ExtendedTimeZoneActSpecificationAsync(id,tz,tz.timezone_intervals.Select(x => x.interval).ToList(),(int)active,(int)deactive))
                     {
                         errors.Add(MessageBuilder.Unsuccess(await helperService.GetMacFromIdAsync(id),Command.C3103));
                     }

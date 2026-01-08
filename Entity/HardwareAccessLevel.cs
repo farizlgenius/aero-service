@@ -5,10 +5,10 @@ namespace HIDAeroService.Entity
     public sealed class HardwareAccessLevel
     {
         [Key]
-        public int Id { get; set; }
-        public short HardwareAccessLevelId { get; set; }
-        public AccessLevel AccessLevel { get; set; }
-        public string MacAddress { get; set; }
-        public Hardware Hardware { get; set; }
+        public int id { get; set; }
+        public short hardware_accesslevel_id { get; set; }
+        public AccessLevel access_level { get; set; }
+        public string hardware_mac { get; set; } = string.Empty;
+        public Hardware hardware { get; set; }
     }
 }

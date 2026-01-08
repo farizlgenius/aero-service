@@ -6,11 +6,11 @@ namespace HIDAeroService.Entity
     public class MonitorGroupList 
     {
         [Key]
-        public int Id { get; set; }
-        public short PointType { get; set; }
-        public string PointTypeDesc { get; set; } = string.Empty;
-        public short PointNumber { get; set; }
-        public short MonitorGroupId { get; set; }
-        public MonitorGroup MonitorGroup { get; set; }
+        public int id { get; set; }
+        public short point_type { get; set; }
+        public string point_type_desc { get; set; } = string.Empty;
+        public short point_number { get; set; }
+        public short monitor_group_id { get; set; }
+        public MonitorGroup monitor_group { get; set; }
     }
 }

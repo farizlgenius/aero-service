@@ -24,11 +24,11 @@ namespace HIDAeroService.Service.Impl
             // Uses System.Management (Windows-only)
             try
             {
-                using (var searcher = new ManagementObjectSearcher("SELECT SerialNumber FROM Win32_BaseBoard"))
+                using (var searcher = new ManagementObjectSearcher("SELECT serial_number FROM Win32_BaseBoard"))
                 {
                     foreach (ManagementObject mo in searcher.Get())
                     {
-                        var val = mo["SerialNumber"]?.ToString();
+                        var val = mo["serial_number"]?.ToString();
                         if (!string.IsNullOrEmpty(val))
                             return val.Trim();
                     }

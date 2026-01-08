@@ -2,6 +2,6 @@
 {
     public interface IComponentId
     {
-        public short ComponentId { get; set; }
+        short component_id { get; set; }
     }
 }

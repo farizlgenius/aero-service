@@ -5,12 +5,12 @@ namespace HIDAeroService.Entity
 {
     public sealed class Interval : NoMacBaseEntity,IComponentId
     {
-        public short ComponentId { get; set; }
-        public DaysInWeek Days { get; set; }
-        public ICollection<TimeZoneInterval> TimeZoneIntervals { get; set; }
-        public string DaysDesc { get; set; } = string.Empty;
-        public string StartTime { get; set; } = string.Empty;
-        public string EndTime { get; set; } = string.Empty;
+        public short component_id { get; set; }
+        public DaysInWeek days { get; set; }
+        public ICollection<TimeZoneInterval> timezone_intervals { get; set; }
+        public string days_desc { get; set; } = string.Empty;
+        public string start_time { get; set; } = string.Empty;
+        public string end_time { get; set; } = string.Empty;
         
     }
 }

@@ -16,6 +16,7 @@ namespace HIDAeroService.Service
         short GetIdFromMac(string mac);
         string GetMacFromId(short id);
         Task<string> GetMacFromIdAsync(short id);
+        Task<string> GetHardwareNameById(short id);
         Task<short> GetIdFromMacAsync(string mac);
         long DateTimeToElapeSecond(string date);
         

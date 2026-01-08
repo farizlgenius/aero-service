@@ -13,13 +13,13 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<string> GetMacFromIdAsync(short id)
         {
-            return await context.Hardwares.Where(d => d.ComponentId == id).Select(d => d.MacAddress).FirstOrDefaultAsync() ?? "";
+            return await context.hardware.Where(d => d.component_id == id).Select(d => d.mac).FirstOrDefaultAsync() ?? "";
         }
 
 
         public async Task<short> GetIdFromMacAsync(string mac)
         {
-            return await context.Hardwares.Where(d => d.MacAddress == mac).Select(d => (short)d.ComponentId).FirstOrDefaultAsync();
+            return await context.hardware.Where(d => d.mac == mac).Select(d => (short)d.component_id).FirstOrDefaultAsync();
         }
 
         public long DateTimeToElapeSecond(string date)
@@ -33,12 +33,12 @@ namespace HIDAeroService.Service.Impl
 
         public short GetIdFromMac(string mac)
         {
-            return context.Hardwares.Where(x => x.MacAddress == mac).Select(x => (short)x.Id).FirstOrDefault();
+            return context.hardware.Where(x => x.mac == mac).Select(x => (short)x.id).FirstOrDefault();
         }
 
         public string GetMacFromId(short id)
         {
-            return context.Hardwares.Where(x => x.ComponentId == id).Select(x => x.MacAddress).FirstOrDefault();
+            return context.hardware.Where(x => x.component_id == id).Select(x => x.mac).FirstOrDefault();
         }
 
         public async Task<short> GetLowestUnassignedNumberAsync<TEntity>(DbContext db,string hardwareMac,int max, CancellationToken ct) where TEntity : class,IComponentId,IMac
@@ -47,8 +47,8 @@ namespace HIDAeroService.Service.Impl
 
             var query = db.Set<TEntity>()
                 .AsNoTracking()
-                .Where(x => x.MacAddress == hardwareMac)
-                .Select(x => x.ComponentId);
+                .Where(x => x.mac == hardwareMac)
+                .Select(x => x.component_id);
 
             // Handle empty table case quickly
             var hasAny = await query.AnyAsync(ct);
@@ -78,7 +78,7 @@ namespace HIDAeroService.Service.Impl
 
             var query = db.Set<TEntity>()
                 .AsNoTracking()
-                .Select(x => x.ComponentId);
+                .Select(x => x.component_id);
 
             // Handle empty table case quickly
             var hasAny = await query.AnyAsync(ct);
@@ -106,7 +106,7 @@ namespace HIDAeroService.Service.Impl
 
             var query = db.Set<Entity>()
                 .AsNoTracking()
-                .Select(x => x.ComponentId);
+                .Select(x => x.component_id);
 
             // Handle empty table case quickly
             var hasAny = await query.AnyAsync(ct);
@@ -127,6 +127,11 @@ namespace HIDAeroService.Service.Impl
             // If none missing in sequence, return next number
             return expected;
         }
+
+        public async Task<string> GetHardwareNameById(short id)
+        {
+            return await context.hardware.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.component_id == id).Select(x => x.name).FirstOrDefaultAsync() ?? "";
+        }
     }
 
     public class HelperService(AppDbContext context) : IHelperService
@@ -136,9 +141,9 @@ namespace HIDAeroService.Service.Impl
         public async Task<int> GetLowestHardwareNumberAsync(CancellationToken ct)
         {
 
-            var query = context.Hardwares
+            var query = context.hardware
                 .AsNoTracking()
-                .Select(x => x.Id);
+                .Select(x => x.id);
 
             // Handle empty table case quickly
             var hasAny = await query.AnyAsync(ct);
@@ -163,13 +168,13 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<string> GetMacFromIdAsync(short id)
         {
-            return await context.Hardwares.Where(d => d.ComponentId == id).Select(d => d.MacAddress).FirstOrDefaultAsync() ?? "";
+            return await context.hardware.Where(d => d.component_id == id).Select(d => d.mac).FirstOrDefaultAsync() ?? "";
         }
 
 
         public async Task<short> GetIdFromMacAsync(string mac)
         {
-            return await context.Hardwares.Where(d => d.MacAddress == mac).Select(d => (short)d.ComponentId).FirstOrDefaultAsync();
+            return await context.hardware.Where(d => d.mac == mac).Select(d => (short)d.component_id).FirstOrDefaultAsync();
         }
 
         public long DateTimeToElapeSecond(string date)
@@ -183,14 +188,17 @@ namespace HIDAeroService.Service.Impl
 
         public short GetIdFromMac(string mac)
         {
-            return context.Hardwares.Where(x => x.MacAddress == mac).Select(x => (short)x.Id).FirstOrDefault();
+            return context.hardware.Where(x => x.mac == mac).Select(x => (short)x.id).FirstOrDefault();
         }
 
         public string GetMacFromId(short id)
         {
-            return context.Hardwares.Where(x => x.ComponentId == id).Select(x => x.MacAddress).FirstOrDefault();
+            return context.hardware.Where(x => x.component_id == id).Select(x => x.mac).FirstOrDefault();
         }
 
-
+        public async Task<string> GetHardwareNameById(short id)
+        {
+            return await context.hardware.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.component_id == id).Select(x => x.name).FirstOrDefaultAsync() ?? "";
+        }
     }
 }

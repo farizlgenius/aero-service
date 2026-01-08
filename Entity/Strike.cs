@@ -5,15 +5,15 @@ namespace HIDAeroService.Entity
 {
     public sealed class Strike : BaseEntity
     {
-        public Module Module { get; set; }
-        public Door StrkDoor { get; set; }
-        public short ModuleId { get; set; }
-        public short OutputNo { get; set; }
-        public short RelayMode { get; set; }
-        public short OfflineMode { get; set; }
-        public short StrkMax { get; set; }
-        public short StrkMin { get; set; }
-        public short StrkMode { get; set; }
+        public Module module { get; set; }
+        public Door strike_door { get; set; }
+        public short module_id { get; set; }
+        public short output_no { get; set; }
+        public short relay_mode { get; set; }
+        public short offline_mode { get; set; }
+        public short strike_max { get; set; }
+        public short strike_min { get; set; }
+        public short strike_mode { get; set; }
 
     }
 }

@@ -4,11 +4,11 @@ namespace HIDAeroService.Entity
 {
     public sealed class Holiday : NoMacBaseEntity,IComponentId
     {
-        public short ComponentId { get; set; }
-        public short Year { get; set; }
-        public short Month { get; set; }
-        public short Day { get; set; }
-        public short Extend { get; set; }
-        public short TypeMask { get; set; }
+        public short component_id { get; set; }
+        public short year { get; set; }
+        public short month { get; set; }
+        public short day { get; set; }
+        public short extend { get; set; }
+        public short type_mask { get; set; }
     }
 }

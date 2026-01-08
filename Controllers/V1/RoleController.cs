@@ -10,33 +10,37 @@ namespace HIDAeroService.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class RoleController(IRoleService roleService) : ControllerBase
+    public class RoleController(IRoleService service) : ControllerBase
     {
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<RoleDto>>>> GetAsync()
         {
-            var res = await roleService.GetAsync();
+            var res = await service.GetAsync();
             return Ok(res);
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<bool>>> CreateAsync([FromBody] RoleDto dto)
         {
-            var res = await roleService.CreateAsync(dto);
+            var res = await service.CreateAsync(dto);
             return Ok(res);
         }
 
         [HttpPost("delete/range")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<ResponseDto<bool>>>>> DeleteRangeAsync([FromBody] List<short> dtos)
         {
-            var res = await roleService.DeleteRangeAsync(dtos);
+            var res = await service.DeleteRangeAsync(dtos);
             return Ok(res);
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<RoleDto>>> UpdateAsync([FromBody] RoleDto dto)
         {
-            var res = await roleService.UpdateAsync(dto);
+            var res = await service.UpdateAsync(dto);
             return Ok(res);
         }
 
@@ -44,14 +48,15 @@ namespace HIDAeroService.Controllers.V1
         [Authorize]
         public async Task<ActionResult<ResponseDto<bool>>> DeleteByIdAsync(short component)
         {
-            var res = await roleService.DeleteByComponentIdAsync(component);
+            var res = await service.DeleteByComponentIdAsync(component);
             return Ok(res);
         }
 
         [HttpGet("{component}")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<RoleDto>>> GetByIdAsync(short component)
         {
-            var res = await roleService.GetByComponentIdAsync(component);
+            var res = await service.GetByComponentIdAsync(component);
             return Ok(res);
         }
 

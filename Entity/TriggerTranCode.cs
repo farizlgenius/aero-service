@@ -5,11 +5,11 @@ namespace HIDAeroService.Entity
     public sealed class TriggerTranCode
     {
         [Key]
-        public int Id { get; set; }
-        public short Value { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public short TriggerId { get; set; }
-        public Trigger Trigger { get; set; }
+        public int id { get; set; }
+        public short value { get; set; }
+        public string name { get; set; } = string.Empty;
+        public string description { get; set; } = string.Empty;
+        public short trigger_id { get; set; }
+        public Trigger trigger { get; set; }
     }
 }

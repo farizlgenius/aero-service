@@ -12,10 +12,10 @@ namespace HIDAeroService.Service.Impl
     {
         public async Task<ResponseDto<PasswordRuleDto>> GetPasswordRuleAsync()
         {
-            var dto = await context.PasswordRules
+            var dto = await context.password_rule
                 .AsNoTracking()
-                .Include(x => x.Weaks)
-                .OrderBy(x => x.Id)
+                .Include(x => x.weaks)
+                .OrderBy(x => x.id)
                 .Select(x => MapperHelper.PasswordRuleToDto(x))
                 .FirstOrDefaultAsync();
 
@@ -24,16 +24,16 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<PasswordRuleDto>> UpdatePasswordRuleAsync(PasswordRuleDto dto)
         {
-            var en = await context.PasswordRules
-                .OrderBy(x => x.Id)
-                .Include(x => x.Weaks)
+            var en = await context.password_rule
+                .OrderBy(x => x.id)
+                .Include(x => x.weaks)
                 .FirstOrDefaultAsync();
 
             if (en is null) return ResponseHelper.NotFoundBuilder<PasswordRuleDto>();
 
             MapperHelper.UpdatePasswordRule(en, dto);
 
-            context.PasswordRules.Update(en);
+            context.password_rule.Update(en);
 
             await context.SaveChangesAsync();
 

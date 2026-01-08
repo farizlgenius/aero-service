@@ -2,6 +2,6 @@
 {
     public interface IMac
     {
-        public string MacAddress { get; set; }
+        string mac { get; set; }
     }
 }

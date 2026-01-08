@@ -1,4 +1,5 @@
-﻿using HIDAeroService.AeroLibrary;
+﻿using HIDAeroService.Aero.CommandService;
+using HIDAeroService.Aero.CommandService.Impl;
 using HIDAeroService.Constant;
 using HIDAeroService.Constants;
 using HIDAeroService.Data;
@@ -20,13 +21,34 @@ using System.Net;
 
 namespace HIDAeroService.Service.Impl
 {
-    public sealed class ControlPointService(AppDbContext context,IHelperService<Strike> helperService,AeroCommand command,ILogger<ControlPointService> logger,IHubContext<AeroHub> hub) : IControlPointService 
+    public sealed class ControlPointService(AppDbContext context,IHelperService<Strike> helperService,AeroCommandService command,ILogger<ControlPointService> logger,IHubContext<AeroHub> hub) : IControlPointService 
     {
         public async Task<ResponseDto<IEnumerable<ControlPointDto>>> GetAsync()
         {
-            var dtos = await context.ControlPoints
+            var dtos = await context.control_point
                 .AsNoTracking()
-                .Select(x => MapperHelper.ControlPointToDto(x))
+                .Select(x => new ControlPointDto
+                {
+                    // Base
+                    Uuid = x.uuid,
+                    ComponentId = x.component_id,
+                    HardwareName = x.module.hardware.name,
+                    Mac = x.module.hardware_mac,
+                    LocationId = x.location_id,
+                    IsActive = x.is_active,
+
+                    // extend_desc
+                    Name = x.name,
+                    ModuleId = x.module_id,
+                    ModuleDescription = x.module.model_desc,
+                    //module_desc = x.module_desc,
+                    OutputNo = x.output_no,
+                    RelayMode = x.relay_mode,
+                    RelayModeDescription = x.relay_mode_desc,
+                    OfflineMode = x.offline_mode,
+                    OfflineModeDescription = x.offline_mode_desc,
+                    DefaultPulse = x.default_pulse,
+                })
                 .ToArrayAsync();
 
             return ResponseHelper.SuccessBuilder<IEnumerable<ControlPointDto>>(dtos);
@@ -34,10 +56,31 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<IEnumerable<ControlPointDto>>> GetByLocationAsync(short location)
         {
-            var dtos = await context.ControlPoints
+            var dtos = await context.control_point
                 .AsNoTracking()
-                .Where(x => x.LocationId == location)
-                .Select(x => MapperHelper.ControlPointToDto(x))
+                .Where(x => x.location_id == location)
+                .Select(x => new ControlPointDto
+                {
+                    // Base
+                    Uuid = x.uuid,
+                    ComponentId = x.component_id,
+                    HardwareName = x.module.hardware.name,
+                    Mac = x.module.hardware_mac,
+                    LocationId = x.location_id,
+                    IsActive = x.is_active,
+
+                    // extend_desc
+                    Name = x.name,
+                    ModuleId = x.module_id,
+                    ModuleDescription = x.module.model_desc,
+                    //module_desc = x.module_desc,
+                    OutputNo = x.output_no,
+                    RelayMode = x.relay_mode,
+                    RelayModeDescription = x.relay_mode_desc,
+                    OfflineMode = x.offline_mode,
+                    OfflineModeDescription = x.offline_mode_desc,
+                    DefaultPulse = x.default_pulse,
+                })
                 .ToArrayAsync();
 
             return ResponseHelper.SuccessBuilder<IEnumerable<ControlPointDto>>(dtos);
@@ -45,11 +88,11 @@ namespace HIDAeroService.Service.Impl
 
         private async Task<ResponseDto<IEnumerable<ModeDto>>> GetOfflineModeAsync()
         {
-            var dtos = await context.OutputOfflineModes.AsNoTracking().Select(x => new ModeDto 
+            var dtos = await context.relay_offline_mode.AsNoTracking().Select(x => new ModeDto 
             {
-                Name = x.Name,
-                Value = x.Value,
-                Description = x.Description,
+                Name = x.name,
+                Value = x.value,
+                Description = x.description,
             }).ToArrayAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
@@ -57,11 +100,11 @@ namespace HIDAeroService.Service.Impl
 
         private async Task<ResponseDto<IEnumerable<ModeDto>>> GetRelayModeAsync()
         {
-            var dtos = await context.RelayModes.AsNoTracking().Select(x => new ModeDto 
+            var dtos = await context.relay_mode.AsNoTracking().Select(x => new ModeDto 
             {
-                Name = x.Name,
-                Value = x.Value,
-                Description = x.Description,
+                Name = x.name,
+                Value = x.value,
+                Description = x.description,
             }).ToArrayAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
@@ -72,7 +115,7 @@ namespace HIDAeroService.Service.Impl
             List<string> errors = new List<string>();
             var id = await helperService.GetIdFromMacAsync(dto.macAddress);
             if(id == 0) return ResponseHelper.NotFoundBuilder<bool>();
-            if (!await command.ControlPointCommandAsync(id, dto.ComponentId, dto.Command))
+            if (!command.ControlPointCommand(id, dto.ComponentId, dto.Command))
             {
                 return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(dto.macAddress,Command.C307));
             }
@@ -81,22 +124,22 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<IEnumerable<short>>> GetAvailableOpAsync(string mac, short ModuleId)
         {
-            var ops = await context.Modules
+            var ops = await context.module
                 .AsNoTracking()
-                .Where(sio => sio.MacAddress == mac && sio.ComponentId == ModuleId)
-                .Select(cp => cp.nOutput)
+                .Where(sio => sio.hardware_mac == mac && sio.component_id == ModuleId)
+                .Select(cp => cp.n_output)
                 .FirstOrDefaultAsync();
 
-            var strk = await context.Strikes
+            var strk = await context.strike
                 .AsNoTracking()
-                .Where(x => x.ModuleId == ModuleId && x.MacAddress == mac)
-                .Select(x => x.OutputNo)
+                .Where(x => x.module_id == ModuleId && x.module.hardware_mac == mac)
+                .Select(x => x.output_no)
                 .ToArrayAsync();
 
-            var cp = await context.ControlPoints
+            var cp = await context.control_point
                 .AsNoTracking()
-                .Where(x => x.ModuleId == ModuleId && x.MacAddress == mac)
-                .Select(x => x.OutputNo)
+                .Where(x => x.module_id == ModuleId && x.module.hardware_mac == mac)
+                .Select(x => x.output_no)
                 .ToArrayAsync();
 
 
@@ -118,81 +161,82 @@ namespace HIDAeroService.Service.Impl
 
 
 
-        public async Task<ResponseDto<bool>> CreateOutputAsync(ControlPointDto dto)
+        public async Task<ResponseDto<bool>> CreateAsync(ControlPointDto dto)
         {
-            short scpId = await helperService.GetIdFromMacAsync(dto.MacAddress);
+            short scpId = await helperService.GetIdFromMacAsync(dto.Mac);
 
-            var max = await context.SystemSettings.AsNoTracking().Select(x => x.nCp).FirstOrDefaultAsync();
-            var componentId = await helperService.GetLowestUnassignedNumberAsync<MonitorPoint>(context, dto.MacAddress, max);
+            var max = await context.system_setting.AsNoTracking().Select(x => x.n_cp).FirstOrDefaultAsync();
+            var componentId = await helperService.GetLowestUnassignedNumberAsync<ControlPoint>(context, max);
 
-            short modeNo = await context.OutputModes
+            short modeNo = await context.output_mode
                 .AsNoTracking()
-                .Where(x => x.OfflineMode == dto.OfflineMode && x.RelayMode == dto.RelayMode)
-                .Select(x => x.Value).FirstOrDefaultAsync();
+                .Where(x => x.offline_mode == dto.OfflineMode && x.relay_mode == dto.RelayMode)
+                .Select(x => x.value).FirstOrDefaultAsync();
 
-            if (!await command.OutputPointSpecificationAsync(scpId, dto.ModuleId, dto.OutputNo, modeNo))
+            if (!command.OutputPointSpecification(scpId, dto.ModuleId, dto.OutputNo, modeNo))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.MacAddress, Command.C111));
+                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C111));
             }
 
 
             if (componentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
-            if (!await command.ControlPointConfigurationAsync(scpId, dto.ModuleId, (short)componentId, dto.OutputNo, dto.DefaultPulse))
+            if (!command.ControlPointConfiguration(scpId, dto.ModuleId, (short)componentId, dto.OutputNo, dto.DefaultPulse))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.MacAddress, Command.C114));
+                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C114));
 
             }
 
 
             var output = MapperHelper.DtoToControlPoint(dto,componentId,DateTime.Now);
-            await context.ControlPoints.AddAsync(output);
+            await context.control_point.AddAsync(output);
             await context.SaveChangesAsync();
             return ResponseHelper.SuccessBuilder(true);
         }
 
-        public async Task<ResponseDto<bool>> DeleteAsync(string mac, short Id)
+        public async Task<ResponseDto<bool>> DeleteAsync(short Id)
         {
-            var output = await context.ControlPoints
-                .FirstOrDefaultAsync(x => x.ComponentId == Id && x.MacAddress == mac);
+            var output = await context.control_point
+                .Include(x => x.module)
+                .FirstOrDefaultAsync(x => x.component_id == Id);
 
             if (output is null) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var scpId = await helperService.GetIdFromMacAsync(mac);
+            var scpId = await helperService.GetIdFromMacAsync(output.module.hardware_mac);
 
-            if (!await command.ControlPointConfigurationAsync(scpId, -1, (short)output.ComponentId, output.OutputNo, output.DefaultPulse))
+            if (!command.ControlPointConfiguration(scpId, -1, (short)output.component_id, output.output_no, output.default_pulse))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.C114));
+                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(output.module.hardware_mac,Command.C114));
             }
 
-            context.ControlPoints.Remove(output);
+            context.control_point.Remove(output);
             await context.SaveChangesAsync();
             return ResponseHelper.SuccessBuilder(true);
         }
 
         public async Task<ResponseDto<ControlPointDto>> UpdateAsync(ControlPointDto dto)
         {
-            var output = await context.ControlPoints
-                .FirstOrDefaultAsync(x => x.MacAddress == dto.MacAddress && x.ComponentId == dto.ComponentId);
+            var output = await context.control_point
+                .FirstOrDefaultAsync(x => x.module.hardware_mac == dto.Mac && x.component_id == dto.ComponentId);
 
             if (output is null) return ResponseHelper.NotFoundBuilder<ControlPointDto>();
 
-            var scpId = await helperService.GetIdFromMacAsync(dto.MacAddress);
-            short modeNo = await context.OutputModes.AsNoTracking().Where(x => x.OfflineMode == dto.OfflineMode && x.RelayMode == dto.RelayMode).Select(x => x.Value).FirstOrDefaultAsync();
-            if (!await command.OutputPointSpecificationAsync(scpId, dto.ModuleId, dto.OutputNo, modeNo))
+            var scpId = await helperService.GetIdFromMacAsync(dto.Mac);
+            short modeNo = await context.output_mode.AsNoTracking().Where(x => x.offline_mode == dto.OfflineMode && x.relay_mode == dto.RelayMode).Select(x => x.value).FirstOrDefaultAsync();
+            if (!command.OutputPointSpecification(scpId, dto.ModuleId, dto.OutputNo, modeNo))
             {
-                return ResponseHelper.UnsuccessBuilder<ControlPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.MacAddress, Command.C111));
+                return ResponseHelper.UnsuccessBuilder<ControlPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C111));
             }
 
-            if (!await command.ControlPointConfigurationAsync(scpId, dto.ModuleId, (short)dto.ComponentId, dto.OutputNo, dto.DefaultPulse))
+            if (!command.ControlPointConfiguration(scpId, dto.ModuleId, (short)dto.ComponentId, dto.OutputNo, dto.DefaultPulse))
             {
-                return ResponseHelper.UnsuccessBuilder<ControlPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.MacAddress, Command.C114));
+                return ResponseHelper.UnsuccessBuilder<ControlPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C114));
             }
 
 
             MapperHelper.UpdateControlPoint(output,dto);
 
-            context.ControlPoints.Update(output);
+            context.control_point.Update(output);
             await context.SaveChangesAsync();
             return ResponseHelper.SuccessBuilder(dto);
         }
@@ -200,7 +244,7 @@ namespace HIDAeroService.Service.Impl
         public async Task<ResponseDto<bool>> GetStatusAsync(string mac, short component)
         {
             var id = await helperService.GetIdFromMacAsync(mac);
-            if (!await command.GetCpStatus(id, component, 1))
+            if (!command.GetCpStatus(id, component, 1))
             {
                 return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.C406));
             }
@@ -222,11 +266,53 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<ControlPointDto>> GetByMacAndIdAsync(string Mac, short ComponentId)
         {
-            var dto = await context.ControlPoints
-                .Where(x => x.MacAddress == Mac && x.ComponentId == ComponentId)
-                .Select(x => MapperHelper.ControlPointToDto(x)).FirstOrDefaultAsync();
+            var dto = await context.control_point
+                .Where(x => x.module.hardware_mac == Mac && x.component_id == ComponentId)
+               .Select(x => new ControlPointDto
+               {
+                   // Base
+                   Uuid = x.uuid,
+                   ComponentId = x.component_id,
+                   HardwareName = x.module.hardware.name,
+                   Mac = x.module.hardware_mac,
+                   LocationId = x.location_id,
+                   IsActive = x.is_active,
 
-            return ResponseHelper.SuccessBuilder(dto);
+                   // extend_desc
+                   Name = x.name,
+                   ModuleId = x.module_id,
+                   ModuleDescription = x.module.model_desc,
+                   //module_desc = x.module_desc,
+                   OutputNo = x.output_no,
+                   RelayMode = x.relay_mode,
+                   RelayModeDescription = x.relay_mode_desc,
+                   OfflineMode = x.offline_mode,
+                   OfflineModeDescription = x.offline_mode_desc,
+                   DefaultPulse = x.default_pulse,
+               })
+               .FirstOrDefaultAsync();
+
+            if (dto is null) return ResponseHelper.NotFoundBuilder<ControlPointDto>();
+
+            return ResponseHelper.SuccessBuilder<ControlPointDto>(dto);
+        }
+
+        public async Task<ResponseDto<IEnumerable<ResponseDto<bool>>>> DeleteRangeAsync(List<short> components)
+        {
+            bool flag = true;
+            List<ResponseDto<bool>> data = new List<ResponseDto<bool>>();
+            foreach (var dto in components)
+            {
+                var re = await DeleteAsync(dto);
+                if (re.code != HttpStatusCode.OK) flag = false;
+                data.Add(re);
+            }
+
+            if (!flag) return ResponseHelper.UnsuccessBuilder<IEnumerable<ResponseDto<bool>>>(data);
+
+            var res = ResponseHelper.SuccessBuilder<IEnumerable<ResponseDto<bool>>>(data);
+
+            return res;
         }
     }
 }

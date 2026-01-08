@@ -1,5 +1,6 @@
 ﻿using HIDAeroService.DTO;
 using HIDAeroService.DTO.MonitorPoint;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HIDAeroService.Service
 {
@@ -10,7 +11,8 @@ namespace HIDAeroService.Service
 
         Task<ResponseDto<IEnumerable<MonitorPointDto>>> GetByIdAndMacAsync(string mac);
         Task<ResponseDto<bool>> CreateAsync(MonitorPointDto dto);
-        Task<ResponseDto<bool>> DeleteAsync(string mac, short component);
+        Task<ResponseDto<bool>> DeleteAsync(short component);
+        Task<ResponseDto<IEnumerable<ResponseDto<bool>>>> DeleteRangeAsync(List<short> components);
         Task<ResponseDto<MonitorPointDto>> UpdateAsync(MonitorPointDto dto);
         Task<ResponseDto<bool>> GetStatusAsync(string mac, short component);
         Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param);
@@ -18,5 +20,6 @@ namespace HIDAeroService.Service
         Task<ResponseDto<IEnumerable<short>>> GetAvailableIp(string mac, short sio);
         Task<ResponseDto<bool>> MaskAsync(MonitorPointDto dto, bool IsMask);
         void TriggerDeviceStatus(int ScpId, short first, string status);
+        Task<ResponseDto<IEnumerable<ModeDto>>> GetLogFunctionAsync();
     }
 }

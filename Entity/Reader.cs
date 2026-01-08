@@ -5,19 +5,19 @@ namespace HIDAeroService.Entity
 {
     public sealed class Reader : BaseEntity
     {
-        public short ModuleId { get; set; }
-        public Module Module { get; set; }
-        public Door Door { get; set; }
-        public short ReaderNo { get; set; }
-        public short DataFormat { get; set; } = 0x01;
-        public short KeypadMode { get; set; } = 2;
-        public short LedDriveMode { get; set; }
-        public short Direction { get; set; }    
-        public bool OsdpFlag { get; set; }
-        public short OsdpBaudrate { get; set; } = 0x01;
-        public short OsdpDiscover { get; set; } = 0x08;
-        public short OsdpTracing { get; set; } = 0x10;
-        public short OsdpAddress { get; set; }
-        public short OsdpSecureChannel { get; set; }
+        public short module_id { get; set; }
+        public Module module { get; set; }
+        public Door door { get; set; }
+        public short reader_no { get; set; }
+        public short data_format { get; set; } = 0x01;
+        public short keypad_mode { get; set; } = 2;
+        public short led_drive_mode { get; set; }
+        public short direction { get; set; }    
+        public bool osdp_flag { get; set; }
+        public short osdp_baudrate { get; set; } = 0x01;
+        public short osdp_discover { get; set; } = 0x08;
+        public short osdp_tracing { get; set; } = 0x10;
+        public short osdp_address { get; set; }
+        public short osdp_secure_channel { get; set; }
     }
 }

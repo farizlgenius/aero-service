@@ -5,9 +5,9 @@ namespace HIDAeroService.Entity
 {
     public sealed class AccessLevel : NoMacBaseEntity,IComponentId
     {
-        public short ComponentId { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public ICollection<AccessLevelDoorTimeZone> AccessLevelDoorTimeZones { get; set; }
-        public ICollection<CardHolderAccessLevel> CardHolderAccessLevels { get; set; }
+        public short component_id { get; set; }
+        public string name { get; set; } = string.Empty;
+        public ICollection<AccessLevelDoorTimeZone> accessleve_door_timezones { get; set; }
+        public ICollection<CardHolderAccessLevel> cardholder_accesslevel { get; set; }
     }
 }

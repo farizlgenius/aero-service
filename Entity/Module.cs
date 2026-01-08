@@ -5,25 +5,38 @@ namespace HIDAeroService.Entity
 {
     public sealed class Module : BaseEntity
     {
-        public string Model { get; set; } = string.Empty;
-        public short ModelNo { get; set; }
-        public Hardware Hardware { get; set; }
-        // Component 
-        public ICollection<Reader>? Readers { get; set; }
-        public ICollection<Sensor>? Sensors { get; set; }
-        public ICollection<Strike>? Strikes { get; set; }
-        public ICollection<RequestExit>? RequestExits { get; set; }
-        public ICollection<MonitorPoint>? MonitorPoints { get; set; }
-        public ICollection<ControlPoint>? ControlPoints { get; set; }
+        public short model { get; set; }
+        public string model_desc { get; set; } = string.Empty;
+        public string revision { get; set; } = string.Empty;
+        public string serial_number { get; set; } = string.Empty;
+        public int n_hardware_id { get; set; }
+        public string n_hardware_id_desc { get; set; } = string.Empty;
+        public int n_hardware_rev { get; set; }
+        public int n_product_id { get; set; }
+        public int n_product_ver { get; set; }
+        public short n_enc_config { get; set; }
+        public string n_enc_config_desc { get; set; } = string.Empty;
+        public short n_enc_key_status { get; set; }
+        public string n_enc_key_status_desc { get; set; } = string.Empty;
+        public string hardware_mac { get; set; } = string.Empty;
+        public Hardware hardware { get; set; }
+        // HardwareComponent 
+        public ICollection<Reader>? readers { get; set; }
+        public ICollection<Sensor>? sensors { get; set; }
+        public ICollection<Strike>? strikes { get; set; }
+        public ICollection<RequestExit>? request_exits { get; set; }
+        public ICollection<MonitorPoint>? monitor_points { get; set; }
+        public ICollection<ControlPoint>? control_points { get; set; }
         // End
-        public short Address { get; set; }
-        public short Port { get; set; }
-        public short nInput { get; set; }
-        public short nOutput { get; set; }
-        public short nReader { get; set; }
-        public short Msp1No { get; set; }
-        public short BaudRate { get; set; }
-        public short nProtocol { get; set; }
-        public short nDialect { get; set; }
+        public short address { get; set; }
+        public string address_desc { get; set; } = string.Empty;
+        public short port { get; set; }
+        public short n_input { get; set; }
+        public short n_output { get; set; }
+        public short n_reader { get; set; }
+        public short msp1_no { get; set; }
+        public short baudrate { get; set; }
+        public short n_protocol { get; set; }
+        public short n_dialect { get; set; }
     }
 }

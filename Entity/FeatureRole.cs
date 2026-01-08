@@ -5,15 +5,15 @@ namespace HIDAeroService.Entity
     public sealed class FeatureRole
     {
         //[Key]
-        //public int Id { get; set; }
-        public short FeatureId { get; set; }
-        public Feature Feature { get; set; }
-        public short RoleId { get; set; }
-        public Role Role { get; set; }
-        public bool IsAllow { get; set; }
-        public bool IsCreate { get; set; }
-        public bool IsModify { get; set; }
-        public bool IsDelete { get; set; }
-        public bool IsAction { get; set; }
+        //public int id { get; set; }
+        public short feature_id { get; set; }
+        public Feature feature { get; set; }
+        public short role_id { get; set; }
+        public Role role { get; set; }
+        public bool is_allow { get; set; }
+        public bool is_create { get; set; }
+        public bool is_modify { get; set; }
+        public bool is_delete { get; set; }
+        public bool is_action { get; set; }
     }
 }

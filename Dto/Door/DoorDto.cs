@@ -20,11 +20,11 @@ namespace HIDAeroService.DTO.Acr
 
         // Strike setting for strike
         public short StrkComponentId { get; set; }
-        public StrikeDto Strk { get; set; }
+        public StrikeDto? Strk { get; set; }
 
-        //Sensor setting for sensor
+        //sensor setting for sensor
         public short SensorComponentId { get; set; }
-        public SensorDto Sensor { get; set; }
+        public SensorDto? Sensor { get; set; }
         public List<RequestExitDto>? RequestExits { get; set; }
         public short CardFormat { get; set; }
         public short AntiPassbackMode { get; set; }

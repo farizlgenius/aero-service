@@ -8,13 +8,13 @@ namespace HIDAeroService.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class OperatorController(IOperatorService operatorService) : ControllerBase
+    public class OperatorController(IOperatorService service) : ControllerBase
     {
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<OperatorDto>>>> GetAsync()
         {
-            var res = await operatorService.GetAsync();
+            var res = await service.GetAsync();
             return Ok(res);
         }
 
@@ -22,7 +22,7 @@ namespace HIDAeroService.Controllers.V1
         [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<OperatorDto>>>> GetByLocationAsync(short location)
         {
-            var res = await operatorService.GetByLocationAsync(location);
+            var res = await service.GetByLocationAsync(location);
             return Ok(res);
         }
 
@@ -30,7 +30,7 @@ namespace HIDAeroService.Controllers.V1
         [Authorize]
         public async Task<ActionResult<ResponseDto<bool>>> CreateAsync([FromBody] CreateOperatorDto dto)
         {
-            var res = await operatorService.CreateAsync(dto);
+            var res = await service.CreateAsync(dto);
             return Ok(res);
         }
 
@@ -38,7 +38,7 @@ namespace HIDAeroService.Controllers.V1
         [Authorize]
         public async Task<ActionResult<ResponseDto<CreateOperatorDto>>> UpdateAsync([FromBody] CreateOperatorDto dto)
         {
-            var res = await operatorService.UpdateAsync(dto);
+            var res = await service.UpdateAsync(dto);
             return Ok(res);
         }
 
@@ -46,14 +46,14 @@ namespace HIDAeroService.Controllers.V1
         [Authorize]
         public async Task<ActionResult<ResponseDto<bool>>> DeleteByIdAsync(short component)
         {
-            var res = await operatorService.DeleteByIdAsync(component);
+            var res = await service.DeleteByIdAsync(component);
             return Ok(res);
         }
 
         [HttpPost("delete/range")]
         public async Task<ActionResult<ResponseDto<IEnumerable<ResponseDto<bool>>>>> DeleteRangeAsync([FromBody] List<short> dtos) 
         {
-            var res = await operatorService.DeleteRangeAsync(dtos);
+            var res = await service.DeleteRangeAsync(dtos);
             return Ok(res);
         }
 
@@ -62,7 +62,7 @@ namespace HIDAeroService.Controllers.V1
         public async Task<ActionResult<ResponseDto<OperatorDto>>> GetByUsernameAsync(string username)
         {
 
-            var res = await operatorService.GetByUsernameAsync(username);
+            var res = await service.GetByUsernameAsync(username);
             return Ok(res);
         }
 
@@ -70,7 +70,7 @@ namespace HIDAeroService.Controllers.V1
         [Authorize]
         public async Task<ActionResult<ResponseDto<bool>>> UpdatePasswordAsync(PasswordDto dto)
         {
-            var res = await operatorService.UpdatePasswordAsync(dto);
+            var res = await service.UpdatePasswordAsync(dto);
             return Ok(res);
         }
 

@@ -18,14 +18,14 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
-        [HttpGet("role/{RoleId}")]
+        [HttpGet("role/{role_id}")]
         public async Task<ActionResult<ResponseDto<IEnumerable<FeatureDto>>>> GetFeatureByRoleIdAsync(short RoleId)
         {
             var res = await featureService.GetFeatureByRoleAsync(RoleId);
             return Ok(res);
         }
 
-        [HttpGet("role/{RoleId}/{FeatureId}")]
+        [HttpGet("role/{role_id}/{feature_id}")]
         public async Task<ActionResult<ResponseDto<FeatureDto>>> GetOneFeatureByRoleIdAsync(short RoleId,short FeatureId)
         {
             var res = await featureService.GetOneFeatureByRoleIdAsync(RoleId,FeatureId);

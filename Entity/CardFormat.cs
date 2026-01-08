@@ -6,27 +6,27 @@ namespace HIDAeroService.Entity
     public class CardFormat : IComponentId,IDatetime
     {
         [Key]
-        public int Id { get; set; }
-        public string Uuid { get; set; } = Guid.NewGuid().ToString();
-        public string Name { get; set; } = string.Empty;
-        public short ComponentId { get; set; }
-        public short Facility { get; set; }
-        public short Offset { get; set; }
-        public short FunctionId { get; set; }
-        public short Flags { get; set; }
-        public short Bits { get; set; }
-        public short PeLn { get; set; }
-        public short PeLoc { get; set; }
-        public short PoLn { get; set; }
-        public short PoLoc { get; set; }
-        public short FcLn { get; set; }
-        public short FcLoc { get; set; }
-        public short ChLn { get; set; }
-        public short ChLoc { get; set; }
-        public short IcLn { get; set; }
-        public short IcLoc { get; set; }
-        public bool IsActive { get; set; } = true;
-        public DateTime CreatedDate { get; set; }
-        public DateTime UpdatedDate { get; set; }
+        public int id { get; set; }
+        public string uuid { get; set; } = Guid.NewGuid().ToString();
+        public string name { get; set; } = string.Empty;
+        public short component_id { get; set; }
+        public short facility { get; set; }
+        public short offset { get; set; }
+        public short function_id { get; set; }
+        public short flags { get; set; }
+        public short bits { get; set; }
+        public short pe_ln { get; set; }
+        public short pe_loc { get; set; }
+        public short po_ln { get; set; }
+        public short po_loc { get; set; }
+        public short fc_ln { get; set; }
+        public short fc_loc { get; set; }
+        public short ch_ln { get; set; }
+        public short ch_loc { get; set; }
+        public short ic_ln { get; set; }
+        public short ic_loc { get; set; }
+        public bool is_active { get; set; } = true;
+        public DateTime created_date { get; set; }
+        public DateTime updated_date { get; set; }
     }
 }

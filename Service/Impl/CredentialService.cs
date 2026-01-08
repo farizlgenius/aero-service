@@ -19,10 +19,12 @@ using HIDAeroService.Entity.Interface;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using MiNET.Entities;
 using MiNET.Entities.Passive;
+using HIDAeroService.Aero.CommandService.Impl;
+using HIDAeroService.Aero.CommandService;
 
 namespace HIDAeroService.Service.Impl
 {
-    public class CredentialService(AeroMessage read, AeroCommand command, IHelperService<Credential> helperService, IHubContext<AeroHub> hub, AppDbContext context) : ICredentialService
+    public class CredentialService(AeroMessage read, AeroCommandService command, IHelperService<Credential> helperService, IHubContext<AeroHub> hub, AppDbContext context) : ICredentialService
     {
        
 
@@ -46,16 +48,16 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<bool>> CreateAsync(CredentialDto dto)
         {
-            if (await context.Credentials.AnyAsync(x => x.CardNo == dto.CardNo)) return ResponseHelper.Duplicate<bool>();
+            if (await context.credential.AnyAsync(x => x.card_no == dto.CardNo)) return ResponseHelper.Duplicate<bool>();
             var ComponentId = await helperService.GetLowestUnassignedNumberAsync<Credential>(context, 1000);
             if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
-            //cred.IssueCode = await GetLowestUnassignedIssueCodeAsync(userId: dto.UserId);
+            //cred.issue_code = await GetLowestUnassignedIssueCodeAsync(userId: dto.user_id);
 
             //foreach (var id in ScpIds)
             //{
-            //    if (!await command.AccessDatabaseCardRecordAsync(id.ComponentId, cred.Flag, cred.CardNo, cred.IssueCode, cred.Pin, cred.AccessLevels, (int)helperService.DateTimeToElapeSecond(cred.ActiveDate), (int)helperService.DateTimeToElapeSecond(cred.DeactiveDate)))
+            //    if (!await command.AccessDatabaseCardRecord(id.component_id, cred.flag, cred.card_no, cred.issue_code, cred.pin, cred.accesslevel, (int)helperService.DateTimeToElapeSecond(cred.active_date), (int)helperService.DateTimeToElapeSecond(cred.deactive_date)))
             //    {
-            //        errors.Add(MessageBuilder.Unsuccess(id.MacAddress, Command.C8304));
+            //        errors.Add(MessageBuilder.Unsuccess(id.mac, command.C8304));
             //    }
             //}
             return ResponseHelper.SuccessBuilder(true);
@@ -64,8 +66,8 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<IEnumerable<CredentialDto>>> GetAsync()
         {
-            var dtos = await context.Credentials
-                .Include(x => x.CardHolder)
+            var dtos = await context.credential
+                .Include(x => x.cardholder)
                 .Select(x => MapperHelper.CredentialToDto(x))
                 .ToArrayAsync();
 
@@ -74,9 +76,9 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<CredentialDto>> GetByUserId(string UserId)
         {
-            var dto = await context.Credentials
-                .Include(x => x.CardHolder)
-                .Where(x => x.CardHolder.UserId == UserId)
+            var dto = await context.credential
+                .Include(x => x.cardholder)
+                .Where(x => x.cardholder.user_id == UserId)
                 .Select(x => MapperHelper.CredentialToDto(x))
                 .FirstOrDefaultAsync();
 
@@ -90,15 +92,15 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<bool>> DeleteAsync(CredentialDto dto)
         {
-            var entity = await context.Credentials.FirstOrDefaultAsync(x => x.CardNo == dto.CardNo);
+            var entity = await context.credential.FirstOrDefaultAsync(x => x.card_no == dto.CardNo);
             if (entity is null) return ResponseHelper.NotFoundBuilder<bool>();
             List<string> errors = new List<string>();
-            var Macs = entity.HardwareCredentials.Select(x => x.MacAddress);
+            var Macs = entity.hardware_credentials.Select(x => x.hardware_mac);
 
             foreach (var mac in Macs)
             {
                 var ScpId = await helperService.GetIdFromMacAsync(mac);
-                if (!await command.CardDeleteAsync(ScpId, dto.CardNo))
+                if (!command.CardDelete(ScpId, dto.CardNo))
                 {
                     errors.Add(MessageBuilder.Unsuccess(mac, Command.C3305));
                 }
@@ -107,7 +109,7 @@ namespace HIDAeroService.Service.Impl
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
 
-            context.Credentials.Remove(entity);
+            context.credential.Remove(entity);
             await context.SaveChangesAsync();
             return ResponseHelper.SuccessBuilder<bool>(true);
         }
@@ -115,11 +117,11 @@ namespace HIDAeroService.Service.Impl
         public async Task<int> GetLowestUnassignedIssueCodeAsync(string userId, int max = 1000)
         {
 
-            var query = await context.Credentials
+            var query = await context.credential
                 .AsNoTracking()
-                .Include(x => x.CardHolder)
-                .Where(x => x.CardHolder.UserId == userId)
-                .Select(x => x.IssueCode).ToArrayAsync();
+                .Include(x => x.cardholder)
+                .Where(x => x.cardholder.user_id == userId)
+                .Select(x => x.issue_code).ToArrayAsync();
 
             // Handle empty table case quickly
             if (query.Length == 0)
@@ -144,7 +146,7 @@ namespace HIDAeroService.Service.Impl
         public async Task<ResponseDto<bool>> DeleteCardAsync(DeleteCardDto dto)
         {
             var ScpId = await helperService.GetIdFromMacAsync(dto.MacAddress);
-            if(!await command.CardDeleteAsync(ScpId,dto.CardNo))
+            if(!command.CardDelete(ScpId,dto.CardNo))
             {
                 ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, "DeleteAsync Card Fail");
             }
@@ -153,7 +155,7 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<IEnumerable<ModeDto>>> GetCredentialFlagAsync()
         {
-            var dtos = await context.CredentialFlagOptions
+            var dtos = await context.credential_flag
                 .Select(x => MapperHelper.CredentialFlagToDto(x))
                 .ToArrayAsync();
 

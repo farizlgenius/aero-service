@@ -1,4 +1,6 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
+using HIDAeroService.Aero.CommandService;
+using HIDAeroService.Aero.CommandService.Impl;
 using HIDAeroService.AeroLibrary;
 using HIDAeroService.Data;
 using HIDAeroService.DTO.Scp;
@@ -11,33 +13,33 @@ using static HID.Aero.ScpdNet.Wrapper.SCPReplyMessage;
 
 namespace HIDAeroService.Service.Impl
 {
-    public sealed class CommandService(ILogger<CommandService> logger, AppDbContext context, IHelperService<CommandStatus> helperService, AeroCommand write) : ICommandService
+    public sealed class CommandService(ILogger<CommandService> logger, AppDbContext context, IHelperService<CommandLog> helperService, AeroCommandService write) : ICommandService
     {
 
 
         public void Save(int ScpId, string ScpMac, short TagNo, short CommandStatus, string Command, SCPReplyNAK nak)
         {
-            CommandStatus s = new CommandStatus();
-            s.CreatedDate = DateTime.Now;
-            s.UpdatedDate = DateTime.Now;
-            s.ScpMac = ScpMac;
-            s.TagNo = TagNo;
-            s.Status = CommandStatus == 1 ? 'S' : 'F';
-            s.Command = Command;
-            s.NakReason = Description.GetNakReasonDescription(nak.reason);
-            s.NakDescCode = nak.description_code;
-            s.ScpId = ScpId;
-            context.ArCommandStatuses.Add(s);
+            CommandLog s = new CommandLog();
+            s.created_date = DateTime.Now;
+            s.updated_date = DateTime.Now;
+            s.hardware_mac = ScpMac;
+            s.tag_no = TagNo;
+            s.status = CommandStatus == 1 ? 'S' : 'F';
+            s.command = Command;
+            s.nak_reason = Description.GetNakReasonDescription(nak.reason);
+            s.nake_desc_code = nak.description_code;
+            s.hardware_id = ScpId;
+            context.commnad_log.Add(s);
             context.SaveChanges();
         }
 
 
-        public void HandleSaveFailCommand(AeroCommand write, SCPReplyMessage message)
+        public void HandleSaveFailCommand(AeroCommandService write, SCPReplyMessage message)
         {
             if (message.cmnd_sts.status == 2)
             {
                 // Save to database 
-                Save(message.SCPId, helperService.GetMacFromId((short)message.SCPId) == null ? "" : helperService.GetMacFromId((short)message.SCPId), (short)message.cmnd_sts.sequence_number, message.cmnd_sts.status, write.Command, message.cmnd_sts.nak);
+                Save(message.SCPId, helperService.GetMacFromId((short)message.SCPId) == null ? "" : helperService.GetMacFromId((short)message.SCPId), (short)message.cmnd_sts.sequence_number, message.cmnd_sts.status, "", message.cmnd_sts.nak);
             }
         }
 

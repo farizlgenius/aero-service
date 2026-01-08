@@ -11,9 +11,20 @@ namespace HIDAeroService.DTO.Module
 {
     public sealed class ModuleDto : BaseDto
     {
-        public string Model { get; set; } = string.Empty;
-        public short ModelNo { get; set; }
-        // Component 
+        public short Model { get; set; }
+        public string ModelDescription { get; set; } = string.Empty;
+        public string Revision { get; set; } = string.Empty;
+        public string SerialNumber { get; set; } = string.Empty;
+        public int nHardwareId { get; set; }
+        public string nHardwareIdDescription { get; set; } = string.Empty;
+        public int nHardwareRev { get; set; }
+        public int nProductId { get; set; }
+        public int nProductVer { get; set; }
+        public short nEncConfig { get; set; }
+        public string nEncConfigDescription { get; set; } = string.Empty;
+        public short nEncKeyStatus { get; set; }
+        public string nEncKeyStatusDescription { get; set; } = string.Empty;
+        // HardwareComponent 
         public List<ReaderDto>? Readers { get; set; }
         public List<SensorDto>? Sensors { get; set; }
         public List<StrikeDto>? Strikes { get; set; }
@@ -22,6 +33,7 @@ namespace HIDAeroService.DTO.Module
         public List<ControlPointDto>? ControlPoints { get; set; }
         // End
         public short Address { get; set; }
+        public string AddressDescription { get; set; } = string.Empty;
         public short Port { get; set; }
         public short nInput { get; set; }
         public short nOutput { get; set; }

@@ -1,4 +1,5 @@
-﻿using HIDAeroService.AeroLibrary;
+﻿using HIDAeroService.Aero.CommandService;
+using HIDAeroService.AeroLibrary;
 using HIDAeroService.Constant;
 using HIDAeroService.Constants;
 using HIDAeroService.Data;
@@ -7,6 +8,7 @@ using HIDAeroService.DTO.Holiday;
 using HIDAeroService.Entity;
 using HIDAeroService.Helpers;
 using HIDAeroService.Utility;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MiNET.Blocks;
 using MiNET.Entities;
@@ -15,26 +17,26 @@ using System.Net;
 
 namespace HIDAeroService.Service.Impl
 {
-    public class HolidayService(AeroCommand command, AppDbContext context, IHelperService<Holiday> helperService) : IHolidayService
+    public class HolidayService(IHolidayCommandService command, AppDbContext context, IHelperService<Holiday> helperService) : IHolidayService
     {
 
         public async Task<ResponseDto<IEnumerable<HolidayDto>>> GetAsync()
         {
-            var dtos = await context.Holidays.AsNoTracking()
+            var dtos = await context.holiday.AsNoTracking()
                 .Select(p => new HolidayDto
                 {
                     // Base
-                    Uuid = p.Uuid,
-                    LocationId = p.LocationId,
-                    IsActive = p.IsActive,
+                    Uuid = p.uuid,
+                    LocationId = p.location_id,
+                    IsActive = p.is_active,
 
-                    // ExtendDesc
-                    ComponentId = p.ComponentId,
-                    Day = p.Day,
-                    Month = p.Month,
-                    Year = p.Year,
-                    Extend = p.Extend,
-                    TypeMask = p.TypeMask
+                    // extend_desc
+                    component_id = p.component_id,
+                    Day = p.day,
+                    Month = p.month,
+                    Year = p.year,
+                    Extend = p.extend,
+                    TypeMask = p.type_mask
 
                 }).ToArrayAsync();
             if (dtos.Count() == 0) return ResponseHelper.NotFoundBuilder<IEnumerable<HolidayDto>>();
@@ -44,37 +46,37 @@ namespace HIDAeroService.Service.Impl
         public async Task<ResponseDto<bool>> ClearAsync()
         {
             List<string> errors = new List<string>();
-            var macs = await context.Hardwares.Select(x => x.MacAddress).ToArrayAsync();
+            var macs = await context.hardware.Select(x => x.mac).ToArrayAsync();
             foreach (var mac in macs)
             {
                 short ScpId = await helperService.GetIdFromMacAsync(mac);
-                if (!await command.ClearHolidayConfigurationAsync(ScpId))
-                {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C1104));
-                }
+                //if (!await command.ClearHolidayConfigurationAsync(hardware_id))
+                //{
+                //    errors.Add(MessageBuilder.Unsuccess(mac, command.C1104));
+                //}
             }
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
-            var holidays = await context.Holidays.ToArrayAsync();
-            context.Holidays.RemoveRange(holidays);
+            var holidays = await context.holiday.ToArrayAsync();
+            context.holiday.RemoveRange(holidays);
             await context.SaveChangesAsync();
             return ResponseHelper.SuccessBuilder(true);
         }
 
         public async Task<ResponseDto<HolidayDto>> GetByComponentIdAsync(short component)
         {
-            var dto = await context.Holidays.AsNoTracking().Where(p => p.ComponentId == component).Select(p => new HolidayDto 
+            var dto = await context.holiday.AsNoTracking().Where(p => p.component_id == component).Select(p => new HolidayDto 
             {
                 // Base
-                Uuid = p.Uuid,
-                LocationId = p.LocationId,
-                IsActive = p.IsActive,
+                Uuid = p.uuid,
+                LocationId = p.location_id,
+                IsActive = p.is_active,
 
-                // ExtendDesc
-                Day = p.Day,
-                Month = p.Month,
-                Year = p.Year,
-                Extend = p.Extend,
-                TypeMask = p.TypeMask
+                // extend_desc
+                Day = p.day,
+                Month = p.month,
+                Year = p.year,
+                Extend = p.extend,
+                TypeMask = p.type_mask
 
             }).FirstOrDefaultAsync();
             if (dto == null) return ResponseHelper.NotFoundBuilder<HolidayDto>();
@@ -87,47 +89,47 @@ namespace HIDAeroService.Service.Impl
         {
             List<string> errors = new List<string>();
 
-            if (await context.Holidays.AnyAsync(u => u.Day == dto.Day && u.Month == dto.Month && u.Year == dto.Year)) return ResponseHelper.Duplicate<bool>();
+            if (await context.holiday.AnyAsync(u => u.day == dto.Day && u.month == dto.Month && u.year == dto.Year)) return ResponseHelper.Duplicate<bool>();
 
             var ComponentId = await helperService.GetLowestUnassignedNumberNoLimitAsync<Holiday>(context);
             if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
             // Send command 
-            List<short> ids = await context.Hardwares.AsNoTracking().Select(p => p.ComponentId).ToListAsync();
+            List<short> ids = await context.hardware.AsNoTracking().Select(p => p.component_id).ToListAsync();
 
             var holiday = new Holiday
             {
                 // Base
-                LocationId = dto.LocationId,
-                CreatedDate = DateTime.Now,
-                UpdatedDate = DateTime.Now,
-                IsActive = true,
+                location_id = dto.LocationId,
+                created_date = DateTime.Now,
+                updated_date = DateTime.Now,
+                is_active = true,
 
 
-                // ExtendDesc
-                ComponentId = ComponentId,
-                Day = dto.Day,
-                Month = dto.Month,
-                Year = dto.Year,
-                Extend = 0,
-                TypeMask = dto.TypeMask,
+                // extend_desc
+                component_id = ComponentId,
+                day = dto.Day,
+                month = dto.Month,
+                year = dto.Year,
+                extend = 0,
+                type_mask = dto.TypeMask,
 
             };
 
             foreach (var id in ids)
             {
                 string mac = await helperService.GetMacFromIdAsync(id);
-                if (!await command.HolidayConfigurationAsync(holiday, id))
-                {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C1104));
+                //if (!await command.HolidayConfigurationAsync(holiday, id))
+                //{
+                //    errors.Add(MessageBuilder.Unsuccess(mac, command.C1104));
 
-                }
+                //}
             }
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, errors);
 
 
-            await context.Holidays.AddAsync(holiday);
+            await context.holiday.AddAsync(holiday);
             await context.SaveChangesAsync();
             return ResponseHelper.SuccessBuilder(true);
         }
@@ -135,23 +137,23 @@ namespace HIDAeroService.Service.Impl
         public async Task<ResponseDto<bool>> DeleteAsync(short component)
         {
             List<string> errors = new List<string>();
-            var entity = await context.Holidays.FirstOrDefaultAsync(x => x.ComponentId == component);
+            var entity = await context.holiday.FirstOrDefaultAsync(x => x.component_id == component);
             if (entity is null) return ResponseHelper.NotFoundBuilder<bool>();
             // Send command 
-            List<short> ids = await context.Hardwares.Select(p => p.ComponentId).ToListAsync();
+            List<short> ids = await context.hardware.Select(p => p.component_id).ToListAsync();
 
 
             foreach (var id in ids)
             {
                 string mac = await helperService.GetMacFromIdAsync(id);
-                if (!await command.DeleteHolidayConfigurationAsync(entity, id))
-                {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C1104));
-                }
+                //if (!await command.DeleteHolidayConfigurationAsync(entity, id))
+                //{
+                //    errors.Add(MessageBuilder.Unsuccess(mac, command.C1104));
+                //}
             }
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
-            context.Holidays.Remove(entity);
+            context.holiday.Remove(entity);
             await context.SaveChangesAsync();
             return ResponseHelper.SuccessBuilder(true);
         }
@@ -159,36 +161,78 @@ namespace HIDAeroService.Service.Impl
         public async Task<ResponseDto<HolidayDto>> UpdateAsync(HolidayDto dto)
         {
             List<string> errors = new List<string>();
-            var entity = await context.Holidays.FirstOrDefaultAsync(p => p.ComponentId == dto.ComponentId);
+            var entity = await context.holiday.FirstOrDefaultAsync(p => p.component_id == dto.component_id);
             if (entity is null) return ResponseHelper.NotFoundBuilder<HolidayDto>();
 
-            if (await context.Holidays.AnyAsync(u => u.Day == dto.Day && u.Month == dto.Month && u.Year == dto.Year)) return ResponseHelper.Duplicate<HolidayDto>();
+            if (await context.holiday.AnyAsync(u => u.day == dto.Day && u.month == dto.Month && u.year == dto.Year)) return ResponseHelper.Duplicate<HolidayDto>();
 
             // Send command 
-            List<short> ids = await context.Hardwares.Select(p => p.ComponentId).ToListAsync();
+            List<short> ids = await context.hardware.Select(p => p.component_id).ToListAsync();
 
-            entity.Day = dto.Day;
-            entity.Month = dto.Month;
-            entity.Year = dto.Year;
-            entity.TypeMask = dto.TypeMask;
-            entity.Extend = 0;
-            entity.UpdatedDate = DateTime.Now;
+            entity.day = dto.Day;
+            entity.month = dto.Month;
+            entity.year = dto.Year;
+            entity.type_mask = dto.TypeMask;
+            entity.extend = 0;
+            entity.updated_date = DateTime.Now;
 
             foreach (var id in ids)
             {
                 string mac = await helperService.GetMacFromIdAsync(id);
-                if (!await command.HolidayConfigurationAsync(entity, id))
-                {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C1104));
-                }
+                //if (!await command.HolidayConfigurationAsync(entity, id))
+                //{
+                //    errors.Add(MessageBuilder.Unsuccess(mac, command.C1104));
+                //}
             }
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<HolidayDto>(ResponseMessage.COMMAND_UNSUCCESS,errors);
 
-            context.Holidays.Update(entity);
+            context.holiday.Update(entity);
             await context.SaveChangesAsync();
             return ResponseHelper.SuccessBuilder(dto);
         }
 
+        public async Task<ResponseDto<IEnumerable<ResponseDto<bool>>>> DeleteRangeAsync(List<short> components)
+        {
+            bool flag = true;
+            List<ResponseDto<bool>> data = new List<ResponseDto<bool>>();
+            foreach (var dto in components)
+            {
+                var re = await DeleteAsync(dto);
+                if (re.code != HttpStatusCode.OK) flag = false;
+                data.Add(re);
+            }
+
+            if (!flag) return ResponseHelper.UnsuccessBuilder<IEnumerable<ResponseDto<bool>>>(data);
+
+            var res = ResponseHelper.SuccessBuilder<IEnumerable<ResponseDto<bool>>>(data);
+
+            return res;
+        }
+
+        public async Task<ResponseDto<IEnumerable<HolidayDto>>> GetByLocationAsync(short location)
+        {
+            var dtos = await context.holiday
+                .AsNoTracking()
+                .Where(x => x.location_id == location)
+                    .Select(p => new HolidayDto
+                    {
+                        // Base
+                        Uuid = p.uuid,
+                        LocationId = p.location_id,
+                        IsActive = p.is_active,
+
+                        // extend_desc
+                        component_id = p.component_id,
+                        Day = p.day,
+                        Month = p.month,
+                        Year = p.year,
+                        Extend = p.extend,
+                        TypeMask = p.type_mask
+
+                    }).ToArrayAsync();
+            if (dtos.Count() == 0) return ResponseHelper.NotFoundBuilder<IEnumerable<HolidayDto>>();
+            return ResponseHelper.SuccessBuilder<IEnumerable<HolidayDto>>(dtos);
+        }
     }
 }

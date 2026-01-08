@@ -5,10 +5,10 @@ namespace HIDAeroService.Entity
     public sealed class OperatorLocation
     {
         [Key]
-        public int Id { get; set; } 
-        public short LocationId { get; set; }
-        public Location Location { get; set; }
-        public short OperatorId { get; set; }
-        public Operator Operator { get; set; }
+        public int id { get; set; } 
+        public short location_id { get; set; }
+        public Location location { get; set; }
+        public short operator_id { get; set; }
+        public Operator @operator { get; set; }
     }
 }

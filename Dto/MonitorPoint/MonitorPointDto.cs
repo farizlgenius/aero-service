@@ -6,10 +6,13 @@
         public short ModuleId { get; set; }
         public short InputNo { get; set; }
         public short InputMode { get; set; }
+        public string InputModeDescription { get; set; } = string.Empty;
         public short Debounce { get; set; }
         public short HoldTime { get; set; }
-        public short LogFunction { get; set; } = -1;
+        public short LogFunction { get; set; } = 1;
+        public string LogFunctionDescription { get; set; } = string.Empty;
         public short MonitorPointMode { get; set; } = -1;
+        public string MonitorPointModeDescription { get; set; } = string.Empty;
         public short DelayEntry { get; set; } = -1;
         public short DelayExit { get; set; } = -1;
         public bool IsMask { get; set; }

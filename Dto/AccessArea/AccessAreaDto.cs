@@ -6,7 +6,7 @@ namespace HIDAeroService.DTO.AccessArea
     public sealed class AccessAreaDto : NoMacBaseDto,IComponentId
     {
         public string Name { get; set; } = string.Empty;
-        public short ComponentId { get; set; }
+        public short component_id { get; set; }
         public short MultiOccupancy { get; set; }
         public short AccessControl { get; set; }
         public short OccControl { get; set; }

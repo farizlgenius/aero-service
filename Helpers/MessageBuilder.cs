@@ -11,7 +11,7 @@ namespace HIDAeroService.Utility
 
         public static string Notfound() 
         {
-            return $"Hardware not found";
+            return $"hardware not found";
         }
     }
 }

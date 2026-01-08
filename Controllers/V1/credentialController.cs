@@ -25,7 +25,7 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
-        [HttpGet("{UserId}")]
+        [HttpGet("{user_id}")]
         public async Task<ActionResult<ResponseDto<CredentialDto>>> GetByComponentAsync(string UserId)
         {
             var res = await credentialService.GetByUserId(UserId);

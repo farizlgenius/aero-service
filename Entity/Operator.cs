@@ -6,25 +6,25 @@ namespace HIDAeroService.Entity
     public sealed class Operator : IComponentId,IDatetime
     {
         [Key]
-        public int Id { get; set; }
-        public string Uuid { get; set; } = Guid.NewGuid().ToString();
-        public short ComponentId { get; set; }
-        public required string UserId { get; set; }
-        public required string Username { get; set; }
-        public required string Password { get; set; } 
-        public string Email { get; set; } 
-        public string Title { get; set; } = string.Empty;
-        public string FirstName { get; set; } = string.Empty;
-        public string MiddleName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public string Phone { get; set; } = string.Empty;
-        public string ImagePath { get; set; } = string.Empty;
-        public short RoleId { get; set; }
-        public Role Role { get; set; }
-        public ICollection<OperatorLocation> OperatorLocations { get; set; }
-        public bool IsActive { get; set; } = true;
-        public DateTime CreatedDate { get; set; }
-        public DateTime UpdatedDate { get; set; }
+        public int id { get; set; }
+        public string uuid { get; set; } = Guid.NewGuid().ToString();
+        public short component_id { get; set; }
+        public required string user_id { get; set; }
+        public required string user_name { get; set; }
+        public required string password { get; set; } 
+        public string email { get; set; } = string.Empty;
+        public string title { get; set; } = string.Empty;
+        public string first_name { get; set; } = string.Empty;
+        public string middle_name { get; set; } = string.Empty;
+        public string last_name { get; set; } = string.Empty;
+        public string phone { get; set; } = string.Empty;
+        public string image_path { get; set; } = string.Empty;
+        public short role_id { get; set; }
+        public Role role { get; set; }
+        public ICollection<OperatorLocation> operator_locations { get; set; }
+        public bool is_active { get; set; } = true;
+        public DateTime created_date { get; set; }
+        public DateTime updated_date { get; set; }
 
     }
 }

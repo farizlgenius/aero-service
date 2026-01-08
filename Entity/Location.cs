@@ -6,39 +6,39 @@ namespace HIDAeroService.Entity
     public sealed class Location : IComponentId,IDatetime
     {
         [Key]
-        public int Id { get; set; }
-        public string Uuid { get; set; } = Guid.NewGuid().ToString();
-        public short ComponentId { get; set; }
-        public string LocationName { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
+        public int id { get; set; }
+        public string uuid { get; set; } = Guid.NewGuid().ToString();
+        public short component_id { get; set; }
+        public string location_name { get; set; } = string.Empty;
+        public string description { get; set; } = string.Empty;
 
-        // All Component 
-        public ICollection<Hardware> Hardwares { get; set; }
-        public ICollection<Module> Modules { get; set; }
-        public ICollection<ControlPoint> ControlPoints { get; set; }
-        public ICollection<MonitorPoint> MonitorPoints { get; set; }
-        public ICollection<AccessLevel> AccessLevels { get; set; }
-        public ICollection<AccessArea> AccessAreas { get; set; }
-        public ICollection<CardHolder> CardHolders { get; set; }
-        public ICollection<Door> Doors { get; set; }
-        public ICollection<MonitorGroup> MonitorPointsGroup { get; set; }
-        public ICollection<OperatorLocation> OperatorLocations { get; set; }
-        public ICollection<Transaction> Transactions { get; set; }
-        public ICollection<Credential> Credentials { get; set; }
-        public ICollection<Holiday> Holidays { get; set; }
-        public ICollection<Reader> Readers { get; set; }
-        public ICollection<RequestExit> RequestExits { get; set; }
-        public ICollection<Sensor> Sensors { get; set; }
-        public ICollection<Strike> Strikes { get; set; }
-        public ICollection<Procedure> Procedures { get; set; }
-        public ICollection<Action> Actions { get; set; }
-        public ICollection<Trigger> Triggers { get; set; }
-        public ICollection<Interval> Intervals { get; set; }
-        public ICollection<TimeZone> TimeZones { get; set; }
+        // All HardwareComponent 
+        public ICollection<Hardware> hardwares { get; set; }
+        public ICollection<Module> modules { get; set; }
+        public ICollection<ControlPoint> control_points { get; set; }
+        public ICollection<MonitorPoint> monitor_points { get; set; }
+        public ICollection<AccessLevel> accesslevels { get; set; }
+        public ICollection<Area> areas { get; set; }
+        public ICollection<CardHolder> cardholders { get; set; }
+        public ICollection<Door> doors { get; set; }
+        public ICollection<MonitorGroup> monitor_groups { get; set; }
+        public ICollection<OperatorLocation> operator_locations { get; set; }
+        public ICollection<Transaction> transactions { get; set; }
+        public ICollection<Credential> credentials { get; set; }
+        public ICollection<Holiday> holidays { get; set; }
+        public ICollection<Reader> readers { get; set; }
+        public ICollection<RequestExit> request_exits { get; set; }
+        public ICollection<Sensor> sensors { get; set; }
+        public ICollection<Strike> strikes { get; set; }
+        public ICollection<Procedure> procedures { get; set; }
+        public ICollection<Action> actions { get; set; }
+        public ICollection<Trigger> triggers { get; set; }
+        public ICollection<Interval> intervals { get; set; }
+        public ICollection<TimeZone> timezones { get; set; }
 
-        public bool IsActive { get; set; } = true;
-        public DateTime CreatedDate { get; set; }
-        public DateTime UpdatedDate { get; set; }
+        public bool is_active { get; set; } = true;
+        public DateTime created_date { get; set; }
+        public DateTime updated_date { get; set; }
 
     }
 }

@@ -6,6 +6,7 @@ using HIDAeroService.Entity;
 using HIDAeroService.Helpers;
 using HIDAeroService.Mapper;
 using Microsoft.EntityFrameworkCore;
+using MiNET.Entities;
 using System.Net;
 using System.Security.Cryptography;
 
@@ -16,13 +17,13 @@ namespace HIDAeroService.Service.Impl
         public async Task<ResponseDto<bool>> CreateAsync(CreateOperatorDto dto)
         {
             if (string.IsNullOrEmpty(dto.Password)) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.PASSWORD_UNASSIGN, []);
-            if (await context.Operators.AnyAsync(d => String.Equals(dto.Username,d.Username))) return ResponseHelper.Duplicate<bool>();
+            if (await context.@operator.AnyAsync(d => String.Equals(dto.Username,d.user_name))) return ResponseHelper.Duplicate<bool>();
 
             var ComponentId = await helperService.GetLowestUnassignedNumberNoLimitAsync<Operator>(context);
 
             var en = MapperHelper.DtoToOperator(dto,ComponentId,DateTime.Now);
 
-            await context.Operators.AddAsync(en);
+            await context.@operator.AddAsync(en);
             await context.SaveChangesAsync();
 
             return ResponseHelper.SuccessBuilder<bool>(true);
@@ -31,20 +32,20 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<bool>> DeleteByIdAsync(short component)
         {
-            var en = await context.Operators
-                .Where(o => o.ComponentId == component)
+            var en = await context.@operator
+                .Where(o => o.component_id == component)
                 .FirstOrDefaultAsync();
 
             if (en is null) return ResponseHelper.NotFoundBuilder<bool>();
 
-            // Delete Operator Location reference
-            var loc = await context.OperatorLocations
-                .Where(x => x.OperatorId == en.ComponentId)
+            // Delete operator location reference
+            var loc = await context.operator_location
+                .Where(x => x.operator_id == en.component_id)
                 .ToArrayAsync();
 
-            context.OperatorLocations.RemoveRange(loc);
+            context.operator_location.RemoveRange(loc);
 
-            context.Operators.Remove(en);
+            context.@operator.Remove(en);
             await context.SaveChangesAsync();
 
             return ResponseHelper.SuccessBuilder<bool>(true);
@@ -71,11 +72,26 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<IEnumerable<OperatorDto>>> GetAsync()
         {
-            var dto = await context.Operators
+            var dto = await context.@operator
                 .AsNoTracking()
-                .Include(x => x.OperatorLocations)
-                .ThenInclude(x => x.Location)
-                .Select(x => MapperHelper.OperatorToDto(x))
+                .Select(x => new OperatorDto
+                {
+                    Uuid = x.uuid,
+                    LocationIds = x.operator_locations.Select(x => x.location.component_id).ToList(),
+                    IsActive = x.is_active,
+
+                    // extend_desc 
+                    ComponentId = x.component_id,
+                    Username = x.user_name,
+                    Email = x.email,
+                    Title = x.title,
+                    FirstName = x.first_name,
+                    MiddleName = x.middle_name,
+                    LastName = x.last_name,
+                    Phone = x.phone,
+                    Image = x.image_path,
+                    RoleId = x.role_id,
+                })
                 .ToArrayAsync();
 
             return ResponseHelper.SuccessBuilder<IEnumerable<OperatorDto>>(dto);
@@ -83,12 +99,27 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<IEnumerable<OperatorDto>>> GetByLocationAsync(short location)
         {
-            var dto = await context.Operators
+            var dto = await context.@operator
                 .AsNoTracking()
-                .Include(x => x.OperatorLocations)
-                .ThenInclude(x => x.Location)
-                .Where(x => x.OperatorLocations.Select(x => x.LocationId).Contains(location))
-                .Select(x => MapperHelper.OperatorToDto(x))
+                .Where(x => x.operator_locations.Select(x => x.location_id).Contains(location))
+                .Select(x => new OperatorDto
+                {
+                    Uuid = x.uuid,
+                    LocationIds = x.operator_locations.Select(x => x.location.component_id).ToList(),
+                    IsActive = x.is_active,
+
+                    // extend_desc 
+                    ComponentId = x.component_id,
+                    Username = x.user_name,
+                    Email = x.email,
+                    Title = x.title,
+                    FirstName = x.first_name,
+                    MiddleName = x.middle_name,
+                    LastName = x.last_name,
+                    Phone = x.phone,
+                    Image = x.image_path,
+                    RoleId = x.role_id,
+                })
                 .ToArrayAsync();
 
             return ResponseHelper.SuccessBuilder<IEnumerable<OperatorDto>>(dto);
@@ -96,12 +127,27 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<OperatorDto>> GetByUsernameAsync(string Username)
         {
-            var dto = await context.Operators
+            var dto = await context.@operator
                 .AsNoTracking()
-                .Include(x => x.OperatorLocations)
-                .ThenInclude(x => x.Location)
-                .Where(o => String.Equals(Username, o.Username))
-                .Select(o => MapperHelper.OperatorToDto(o))
+                .Where(o => String.Equals(Username, o.user_name))
+                .Select(x => new OperatorDto
+                {
+                    Uuid = x.uuid,
+                    LocationIds = x.operator_locations.Select(x => x.location.component_id).ToList(),
+                    IsActive = x.is_active,
+
+                    // extend_desc 
+                    ComponentId = x.component_id,
+                    Username = x.user_name,
+                    Email = x.email,
+                    Title = x.title,
+                    FirstName = x.first_name,
+                    MiddleName = x.middle_name,
+                    LastName = x.last_name,
+                    Phone = x.phone,
+                    Image = x.image_path,
+                    RoleId = x.role_id,
+                })
                 .FirstOrDefaultAsync();
 
             if(dto is null) return ResponseHelper.NotFoundBuilder<OperatorDto>();
@@ -113,24 +159,24 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<CreateOperatorDto>> UpdateAsync(CreateOperatorDto dto)
         {
-            var en = await context.Operators
-                .Include(x => x.OperatorLocations)
-                .ThenInclude(x => x.Location)
-                .Where(o => String.Equals(dto.Username, o.Username))
+            var en = await context.@operator
+                .Include(x => x.operator_locations)
+                .ThenInclude(x => x.location)
+                .Where(o => String.Equals(dto.Username, o.user_name))
                 .FirstOrDefaultAsync();
 
             if(en is null) return ResponseHelper.NotFoundBuilder<CreateOperatorDto>();
 
-            // Delete Operator Location reference
-            var loc = await context.OperatorLocations
-                .Where(x => x.OperatorId == dto.ComponentId)
+            // Delete operator location reference
+            var loc = await context.operator_location
+                .Where(x => x.operator_id == dto.ComponentId)
                 .ToArrayAsync();
 
-            context.OperatorLocations.RemoveRange(loc);
+            context.operator_location.RemoveRange(loc);
 
             MapperHelper.UpdateOperator(en,dto);
 
-            context.Operators.Update(en);
+            context.@operator.Update(en);
             await context.SaveChangesAsync();
 
             return ResponseHelper.SuccessBuilder(dto);
@@ -138,18 +184,18 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<bool>> UpdatePasswordAsync(PasswordDto dto)
         {
-            var en = await context.Operators
-                    .Where(x => x.Username == dto.Username)
-                    .OrderBy(x => x.Id)
+            var en = await context.@operator
+                    .Where(x => x.user_name == dto.Username)
+                    .OrderBy(x => x.id)
                     .FirstOrDefaultAsync();
 
             if (en is null) return ResponseHelper.NotFoundBuilder<bool>();
 
-            if (!EncryptHelper.VerifyPassword(dto.Old,en.Password)) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.UNSUCCESS, [ResponseMessage.OLD_PASSPORT_INCORRECT]);
+            if (!EncryptHelper.VerifyPassword(dto.Old,en.password)) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.UNSUCCESS, [ResponseMessage.OLD_PASSPORT_INCORRECT]);
 
-            en.Password = EncryptHelper.HashPassword(dto.New);
+            en.password = EncryptHelper.HashPassword(dto.New);
 
-            context.Operators.Update(en);
+            context.@operator.Update(en);
 
             await context.SaveChangesAsync();
 

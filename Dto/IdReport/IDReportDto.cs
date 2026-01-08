@@ -1,14 +1,14 @@
 ﻿namespace HIDAeroService.DTO.IdReport
 {
-    public sealed class IDReportDto
+    public sealed class IdReportDto
     {
-        public short DeviceId { get; set; }
+        public short ComponentId { get; set; }
         public int SerialNumber { get; set; }
-        public short ScpId { get; set; }
-        public byte ConfigFlag { get; set; }
-        public string MacAddress { get; set; }
-        public string Ip { get; set; }
-        public short Port { get; set; }
-        public string Model { get; set; }
+        public string MacAddress { get; set; } = string.Empty;
+        public string Ip { get; set; } = string.Empty;
+        public string Port { get; set; } = string.Empty;
+        public string Firmware { get; set; } = string.Empty;
+        public short HardwareType { get; set; }
+        public string HardwareTypeDescription { get; set; } = string.Empty;
     }
 }

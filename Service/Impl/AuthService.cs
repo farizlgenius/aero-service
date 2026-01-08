@@ -24,45 +24,45 @@ namespace HIDAeroService.Service.Impl
         private readonly TimeSpan _cookieExpiry = TimeSpan.FromDays(30);
         public bool ValidateLogin(Operator user, string Password)
         {
-            return EncryptHelper.VerifyPassword(Password, user.Password);
+            return EncryptHelper.VerifyPassword(Password, user.password);
         }
 
         public async Task<ResponseDto<TokenDto>> LoginAsync(LoginDto model, HttpRequest request, HttpResponse response)
         {
-            var user = await context.Operators
+            var user = await context.@operator
                 .AsNoTracking()
-                .Include(x => x.OperatorLocations)
-                .ThenInclude(x => x.Location)
-                .Include(x => x.Role)
-                .ThenInclude(x => x.FeatureRoles)
-                .Where(x => x.Username == model.Username)
-                .OrderBy(x => x.ComponentId)
+                .Include(x => x.operator_locations)
+                .ThenInclude(x => x.location)
+                .Include(x => x.role)
+                .ThenInclude(x => x.feature_roles)
+                .Where(x => x.user_name == model.Username)
+                .OrderBy(x => x.component_id)
                 .FirstOrDefaultAsync();
 
             if (user is null) return ResponseHelper.NotFoundBuilder<TokenDto>(["User not found."]);
 
             // TODO: Replace with real user validation (DB, hashed passwords)
             if (!ValidateLogin(user, model.Password))
-                return ResponseHelper.Unauthorize<TokenDto>(["Password incorrect."]);
+                return ResponseHelper.Unauthorize<TokenDto>(["password incorrect."]);
 
 
             var accessToken = tokenService.CreateAccessToken(
-                user.UserId, 
+                user.user_id, 
                 model.Username,
-                user.OperatorLocations
-                .Select(x => x.Location)
+                user.operator_locations
+                .Select(x => x.location)
                 .ToList(),
-                user.Role,
-                user.Email,
-                user.Title,
-                user.FirstName,
-                user.MiddleName,
-                user.LastName);
+                user.role,
+                user.email,
+                user.title,
+                user.first_name,
+                user.middle_name,
+                user.last_name);
 
             // create random refresh token and store hashed in redis + audit in DB
             var rawRefresh = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
             
-            await refresh.StoreTokenAsync(rawRefresh, user.UserId,user.Username, _refreshTtl, info: request.HttpContext.Connection.RemoteIpAddress.ToString());
+            await refresh.StoreTokenAsync(rawRefresh, user.user_id,user.user_name, _refreshTtl, info: request.HttpContext.Connection.RemoteIpAddress.ToString());
 
             // set HttpOnly cookies (path limited to auth endpoint)
             response.Cookies.Append("refresh_token", rawRefresh, new CookieOptions
@@ -118,7 +118,9 @@ namespace HIDAeroService.Service.Impl
         {
             if (!request.Cookies.TryGetValue("refresh_token", out var oldRaw)) return ResponseHelper.Unauthorize<TokenDto>(["no refresh token"]);
 
-            var rec = await refresh.GetByRawTokenAsync(oldRaw);
+            
+            var rec = await refresh.GetByRawTokenAsync(oldRaw,request);
+            
             if (rec == null || rec.ExpireAt < DateTime.UtcNow)
             {
                 // token invalid expire
@@ -126,18 +128,18 @@ namespace HIDAeroService.Service.Impl
                 return ResponseHelper.Unauthorize<TokenDto>(["Invalid refresh token"]);
             }
 
-            var user = await context.Operators
+            var user = await context.@operator
                 .AsNoTracking()
-                .Include(x => x.OperatorLocations)
-                .ThenInclude(x => x.Location)
-                .Include(x => x.Role)
-                .ThenInclude(x => x.FeatureRoles)
-                .Where(x => x.UserId == rec.UserId)
+                .Include(x => x.operator_locations)
+                .ThenInclude(x => x.location)
+                .Include(x => x.role)
+                .ThenInclude(x => x.feature_roles)
+                .Where(x => x.user_id == rec.UserId)
                 .FirstOrDefaultAsync();
 
             if (user is null) return ResponseHelper.NotFoundBuilder<TokenDto>(["User not found."]);
 
-            if (String.IsNullOrEmpty(user.Username)) return ResponseHelper.NotFoundBuilder<TokenDto>(["Can not automatic create token username with specific userid not found"]);
+            if (String.IsNullOrEmpty(user.user_name)) return ResponseHelper.NotFoundBuilder<TokenDto>(["Can not automatic create token username with specific userid not found"]);
 
             // rotate token automatically: create new raw token and swap in redis
             var newRaw = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
@@ -153,7 +155,7 @@ namespace HIDAeroService.Service.Impl
 
 
             // issue new access token
-            var accessToken = tokenService.CreateAccessToken(rec.UserId, user.Username,user.OperatorLocations.Select(x => x.Location).ToList(),user.Role,user.Email,user.Title,user.FirstName,user.MiddleName,user.LastName);
+            var accessToken = tokenService.CreateAccessToken(rec.UserId, user.user_name,user.operator_locations.Select(x => x.location).ToList(),user.role,user.email,user.title,user.first_name,user.middle_name,user.last_name);
 
             // set rotate cookie
             response.Cookies.Append("refresh_token", newRaw, new CookieOptions
@@ -194,14 +196,14 @@ namespace HIDAeroService.Service.Impl
 
         public ResponseDto<TokenDetail> Me(ClaimsPrincipal User)
         {
-            //var userId = User.FindFirst("sub")?.Value ?? User.Identity?.Name ?? "unknown";
-            //var name = User.Identity?.Name;
-            //var ujson = User.FindFirst("user")?.Value;
+            //var userId = User.FindFirst("sub")?.value ?? User.Identity?.name ?? "unknown";
+            //var name = User.Identity?.name;
+            //var ujson = User.FindFirst("user")?.value;
             //var user = JsonSerializer.Deserialize<Users>(ujson);
-            //var ljson = User.FindFirst("location")?.Value;
-            //var loc = JsonSerializer.Deserialize<DTO.Token.Location>(ljson);
-            //var rjson = User.FindFirst("role")?.Value;
-            //var rol = JsonSerializer.Deserialize<DTO.Token.Role>(rjson);
+            //var ljson = User.FindFirst("location")?.value;
+            //var loc = JsonSerializer.Deserialize<DTO.Token.location>(ljson);
+            //var rjson = User.FindFirst("role")?.value;
+            //var rol = JsonSerializer.Deserialize<DTO.Token.role>(rjson);
             //var info = new TokenInfo(user, loc, rol);
             //var dto = new TokenDetail(true, info);
             return ResponseHelper.SuccessBuilder<TokenDetail>(null);

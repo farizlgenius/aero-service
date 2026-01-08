@@ -5,10 +5,10 @@ namespace HIDAeroService.Entity
     public sealed class CardHolderAccessLevel
     {
         [Key]
-        public int Id { get; set; }
-        public string CardHolderId { get; set; }
-        public CardHolder CardHolder { get; set; }
-        public short AccessLevelId { get; set; }
-        public AccessLevel AccessLevel { get; set; }
+        public int id { get; set; }
+        public string cardholder_id { get; set; }
+        public CardHolder card_holder { get; set; }
+        public short access_level_id { get; set; }
+        public AccessLevel access_level { get; set; }
     }
 }

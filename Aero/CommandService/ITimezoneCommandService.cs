@@ -3,7 +3,7 @@ using HIDAeroService.Entity;
 
 namespace HIDAeroService.Aero.CommandService
 {
-    public interface ITimezoneCommandService
+    public interface ITimeZoneCommandService 
     {
         Task<bool> ExtendedTimeZoneActSpecificationAsync(short scpId, Entity.TimeZone dto, List<Interval> intervals, int activeTime, int deactiveTime);
         Task<bool> TimeZoneControlAsync(short ScpId, short Component, short Command);

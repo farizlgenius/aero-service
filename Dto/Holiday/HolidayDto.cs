@@ -4,7 +4,7 @@ namespace HIDAeroService.DTO.Holiday
 {
     public sealed class HolidayDto : NoMacBaseDto,IComponentId
     {
-        public short ComponentId { get; set; }
+        public short component_id { get; set; }
         public short Year { get; set; }
         public short Month { get; set; }
         public short Day { get; set; }

@@ -1,54 +1,49 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.Constants;
+using HIDAeroService.Aero.CommandService;
 using HIDAeroService.Entity;
-using HIDAeroService.Model;
 using HIDAeroService.Service;
-using HIDAeroService.Service.Impl;
 using HIDAeroService.Utility;
-using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading.Channels;
 
 
 namespace HIDAeroService.AeroLibrary
 {
-    public sealed class AeroMessage(AeroCommand command, IServiceScopeFactory scopeFactory)
+    public sealed class AeroMessage(AeroCommandService command, IServiceScopeFactory scopeFactory,ILogger<AeroMessage> logger, Channel<SCPReplyMessage> queue)
     {
-        private bool _shutdownFlag;
-        private List<IdReport> report = new List<IdReport>();
 
-        public List<IdReport> iDReports { get; set; } = new List<IdReport>();
-        public IdReport iDReport { get; set; }
         public bool isWaitingCardScan { private get; set; }
         public short ScanScpId { private get; set; }
-        public short ScanAcrNo {private get; set;} 
-
+        public short ScanAcrNo {private get; set;}
+        private bool shutdownFlag;
 
         public void SetShutDownflag()
         {
             SCPDLL.scpDebugSet((int)enSCPDebugLevel.enSCPDebugToFile);
             Thread.Sleep(100);
-            _shutdownFlag = true;
+            shutdownFlag = true;
         }
+
 
         public void GetTransactionUntilShutDown()
         {
-            while (_shutdownFlag == false)
+            while (shutdownFlag == false)
             {
-                // GetAsync Transaction here
                 GetTransaction();
             }
         }
 
-        private async void GetTransaction()
+        private void GetTransaction()
         {
             SCPReplyMessage message = new SCPReplyMessage();
             if (message.GetMessage())
             {
-                await ProcessMessage(message);
+                ProcessMessage(message);
             }
 
         }
 
-        private async Task ProcessMessage(SCPReplyMessage message)
+        private void ProcessMessage(SCPReplyMessage message)
         {
             using var scope = scopeFactory.CreateScope();
             var handle = scope.ServiceProvider.GetRequiredService<MessageHandler>();
@@ -68,26 +63,17 @@ namespace HIDAeroService.AeroLibrary
                     break;
                 case (int)enSCPReplyType.enSCPReplyTransaction:
                     handle.SCPReplyTransactionHandler(message,isWaitingCardScan,ScanScpId,ScanAcrNo);
-                    await transactionService.SaveToDatabase(message);
+                    queue.Writer.TryWrite(message);
                     transactionService.TriggerEventRecieve();
                     break;
                 case (int)enSCPReplyType.enSCPReplyCommStatus:
-                    hardwareService.TriggerDeviceStatus(helperService.GetMacFromId((short)message.SCPId),message.comm.status);
-                    if (message.comm.status != 2)
-                    {
-                        iDReports.RemoveAll(obj => obj.ScpId == message.SCPId);
-                        hardwareService.TriggerIdReport(iDReports);
-                    }
+                    hardwareService.TriggerDeviceStatus(helperService.GetMacFromId((short)message.SCPId),message.comm.status);                  
+                    queue.Writer.TryWrite(message);
                     handle.SCPReplyCommStatus(message);
                     break;
                 case (int)enSCPReplyType.enSCPReplyIDReport:
                     handle.SCPReplyIDReport(message);
-                    // If Controller not register yet
-                    iDReport = await hardwareService.HandleFoundHardware(message);
-                    if(iDReport != null)
-                    {
-                        iDReports.Add(iDReport);
-                    }
+                    queue.Writer.TryWrite(message);       
                     break;
                 case (int)enSCPReplyType.enSCPReplyTranStatus:
                     hardwareService.TriggerTranStatus(message);
@@ -129,21 +115,36 @@ namespace HIDAeroService.AeroLibrary
                     break;
                 case (int)enSCPReplyType.enSCPReplyStrStatus:
                     handle.SCPReplyStrStatus(message);
-                    await hardwareService.VerifyAllocateHardwareMemoryAsync(message);
-                     break;
+                    queue.Writer.TryWrite(message);
+                    break;
                 case (int)enSCPReplyType.enSCPReplyCmndStatus:
                     // Save to DB if fail
                     commandService.HandleSaveFailCommand(command,message);
-                    hardwareService.HandleUploadCommand(command,message);
                     handle.SCPReplyCmndStatus(message,command);
-                    command.CommandResultTrigger(message.cmnd_sts.sequence_number,message.cmnd_sts.status == 1 ? true : false);
-                        break;
+                    //command.CompleteCommand($"{message.SCPId}/{message.cmnd_sts.sequence_number}",message.cmnd_sts.status == 1);
+                    break;
                 case (int)enSCPReplyType.enSCPReplyWebConfigNetwork:
                     handle.SCPReplyWebConfigNetwork(message);
-                    hardwareService.AssignIpToIdReport(message, iDReports);
-                    
+                    queue.Writer.TryWrite(message);
                     break;
-                    
+                case (int)enSCPReplyType.enSCPReplyWebConfigNotes:
+                    break;
+                case (int)enSCPReplyType.enSCPReplyWebConfigSessionTmr:
+                    break;
+                case (int)enSCPReplyType.enSCPReplyWebConfigWebConn:
+                    break;
+                case (int)enSCPReplyType.enSCPReplyWebConfigAutoSave:
+                    break;
+                case (int)enSCPReplyType.enSCPReplyWebConfigNetDiag:
+                    break;
+                case (int)enSCPReplyType.enSCPReplyWebConfigTimeServer:
+                    break;
+                case (int)enSCPReplyType.enSCPReplyWebConfigDiagnostics:
+                    break;
+                case (int)enSCPReplyType.enSCPReplyWebConfigHostCommPrim:
+                    queue.Writer.TryWrite(message);
+                    break;
+                   
                 default:
                     break;
             }

@@ -5,10 +5,10 @@ namespace HIDAeroService.Entity
     public sealed class HardwareCredential
     {
         [Key]
-        public int Id { get; set; }
-        public string MacAddress { get; set; } = string.Empty;
-        public short HardwareCredentialId { get; set; }
-        public Hardware Hardware { get; set; }
-        public Credential Credential { get; set; }
+        public int id { get; set; }
+        public string hardware_mac { get; set; } = string.Empty;
+        public short hardware_credential_id { get; set; }
+        public Hardware hardware { get; set; }
+        public Credential credential { get; set; }
     }
 }

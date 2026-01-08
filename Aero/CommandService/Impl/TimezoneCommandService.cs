@@ -2,18 +2,19 @@
 using HIDAeroService.DTO.Interval;
 using HIDAeroService.Entity;
 using MiNET.Entities.Passive;
+using System;
 
 namespace HIDAeroService.Aero.CommandService.Impl
 {
-    public sealed class TimezoneCommandService : BaseCommandService,ITimezoneCommandService
+    public sealed class TimeZoneCommandService(AeroCommandService command) : ITimeZoneCommandService
     {
-        public async Task<bool> ExtendedTimeZoneActSpecificationAsync(short scpId, Entity.TimeZone dto, List<Interval> intervals, int activeTime, int deactiveTime)
+        public async Task<bool> ExtendedTimeZoneActSpecificationAsync(short ScpId, Entity.TimeZone dto, List<Interval> intervals, int activeTime, int deactiveTime)
         {
             CC_SCP_TZEX_ACT cc = new CC_SCP_TZEX_ACT();
             cc.lastModified = 0;
-            cc.nScpID = scpId;
-            cc.number = dto.ComponentId;
-            cc.mode = dto.Mode;
+            cc.nScpID = ScpId;
+            cc.number = dto.component_id;
+            cc.mode = dto.mode;
             cc.actTime = activeTime;
             cc.deactTime = deactiveTime;
             cc.intervals = (short)intervals.Count;
@@ -22,21 +23,20 @@ namespace HIDAeroService.Aero.CommandService.Impl
                 int i = 0;
                 foreach (var interval in intervals)
                 {
-                    cc.i[i].i_days = (short)ConvertDayToBinary(interval.Days);
-                    cc.i[i].i_start = (short)ConvertTimeToEndMinute(interval.StartTime);
-                    cc.i[i].i_end = (short)ConvertTimeToEndMinute(interval.StartTime);
+                    cc.i[i].i_days = (short)ConvertDayToBinary(interval.days);
+                    cc.i[i].i_start = (short)ConvertTimeToEndMinute(interval.start_time);
+                    cc.i[i].i_end = (short)ConvertTimeToEndMinute(interval.start_time);
                     i++;
                 }
 
             }
-
-            bool flag = SendCommand((short)enCfgCmnd.enCcScpTimezoneExAct, cc);
-            if (flag)
-            {
-                return await SendCommandAsync(SCPDLL.scpGetTagLastPosted(scpId), _commandTimeout);
-            }
-
-            return false;
+            var tag = ScpId + "/" + SCPDLL.scpGetTagLastPosted(ScpId) + 1;
+            bool flag = command.SendCommand((short)enCfgCmnd.enCcScpTimezoneExAct, cc);
+            //if (flag)
+            //{
+            //    return await command.TrackCommandAsync(tag, hardware_id, Constants.command.C3103);
+            //}
+            return flag;
         }
 
         public async Task<bool> TimeZoneControlAsync(short ScpId,short Component,short Command)
@@ -45,12 +45,13 @@ namespace HIDAeroService.Aero.CommandService.Impl
             cc.scp_number = ScpId;
             cc.tz_number = Component;
             cc.command = Command;
-            bool flag = SendCommand((short)enCfgCmnd.enCcTzCommand, cc);
-            if (flag)
-            {
-                return await SendCommandAsync(SCPDLL.scpGetTagLastPosted(ScpId), _commandTimeout);
-            }
-            return false;
+            var tag = ScpId + "/" + SCPDLL.scpGetTagLastPosted(ScpId) + 1;
+            bool flag = command.SendCommand((short)enCfgCmnd.enCcTzCommand, cc);
+            //if (flag)
+            //{
+            //    return await command.TrackCommandAsync(tag, hardware_id, Constants.command.C314);
+            //}
+            return flag;
         }
 
         private string DaysInWeekToString(DaysInWeekDto days)
@@ -108,13 +109,13 @@ namespace HIDAeroService.Aero.CommandService.Impl
         private int ConvertDayToBinary(DaysInWeek days)
         {
             int result = 0;
-            result |= (days.Sunday ? 1 : 0) << 0;
-            result |= (days.Monday ? 1 : 0) << 1;
-            result |= (days.Tuesday ? 1 : 0) << 2;
-            result |= (days.Wednesday ? 1 : 0) << 3;
-            result |= (days.Thursday ? 1 : 0) << 4;
-            result |= (days.Friday ? 1 : 0) << 5;
-            result |= (days.Saturday ? 1 : 0) << 6;
+            result |= (days.sunday ? 1 : 0) << 0;
+            result |= (days.monday ? 1 : 0) << 1;
+            result |= (days.tuesday ? 1 : 0) << 2;
+            result |= (days.wednesday ? 1 : 0) << 3;
+            result |= (days.thursday ? 1 : 0) << 4;
+            result |= (days.friday ? 1 : 0) << 5;
+            result |= (days.saturday ? 1 : 0) << 6;
 
             // Holiday
             //result |= 0 << 8;

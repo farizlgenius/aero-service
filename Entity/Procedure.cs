@@ -2,8 +2,8 @@
 {
     public sealed class Procedure : BaseEntity
     {
-        public string Name { get; set; } = string.Empty;
-        public Trigger Trigger { get; set; }
-        public ICollection<Action> Actions { get; set; }
+        public string name { get; set; } = string.Empty;
+        public Trigger trigger { get; set; }
+        public ICollection<Action> actions { get; set; }
     }
 }

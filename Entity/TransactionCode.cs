@@ -5,12 +5,12 @@ namespace HIDAeroService.Entity
     public sealed class TransactionCode
     {
         [Key]
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public short Value { get; set; }
-        public short TransactionTypeValue { get; set; }
-        public TransactionType TransactionType { get; set; }
+        public int id { get; set; }
+        public string name { get; set; } = string.Empty;
+        public string description { get; set; } = string.Empty;
+        public short value { get; set; }
+        public short transaction_type_value { get; set; }
+        public TransactionType transaction_type { get; set; }
 
     }
 

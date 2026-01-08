@@ -5,10 +5,10 @@ namespace HIDAeroService.Entity
     public sealed class TriggerCommand
     {
         [Key]
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public short Value { get; set; }
-        public string Description { get; set; } = string.Empty;
+        public int id { get; set; }
+        public string name { get; set; } = string.Empty;
+        public short value { get; set; }
+        public string description { get; set; } = string.Empty;
 
     }
 }

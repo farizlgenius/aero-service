@@ -7,7 +7,7 @@ namespace HIDAeroService.DTO.Credential
 {
     public sealed class CredentialDto : NoMacBaseDto,IComponentId
     {
-        public short ComponentId { get; set; }
+        public short component_id { get; set; }
         public int Bits { get; set; }
         public int IssueCode { get; set; }
         public int FacilityCode { get; set; }
@@ -15,6 +15,6 @@ namespace HIDAeroService.DTO.Credential
         public string? Pin { get; set; }
         public string ActiveDate { get; set; }
         public string? DeactiveDate { get; set; }
-        //public CardHolderDto? CardHolder { get; set; }
+        //public CardHolderDto? card_holder { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using HIDAeroService.AeroLibrary;
+﻿using HIDAeroService.Aero.CommandService;
+using HIDAeroService.Aero.CommandService.Impl;
 using HIDAeroService.Constants;
 using HIDAeroService.Data;
 using HIDAeroService.Entity;
@@ -6,17 +7,17 @@ using HIDAeroService.Helpers;
 
 namespace HIDAeroService.Service.Impl
 {
-    public class SysService(AppDbContext context, AeroCommand command)
+    public class SysService(AppDbContext context, AeroCommandService command)
     {
 
         public bool ConfigureDriver()
         {
-            var data = context.SystemConfigurations.First();
+            var data = context.system_configuration.First();
             if (data == null) return false;
 
-            if (!command.SystemLevelSpecification(data.nPorts, data.nScp)) return false;
+            if (!command.SystemLevelSpecification(data.n_ports, data.n_scp)) return false;
 
-            if (!command.CreateChannel(data.cPort, data.nChannelId, data.cType)) return false;
+            if (!command.CreateChannel(data.c_port, data.n_channel_id, data.c_type)) return false;
 
 
             return true;

@@ -2,7 +2,7 @@
 {
     public interface IDatetime
     {
-        public DateTime CreatedDate { get; set; }
-        public DateTime UpdatedDate { get; set; }
+        DateTime created_date { get; set; }
+        DateTime updated_date { get; set; }
     }
 }

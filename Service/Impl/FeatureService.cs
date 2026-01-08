@@ -12,11 +12,11 @@ namespace HIDAeroService.Service.Impl
     {
         public async Task<ResponseDto<IEnumerable<FeatureDto>>> GetFeatureByRoleAsync(short RoleId)
         {
-            var dtos = await context.FeatureRoles
+            var dtos = await context.feature_role
                 .AsNoTracking()
-                .Include(f => f.Feature)
-                .Where(f => f.RoleId == RoleId)
-                .Select(x => MapperHelper.FeatureToDto(x.Feature,x.IsAllow,x.IsCreate,x.IsModify,x.IsDelete,x.IsAction))
+                .Include(f => f.feature)
+                .Where(f => f.role_id == RoleId)
+                .Select(x => MapperHelper.FeatureToDto(x.feature,x.is_allow,x.is_create,x.is_modify,x.is_delete,x.is_action))
                 .ToArrayAsync();
 
             return ResponseHelper.SuccessBuilder<IEnumerable<FeatureDto>>(dtos);
@@ -24,12 +24,12 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<IEnumerable<FeatureDto>>> GetFeatureListAsync()
         {
-            var dtos = await context.Features
+            var dtos = await context.feature
                 .AsNoTracking()
                 .Select(x => new FeatureDto
                 {
-                    Name = x.Name,
-                    ComponentId = x.ComponentId,
+                    Name = x.name,
+                    ComponentId = x.component_id,
                     IsAllow = false,
                     IsCreate =false,
                     IsModify = false,
@@ -41,12 +41,12 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<FeatureDto>> GetOneFeatureByRoleIdAsync(short RoleId, short FeatureId)
         {
-            var dto = await context.FeatureRoles
+            var dto = await context.feature_role
                 .AsNoTracking()
-                .Include(f => f.Feature)
-                .Where(f => f.RoleId == RoleId && f.FeatureId == FeatureId)
-                .OrderBy(x => x.RoleId)
-                .Select(x => MapperHelper.FeatureToDto(x.Feature,x.IsAllow,x.IsCreate,x.IsModify,x.IsDelete,x.IsAction))
+                .Include(f => f.feature)
+                .Where(f => f.role_id == RoleId && f.feature_id == FeatureId)
+                .OrderBy(x => x.role_id)
+                .Select(x => MapperHelper.FeatureToDto(x.feature,x.is_allow,x.is_create,x.is_modify,x.is_delete,x.is_action))
                 .FirstOrDefaultAsync();
 
             return ResponseHelper.SuccessBuilder<FeatureDto>(dto);

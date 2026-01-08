@@ -11,6 +11,14 @@ namespace HIDAeroService.Helpers
             var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(raw));
             return Convert.ToHexString(bytes).ToLowerInvariant();
         }
+
+        public static bool CompareHash(string rawInput, string storedHash)
+        {
+            var hashBytes1 = Convert.FromHexString(Hash(rawInput));
+            var hashBytes2 = Convert.FromHexString(storedHash);
+
+            return CryptographicOperations.FixedTimeEquals(hashBytes1, hashBytes2);
+        }
         public static string HashPassword(string password)
         {
             // generate a random salt

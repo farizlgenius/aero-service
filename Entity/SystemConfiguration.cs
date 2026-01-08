@@ -5,12 +5,12 @@ namespace HIDAeroService.Entity
     public sealed class SystemConfiguration 
     {
         [Key]
-        public int Id { get; set; }
-        public short nPorts { get; set; }
-        public short nScp { get; set; }
-        public short nChannelId { get; set; }
-        public short cType { get; set; }
-        public short cPort { get; set; }
+        public int id { get; set; }
+        public short n_ports { get; set; }
+        public short n_scp { get; set; }
+        public short n_channel_id { get; set; }
+        public short c_type { get; set; }
+        public short c_port { get; set; }
 
     }
 }

@@ -1,5 +1,6 @@
 ﻿using HIDAeroService.Data;
 using HIDAeroService.DTO;
+using HIDAeroService.DTO.Feature;
 using HIDAeroService.DTO.Role;
 using HIDAeroService.Entity;
 using HIDAeroService.Helpers;
@@ -13,31 +14,31 @@ namespace HIDAeroService.Service.Impl
     {
         public async Task<ResponseDto<bool>> CreateAsync(RoleDto dto)
         {
-            if (await context.Roles.AsNoTracking().AnyAsync(r => r.Name == dto.Name)) return ResponseHelper.Duplicate<bool>();
+            if (await context.role.AsNoTracking().AnyAsync(r => r.name == dto.Name)) return ResponseHelper.Duplicate<bool>();
             var ComponentId = await helperService.GetLowestUnassignedNumberNoLimitAsync<Role>(context);
 
             var en = MapperHelper.DtoToRole(dto,ComponentId,DateTime.Now);
 
-            await context.Roles.AddAsync(en);
+            await context.role.AddAsync(en);
             await context.SaveChangesAsync();
             return ResponseHelper.SuccessBuilder<bool>(true);
         }
 
         public async Task<ResponseDto<bool>> DeleteByComponentIdAsync(short ComponentId)
         {
-            var en = await context.Roles
-                .Include(x => x.FeatureRoles)
-                .Where(r => r.ComponentId == ComponentId)
-                .OrderBy(x => x.ComponentId)
+            var en = await context.role
+                .Include(x => x.feature_roles)
+                .Where(r => r.component_id == ComponentId)
+                .OrderBy(x => x.component_id)
                 .FirstOrDefaultAsync();
 
             if (en is null) return ResponseHelper.NotFoundBuilder<bool>();
 
-            if (await context.Roles.AnyAsync(x => x.ComponentId == ComponentId && x.Operators.Any())) return ResponseHelper.FoundReferenceBuilder<bool>(["Found operator related"]);
+            if (await context.role.AnyAsync(x => x.component_id == ComponentId && x.operators.Any())) return ResponseHelper.FoundReferenceBuilder<bool>(["Found operator related"]);
 
-            context.FeatureRoles.RemoveRange(en.FeatureRoles);
+            context.feature_role.RemoveRange(en.feature_roles);
 
-            context.Roles.Remove(en);
+            context.role.Remove(en);
             await context.SaveChangesAsync();
 
             return ResponseHelper.SuccessBuilder<bool>(true);
@@ -64,25 +65,32 @@ namespace HIDAeroService.Service.Impl
         public async Task<ResponseDto<IEnumerable<RoleDto>>> GetAsync()
         {
             return ResponseHelper.SuccessBuilder<IEnumerable<RoleDto>>(
-                await context.Roles
+                await context.role
                 .AsNoTracking()
-                .Include(f => f.FeatureRoles)
-                .ThenInclude(fr => fr.Feature)
-                .ThenInclude(s => s.SubFeatures)
-                .Select(x => MapperHelper.RoleToDto(x))
+                .Select(x => new RoleDto
+                {
+                    component_id = x.component_id,
+                    Name = x.name,
+                    Features = x.feature_roles.Count > 0 ? x.feature_roles.Select(a => MapperHelper.FeatureToDto(a.feature, a.is_allow, a.is_create, a.is_modify, a.is_delete, a.is_action)).ToList() : new List<FeatureDto>()
+                })
                 .ToArrayAsync()
                 );
         }
 
         public async Task<ResponseDto<RoleDto>> GetByComponentIdAsync(short ComponentId)
         {
-            var dto = await context.Roles
+            var dto = await context.role
                 .AsNoTracking()
-                .Include(f => f.FeatureRoles)
-                .ThenInclude(fr => fr.Feature)
-                .Select(x => MapperHelper.RoleToDto(x))
-                .OrderBy(x => x.ComponentId)
+                .Select(x => new RoleDto
+                {
+                    component_id = x.component_id,
+                    Name = x.name,
+                    Features = x.feature_roles.Count > 0 ? x.feature_roles.Select(a => MapperHelper.FeatureToDto(a.feature, a.is_allow, a.is_create, a.is_modify, a.is_delete, a.is_action)).ToList() : new List<FeatureDto>()
+                })
+                .OrderBy(x => x.component_id)
                 .FirstOrDefaultAsync();
+
+            if (dto is null) return ResponseHelper.NotFoundBuilder<RoleDto>();
 
             return ResponseHelper.SuccessBuilder(dto);
                 
@@ -90,20 +98,20 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<RoleDto>> UpdateAsync(RoleDto dto)
         {
-            var en = await context.Roles
-                .Include(f => f.FeatureRoles)
-                .Where(r => r.ComponentId == dto.ComponentId)
-                .OrderBy(r => r.ComponentId)
+            var en = await context.role
+                .Include(f => f.feature_roles)
+                .Where(r => r.component_id == dto.component_id)
+                .OrderBy(r => r.component_id)
                 .FirstOrDefaultAsync();
 
             if(en is null) return ResponseHelper.NotFoundBuilder<RoleDto>();
 
-            // Delete Old Feature Role
-            context.FeatureRoles.RemoveRange(en.FeatureRoles);
+            // Delete Old feature role
+            context.feature_role.RemoveRange(en.feature_roles);
 
             MapperHelper.UpdateRole(en, dto);
 
-            context.Roles.Update(en);
+            context.role.Update(en);
             await context.SaveChangesAsync();
 
             return ResponseHelper.SuccessBuilder(dto);

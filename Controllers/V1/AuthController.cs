@@ -13,12 +13,12 @@ namespace HIDAeroService.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class AuthController(IAuthService authService) : ControllerBase
+    public class AuthController(IAuthService service) : ControllerBase
     {
         [HttpPost("login")]
         public async Task<ActionResult<ResponseDto<TokenDto>>> Login([FromBody] LoginDto model)
         {
-            var res = await authService.LoginAsync(model,Request,Response);
+            var res = await service.LoginAsync(model,Request,Response);
             return Ok(res);
         }
 
@@ -26,7 +26,7 @@ namespace HIDAeroService.Controllers.V1
         public async Task<ActionResult<ResponseDto<TokenDto>>> Refresh()
         {
             // HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown"
-            var res = await authService.RefreshAsync(Request,Response);
+            var res = await service.RefreshAsync(Request,Response);
             return Ok(res);
 
         }
@@ -35,7 +35,7 @@ namespace HIDAeroService.Controllers.V1
         public async Task<ActionResult<ResponseDto<bool>>> Revoke()
         {
 
-            var res = await authService.RevokeAsync(Request,Response);
+            var res = await service.RevokeAsync(Request,Response);
             return Ok(res);
 
         }
@@ -76,7 +76,7 @@ namespace HIDAeroService.Controllers.V1
             var dto = new TokenDetail
             {
                 Auth = true,
-                //Info = info,
+                //info = info,
             };
             return Ok(
                 new

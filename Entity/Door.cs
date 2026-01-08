@@ -5,55 +5,57 @@ namespace HIDAeroService.Entity
 {
     public sealed class Door : BaseEntity
     {
-        public string Name { get; set; } = string.Empty;   
-        public short AccessConfig { get; set; }
-        public short PairDoorNo { get; set; }
+        public string name { get; set; } = string.Empty;   
+        public short access_config { get; set; }
+        public short pair_door_no { get; set; }
+        public string hardware_mac { get; set; } = string.Empty;
+        public Hardware hardware { get; set; }
         // Reader setting for Reader In / Reader Out
-        public ICollection<Reader> Readers { get; set; }
-        public short ReaderOutConfiguration { get; set; }
+        public ICollection<Reader> readers { get; set; }
+        public short reader_out_config { get; set; }
 
         // Strike setting for strike
-        public short StrkComponentId { get; set; }
-        public Strike Strk {  get; set; }
+        public short strike_id { get; set; }
+        public Strike strike {  get; set; }
 
-        //Sensor setting for sensor
-        public short SensorComponentId { get; set; }
-        public Sensor Sensor { get; set; }
+        //sensor setting for sensor
+        public short sensor_id { get; set; }
+        public Sensor sensor { get; set; }
         
 
-        //Sensor setting for rex0 / rex1
-        public ICollection<RequestExit>? RequestExits { get; set; }
-        public short CardFormat { get; set; } = 255;
-        public short AntiPassbackMode { get; set; }
-        public short? AntiPassBackIn { get; set; }
-        public AccessArea? AreaIn { get; set; }
-        public short? AntiPassBackOut { get; set; }
-        public AccessArea? AreaOut { get; set; }
-        public short SpareTags { get; set; }
-        public short AccessControlFlags { get; set; }
-        public short Mode { get; set; }
-        public string ModeDesc { get; set; } = string.Empty;
-        public short OfflineMode { get; set; }
-        public string OfflineModeDesc { get; set; } = string.Empty;
-        public short DefaultMode { get; set; }
-        public string DefaultModeDesc { get; set; } = string.Empty;
-        public short DefaultLEDMode { get; set; }
-        public short PreAlarm { get; set; }
-        public short AntiPassbackDelay { get; set; }
-        public short StrkT2 { get; set; }
-        public short DcHeld2 { get; set; }
-        public short StrkFollowPulse { get; set; }
-        public short StrkFollowDelay { get; set; }
-        public short nExtFeatureType { get; set; }
-        public short IlPBSio { get; set; }
-        public short IlPBNumber { get; set; }
-        public short IlPBLongPress { get;set; }
-        public short IlPBOutSio { get; set; }
-        public short IlPBOutNum { get; set; }
-        public short DfOfFilterTime { get; set; }
-        public bool MaskHeldOpen { get; set; } = false;
-        public bool MaskForceOpen { get; set; } = false;
-        public ICollection<AccessLevelDoorTimeZone> AccessLevelDoorTimeZones { get; set; }
+        //sensor setting for rex0 / rex1
+        public ICollection<RequestExit>? request_exits { get; set; }
+        public short card_format { get; set; } = 255;
+        public short antipassback_mode { get; set; }
+        public short? antipassback_in { get; set; }
+        public Area? area_in { get; set; }
+        public short? antipassback_out { get; set; }
+        public Area? area_out { get; set; }
+        public short spare_tag { get; set; }
+        public short access_control_flag { get; set; }
+        public short mode { get; set; }
+        public string mode_desc { get; set; } = string.Empty;
+        public short offline_mode { get; set; }
+        public string offline_mode_desc { get; set; } = string.Empty;
+        public short default_mode { get; set; }
+        public string default_mode_desc { get; set; } = string.Empty;
+        public short default_led_mode { get; set; }
+        public short pre_alarm { get; set; }
+        public short antipassback_delay { get; set; }
+        public short strike_t2 { get; set; }
+        public short dc_held2 { get; set; }
+        public short strike_follow_pulse { get; set; }
+        public short strike_follow_delay { get; set; }
+        public short n_ext_feature_type { get; set; }
+        public short i_lpb_sio { get; set; }
+        public short i_lpb_number { get; set; }
+        public short i_lpb_long_press { get;set; }
+        public short i_lpb_out_sio { get; set; }
+        public short i_lpb_out_num { get; set; }
+        public short df_filter_time { get; set; }
+        public bool is_held_mask { get; set; } = false;
+        public bool is_force_mask { get; set; } = false;
+        public ICollection<AccessLevelDoorTimeZone> accesslevel_door_timezones { get; set; }
 
     }
 }

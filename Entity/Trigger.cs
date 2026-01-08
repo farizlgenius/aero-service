@@ -2,15 +2,17 @@
 {
     public sealed class Trigger : BaseEntity
     {
-        public string Name { get; set; } = string.Empty;
-        public short Command { get; set; }
-        public short ProcedureId { get; set; }
-        public short SourceType { get; set; }
-        public short SourceNumber { get; set; }
-        public short TranType { get; set; }
-        public ICollection<TriggerTranCode> CodeMap { get; set; }
-        public short TimeZone { get; set; }
-        public Entity.Procedure Procedure { get; set; }
+        public string name { get; set; } = string.Empty;
+        public short command { get; set; }
+        public short procedure_id { get; set; }
+        public short source_type { get; set; }
+        public short source_number { get; set; }
+        public short tran_type { get; set; }
+        public string hardware_mac { get; set; } = string.Empty;
+        public Hardware hardware { get; set; }
+        public ICollection<TriggerTranCode> code_map { get; set; }
+        public short timezone { get; set; }
+        public Entity.Procedure procedure { get; set; }
 
     }
 }

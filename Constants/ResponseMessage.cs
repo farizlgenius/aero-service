@@ -5,13 +5,13 @@ namespace HIDAeroService.Constant
     public class ResponseMessage
     {
 
-        public static string COMMAND_UNSUCCESS = "Send Command to Controller failed.";
+        public static string COMMAND_UNSUCCESS = "Send command to Controller failed.";
         public static string UNSUCCESS = "Unsuccess";
 
         // ResponseDto message
         public static string SCP_NOT_FOUND = "NO Main Controller In System";
-        public static string DOOR_NOT_FOUND = "AccessLevelDoorTimeZones not found in the System.";
-        public static string COMPONENT_EXCEED_LIMIT = "Component Exceed The Limit,Please Remove Some Before CreateAsync New Component";
+        public static string DOOR_NOT_FOUND = "accesslevel_door_timezone not found in the System.";
+        public static string COMPONENT_EXCEED_LIMIT = "HardwareComponent Exceed The Limit,Please Remove Some Before CreateAsync New HardwareComponent";
         public static string SCP_ALREADY_REGISTER = "Controller Already Register in System";
         public static string DELETE_DEFAULT = "Default record";
 
@@ -30,7 +30,7 @@ namespace HIDAeroService.Constant
 
         // System
         public static string NO_SYSTEM_CONFIG_IN_DB = "No System Configuration In Database.";
-        public static string NO_SCP_COMPONENT_IN_DB = "No Scp Component In Database";
+        public static string NO_SCP_COMPONENT_IN_DB = "No Scp HardwareComponent In Database";
 
 
 
@@ -47,9 +47,9 @@ namespace HIDAeroService.Constant
         public static string UPLOAD_CONTROL_POINT = "Upload Control Point...";
         public static string UPLOAD_SUCCESS = "Upload Successful";
 
-        // Password message 
+        // password message 
         public static string OLD_PASSPORT_INCORRECT = "Old password incorrect";
-        public static string PASSWORD_UNASSIGN = "Password unassign";
+        public static string PASSWORD_UNASSIGN = "password unassign";
 
 
     }

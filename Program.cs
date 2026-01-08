@@ -14,9 +14,11 @@ using HIDAeroService.DTO.Credential;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using StackExchange.Redis;
 using HIDAeroService.Aero.CommandService;
 using HIDAeroService.Aero.CommandService.Impl;
+using HIDAeroService.Aero;
+using HID.Aero.ScpdNet.Wrapper;
+using System.Threading.Channels;
 
 namespace HIDAeroService
 {
@@ -35,7 +37,6 @@ namespace HIDAeroService
 
             // Redis config (StackExchange.Redis connection)
             var redisConn = builder.Configuration.GetValue<string>("Redis:Configuration") ?? "localhost:6379";
-            builder.Services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(redisConn));
 
             // Bind AppSettings section
             // Bind AppSettings section to AppSettings class
@@ -155,8 +156,10 @@ namespace HIDAeroService
             builder.Services.AddScoped<ICommandService, CommandService>();
             builder.Services.AddScoped<ISettingService, SettingService>();
 
-            // Command Service
-            builder.Services.AddScoped<ITimezoneCommandService, TimezoneCommandService>();
+            // command Service
+            //builder.Services.AddScoped<IAeroCommandService, BaseCommandService>();
+            builder.Services.AddScoped<ITimeZoneCommandService, TimeZoneCommandService>();
+            builder.Services.AddScoped<IHolidayCommandService, HolidayCommandService>();
 
 
             //
@@ -177,8 +180,22 @@ namespace HIDAeroService
 
 
             // Register AeroDriver
-            builder.Services.AddSingleton<AeroCommand>();
+            builder.Services.AddSingleton<AeroCommandService>();
             builder.Services.AddSingleton<AeroMessage>();
+
+            builder.Services.AddSingleton(
+                Channel.CreateBounded<SCPReplyMessage>(
+                 new BoundedChannelOptions(10_000)
+                    {
+                        FullMode = BoundedChannelFullMode.DropOldest,
+                        SingleReader = true,
+                        SingleWriter = false
+                    }
+                )
+             );
+
+            builder.Services.AddHostedService<AeroWorker>();
+
 
 
             // Add Cors
@@ -199,7 +216,7 @@ namespace HIDAeroService
 
             var app = builder.Build();
             // Resolve driver from DI
-            var writeDriver = app.Services.GetRequiredService<AeroCommand>();
+            var writeDriver = app.Services.GetRequiredService<AeroCommandService>();
             var readDriver = app.Services.GetRequiredService<AeroMessage>();
 
             // CLog
@@ -226,18 +243,25 @@ namespace HIDAeroService
             // Adding Exception Middlewre
             app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-
-
             var threadListener = new Thread(readDriver.GetTransactionUntilShutDown);
             threadListener.Start();
 
 
-            app.Lifetime.ApplicationStopping.Register(() =>
+            app.Lifetime.ApplicationStopping.Register(async () =>
             {
+                var context = app.Services.GetRequiredService<AppDbContext>();
+
+                // Delete all pending id report 
+                context.id_report.RemoveRange(context.id_report.ToArray());
+
                 readDriver.SetShutDownflag();
                 Thread.Sleep(1000);
                 writeDriver.TurnOffDebug();
+                
+                
             });
+
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

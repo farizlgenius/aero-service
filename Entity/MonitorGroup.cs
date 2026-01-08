@@ -1,11 +1,14 @@
-﻿using HIDAeroService.Model;
+﻿using AeroService.Entity.Interface;
+using HIDAeroService.Model;
 
 namespace HIDAeroService.Entity
 {
     public sealed class MonitorGroup : BaseEntity
     {
-        public string Name { get; set; } = string.Empty;
-        public short nMpCount { get; set; }
-        public ICollection<MonitorGroupList> nMpList { get; set; }
+        public string name { get; set; } = string.Empty;
+        public short n_mp_count { get; set; }
+        public ICollection<MonitorGroupList> n_mp_list { get; set; }
+        public string hardware_mac { get; set; } = string.Empty;
+        public Hardware hardware { get; set; }
     }
 }

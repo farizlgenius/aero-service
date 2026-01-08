@@ -5,9 +5,9 @@ namespace HIDAeroService.Entity
     public sealed class WeakPassword
     {
         [Key]
-        public int Id { get; set; }
-        public string Pattern { get; set; } = string.Empty;
-        public int PasswordRuleId { get; set; }
-        public PasswordRule PasswordRule { get; set; }
+        public int id { get; set; }
+        public string pattern { get; set; } = string.Empty;
+        public int password_rule_id { get; set; }
+        public PasswordRule password_rule { get; set; }
     }
 }

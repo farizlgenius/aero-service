@@ -1,4 +1,5 @@
-﻿using HIDAeroService.AeroLibrary;
+﻿using HIDAeroService.Aero.CommandService;
+using HIDAeroService.Aero.CommandService.Impl;
 using HIDAeroService.Constant;
 using HIDAeroService.Constants;
 using HIDAeroService.Data;
@@ -7,19 +8,20 @@ using HIDAeroService.DTO.MonitorGroup;
 using HIDAeroService.Entity;
 using HIDAeroService.Helpers;
 using HIDAeroService.Mapper;
+using HIDAeroService.Model;
 using HIDAeroService.Utility;
 using Microsoft.EntityFrameworkCore;
 
 namespace HIDAeroService.Service.Impl
 {
-    public sealed class MonitorGroupService(AppDbContext context,AeroCommand command,IHelperService<MonitorGroup> helperService) : IMonitorGroupService
+    public sealed class MonitorGroupService(AppDbContext context,AeroCommandService command,IHelperService<MonitorGroup> helperService) : IMonitorGroupService
     {
         public async Task<ResponseDto<bool>> CreateAsync(MonitorGroupDto dto)
         {
 
-            if (!await context.Hardwares.AnyAsync(x => x.MacAddress.Equals(dto.MacAddress))) return ResponseHelper.NotFoundBuilder<bool>();
+            if (!await context.hardware.AnyAsync(x => x.mac.Equals(dto.Mac))) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var ScpId = await helperService.GetIdFromMacAsync(dto.MacAddress);
+            var ScpId = await helperService.GetIdFromMacAsync(dto.Mac);
             if(ScpId == 0) return ResponseHelper.NotFoundBuilder<bool>();
 
             var ComponentId = await helperService.GetLowestUnassignedNumberAsync<MonitorGroup>(context,128);
@@ -27,9 +29,9 @@ namespace HIDAeroService.Service.Impl
 
             var entity = MapperHelper.DtoToMonitorGroup(dto,ComponentId,DateTime.Now);
 
-            if (!await command.ConfigureMonitorPointGroup(ScpId,ComponentId,dto.nMpCount,entity.nMpList.ToList()))
+            if (!command.ConfigureMonitorPointGroup(ScpId,ComponentId,dto.nMpCount,entity.n_mp_list.ToList()))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.MacAddress, Command.C120));
+                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C120));
             }
 
             await context.AddAsync(entity);
@@ -40,15 +42,15 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<bool>> DeleteAsync(string mac, short Component)
         {
-            var en = await context.MonitorGroups
-                .Where(x => x.MacAddress == mac && x.ComponentId == Component)
+            var en = await context.monitor_group
+                .Where(x => x.hardware_mac == mac && x.component_id == Component)
                 .FirstOrDefaultAsync();
 
             if (en is null) return ResponseHelper.NotFoundBuilder<bool>();
 
             var ScpId = await helperService.GetIdFromMacAsync(mac);
 
-            if(!await command.ConfigureMonitorPointGroup(ScpId, Component, 0, []))
+            if(!command.ConfigureMonitorPointGroup(ScpId, Component, 0, []))
             {
                 return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.C120));
             }
@@ -61,10 +63,28 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<IEnumerable<MonitorGroupDto>>> GetAsync()
         {
-            var dto = await context.MonitorGroups
+            var dto = await context.monitor_group
                 .AsNoTracking()
-                .Include(x => x.nMpList)
-                .Select(x => MapperHelper.MonitorGroupToDto(x))
+                .Include(x => x.n_mp_list)
+                .Select(en => new MonitorGroupDto
+                {
+                    // Base 
+                    Uuid = en.uuid,
+                    ComponentId = en.component_id,
+                    Mac = en.hardware_mac,
+                    LocationId = en.location_id,
+                    IsActive = en.is_active,
+
+                    // Detail
+                    Name = en.name,
+                    nMpCount = en.n_mp_count,
+                    nMpList = en.n_mp_list.Select(x => new MonitorGroupListDto
+                    {
+                        PointType = x.point_type,
+                        PointNumber = x.point_number,
+                        PointTypeDesc = x.point_type_desc,
+                    }).ToList(),
+                })
                 .ToArrayAsync();
 
             return ResponseHelper.SuccessBuilder<IEnumerable<MonitorGroupDto>>(dto);
@@ -72,11 +92,29 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<IEnumerable<MonitorGroupDto>>> GetByLocationAsync(short location)
         {
-            var dto = await context.MonitorGroups
+            var dto = await context.monitor_group
                 .AsNoTracking()
-                .Include(x => x.nMpList)
-                .Where(x => x.LocationId == location)
-                .Select(x => MapperHelper.MonitorGroupToDto(x))
+                .Include(x => x.n_mp_list)
+                .Where(x => x.location_id == location)
+                .Select(en => new MonitorGroupDto
+                {
+                    // Base 
+                    Uuid = en.uuid,
+                    ComponentId = en.component_id,
+                    Mac = en.hardware_mac,
+                    LocationId = en.location_id,
+                    IsActive = en.is_active,
+
+                    // Detail
+                    Name = en.name,
+                    nMpCount = en.n_mp_count,
+                    nMpList = en.n_mp_list.Select(x => new MonitorGroupListDto
+                    {
+                        PointType = x.point_type,
+                        PointNumber = x.point_number,
+                        PointTypeDesc = x.point_type_desc,
+                    }).ToList(),
+                })
                 .ToArrayAsync();
 
             return ResponseHelper.SuccessBuilder<IEnumerable<MonitorGroupDto>>(dto);
@@ -84,13 +122,13 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<IEnumerable<ModeDto>>> GetCommandAsync()
         {
-            var dtos = await context.MonitorGroupCommands
+            var dtos = await context.monitor_group_command
                  .AsNoTracking()
                  .Select(x => new ModeDto 
                  {
-                     Name = x.Name,
-                     Value = x.Value,
-                     Description = x.Description,
+                     Name = x.name,
+                     Value = x.value,
+                     Description = x.description,
                  })
                  .ToArrayAsync();
 
@@ -101,13 +139,13 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<IEnumerable<ModeDto>>> GetTypeAsync()
         {
-            var dtos = await context.MonitorGroupTypes
+            var dtos = await context.monitor_group_type
                  .AsNoTracking()
                  .Select(x => new ModeDto 
                  {
-                     Name = x.Name,
-                     Value = x.Value,
-                     Description = x.Description,
+                     Name = x.name,
+                     Value = x.value,
+                     Description = x.description,
                  })
                  .ToArrayAsync();
 
@@ -116,11 +154,11 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<bool>> MonitorGroupCommandAsync(MonitorGroupCommandDto dto)
         {
-            if(!await context.MonitorGroups.AnyAsync(x => x.MacAddress == dto.MacAddress && x.ComponentId == dto.ComponentId)) return ResponseHelper.NotFoundBuilder<bool>();
+            if(!await context.monitor_group.AnyAsync(x => x.hardware_mac == dto.MacAddress && x.component_id == dto.ComponentId)) return ResponseHelper.NotFoundBuilder<bool>();
 
             var ScpId = await helperService.GetIdFromMacAsync(dto.MacAddress);
 
-            if(!await command.MonitorPointGroupArmDisarmAsync(ScpId,dto.ComponentId,dto.Command,dto.Arg))
+            if(!command.MonitorPointGroupArmDisarm(ScpId,dto.ComponentId,dto.Command,dto.Arg))
             {
                 return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.MacAddress, Command.C321));
             }
@@ -130,27 +168,27 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<MonitorGroupDto>> UpdateAsync(MonitorGroupDto dto)
         {
-            var en = await context.MonitorGroups
-                .Include(x => x.nMpList)
-                .Where(x => x.MacAddress == dto.MacAddress && x.ComponentId == dto.ComponentId)
+            var en = await context.monitor_group
+                .Include(x => x.n_mp_list)
+                .Where(x => x.hardware_mac == dto.Mac && x.component_id == dto.ComponentId)
                 .FirstOrDefaultAsync();
 
             if (en is null) return ResponseHelper.NotFoundBuilder<MonitorGroupDto>();
 
-            var ScpId = await helperService.GetIdFromMacAsync(dto.MacAddress);
+            var ScpId = await helperService.GetIdFromMacAsync(dto.Mac);
 
 
             // Delete relate table first 
-            context.MonitorGroupLists.RemoveRange(en.nMpList);
+            context.monitor_group_list.RemoveRange(en.n_mp_list);
             MapperHelper.UpdateMonitorGroup(en,dto);
 
-            if (!await command.ConfigureMonitorPointGroup(ScpId, dto.ComponentId, dto.nMpCount, en.nMpList.ToList()))
+            if (!command.ConfigureMonitorPointGroup(ScpId, dto.ComponentId, dto.nMpCount, en.n_mp_list.ToList()))
             {
-                return ResponseHelper.UnsuccessBuilder<MonitorGroupDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.MacAddress, Command.C120));
+                return ResponseHelper.UnsuccessBuilder<MonitorGroupDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C120));
             }
 
 
-            context.MonitorGroups.Update(en);
+            context.monitor_group.Update(en);
             await context.SaveChangesAsync();
 
             return ResponseHelper.SuccessBuilder<MonitorGroupDto>(dto);

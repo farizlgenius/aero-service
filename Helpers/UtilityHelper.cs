@@ -83,6 +83,14 @@ namespace HIDAeroService.Utility
 
         }
 
+        public static string ParseFirmware(short major,short minor)
+        {
+            string s = minor.ToString();
+
+            return $"{major}.{s.Substring(0, s.Length - 1)}.{s[^1]}";
+        }
+
+
         public static short[] GetSCPComponent(short model)
         {
             short nInput, nOutput, nReaders;
