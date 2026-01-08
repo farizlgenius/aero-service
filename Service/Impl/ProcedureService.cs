@@ -70,10 +70,9 @@ namespace HIDAeroService.Service.Impl
 
         public async Task<ResponseDto<bool>> DeleteAsync(string Mac,short ComponentId)
         {
-            var en = await context
-                .procedure
+            var en = await context.procedure
                 .AsNoTracking()
-                .Where(x => x.hardware_mac == Mac && x.component_id == ComponentId)
+                .Where(x => x.trigger.hardware_mac == Mac && x.component_id == ComponentId)
                 .FirstOrDefaultAsync();
 
             if (en is null) return ResponseHelper.NotFoundBuilder<bool>();

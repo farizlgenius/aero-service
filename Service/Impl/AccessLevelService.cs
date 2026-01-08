@@ -5,11 +5,15 @@ using HIDAeroService.Constants;
 using HIDAeroService.Data;
 using HIDAeroService.DTO;
 using HIDAeroService.DTO.AccessLevel;
+using HIDAeroService.DTO.Interval;
+using HIDAeroService.DTO.Reader;
+using HIDAeroService.DTO.TimeZone;
 using HIDAeroService.Entity;
 using HIDAeroService.Helpers;
 using HIDAeroService.Mapper;
 using HIDAeroService.Utility;
 using Microsoft.EntityFrameworkCore;
+using MiNET.Entities;
 
 
 namespace HIDAeroService.Service.Impl
@@ -21,11 +25,85 @@ namespace HIDAeroService.Service.Impl
         {
             var dtos = await context.accesslevel
                 .AsNoTracking()
-                .Include(x => x.accessleve_door_timezones)
-                    .ThenInclude(x => x.timezone)
-                .Include(x => x.accessleve_door_timezones)
-                    .ThenInclude(x => x.door)
-                .Select(x => MapperHelper.AccessLevelToDto(x))
+                .Select(x => new AccessLevelDto
+                {
+                    // Base
+                    Uuid = x.uuid,
+                    LocationId = x.location_id,
+                    IsActive = x.is_active,
+
+                    // extend_desc
+                    Name = x.name,
+                    component_id = x.component_id,
+                    AccessLevelDoorTimeZoneDto = x.accessleve_door_timezones
+                    .Select(x => new AccessLevelDoorTimeZoneDto
+                    {
+                        Doors = new DTO.Acr.DoorDto 
+                        {
+                            // Base 
+                            Uuid = x.door.uuid,
+                            ComponentId = x.door.component_id,
+                            Mac = x.door.hardware_mac,
+                            LocationId = x.door.location_id,
+                            IsActive = x.door.is_active,
+
+                            // extend_desc
+                            Name = x.door.name,
+                            AccessConfig = x.door.access_config,
+                            PairDoorNo = x.door.pair_door_no,
+
+                            Readers = new List<ReaderDto>(),
+                            ReaderOutConfiguration = x.door.reader_out_config,
+                            StrkComponentId = x.door.strike_id,
+                            Strk = null,
+                            SensorComponentId = x.door.sensor_id,
+                            RequestExits = new List<DTO.RequestExit.RequestExitDto>(),
+
+                            CardFormat = x.door.card_format,
+                            AntiPassbackMode = x.door.antipassback_mode,
+                            AntiPassBackIn = (short)(x.door.antipassback_in == null ? 0 : (short)x.door.antipassback_in),
+                            AntiPassBackOut = (short)(x.door.antipassback_out == null ? 0 : (short)x.door.antipassback_out),
+                            SpareTags = x.door.spare_tag,
+                            AccessControlFlags = x.door.access_control_flag,
+                            Mode = x.door.mode,
+                            ModeDesc = x.door.mode_desc,
+                            OfflineMode = x.door.offline_mode,
+                            OfflineModeDesc = x.door.offline_mode_desc,
+                            DefaultMode = x.door.default_mode,
+                            DefaultModeDesc = x.door.default_mode_desc,
+                            DefaultLEDMode = x.door.default_led_mode,
+                            PreAlarm = x.door.pre_alarm,
+                            AntiPassbackDelay = x.door.antipassback_delay,
+                            StrkT2 = x.door.strike_t2,
+                            DcHeld2 = x.door.dc_held2,
+                            StrkFollowPulse = x.door.strike_follow_pulse,
+                            StrkFollowDelay = x.door.strike_follow_delay,
+                            nExtFeatureType = x.door.n_ext_feature_type,
+                            IlPBSio = x.door.i_lpb_sio,
+                            IlPBNumber = x.door.i_lpb_number,
+                            IlPBLongPress = x.door.i_lpb_long_press,
+                            IlPBOutSio = x.door.i_lpb_out_sio,
+                            IlPBOutNum = x.door.i_lpb_out_num,
+                            DfOfFilterTime = x.door.df_filter_time,
+                            MaskForceOpen = x.door.is_force_mask,
+                            MaskHeldOpen = x.door.is_held_mask,
+                        },
+                        TimeZone = new TimeZoneDto
+                        {
+                            // Base
+                            IsActive = x.timezone.is_active,
+
+                            // extend_desc
+                            ComponentId = x.timezone.component_id,
+                            Name = x.timezone.name,
+                            Mode = x.timezone.mode,
+                            ActiveTime = x.timezone.active_time,
+                            DeactiveTime = x.timezone.deactive_time,
+                            Intervals = new List<IntervalDto>()
+                        },
+                    })
+                    .ToList()
+                })
                 .ToArrayAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<AccessLevelDto>>(dtos);
         }
@@ -34,12 +112,86 @@ namespace HIDAeroService.Service.Impl
         {
             var dtos = await context.accesslevel
                 .AsNoTracking()
-                .Include(x => x.accessleve_door_timezones)
-                    .ThenInclude(x => x.timezone)
-                .Include(x => x.accessleve_door_timezones)
-                    .ThenInclude(x => x.door)
                 .Where(x => x.location_id == location)
-                .Select(x => MapperHelper.AccessLevelToDto(x))
+                .Select(x => new AccessLevelDto
+                {
+                    // Base
+                    Uuid = x.uuid,
+                    LocationId = x.location_id,
+                    IsActive = x.is_active,
+
+                    // extend_desc
+                    Name = x.name,
+                    component_id = x.component_id,
+                    AccessLevelDoorTimeZoneDto = x.accessleve_door_timezones
+                    .Select(x => new AccessLevelDoorTimeZoneDto
+                    {
+                        Doors = new DTO.Acr.DoorDto
+                        {
+                            // Base 
+                            Uuid = x.door.uuid,
+                            ComponentId = x.door.component_id,
+                            Mac = x.door.hardware_mac,
+                            LocationId = x.door.location_id,
+                            IsActive = x.door.is_active,
+
+                            // extend_desc
+                            Name = x.door.name,
+                            AccessConfig = x.door.access_config,
+                            PairDoorNo = x.door.pair_door_no,
+
+                            Readers = new List<ReaderDto>(),
+                            ReaderOutConfiguration = x.door.reader_out_config,
+                            StrkComponentId = x.door.strike_id,
+                            Strk = null,
+                            SensorComponentId = x.door.sensor_id,
+                            RequestExits = new List<DTO.RequestExit.RequestExitDto>(),
+
+                            CardFormat = x.door.card_format,
+                            AntiPassbackMode = x.door.antipassback_mode,
+                            AntiPassBackIn = (short)(x.door.antipassback_in == null ? 0 : (short)x.door.antipassback_in),
+                            AntiPassBackOut = (short)(x.door.antipassback_out == null ? 0 : (short)x.door.antipassback_out),
+                            SpareTags = x.door.spare_tag,
+                            AccessControlFlags = x.door.access_control_flag,
+                            Mode = x.door.mode,
+                            ModeDesc = x.door.mode_desc,
+                            OfflineMode = x.door.offline_mode,
+                            OfflineModeDesc = x.door.offline_mode_desc,
+                            DefaultMode = x.door.default_mode,
+                            DefaultModeDesc = x.door.default_mode_desc,
+                            DefaultLEDMode = x.door.default_led_mode,
+                            PreAlarm = x.door.pre_alarm,
+                            AntiPassbackDelay = x.door.antipassback_delay,
+                            StrkT2 = x.door.strike_t2,
+                            DcHeld2 = x.door.dc_held2,
+                            StrkFollowPulse = x.door.strike_follow_pulse,
+                            StrkFollowDelay = x.door.strike_follow_delay,
+                            nExtFeatureType = x.door.n_ext_feature_type,
+                            IlPBSio = x.door.i_lpb_sio,
+                            IlPBNumber = x.door.i_lpb_number,
+                            IlPBLongPress = x.door.i_lpb_long_press,
+                            IlPBOutSio = x.door.i_lpb_out_sio,
+                            IlPBOutNum = x.door.i_lpb_out_num,
+                            DfOfFilterTime = x.door.df_filter_time,
+                            MaskForceOpen = x.door.is_force_mask,
+                            MaskHeldOpen = x.door.is_held_mask,
+                        },
+                        TimeZone = new TimeZoneDto
+                        {
+                            // Base
+                            IsActive = x.timezone.is_active,
+
+                            // extend_desc
+                            ComponentId = x.timezone.component_id,
+                            Name = x.timezone.name,
+                            Mode = x.timezone.mode,
+                            ActiveTime = x.timezone.active_time,
+                            DeactiveTime = x.timezone.deactive_time,
+                            Intervals = new List<IntervalDto>()
+                        },
+                    })
+                    .ToList()
+                })
                 .ToArrayAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<AccessLevelDto>>(dtos);
         }
@@ -50,15 +202,91 @@ namespace HIDAeroService.Service.Impl
         {
             var dtos = await context.accesslevel
                 .AsNoTracking()
-                .Include(x => x.accessleve_door_timezones)
-                .ThenInclude(x => x.accesslevel)
-                .Include(x => x.accessleve_door_timezones)
-                .ThenInclude(x => x.timezone)
-                .Include(x => x.accessleve_door_timezones)
-                .ThenInclude(x => x.door)
+                .OrderBy(x => x.component_id)
                 .Where(x => x.component_id == component)
-                .Select(x => MapperHelper.AccessLevelToDto(x))
+                .Select(x => new AccessLevelDto
+                {
+                    // Base
+                    Uuid = x.uuid,
+                    LocationId = x.location_id,
+                    IsActive = x.is_active,
+
+                    // extend_desc
+                    Name = x.name,
+                    component_id = x.component_id,
+                    AccessLevelDoorTimeZoneDto = x.accessleve_door_timezones
+                    .Select(x => new AccessLevelDoorTimeZoneDto
+                    {
+                        Doors = new DTO.Acr.DoorDto
+                        {
+                            // Base 
+                            Uuid = x.door.uuid,
+                            ComponentId = x.door.component_id,
+                            Mac = x.door.hardware_mac,
+                            LocationId = x.door.location_id,
+                            IsActive = x.door.is_active,
+
+                            // extend_desc
+                            Name = x.door.name,
+                            AccessConfig = x.door.access_config,
+                            PairDoorNo = x.door.pair_door_no,
+
+                            Readers = new List<ReaderDto>(),
+                            ReaderOutConfiguration = x.door.reader_out_config,
+                            StrkComponentId = x.door.strike_id,
+                            Strk = null,
+                            SensorComponentId = x.door.sensor_id,
+                            RequestExits = new List<DTO.RequestExit.RequestExitDto>(),
+
+                            CardFormat = x.door.card_format,
+                            AntiPassbackMode = x.door.antipassback_mode,
+                            AntiPassBackIn = (short)(x.door.antipassback_in == null ? 0 : (short)x.door.antipassback_in),
+                            AntiPassBackOut = (short)(x.door.antipassback_out == null ? 0 : (short)x.door.antipassback_out),
+                            SpareTags = x.door.spare_tag,
+                            AccessControlFlags = x.door.access_control_flag,
+                            Mode = x.door.mode,
+                            ModeDesc = x.door.mode_desc,
+                            OfflineMode = x.door.offline_mode,
+                            OfflineModeDesc = x.door.offline_mode_desc,
+                            DefaultMode = x.door.default_mode,
+                            DefaultModeDesc = x.door.default_mode_desc,
+                            DefaultLEDMode = x.door.default_led_mode,
+                            PreAlarm = x.door.pre_alarm,
+                            AntiPassbackDelay = x.door.antipassback_delay,
+                            StrkT2 = x.door.strike_t2,
+                            DcHeld2 = x.door.dc_held2,
+                            StrkFollowPulse = x.door.strike_follow_pulse,
+                            StrkFollowDelay = x.door.strike_follow_delay,
+                            nExtFeatureType = x.door.n_ext_feature_type,
+                            IlPBSio = x.door.i_lpb_sio,
+                            IlPBNumber = x.door.i_lpb_number,
+                            IlPBLongPress = x.door.i_lpb_long_press,
+                            IlPBOutSio = x.door.i_lpb_out_sio,
+                            IlPBOutNum = x.door.i_lpb_out_num,
+                            DfOfFilterTime = x.door.df_filter_time,
+                            MaskForceOpen = x.door.is_force_mask,
+                            MaskHeldOpen = x.door.is_held_mask,
+                        },
+                        TimeZone = new TimeZoneDto
+                        {
+                            // Base
+                            IsActive = x.timezone.is_active,
+
+                            // extend_desc
+                            ComponentId = x.timezone.component_id,
+                            Name = x.timezone.name,
+                            Mode = x.timezone.mode,
+                            ActiveTime = x.timezone.active_time,
+                            DeactiveTime = x.timezone.deactive_time,
+                            Intervals = new List<IntervalDto>()
+                        },
+                    })
+                    .ToList()
+                })
                 .FirstOrDefaultAsync();
+
+            if(dtos is null) return ResponseHelper.NotFoundBuilder<AccessLevelDto>();
+
             return ResponseHelper.SuccessBuilder<AccessLevelDto>(dtos);
         }
 
@@ -127,8 +355,9 @@ namespace HIDAeroService.Service.Impl
                 .ThenInclude(x => x.accesslevel)
                 .Include(x => x.accessleve_door_timezones)
                 .ThenInclude(x => x.timezone)
-                .Include(x => x.accessleve_door_timezones)
+                .Include(x => x.accessleve_door_timezones)  
                 .ThenInclude(x => x.door)
+                .OrderBy(x => x.component_id)
                 .FirstOrDefaultAsync(x => x.component_id == dto.component_id);
 
             if (entity is null) return ResponseHelper.NotFoundBuilder<AccessLevelDto>();
@@ -159,13 +388,90 @@ namespace HIDAeroService.Service.Impl
 
             var res = await context.accesslevel
                 .AsNoTracking()
-                .Include(x => x.accessleve_door_timezones)
-                .ThenInclude(x => x.timezone)
-                .Include(x => x.accessleve_door_timezones)
-                .ThenInclude(x => x.door)
                 .Where(x => x.component_id == dto.component_id)
-                .Select(x => MapperHelper.AccessLevelToDto(x))
+                .OrderBy(x => x.component_id)
+                .Select(x => new AccessLevelDto
+                {
+                    // Base
+                    Uuid = x.uuid,
+                    LocationId = x.location_id,
+                    IsActive = x.is_active,
+
+                    // extend_desc
+                    Name = x.name,
+                    component_id = x.component_id,
+                    AccessLevelDoorTimeZoneDto = x.accessleve_door_timezones
+                    .Select(x => new AccessLevelDoorTimeZoneDto
+                    {
+                        Doors = new DTO.Acr.DoorDto
+                        {
+                            // Base 
+                            Uuid = x.door.uuid,
+                            ComponentId = x.door.component_id,
+                            Mac = x.door.hardware_mac,
+                            LocationId = x.door.location_id,
+                            IsActive = x.door.is_active,
+
+                            // extend_desc
+                            Name = x.door.name,
+                            AccessConfig = x.door.access_config,
+                            PairDoorNo = x.door.pair_door_no,
+
+                            Readers = new List<ReaderDto>(),
+                            ReaderOutConfiguration = x.door.reader_out_config,
+                            StrkComponentId = x.door.strike_id,
+                            Strk = null,
+                            SensorComponentId = x.door.sensor_id,
+                            RequestExits = new List<DTO.RequestExit.RequestExitDto>(),
+
+                            CardFormat = x.door.card_format,
+                            AntiPassbackMode = x.door.antipassback_mode,
+                            AntiPassBackIn = (short)(x.door.antipassback_in == null ? 0 : (short)x.door.antipassback_in),
+                            AntiPassBackOut = (short)(x.door.antipassback_out == null ? 0 : (short)x.door.antipassback_out),
+                            SpareTags = x.door.spare_tag,
+                            AccessControlFlags = x.door.access_control_flag,
+                            Mode = x.door.mode,
+                            ModeDesc = x.door.mode_desc,
+                            OfflineMode = x.door.offline_mode,
+                            OfflineModeDesc = x.door.offline_mode_desc,
+                            DefaultMode = x.door.default_mode,
+                            DefaultModeDesc = x.door.default_mode_desc,
+                            DefaultLEDMode = x.door.default_led_mode,
+                            PreAlarm = x.door.pre_alarm,
+                            AntiPassbackDelay = x.door.antipassback_delay,
+                            StrkT2 = x.door.strike_t2,
+                            DcHeld2 = x.door.dc_held2,
+                            StrkFollowPulse = x.door.strike_follow_pulse,
+                            StrkFollowDelay = x.door.strike_follow_delay,
+                            nExtFeatureType = x.door.n_ext_feature_type,
+                            IlPBSio = x.door.i_lpb_sio,
+                            IlPBNumber = x.door.i_lpb_number,
+                            IlPBLongPress = x.door.i_lpb_long_press,
+                            IlPBOutSio = x.door.i_lpb_out_sio,
+                            IlPBOutNum = x.door.i_lpb_out_num,
+                            DfOfFilterTime = x.door.df_filter_time,
+                            MaskForceOpen = x.door.is_force_mask,
+                            MaskHeldOpen = x.door.is_held_mask,
+                        },
+                        TimeZone = new TimeZoneDto
+                        {
+                            // Base
+                            IsActive = x.timezone.is_active,
+
+                            // extend_desc
+                            ComponentId = x.timezone.component_id,
+                            Name = x.timezone.name,
+                            Mode = x.timezone.mode,
+                            ActiveTime = x.timezone.active_time,
+                            DeactiveTime = x.timezone.deactive_time,
+                            Intervals = new List<IntervalDto>()
+                        },
+                    })
+                    .ToList()
+                })
                 .FirstOrDefaultAsync();
+
+            if(res is null) return ResponseHelper.NotFoundBuilder<AccessLevelDto>();
 
             return ResponseHelper.SuccessBuilder(res);
         }

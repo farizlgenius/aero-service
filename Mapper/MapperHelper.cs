@@ -1,41 +1,42 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.Hardware;
-using HIDAeroService.DTO.Interval;
-using HIDAeroService.DTO.Scp;
-using HIDAeroService.DTO.TimeZone;
-using HIDAeroService.DTO.Module;
-using HIDAeroService.Entity;
-using HIDAeroService.DTO.Reader;
-using HIDAeroService.DTO.MonitorPoint;
-using HIDAeroService.DTO.ControlPoint;
-using HIDAeroService.DTO.Acr;
-using HIDAeroService.DTO.Strike;
-using HIDAeroService.DTO.Sensor;
-using HIDAeroService.DTO.RequestExit;
-using MiNET.UI;
-using HIDAeroService.DTO.CardFormat;
-using MiNET.Utils;
-using HIDAeroService.DTO.Location;
-using HIDAeroService.DTO.AccessArea;
-using HIDAeroService.DTO.CardHolder;
-using HIDAeroService.DTO.Credential;
-using HIDAeroService.DTO.AccessLevel;
-using HIDAeroService.DTO.Operator;
-using HIDAeroService.DTO.Role;
-using HIDAeroService.DTO.Feature;
-using HIDAeroService.Helpers;
-using HIDAeroService.DTO.Transactions;
+﻿using HID.Aero.ScpdNet.Wrapper;
 using HIDAeroService.AeroLibrary;
-using HIDAeroService.Enums;
-using HIDAeroService.DTO.MonitorGroup;
-using HIDAeroService.Model;
 using HIDAeroService.Data;
-using HIDAeroService.DTO.Procedure;
+using HIDAeroService.DTO;
+using HIDAeroService.DTO.AccessArea;
+using HIDAeroService.DTO.AccessLevel;
+using HIDAeroService.DTO.Acr;
 using HIDAeroService.DTO.Action;
-using HIDAeroService.DTO.Trigger;
+using HIDAeroService.DTO.CardFormat;
+using HIDAeroService.DTO.CardHolder;
+using HIDAeroService.DTO.ControlPoint;
+using HIDAeroService.DTO.Credential;
+using HIDAeroService.DTO.Feature;
+using HIDAeroService.DTO.Hardware;
 using HIDAeroService.DTO.IdReport;
-using HID.Aero.ScpdNet.Wrapper;
+using HIDAeroService.DTO.Interval;
+using HIDAeroService.DTO.Location;
+using HIDAeroService.DTO.Module;
+using HIDAeroService.DTO.MonitorGroup;
+using HIDAeroService.DTO.MonitorPoint;
+using HIDAeroService.DTO.Operator;
+using HIDAeroService.DTO.Procedure;
+using HIDAeroService.DTO.Reader;
+using HIDAeroService.DTO.RequestExit;
+using HIDAeroService.DTO.Role;
+using HIDAeroService.DTO.Scp;
+using HIDAeroService.DTO.Sensor;
+using HIDAeroService.DTO.Strike;
+using HIDAeroService.DTO.TimeZone;
+using HIDAeroService.DTO.Transactions;
+using HIDAeroService.DTO.Trigger;
+using HIDAeroService.Entity;
+using HIDAeroService.Enums;
+using HIDAeroService.Helpers;
+using HIDAeroService.Model;
 using HIDAeroService.Utility;
+using MiNET.Net.RakNet;
+using MiNET.UI;
+using MiNET.Utils;
 
 namespace HIDAeroService.Mapper
 {
@@ -758,24 +759,6 @@ namespace HIDAeroService.Mapper
 
         #region AccessLevel
 
-        public static AccessLevelDto AccessLevelToDto(AccessLevel entity)
-        {
-            return new AccessLevelDto
-            {
-                // Base
-                Uuid = entity.uuid,
-                LocationId = entity.location_id,
-                IsActive = entity.is_active,
-
-                // extend_desc
-                Name = entity.name,
-                component_id = entity.component_id,
-                AccessLevelDoorTimeZoneDto = entity.accessleve_door_timezones
-                .Select(x => AccessLevelDoorTimeZoneToDto(x))
-                .ToList()
-
-            };
-        }
 
         public static AccessLevel DtoToAccessLevel(CreateUpdateAccessLevelDto dto,short ComponentId,DateTime Create)
         {
@@ -820,14 +803,6 @@ namespace HIDAeroService.Mapper
             };
         }
 
-        public static AccessLevelDoorTimeZoneDto AccessLevelDoorTimeZoneToDto(AccessLevelDoorTimeZone acss) 
-        {
-            return new AccessLevelDoorTimeZoneDto
-            {
-                Doors = DoorToDto(acss.door),
-                TimeZone = TimeZoneToDto(acss.timezone),
-            };
-        }
 
         #endregion
 
