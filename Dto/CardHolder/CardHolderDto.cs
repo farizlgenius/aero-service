@@ -1,8 +1,8 @@
-﻿using HIDAeroService.DTO.AccessLevel;
-using HIDAeroService.DTO.Credential;
-using HIDAeroService.Entity;
+﻿using AeroService.DTO.AccessLevel;
+using AeroService.DTO.Credential;
+using AeroService.Entity;
 
-namespace HIDAeroService.DTO.CardHolder
+namespace AeroService.DTO.CardHolder
 {
     public sealed class CardHolderDto : NoMacBaseDto
     {

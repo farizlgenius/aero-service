@@ -1,8 +1,8 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.Role;
+﻿using AeroService.DTO;
+using AeroService.DTO.Role;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface IRoleService
     {

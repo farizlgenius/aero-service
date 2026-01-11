@@ -1,7 +1,7 @@
-﻿using HIDAeroService.DTO.Acr;
-using HIDAeroService.DTO.TimeZone;
+﻿using AeroService.DTO.Acr;
+using AeroService.DTO.TimeZone;
 
-namespace HIDAeroService.DTO.AccessLevel
+namespace AeroService.DTO.AccessLevel
 {
     public sealed class AccessLevelDoorTimeZoneDto
     {

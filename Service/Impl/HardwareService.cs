@@ -1,39 +1,39 @@
 ﻿using AeroService.DTO.Hardware;
 using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.Aero.CommandService;
-using HIDAeroService.Aero.CommandService.Impl;
-using HIDAeroService.AeroLibrary;
-using HIDAeroService.Constant;
-using HIDAeroService.Constants;
-using HIDAeroService.Data;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.AccessLevel;
-using HIDAeroService.DTO.ControlPoint;
-using HIDAeroService.DTO.Hardware;
-using HIDAeroService.DTO.IdReport;
-using HIDAeroService.DTO.Module;
-using HIDAeroService.DTO.MonitorPoint;
-using HIDAeroService.DTO.Reader;
-using HIDAeroService.DTO.RequestExit;
-using HIDAeroService.DTO.Scp;
-using HIDAeroService.DTO.Sensor;
-using HIDAeroService.DTO.Strike;
-using HIDAeroService.Entity;
-using HIDAeroService.Enums;
-using HIDAeroService.Helpers;
-using HIDAeroService.Hubs;
-using HIDAeroService.Mapper;
-using HIDAeroService.Utility;
+using AeroService.Aero.CommandService;
+using AeroService.Aero.CommandService.Impl;
+using AeroService.AeroLibrary;
+using AeroService.Constant;
+using AeroService.Constants;
+using AeroService.Data;
+using AeroService.DTO;
+using AeroService.DTO.AccessLevel;
+using AeroService.DTO.ControlPoint;
+using AeroService.DTO.Hardware;
+using AeroService.DTO.IdReport;
+using AeroService.DTO.Module;
+using AeroService.DTO.MonitorPoint;
+using AeroService.DTO.Reader;
+using AeroService.DTO.RequestExit;
+using AeroService.DTO.Scp;
+using AeroService.DTO.Sensor;
+using AeroService.DTO.Strike;
+using AeroService.Entity;
+using AeroService.Enums;
+using AeroService.Helpers;
+using AeroService.Hubs;
+using AeroService.Mapper;
+using AeroService.Utility;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using MiNET.Entities.Passive;
 using System.ComponentModel;
 using System.Net;
-using static HIDAeroService.AeroLibrary.Description;
+using static AeroService.AeroLibrary.Description;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public class HardwareService(AppDbContext context, AeroCommandService command,ITimeZoneCommandService timeZoneCommandService, IHubContext<AeroHub> hub,ITimeZoneService timeZoneService,ICardFormatService cardFormatService,IAccessLevelService accessLevelService, IHelperService<Hardware> helperService, CommandService cmndService, ICredentialService credentialService) : IHardwareService
     {

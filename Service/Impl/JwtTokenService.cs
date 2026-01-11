@@ -1,5 +1,5 @@
-﻿using HIDAeroService.Data;
-using HIDAeroService.Entity;
+﻿using AeroService.Data;
+using AeroService.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public sealed class JwtTokenService : IJwtTokenService
     {

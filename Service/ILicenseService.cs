@@ -1,11 +1,11 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.License;
+﻿using AeroService.DTO;
+using AeroService.DTO.License;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface ILicenseService
     {
-        Task<ResponseDto<MachineIdentityDto>> GetMachineIdAsync();
+        Task<ResponseDto<MachineFingerPrintDto>> GetMachineIdAsync();
         Task<ResponseDto<bool>> AddLicenseAsync();
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.Scp
+﻿namespace AeroService.DTO.Scp
 {
     public sealed class ResetScpDto
     {

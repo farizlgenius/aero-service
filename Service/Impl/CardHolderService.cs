@@ -1,20 +1,20 @@
-﻿using HIDAeroService.Aero.CommandService;
-using HIDAeroService.Aero.CommandService.Impl;
-using HIDAeroService.Constant;
-using HIDAeroService.Constants;
-using HIDAeroService.Data;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.AccessLevel;
-using HIDAeroService.DTO.CardHolder;
-using HIDAeroService.Entity;
-using HIDAeroService.Helpers;
-using HIDAeroService.Mapper;
-using HIDAeroService.Utility;
+﻿using AeroService.Aero.CommandService;
+using AeroService.Aero.CommandService.Impl;
+using AeroService.Constant;
+using AeroService.Constants;
+using AeroService.Data;
+using AeroService.DTO;
+using AeroService.DTO.AccessLevel;
+using AeroService.DTO.CardHolder;
+using AeroService.Entity;
+using AeroService.Helpers;
+using AeroService.Mapper;
+using AeroService.Utility;
 using Microsoft.EntityFrameworkCore;
 using MiNET.Utils.IO;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public sealed class CardHolderService(AppDbContext context,IHelperService<Credential> helperService,AeroCommandService command,ICredentialService credentialService) : ICardHolderService
     {

@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.Operator
+﻿namespace AeroService.DTO.Operator
 {
     public sealed class PasswordDto
     {

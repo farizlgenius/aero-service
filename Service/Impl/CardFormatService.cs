@@ -1,22 +1,22 @@
 ﻿
 using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.Constants;
-using HIDAeroService.Data;
-using HIDAeroService.Entity;
+using AeroService.Constants;
+using AeroService.Data;
+using AeroService.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Net;
-using HIDAeroService.Utility;
-using HIDAeroService.Helpers;
-using HIDAeroService.Constant;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.CardFormat;
-using HIDAeroService.Mapper;
-using HIDAeroService.Aero.CommandService.Impl;
-using HIDAeroService.Aero.CommandService;
+using AeroService.Utility;
+using AeroService.Helpers;
+using AeroService.Constant;
+using AeroService.DTO;
+using AeroService.DTO.CardFormat;
+using AeroService.Mapper;
+using AeroService.Aero.CommandService.Impl;
+using AeroService.Aero.CommandService;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
 
     public class CardFormatService(AppDbContext context, ILogger<CardFormatService> logger, AeroCommandService command, IHelperService<CardFormat> helperService) : ICardFormatService

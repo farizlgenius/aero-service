@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.Auth
+﻿namespace AeroService.DTO.Auth
 {
     public sealed class LoginDto
     {

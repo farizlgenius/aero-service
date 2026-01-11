@@ -1,8 +1,8 @@
-﻿using HIDAeroService.Entity.Interface;
+﻿using AeroService.Entity.Interface;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace HIDAeroService.Entity
+namespace AeroService.Entity
 {
     public class BaseEntity : IComponentId,IDatetime
     {

@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.Location
+﻿namespace AeroService.DTO.Location
 {
     public record LocationRangeDto(short[] locationIds);
 }

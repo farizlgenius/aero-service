@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.Transactions
+﻿namespace AeroService.DTO.Transactions
 {
     public sealed class TransactionWithPagination
     {

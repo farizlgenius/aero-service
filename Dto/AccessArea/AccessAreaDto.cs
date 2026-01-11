@@ -1,7 +1,7 @@
-﻿using HIDAeroService.Entity;
-using HIDAeroService.Entity.Interface;
+﻿using AeroService.Entity;
+using AeroService.Entity.Interface;
 
-namespace HIDAeroService.DTO.AccessArea
+namespace AeroService.DTO.AccessArea
 {
     public sealed class AccessAreaDto : NoMacBaseDto,IComponentId
     {

@@ -1,10 +1,10 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.DTO.Interval;
-using HIDAeroService.Entity;
+using AeroService.DTO.Interval;
+using AeroService.Entity;
 using MiNET.Entities.Passive;
 using System;
 
-namespace HIDAeroService.Aero.CommandService.Impl
+namespace AeroService.Aero.CommandService.Impl
 {
     public sealed class TimeZoneCommandService(AeroCommandService command) : ITimeZoneCommandService
     {

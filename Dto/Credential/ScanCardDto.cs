@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.Credential
+﻿namespace AeroService.DTO.Credential
 {
     public sealed class ScanCardDto
     {

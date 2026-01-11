@@ -1,7 +1,7 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.CardHolder;
+﻿using AeroService.DTO;
+using AeroService.DTO.CardHolder;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface ICardHolderService
     {

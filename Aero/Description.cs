@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using static HID.Aero.ScpdNet.Wrapper.SCPReplyMessage;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace HIDAeroService.AeroLibrary
+namespace AeroService.AeroLibrary
 {
     public sealed class Description
     {

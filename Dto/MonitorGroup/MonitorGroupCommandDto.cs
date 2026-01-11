@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.MonitorGroup
+﻿namespace AeroService.DTO.MonitorGroup
 {
     public sealed class MonitorGroupCommandDto
     {

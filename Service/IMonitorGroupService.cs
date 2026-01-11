@@ -1,8 +1,8 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.MonitorGroup;
+﻿using AeroService.DTO;
+using AeroService.DTO.MonitorGroup;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface IMonitorGroupService
     {

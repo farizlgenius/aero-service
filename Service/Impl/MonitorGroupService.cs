@@ -1,18 +1,18 @@
-﻿using HIDAeroService.Aero.CommandService;
-using HIDAeroService.Aero.CommandService.Impl;
-using HIDAeroService.Constant;
-using HIDAeroService.Constants;
-using HIDAeroService.Data;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.MonitorGroup;
-using HIDAeroService.Entity;
-using HIDAeroService.Helpers;
-using HIDAeroService.Mapper;
-using HIDAeroService.Model;
-using HIDAeroService.Utility;
+﻿using AeroService.Aero.CommandService;
+using AeroService.Aero.CommandService.Impl;
+using AeroService.Constant;
+using AeroService.Constants;
+using AeroService.Data;
+using AeroService.DTO;
+using AeroService.DTO.MonitorGroup;
+using AeroService.Entity;
+using AeroService.Helpers;
+using AeroService.Mapper;
+using AeroService.Model;
+using AeroService.Utility;
 using Microsoft.EntityFrameworkCore;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public sealed class MonitorGroupService(AppDbContext context,AeroCommandService command,IHelperService<MonitorGroup> helperService) : IMonitorGroupService
     {

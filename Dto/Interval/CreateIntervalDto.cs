@@ -1,6 +1,6 @@
-﻿using HIDAeroService.Entity.Interface;
+﻿using AeroService.Entity.Interface;
 
-namespace HIDAeroService.DTO.Interval
+namespace AeroService.DTO.Interval
 {
     public sealed class CreateIntervalDto : NoMacBaseDto,IComponentId
     {

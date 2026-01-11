@@ -1,6 +1,6 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
 
-namespace HIDAeroService.Utility
+namespace AeroService.Utility
 {
     public sealed class DecodeHelper
     {

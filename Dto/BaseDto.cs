@@ -1,7 +1,7 @@
-﻿using HIDAeroService.DTO.Location;
+﻿using AeroService.DTO.Location;
 using System.ComponentModel.DataAnnotations;
 
-namespace HIDAeroService.DTO
+namespace AeroService.DTO
 {
     public class BaseDto
     {

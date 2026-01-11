@@ -1,14 +1,14 @@
-﻿using HIDAeroService.Data;
+﻿using AeroService.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.Entity;
-using HIDAeroService.Service;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.Output;
-using HIDAeroService.DTO.ControlPoint;
+using AeroService.Entity;
+using AeroService.Service;
+using AeroService.DTO;
+using AeroService.DTO.Output;
+using AeroService.DTO.ControlPoint;
 
-namespace HIDAeroService.Controllers.V1
+namespace AeroService.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]

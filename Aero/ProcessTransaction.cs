@@ -1,14 +1,14 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.Service;
-using HIDAeroService.Service.Impl;
-using HIDAeroService.Utility;
+using AeroService.Service;
+using AeroService.Service.Impl;
+using AeroService.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HIDAeroService.AeroLibrary
+namespace AeroService.AeroLibrary
 {
     public sealed class ProcessTransaction
     {

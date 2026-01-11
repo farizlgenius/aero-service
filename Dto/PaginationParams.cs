@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO
+﻿namespace AeroService.DTO
 {
     public sealed class PaginationParams
     {

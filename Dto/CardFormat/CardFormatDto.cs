@@ -1,7 +1,7 @@
-﻿using HIDAeroService.DTO.Acr;
-using HIDAeroService.Entity.Interface;
+﻿using AeroService.DTO.Acr;
+using AeroService.Entity.Interface;
 
-namespace HIDAeroService.DTO.CardFormat
+namespace AeroService.DTO.CardFormat
 {
     public sealed class CardFormatDto : NoMacBaseDto
     {

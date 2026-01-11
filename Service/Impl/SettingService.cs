@@ -1,12 +1,12 @@
-﻿using HIDAeroService.DTO.Operator;
-using HIDAeroService.DTO;
-using HIDAeroService.Helpers;
-using HIDAeroService.Mapper;
-using HIDAeroService.Data;
+﻿using AeroService.DTO.Operator;
+using AeroService.DTO;
+using AeroService.Helpers;
+using AeroService.Mapper;
+using AeroService.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public sealed class SettingService(AppDbContext context) : ISettingService
     {

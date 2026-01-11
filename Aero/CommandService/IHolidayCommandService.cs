@@ -1,6 +1,6 @@
-﻿using HIDAeroService.Entity;
+﻿using AeroService.Entity;
 
-namespace HIDAeroService.Aero.CommandService
+namespace AeroService.Aero.CommandService
 {
     public interface IHolidayCommandService
     {

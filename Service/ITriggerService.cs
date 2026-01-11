@@ -1,7 +1,7 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.Trigger;
+﻿using AeroService.DTO;
+using AeroService.DTO.Trigger;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface ITriggerService
     {

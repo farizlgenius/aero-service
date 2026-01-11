@@ -1,13 +1,13 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.Location;
-using HIDAeroService.Entity.Interface;
-using HIDAeroService.Service;
+﻿using AeroService.DTO;
+using AeroService.DTO.Location;
+using AeroService.Entity.Interface;
+using AeroService.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SixLabors.ImageSharp;
 
-namespace HIDAeroService.Controllers.V1
+namespace AeroService.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]

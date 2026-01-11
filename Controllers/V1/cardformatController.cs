@@ -1,13 +1,13 @@
-﻿using HIDAeroService.Constants;
+﻿using AeroService.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using HIDAeroService.Entity;
-using HIDAeroService.Service;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.CardFormat;
+using AeroService.Entity;
+using AeroService.Service;
+using AeroService.DTO;
+using AeroService.DTO.CardFormat;
 
-namespace HIDAeroService.Controllers.V1
+namespace AeroService.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]

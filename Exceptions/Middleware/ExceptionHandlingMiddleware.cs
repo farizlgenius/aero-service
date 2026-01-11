@@ -1,13 +1,13 @@
-﻿using HIDAeroService.Constant;
-using HIDAeroService.Constants;
-using HIDAeroService.DTO;
-using HIDAeroService.Exceptions.Custom;
+﻿using AeroService.Constant;
+using AeroService.Constants;
+using AeroService.DTO;
+using AeroService.Exceptions.Custom;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Newtonsoft.Json;
 using System.Net;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace HIDAeroService.Exceptions.Middleware
+namespace AeroService.Exceptions.Middleware
 {
     public sealed class ExceptionHandlingMiddleware : IMiddleware
     {
@@ -16,6 +16,7 @@ namespace HIDAeroService.Exceptions.Middleware
             
             try
             {
+                Console.WriteLine("[] >> " + httpContext.Connection.RemoteIpAddress.ToString());
                 await next(httpContext);
 
             }

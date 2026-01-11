@@ -1,9 +1,9 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.Constants;
-using HIDAeroService.Entity;
+using AeroService.Constants;
+using AeroService.Entity;
 using System;
 
-namespace HIDAeroService.Aero.CommandService.Impl
+namespace AeroService.Aero.CommandService.Impl
 {
     public sealed class HolidayCommandService(ILogger<HolidayCommandService> logger,AeroCommandService command) : IHolidayCommandService
     {

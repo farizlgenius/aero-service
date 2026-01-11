@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.Models
+﻿namespace AeroService.Models
 {
     public sealed class PendingCommand
     {

@@ -1,9 +1,9 @@
 ﻿using AeroService.Entity;
 using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.AeroLibrary;
-using HIDAeroService.Controllers.V1;
-using HIDAeroService.Entity;
-using HIDAeroService.Entity.Interface;
+using AeroService.AeroLibrary;
+using AeroService.Controllers.V1;
+using AeroService.Entity;
+using AeroService.Entity.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -11,7 +11,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using System.Xml.Linq;
 
-namespace HIDAeroService.Data
+namespace AeroService.Data
 {
 
     public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)

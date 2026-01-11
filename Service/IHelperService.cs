@@ -1,7 +1,7 @@
-﻿using HIDAeroService.Entity.Interface;
+﻿using AeroService.Entity.Interface;
 using Microsoft.EntityFrameworkCore;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface IHelperService<TEntity> : IHelperService
     {

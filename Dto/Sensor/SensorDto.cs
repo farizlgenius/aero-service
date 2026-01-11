@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.Sensor
+﻿namespace AeroService.DTO.Sensor
 {
     public sealed class SensorDto : BaseDto
     {

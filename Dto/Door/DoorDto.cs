@@ -1,13 +1,13 @@
-﻿using HIDAeroService.DTO.CardFormat;
-using HIDAeroService.DTO.Output;
-using HIDAeroService.DTO.Reader;
-using HIDAeroService.DTO.RequestExit;
-using HIDAeroService.DTO.Sensor;
-using HIDAeroService.DTO.Strike;
-using HIDAeroService.Entity;
-using HIDAeroService.Entity.Interface;
+﻿using AeroService.DTO.CardFormat;
+using AeroService.DTO.Output;
+using AeroService.DTO.Reader;
+using AeroService.DTO.RequestExit;
+using AeroService.DTO.Sensor;
+using AeroService.DTO.Strike;
+using AeroService.Entity;
+using AeroService.Entity.Interface;
 
-namespace HIDAeroService.DTO.Acr
+namespace AeroService.DTO.Acr
 {
     public sealed class DoorDto : BaseDto
     {

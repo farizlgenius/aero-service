@@ -1,6 +1,6 @@
-﻿using HIDAeroService.DTO.Module;
+﻿using AeroService.DTO.Module;
 
-namespace HIDAeroService.DTO.Scp
+namespace AeroService.DTO.Scp
 {
     public sealed class HardwareDto : BaseDto
     {

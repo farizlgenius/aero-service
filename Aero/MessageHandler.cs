@@ -1,14 +1,14 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.Aero.CommandService;
-using HIDAeroService.Aero.CommandService.Impl;
-using HIDAeroService.Constants;
-using HIDAeroService.Entity;
-using HIDAeroService.Service;
-using HIDAeroService.Service.Impl;
-using HIDAeroService.Utility;
-using static HIDAeroService.AeroLibrary.Description;
+using AeroService.Aero.CommandService;
+using AeroService.Aero.CommandService.Impl;
+using AeroService.Constants;
+using AeroService.Entity;
+using AeroService.Service;
+using AeroService.Service.Impl;
+using AeroService.Utility;
+using static AeroService.AeroLibrary.Description;
 
-namespace HIDAeroService.AeroLibrary
+namespace AeroService.AeroLibrary
 {
     public sealed class MessageHandler(ITransactionService transactionService ,IModuleService moduleService,IControlPointService cpService, IMonitorPointService mpService, IDoorService doorService, ICredentialService credentialService, CommandService cmndService, IHelperService<CommandLog> helperService, IAccessLevelService accessLevelService, SysService sysService)
     {

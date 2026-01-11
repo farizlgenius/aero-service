@@ -1,17 +1,17 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.License;
-using HIDAeroService.Service;
+﻿using AeroService.DTO;
+using AeroService.DTO.License;
+using AeroService.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HIDAeroService.Controllers.V1
+namespace AeroService.Controllers.V1
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class LicenseController(ILicenseService licenseService) : ControllerBase
     {
         [HttpGet("identity")]
-        public async Task<ActionResult<ResponseDto<MachineIdentityDto>>> GetMachineId()
+        public async Task<ActionResult<ResponseDto<MachineFingerPrintDto>>> GetMachineId()
         {
             var res = await licenseService.GetMachineIdAsync();
             return Ok(res);

@@ -1,13 +1,13 @@
-﻿using HIDAeroService.Aero.CommandService;
-using HIDAeroService.AeroLibrary;
-using HIDAeroService.Constant;
-using HIDAeroService.Constants;
-using HIDAeroService.Data;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.Holiday;
-using HIDAeroService.Entity;
-using HIDAeroService.Helpers;
-using HIDAeroService.Utility;
+﻿using AeroService.Aero.CommandService;
+using AeroService.AeroLibrary;
+using AeroService.Constant;
+using AeroService.Constants;
+using AeroService.Data;
+using AeroService.DTO;
+using AeroService.DTO.Holiday;
+using AeroService.Entity;
+using AeroService.Helpers;
+using AeroService.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MiNET.Blocks;
@@ -15,7 +15,7 @@ using MiNET.Entities;
 using MiNET.Worlds;
 using System.Net;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public class HolidayService(IHolidayCommandService command, AppDbContext context, IHelperService<Holiday> helperService) : IHolidayService
     {

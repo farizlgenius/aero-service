@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace HIDAeroService.Helpers
+namespace AeroService.Helpers
 {
     public static class MappingHelper
     {

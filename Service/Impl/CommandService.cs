@@ -1,17 +1,17 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.Aero.CommandService;
-using HIDAeroService.Aero.CommandService.Impl;
-using HIDAeroService.AeroLibrary;
-using HIDAeroService.Data;
-using HIDAeroService.DTO.Scp;
-using HIDAeroService.Entity;
-using HIDAeroService.Hubs;
+using AeroService.Aero.CommandService;
+using AeroService.Aero.CommandService.Impl;
+using AeroService.AeroLibrary;
+using AeroService.Data;
+using AeroService.DTO.Scp;
+using AeroService.Entity;
+using AeroService.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using MiNET.Entities.Passive;
 using Org.BouncyCastle.Crypto.Parameters;
 using static HID.Aero.ScpdNet.Wrapper.SCPReplyMessage;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public sealed class CommandService(ILogger<CommandService> logger, AppDbContext context, IHelperService<CommandLog> helperService, AeroCommandService write) : ICommandService
     {

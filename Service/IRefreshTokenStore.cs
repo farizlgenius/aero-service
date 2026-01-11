@@ -1,6 +1,6 @@
-﻿using HIDAeroService.Model;
+﻿using AeroService.Model;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface IRefreshTokenStore
     {

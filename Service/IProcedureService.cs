@@ -1,8 +1,8 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.Procedure;
+﻿using AeroService.DTO;
+using AeroService.DTO.Procedure;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface IProcedureService
     {

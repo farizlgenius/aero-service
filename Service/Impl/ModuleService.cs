@@ -1,36 +1,36 @@
-﻿using HIDAeroService.Constant;
-using HIDAeroService.Constants;
-using HIDAeroService.Data;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.Module;
-using HIDAeroService.DTO.Reader;
-using HIDAeroService.DTO.Output;
-using HIDAeroService.Entity;
-using HIDAeroService.Helpers;
-using HIDAeroService.Hubs;
-using HIDAeroService.Mapper;
-using HIDAeroService.Utility;
+﻿using AeroService.Constant;
+using AeroService.Constants;
+using AeroService.Data;
+using AeroService.DTO;
+using AeroService.DTO.Module;
+using AeroService.DTO.Reader;
+using AeroService.DTO.Output;
+using AeroService.Entity;
+using AeroService.Helpers;
+using AeroService.Hubs;
+using AeroService.Mapper;
+using AeroService.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using MiNET.Entities;
 using System.Collections.Generic;
 using System.Net;
-using HIDAeroService.Aero.CommandService.Impl;
-using HIDAeroService.Aero.CommandService;
+using AeroService.Aero.CommandService.Impl;
+using AeroService.Aero.CommandService;
 using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.Enums;
+using AeroService.Enums;
 using Microsoft.AspNetCore.Http.HttpResults;
 using MiNET.Items;
 using System.Collections;
 using System.Text;
-using HIDAeroService.DTO.ControlPoint;
-using HIDAeroService.DTO.MonitorPoint;
-using HIDAeroService.DTO.RequestExit;
-using HIDAeroService.DTO.Sensor;
-using HIDAeroService.DTO.Strike;
+using AeroService.DTO.ControlPoint;
+using AeroService.DTO.MonitorPoint;
+using AeroService.DTO.RequestExit;
+using AeroService.DTO.Sensor;
+using AeroService.DTO.Strike;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public class ModuleService(AppDbContext context, AeroCommandService command, IHubContext<AeroHub> hub, IHelperService<Module> helperService, ILogger<ModuleService> logger) : IModuleService
     {

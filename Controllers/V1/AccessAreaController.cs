@@ -1,11 +1,11 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.AccessArea;
-using HIDAeroService.Service;
+﻿using AeroService.DTO;
+using AeroService.DTO.AccessArea;
+using AeroService.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Asn1.Ocsp;
 
-namespace HIDAeroService.Controllers.V1
+namespace AeroService.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]

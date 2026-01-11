@@ -1,25 +1,25 @@
-﻿using HIDAeroService.Aero.CommandService;
-using HIDAeroService.Aero.CommandService.Impl;
-using HIDAeroService.Constant;
-using HIDAeroService.Constants;
-using HIDAeroService.Data;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.ControlPoint;
-using HIDAeroService.DTO.Output;
-using HIDAeroService.Entity;
-using HIDAeroService.Entity.Interface;
-using HIDAeroService.Helpers;
-using HIDAeroService.Hubs;
-using HIDAeroService.Mapper;
-using HIDAeroService.Model;
-using HIDAeroService.Utility;
+﻿using AeroService.Aero.CommandService;
+using AeroService.Aero.CommandService.Impl;
+using AeroService.Constant;
+using AeroService.Constants;
+using AeroService.Data;
+using AeroService.DTO;
+using AeroService.DTO.ControlPoint;
+using AeroService.DTO.Output;
+using AeroService.Entity;
+using AeroService.Entity.Interface;
+using AeroService.Helpers;
+using AeroService.Hubs;
+using AeroService.Mapper;
+using AeroService.Model;
+using AeroService.Utility;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using MiNET.Entities;
 using System.ComponentModel;
 using System.Net;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public sealed class ControlPointService(AppDbContext context,IHelperService<Strike> helperService,AeroCommandService command,ILogger<ControlPointService> logger,IHubContext<AeroHub> hub) : IControlPointService 
     {

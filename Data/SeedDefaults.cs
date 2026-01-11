@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.Data
+﻿namespace AeroService.Data
 {
     public sealed class SeedDefaults
     {

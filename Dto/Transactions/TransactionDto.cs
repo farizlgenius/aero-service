@@ -1,6 +1,6 @@
-﻿using HIDAeroService.Entity;
+﻿using AeroService.Entity;
 
-namespace HIDAeroService.DTO.Transactions
+namespace AeroService.DTO.Transactions
 {
     public sealed class TransactionDto : BaseDto
     {

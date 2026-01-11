@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.Token
+﻿namespace AeroService.DTO.Token
 {
     public sealed class TokenDto
     {

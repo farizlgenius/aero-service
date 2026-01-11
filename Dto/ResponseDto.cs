@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace HIDAeroService.DTO
+namespace AeroService.DTO
 {
 
     public sealed class ResponseDto<T>

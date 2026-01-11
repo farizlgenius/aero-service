@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.Module;
+using AeroService.DTO;
+using AeroService.DTO.Module;
 using HID.Aero.ScpdNet.Wrapper;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface IModuleService
     {

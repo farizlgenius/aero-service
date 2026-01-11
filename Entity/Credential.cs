@@ -1,8 +1,8 @@
-﻿using HIDAeroService.Entity.Interface;
+﻿using AeroService.Entity.Interface;
 using Org.BouncyCastle.Bcpg;
 using System.ComponentModel.DataAnnotations;
 
-namespace HIDAeroService.Entity
+namespace AeroService.Entity
 {
     public sealed class Credential : NoMacBaseEntity,IComponentId
     {

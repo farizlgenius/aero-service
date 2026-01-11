@@ -1,7 +1,7 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.AccessLevel;
+﻿using AeroService.DTO;
+using AeroService.DTO.AccessLevel;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface IAccessLevelService
     {

@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.Output
+﻿namespace AeroService.DTO.Output
 {
     public sealed class ToggleControlPointDto
     {

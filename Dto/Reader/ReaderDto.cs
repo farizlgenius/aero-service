@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.Reader
+﻿namespace AeroService.DTO.Reader
 {
     public sealed class ReaderDto : BaseDto
     {

@@ -1,7 +1,7 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.Interval;
+﻿using AeroService.DTO;
+using AeroService.DTO.Interval;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface IIntervalService
     {

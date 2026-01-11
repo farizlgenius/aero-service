@@ -1,12 +1,12 @@
-﻿using HIDAeroService.Constants;
-using HIDAeroService.Logging;
-using HIDAeroService.Model;
-using HIDAeroService.Utility;
+﻿using AeroService.Constants;
+using AeroService.Logging;
+using AeroService.Model;
+using AeroService.Utility;
 using System.Net;
-using HIDAeroService.Constant;
-using HIDAeroService.DTO;
+using AeroService.Constant;
+using AeroService.DTO;
 
-namespace HIDAeroService.Helpers
+namespace AeroService.Helpers
 {
     public sealed class ResponseHelper
     {

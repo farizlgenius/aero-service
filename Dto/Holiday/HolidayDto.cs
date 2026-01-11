@@ -1,6 +1,6 @@
-﻿using HIDAeroService.Entity.Interface;
+﻿using AeroService.Entity.Interface;
 
-namespace HIDAeroService.DTO.Holiday
+namespace AeroService.DTO.Holiday
 {
     public sealed class HolidayDto : NoMacBaseDto,IComponentId
     {

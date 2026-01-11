@@ -1,14 +1,14 @@
 ﻿
 using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.Data;
-using HIDAeroService.Entity;
-using HIDAeroService.Model;
-using HIDAeroService.Service;
-using HIDAeroService.Service.Impl;
+using AeroService.Data;
+using AeroService.Entity;
+using AeroService.Model;
+using AeroService.Service;
+using AeroService.Service.Impl;
 using Newtonsoft.Json.Linq;
 using System.Threading.Channels;
 
-namespace HIDAeroService.Aero
+namespace AeroService.Aero
 {
     public sealed class AeroWorker(Channel<SCPReplyMessage> queue, IServiceScopeFactory scopeFactory) : BackgroundService
     {

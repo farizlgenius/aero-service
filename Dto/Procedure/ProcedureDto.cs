@@ -1,6 +1,6 @@
-﻿using HIDAeroService.DTO.Action;
+﻿using AeroService.DTO.Action;
 
-namespace HIDAeroService.DTO.Procedure
+namespace AeroService.DTO.Procedure
 {
     public sealed class ProcedureDto : BaseDto
     {

@@ -1,17 +1,17 @@
 ﻿using AeroService.DTO.Hardware;
 using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.Aero.CommandService;
-using HIDAeroService.Aero.CommandService.Impl;
-using HIDAeroService.Data;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.Hardware;
-using HIDAeroService.DTO.IdReport;
-using HIDAeroService.DTO.Scp;
-using HIDAeroService.Entity;
+using AeroService.Aero.CommandService;
+using AeroService.Aero.CommandService.Impl;
+using AeroService.Data;
+using AeroService.DTO;
+using AeroService.DTO.Hardware;
+using AeroService.DTO.IdReport;
+using AeroService.DTO.Scp;
+using AeroService.Entity;
 using LibNoise.Combiner;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface IHardwareService
     {

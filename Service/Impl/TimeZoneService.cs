@@ -1,27 +1,27 @@
 ﻿
-using HIDAeroService.Data;
-using HIDAeroService.Entity;
+using AeroService.Data;
+using AeroService.Entity;
 using Microsoft.EntityFrameworkCore;
-using HIDAeroService.Constants;
+using AeroService.Constants;
 using System.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Net;
 using System.Runtime.CompilerServices;
-using HIDAeroService.Logging;
-using HIDAeroService.AeroLibrary;
-using HIDAeroService.Utility;
+using AeroService.Logging;
+using AeroService.AeroLibrary;
+using AeroService.Utility;
 using MiNET.Worlds;
-using HIDAeroService.Helpers;
-using HIDAeroService.Constant;
+using AeroService.Helpers;
+using AeroService.Constant;
 using MiNET.Entities;
 using System.ComponentModel;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.TimeZone;
-using HIDAeroService.DTO.Interval;
-using HIDAeroService.Mapper;
-using HIDAeroService.Aero.CommandService;
+using AeroService.DTO;
+using AeroService.DTO.TimeZone;
+using AeroService.DTO.Interval;
+using AeroService.Mapper;
+using AeroService.Aero.CommandService;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public class TimeZoneService(AppDbContext context, IHelperService<Entity.TimeZone> helperService, ITimeZoneCommandService command,  ILogger<TimeZoneService> logger) : ITimeZoneService
     {

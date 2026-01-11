@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.Action
+﻿namespace AeroService.DTO.Action
 {
     public sealed class ActionDto : BaseDto
     {

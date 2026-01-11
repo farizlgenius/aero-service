@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.Constants
+﻿namespace AeroService.Constants
 {
     public static class ComponentEnum
     {

@@ -1,13 +1,13 @@
-﻿using HIDAeroService.Constants;
-using HIDAeroService.Entity;
-using HIDAeroService.Logging;
-using HIDAeroService.Model;
+﻿using AeroService.Constants;
+using AeroService.Entity;
+using AeroService.Logging;
+using AeroService.Model;
 using System.Net;
 using System.Text;
-using static HIDAeroService.AeroLibrary.Description;
+using static AeroService.AeroLibrary.Description;
 
 
-namespace HIDAeroService.Utility
+namespace AeroService.Utility
 {
     public sealed class UtilityHelper
     {

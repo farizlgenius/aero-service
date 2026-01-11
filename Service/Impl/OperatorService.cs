@@ -1,16 +1,16 @@
-﻿using HIDAeroService.Constant;
-using HIDAeroService.Data;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.Operator;
-using HIDAeroService.Entity;
-using HIDAeroService.Helpers;
-using HIDAeroService.Mapper;
+﻿using AeroService.Constant;
+using AeroService.Data;
+using AeroService.DTO;
+using AeroService.DTO.Operator;
+using AeroService.Entity;
+using AeroService.Helpers;
+using AeroService.Mapper;
 using Microsoft.EntityFrameworkCore;
 using MiNET.Entities;
 using System.Net;
 using System.Security.Cryptography;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public sealed class OperatorService(AppDbContext context,IHelperService<Operator> helperService) : IOperatorService
     {

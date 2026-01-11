@@ -1,6 +1,6 @@
-﻿using HIDAeroService.DTO.Location;
+﻿using AeroService.DTO.Location;
 
-namespace HIDAeroService.DTO.Operator
+namespace AeroService.DTO.Operator
 {
     public sealed class OperatorDto 
     {

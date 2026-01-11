@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.Hardware
+﻿namespace AeroService.DTO.Hardware
 {
     public sealed class MemoryAllocateDto
     {

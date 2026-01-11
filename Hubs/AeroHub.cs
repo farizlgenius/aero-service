@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace HIDAeroService.Hubs
+namespace AeroService.Hubs
 {
     public sealed class AeroHub : Hub
     {

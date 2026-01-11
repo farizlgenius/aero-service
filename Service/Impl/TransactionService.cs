@@ -1,17 +1,17 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.Aero.CommandService;
-using HIDAeroService.Aero.CommandService.Impl;
-using HIDAeroService.Constant;
-using HIDAeroService.Constants;
-using HIDAeroService.Data;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.Transactions;
-using HIDAeroService.Entity;
-using HIDAeroService.Enums;
-using HIDAeroService.Helpers;
-using HIDAeroService.Hubs;
-using HIDAeroService.Mapper;
-using HIDAeroService.Utility;
+using AeroService.Aero.CommandService;
+using AeroService.Aero.CommandService.Impl;
+using AeroService.Constant;
+using AeroService.Constants;
+using AeroService.Data;
+using AeroService.DTO;
+using AeroService.DTO.Transactions;
+using AeroService.Entity;
+using AeroService.Enums;
+using AeroService.Helpers;
+using AeroService.Hubs;
+using AeroService.Mapper;
+using AeroService.Utility;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +22,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Transactions;
 using static MiNET.Net.McpeUpdateBlock;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public sealed class TransactionService(AppDbContext context, IHubContext<AeroHub> hub,AeroCommandService command,IHelperService helperService,ILogger<TransactionService> logger) : ITransactionService
     {
@@ -93,7 +93,7 @@ namespace HIDAeroService.Service.Impl
             try
             {
                 if (!await context.hardware.AnyAsync(s => s.component_id == (short)message.SCPId)) return;
-                HIDAeroService.Entity.Transaction tran = new HIDAeroService.Entity.Transaction();
+                AeroService.Entity.Transaction tran = new AeroService.Entity.Transaction();
                 switch (message.tran.source_type)
                 {
 
@@ -376,10 +376,10 @@ namespace HIDAeroService.Service.Impl
             return ResponseHelper.SuccessBuilder(true);
         }
 
-        private async Task<HIDAeroService.Entity.Transaction> TransactionBuilder(SCPReplyMessage message)
+        private async Task<AeroService.Entity.Transaction> TransactionBuilder(SCPReplyMessage message)
         {
             var trand = TransactionHelper.TranCodeDesc((tranType)message.tran.tran_type, message.tran.tran_code);
-            var tran = new HIDAeroService.Entity.Transaction()
+            var tran = new AeroService.Entity.Transaction()
             {
                 // Base 
                 component_id = (short)message.SCPId,

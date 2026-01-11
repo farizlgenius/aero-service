@@ -1,7 +1,7 @@
-﻿using HIDAeroService.Hubs;
+﻿using AeroService.Hubs;
 using Microsoft.AspNetCore.SignalR;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public sealed class WebSocketHubService
     {

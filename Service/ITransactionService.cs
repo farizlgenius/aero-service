@@ -1,8 +1,8 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.Transactions;
+using AeroService.DTO;
+using AeroService.DTO.Transactions;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface ITransactionService
     {

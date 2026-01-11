@@ -1,6 +1,6 @@
-﻿using HIDAeroService.Entity.Interface;
+﻿using AeroService.Entity.Interface;
 
-namespace HIDAeroService.Entity
+namespace AeroService.Entity
 {
     public sealed class Holiday : NoMacBaseEntity,IComponentId
     {

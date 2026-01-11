@@ -1,7 +1,7 @@
-﻿using HIDAeroService.Entity;
+﻿using AeroService.Entity;
 using System.Security.Claims;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface IJwtTokenService
     {

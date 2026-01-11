@@ -1,8 +1,8 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.MonitorPoint;
+﻿using AeroService.DTO;
+using AeroService.DTO.MonitorPoint;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface IMonitorPointService
     {

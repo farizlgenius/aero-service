@@ -1,6 +1,6 @@
-﻿using HIDAeroService.DTO.Interval;
+﻿using AeroService.DTO.Interval;
 
-namespace HIDAeroService.DTO.TimeZone
+namespace AeroService.DTO.TimeZone
 {
     public sealed class TimeZoneDto : NoMacBaseDto
     {

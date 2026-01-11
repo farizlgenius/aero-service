@@ -1,7 +1,7 @@
 ﻿using AeroService.Entity.Interface;
-using HIDAeroService.Model;
+using AeroService.Model;
 
-namespace HIDAeroService.Entity
+namespace AeroService.Entity
 {
     public sealed class MonitorGroup : BaseEntity
     {

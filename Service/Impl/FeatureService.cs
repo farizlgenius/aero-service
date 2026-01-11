@@ -1,12 +1,12 @@
-﻿using HIDAeroService.Data;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.Feature;
-using HIDAeroService.Helpers;
-using HIDAeroService.Mapper;
+﻿using AeroService.Data;
+using AeroService.DTO;
+using AeroService.DTO.Feature;
+using AeroService.Helpers;
+using AeroService.Mapper;
 using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.EntityFrameworkCore;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public sealed class FeatureService(AppDbContext context) : IFeatureService
     {

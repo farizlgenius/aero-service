@@ -1,13 +1,13 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.Aero.CommandService;
-using HIDAeroService.Entity;
-using HIDAeroService.Service;
-using HIDAeroService.Utility;
+using AeroService.Aero.CommandService;
+using AeroService.Entity;
+using AeroService.Service;
+using AeroService.Utility;
 using System;
 using System.Threading.Channels;
 
 
-namespace HIDAeroService.AeroLibrary
+namespace AeroService.AeroLibrary
 {
     public sealed class AeroMessage(AeroCommandService command, IServiceScopeFactory scopeFactory,ILogger<AeroMessage> logger, Channel<SCPReplyMessage> queue)
     {

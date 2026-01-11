@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.Entity
+﻿namespace AeroService.Entity
 {
     public sealed class Action : BaseEntity
     {

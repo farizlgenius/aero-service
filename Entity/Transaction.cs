@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace HIDAeroService.Entity
+namespace AeroService.Entity
 {
     public sealed class Transaction : BaseEntity
     {

@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.Feature
+﻿namespace AeroService.DTO.Feature
 {
     public sealed class SubFeatureDto
     {

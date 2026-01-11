@@ -1,6 +1,6 @@
-﻿using HIDAeroService.Entity;
+﻿using AeroService.Entity;
 
-namespace HIDAeroService.DTO.Feature
+namespace AeroService.DTO.Feature
 {
     public sealed class FeatureDto
     {

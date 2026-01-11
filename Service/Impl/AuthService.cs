@@ -1,10 +1,10 @@
-﻿using HIDAeroService.Data;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.Auth;
-using HIDAeroService.DTO.Operator;
-using HIDAeroService.DTO.Token;
-using HIDAeroService.Entity;
-using HIDAeroService.Helpers;
+﻿using AeroService.Data;
+using AeroService.DTO;
+using AeroService.DTO.Auth;
+using AeroService.DTO.Operator;
+using AeroService.DTO.Token;
+using AeroService.Entity;
+using AeroService.Helpers;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +16,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public class AuthService(IConfiguration configuration, AppDbContext context, IJwtTokenService tokenService, IRefreshTokenStore refresh) : IAuthService
     {

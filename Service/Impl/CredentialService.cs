@@ -1,28 +1,28 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.AeroLibrary;
-using HIDAeroService.Constant;
-using HIDAeroService.Constants;
-using HIDAeroService.Data;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.Credential;
-using HIDAeroService.DTO.AccessLevel;
-using HIDAeroService.Entity;
-using HIDAeroService.Helpers;
-using HIDAeroService.Hubs;
-using HIDAeroService.Mapper;
-using HIDAeroService.Utility;
+using AeroService.AeroLibrary;
+using AeroService.Constant;
+using AeroService.Constants;
+using AeroService.Data;
+using AeroService.DTO;
+using AeroService.DTO.Credential;
+using AeroService.DTO.AccessLevel;
+using AeroService.Entity;
+using AeroService.Helpers;
+using AeroService.Hubs;
+using AeroService.Mapper;
+using AeroService.Utility;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.Diagnostics;
-using HIDAeroService.Entity.Interface;
+using AeroService.Entity.Interface;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using MiNET.Entities;
 using MiNET.Entities.Passive;
-using HIDAeroService.Aero.CommandService.Impl;
-using HIDAeroService.Aero.CommandService;
+using AeroService.Aero.CommandService.Impl;
+using AeroService.Aero.CommandService;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public class CredentialService(AeroMessage read, AeroCommandService command, IHelperService<Credential> helperService, IHubContext<AeroHub> hub, AppDbContext context) : ICredentialService
     {

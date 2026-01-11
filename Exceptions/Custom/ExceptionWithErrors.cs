@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.Exceptions.Custom
+﻿namespace AeroService.Exceptions.Custom
 {
     public class ExceptionWithErrors : Exception
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HIDAeroService.DTO.Location
+namespace AeroService.DTO.Location
 {
     public sealed class LocationDto 
     {

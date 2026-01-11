@@ -1,7 +1,7 @@
-﻿using HIDAeroService.DTO.Interval;
-using HIDAeroService.Entity;
+﻿using AeroService.DTO.Interval;
+using AeroService.Entity;
 
-namespace HIDAeroService.Aero.CommandService
+namespace AeroService.Aero.CommandService
 {
     public interface ITimeZoneCommandService 
     {

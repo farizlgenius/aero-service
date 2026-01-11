@@ -1,9 +1,9 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.Acr;
+using AeroService.DTO;
+using AeroService.DTO.Acr;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface IDoorService
     {

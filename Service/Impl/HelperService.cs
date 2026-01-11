@@ -1,11 +1,11 @@
-﻿using HIDAeroService.Data;
-using HIDAeroService.Entity.Interface;
-using HIDAeroService.Model;
+﻿using AeroService.Data;
+using AeroService.Entity.Interface;
+using AeroService.Model;
 using LibNoise.Combiner;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public sealed class HelperService<TEntity>(AppDbContext context) : IHelperService<TEntity>
     {

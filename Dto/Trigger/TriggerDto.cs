@@ -1,8 +1,8 @@
-﻿using HIDAeroService.DTO.Procedure;
-using HIDAeroService.DTO.Transactions;
-using HIDAeroService.Entity.Interface;
+﻿using AeroService.DTO.Procedure;
+using AeroService.DTO.Transactions;
+using AeroService.Entity.Interface;
 
-namespace HIDAeroService.DTO.Trigger
+namespace AeroService.DTO.Trigger
 {
     public class TriggerDto : BaseDto
     {

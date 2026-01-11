@@ -1,6 +1,6 @@
-﻿using HIDAeroService.Constant;
+﻿using AeroService.Constant;
 
-namespace HIDAeroService.Utility
+namespace AeroService.Utility
 {
     public sealed class MessageBuilder
     {

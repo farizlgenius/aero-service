@@ -1,30 +1,28 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.Constants;
-using HIDAeroService.DTO.AccessLevel;
-using HIDAeroService.DTO.Acr;
-using HIDAeroService.DTO.Action;
-using HIDAeroService.DTO.CardFormat;
-using HIDAeroService.DTO.Interval;
-using HIDAeroService.DTO.Procedure;
-using HIDAeroService.DTO.Trigger;
-using HIDAeroService.Entity;
-using HIDAeroService.Model;
-using HIDAeroService.Models;
-using HIDAeroService.Service;
-using HIDAeroService.Service.Impl;
-using HIDAeroService.Utility;
+using AeroService.Constants;
+using AeroService.DTO.AccessLevel;
+using AeroService.DTO.Acr;
+using AeroService.DTO.Action;
+using AeroService.DTO.CardFormat;
+using AeroService.DTO.Interval;
+using AeroService.DTO.Procedure;
+using AeroService.DTO.Trigger;
+using AeroService.Entity;
+using AeroService.Model;
+using AeroService.Models;
+using AeroService.Service;
+using AeroService.Service.Impl;
+using AeroService.Utility;
 using LibNoise.Modifier;
 using Microsoft.Extensions.Logging;
-using MiNET.Entities.Passive;
 using Newtonsoft.Json.Linq;
 using SixLabors.Fonts.Tables.AdvancedTypographic;
 using System;
 using System.Collections.Concurrent;
-using static MiNET.Net.McpeUpdateBlock;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
-namespace HIDAeroService.Aero.CommandService
+namespace AeroService.Aero.CommandService
 {
     public class AeroCommandService(ILogger<AeroCommandService> logger)
     {

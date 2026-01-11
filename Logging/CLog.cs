@@ -1,10 +1,10 @@
-﻿using HIDAeroService.Constant;
-using HIDAeroService.Constants;
+﻿using AeroService.Constant;
+using AeroService.Constants;
 using Serilog.Core;
 using Serilog.Events;
 using System.Runtime.CompilerServices;
 
-namespace HIDAeroService.Logging
+namespace AeroService.Logging
 {
     public sealed class CLog : ILogEventEnricher
     {

@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.MonitorPoint
+﻿namespace AeroService.DTO.MonitorPoint
 {
     public sealed class MonitorPointDto : BaseDto
     {

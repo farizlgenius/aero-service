@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace HIDAeroService.Helpers
+namespace AeroService.Helpers
 {
     public sealed class EncryptHelper
     {

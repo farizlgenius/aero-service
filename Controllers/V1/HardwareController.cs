@@ -1,15 +1,15 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
-using HIDAeroService.Data;
-using HIDAeroService.Entity;
-using HIDAeroService.Service;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.Scp;
-using HIDAeroService.DTO.Hardware;
+using AeroService.Data;
+using AeroService.Entity;
+using AeroService.Service;
+using AeroService.DTO;
+using AeroService.DTO.Scp;
+using AeroService.DTO.Hardware;
 using AeroService.DTO.Hardware;
 using Microsoft.AspNetCore.Authorization;
 
-namespace HIDAeroService.Controllers.V1
+namespace AeroService.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]

@@ -1,7 +1,7 @@
-﻿using HIDAeroService.DTO.Operator;
-using HIDAeroService.DTO;
+﻿using AeroService.DTO.Operator;
+using AeroService.DTO;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface ISettingService
     {

@@ -1,11 +1,11 @@
-﻿using HIDAeroService.Aero.CommandService;
-using HIDAeroService.Aero.CommandService.Impl;
-using HIDAeroService.Constants;
-using HIDAeroService.Data;
-using HIDAeroService.Entity;
-using HIDAeroService.Helpers;
+﻿using AeroService.Aero.CommandService;
+using AeroService.Aero.CommandService.Impl;
+using AeroService.Constants;
+using AeroService.Data;
+using AeroService.Entity;
+using AeroService.Helpers;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public class SysService(AppDbContext context, AeroCommandService command)
     {

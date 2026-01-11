@@ -1,6 +1,6 @@
-﻿using HIDAeroService.DTO.Transactions;
+﻿using AeroService.DTO.Transactions;
 
-namespace HIDAeroService.DTO
+namespace AeroService.DTO
 {
     public class PaginationDto
     {

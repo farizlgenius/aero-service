@@ -1,22 +1,22 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.Aero.CommandService;
-using HIDAeroService.Aero.CommandService.Impl;
-using HIDAeroService.Constant;
-using HIDAeroService.Constants;
-using HIDAeroService.Data;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.AccessArea;
-using HIDAeroService.Entity;
-using HIDAeroService.Entity.Interface;
-using HIDAeroService.Helpers;
-using HIDAeroService.Mapper;
-using HIDAeroService.Utility;
+using AeroService.Aero.CommandService;
+using AeroService.Aero.CommandService.Impl;
+using AeroService.Constant;
+using AeroService.Constants;
+using AeroService.Data;
+using AeroService.DTO;
+using AeroService.DTO.AccessArea;
+using AeroService.Entity;
+using AeroService.Entity.Interface;
+using AeroService.Helpers;
+using AeroService.Mapper;
+using AeroService.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.JSInterop.Infrastructure;
 using System.ComponentModel;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public class AccessAreaService(AppDbContext context, IHelperService<Area> helperService, AeroCommandService command) : IAccessAreaService
     {

@@ -1,8 +1,8 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.ControlPoint;
-using HIDAeroService.DTO.Output;
+﻿using AeroService.DTO;
+using AeroService.DTO.ControlPoint;
+using AeroService.DTO.Output;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface IControlPointService
     {

@@ -1,26 +1,22 @@
-using HIDAeroService.AeroLibrary;
-using HIDAeroService.Constants;
-using HIDAeroService.Data;
-using HIDAeroService.Hubs;
-using HIDAeroService.Service.Impl;
+using AeroService.AeroLibrary;
+using AeroService.Constants;
+using AeroService.Data;
+using AeroService.Hubs;
+using AeroService.Service.Impl;
 using Microsoft.EntityFrameworkCore;
-
-using HIDAeroService.Mapper;
 using Serilog;
-using HIDAeroService.Exceptions.Middleware;
-using HIDAeroService.Entity;
-using HIDAeroService.Service;
-using HIDAeroService.DTO.Credential;
+using AeroService.Exceptions.Middleware;
+using AeroService.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using HIDAeroService.Aero.CommandService;
-using HIDAeroService.Aero.CommandService.Impl;
-using HIDAeroService.Aero;
+using AeroService.Aero.CommandService;
+using AeroService.Aero.CommandService.Impl;
+using AeroService.Aero;
 using HID.Aero.ScpdNet.Wrapper;
 using System.Threading.Channels;
 
-namespace HIDAeroService
+namespace AeroService
 {
     public class Program
     {
@@ -43,6 +39,12 @@ namespace HIDAeroService
             builder.Services.Configure<AppConfigSettings>(
                 builder.Configuration.GetSection("AppSettings")
                 );
+
+            builder.Services.AddRouting(options =>
+            {
+                options.LowercaseUrls = true;
+                options.LowercaseQueryStrings = true; // optional
+            });
 
             // Add services to the container.
 
@@ -202,11 +204,15 @@ namespace HIDAeroService
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigins", builder => {
-                    builder.WithOrigins("http://localhost:5173")
+                    builder.WithOrigins("http://127.0.0.1:5173")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
                     builder.WithOrigins("http://192.168.1.170:5173")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+                    builder.WithOrigins("http://192.168.100.130:5173")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();

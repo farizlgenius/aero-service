@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.Interval
+﻿namespace AeroService.DTO.Interval
 {
     public sealed class IntervalDto : NoMacBaseDto
     {

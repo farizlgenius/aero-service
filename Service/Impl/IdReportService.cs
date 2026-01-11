@@ -1,18 +1,18 @@
-﻿using HIDAeroService.Aero.CommandService;
-using HIDAeroService.Aero.CommandService.Impl;
-using HIDAeroService.AeroLibrary;
-using HIDAeroService.Constant;
-using HIDAeroService.Constants;
-using HIDAeroService.Data;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.IdReport;
-using HIDAeroService.Helpers;
-using HIDAeroService.Mapper;
-using HIDAeroService.Utility;
+﻿using AeroService.Aero.CommandService;
+using AeroService.Aero.CommandService.Impl;
+using AeroService.AeroLibrary;
+using AeroService.Constant;
+using AeroService.Constants;
+using AeroService.Data;
+using AeroService.DTO;
+using AeroService.DTO.IdReport;
+using AeroService.Helpers;
+using AeroService.Mapper;
+using AeroService.Utility;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public class IdReportService(AeroCommandService command, AeroMessage read, AppDbContext context, ILogger<IdReportService> logger)
     {

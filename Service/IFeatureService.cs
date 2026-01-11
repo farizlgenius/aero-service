@@ -1,7 +1,7 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.Feature;
+﻿using AeroService.DTO;
+using AeroService.DTO.Feature;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface IFeatureService
     {

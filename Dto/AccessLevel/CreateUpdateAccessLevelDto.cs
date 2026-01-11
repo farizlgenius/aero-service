@@ -1,6 +1,6 @@
-﻿using HIDAeroService.Entity.Interface;
+﻿using AeroService.Entity.Interface;
 
-namespace HIDAeroService.DTO.AccessLevel
+namespace AeroService.DTO.AccessLevel
 {
     public sealed class CreateUpdateAccessLevelDto : NoMacBaseDto,IComponentId
     {

@@ -1,6 +1,6 @@
-﻿using HIDAeroService.Model;
+﻿using AeroService.Model;
 
-namespace HIDAeroService.DTO.MonitorGroup
+namespace AeroService.DTO.MonitorGroup
 {
     public sealed class MonitorGroupDto : BaseDto
     {

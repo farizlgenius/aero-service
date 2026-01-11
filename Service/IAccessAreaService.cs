@@ -1,7 +1,7 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.AccessArea;
+﻿using AeroService.DTO;
+using AeroService.DTO.AccessArea;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface IAccessAreaService
     {

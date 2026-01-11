@@ -1,7 +1,7 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.Entity;
+﻿using AeroService.DTO;
+using AeroService.Entity;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface IBaseService<TDto, TAdd, TEntity>
     {

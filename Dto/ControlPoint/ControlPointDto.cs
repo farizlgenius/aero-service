@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.ControlPoint
+﻿namespace AeroService.DTO.ControlPoint
 {
     public class ControlPointDto : BaseDto
     {

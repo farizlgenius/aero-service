@@ -1,13 +1,13 @@
-﻿using HIDAeroService.DTO.Reader;
-using HIDAeroService.DTO.Output;
-using HIDAeroService.Entity;
-using HIDAeroService.DTO.Sensor;
-using HIDAeroService.DTO.Strike;
-using HIDAeroService.DTO.RequestExit;
-using HIDAeroService.DTO.MonitorPoint;
-using HIDAeroService.DTO.ControlPoint;
+﻿using AeroService.DTO.Reader;
+using AeroService.DTO.Output;
+using AeroService.Entity;
+using AeroService.DTO.Sensor;
+using AeroService.DTO.Strike;
+using AeroService.DTO.RequestExit;
+using AeroService.DTO.MonitorPoint;
+using AeroService.DTO.ControlPoint;
 
-namespace HIDAeroService.DTO.Module
+namespace AeroService.DTO.Module
 {
     public sealed class ModuleDto : BaseDto
     {

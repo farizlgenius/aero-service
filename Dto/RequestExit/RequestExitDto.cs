@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.RequestExit
+﻿namespace AeroService.DTO.RequestExit
 {
     public class RequestExitDto : BaseDto
     {

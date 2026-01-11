@@ -1,9 +1,9 @@
-﻿using HIDAeroService.DTO.Feature;
-using HIDAeroService.Entity;
-using HIDAeroService.Entity.Interface;
+﻿using AeroService.DTO.Feature;
+using AeroService.Entity;
+using AeroService.Entity.Interface;
 using System.ComponentModel.DataAnnotations;
 
-namespace HIDAeroService.DTO.Role
+namespace AeroService.DTO.Role
 {
     public sealed class RoleDto : IComponentId
     {

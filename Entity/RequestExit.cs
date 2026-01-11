@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.Entity
+﻿namespace AeroService.Entity
 {
     public class RequestExit : BaseEntity
     {

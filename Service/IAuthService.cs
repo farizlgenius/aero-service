@@ -1,12 +1,12 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.Auth;
-using HIDAeroService.DTO.Token;
-using HIDAeroService.Entity;
+﻿using AeroService.DTO;
+using AeroService.DTO.Auth;
+using AeroService.DTO.Token;
+using AeroService.Entity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface IAuthService
     {

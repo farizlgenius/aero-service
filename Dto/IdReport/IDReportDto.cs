@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.IdReport
+﻿namespace AeroService.DTO.IdReport
 {
     public sealed class IdReportDto
     {

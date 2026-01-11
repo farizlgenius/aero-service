@@ -1,4 +1,4 @@
-﻿using HIDAeroService.Entity;
+﻿using AeroService.Entity;
 
 namespace AeroService.Entity.Interface
 {

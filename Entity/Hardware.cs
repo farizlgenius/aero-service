@@ -1,7 +1,7 @@
-﻿using HIDAeroService.Entity.Interface;
+﻿using AeroService.Entity.Interface;
 using System.ComponentModel.DataAnnotations;
 
-namespace HIDAeroService.Entity
+namespace AeroService.Entity
 {
     public sealed class Hardware : BaseEntity
     {

@@ -1,25 +1,25 @@
-﻿using HIDAeroService.Aero.CommandService;
-using HIDAeroService.Aero.CommandService.Impl;
-using HIDAeroService.AeroLibrary;
-using HIDAeroService.Constant;
-using HIDAeroService.Constants;
-using HIDAeroService.Data;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.Acr;
-using HIDAeroService.DTO.Reader;
-using HIDAeroService.DTO.RequestExit;
-using HIDAeroService.DTO.Sensor;
-using HIDAeroService.DTO.Strike;
-using HIDAeroService.Entity;
-using HIDAeroService.Helpers;
-using HIDAeroService.Hubs;
-using HIDAeroService.Mapper;
-using HIDAeroService.Utility;
+﻿using AeroService.Aero.CommandService;
+using AeroService.Aero.CommandService.Impl;
+using AeroService.AeroLibrary;
+using AeroService.Constant;
+using AeroService.Constants;
+using AeroService.Data;
+using AeroService.DTO;
+using AeroService.DTO.Acr;
+using AeroService.DTO.Reader;
+using AeroService.DTO.RequestExit;
+using AeroService.DTO.Sensor;
+using AeroService.DTO.Strike;
+using AeroService.Entity;
+using AeroService.Helpers;
+using AeroService.Hubs;
+using AeroService.Mapper;
+using AeroService.Utility;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public class DoorService(AppDbContext context, AeroMessage read, AeroCommandService command, IHelperService<Door> helperService, IHubContext<AeroHub> hub) : IDoorService
     {

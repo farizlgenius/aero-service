@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.Enums
+﻿namespace AeroService.Enums
 {
     public enum InputComponents
     {

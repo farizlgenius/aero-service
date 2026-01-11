@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.Strike
+﻿namespace AeroService.DTO.Strike
 {
     public sealed class StrikeDto : BaseDto
     {

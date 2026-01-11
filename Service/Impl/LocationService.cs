@@ -1,14 +1,14 @@
-﻿using HIDAeroService.Data;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.Location;
-using HIDAeroService.DTO.Token;
-using HIDAeroService.Entity;
-using HIDAeroService.Helpers;
-using HIDAeroService.Mapper;
+﻿using AeroService.Data;
+using AeroService.DTO;
+using AeroService.DTO.Location;
+using AeroService.DTO.Token;
+using AeroService.Entity;
+using AeroService.Helpers;
+using AeroService.Mapper;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public sealed class LocationService(AppDbContext context,IHelperService<Entity.Location> helperService) : ILocationService
     {

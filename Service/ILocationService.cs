@@ -1,7 +1,7 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.Location;
+﻿using AeroService.DTO;
+using AeroService.DTO.Location;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface ILocationService
     {

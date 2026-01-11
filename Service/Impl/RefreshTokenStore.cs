@@ -1,11 +1,11 @@
-﻿using HIDAeroService.Data;
-using HIDAeroService.Entity;
-using HIDAeroService.Helpers;
-using HIDAeroService.Model;
+﻿using AeroService.Data;
+using AeroService.Entity;
+using AeroService.Helpers;
+using AeroService.Model;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public sealed class RefreshTokenStore(AppDbContext context) : IRefreshTokenStore
     {

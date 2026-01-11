@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HIDAeroService.Model
+namespace AeroService.Model
 {
     public sealed class MonitorGroupListDto
     {

@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.Acr
+﻿namespace AeroService.DTO.Acr
 {
     public sealed class MomentUnlockAcrDto
     {

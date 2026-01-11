@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.Holiday
+﻿namespace AeroService.DTO.Holiday
 {
     public class CreateHolidayDto : NoMacBaseDto
     {

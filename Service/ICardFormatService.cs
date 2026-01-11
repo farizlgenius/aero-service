@@ -1,7 +1,7 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.CardFormat;
+﻿using AeroService.DTO;
+using AeroService.DTO.CardFormat;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface ICardFormatService
     {

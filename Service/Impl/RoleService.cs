@@ -1,14 +1,14 @@
-﻿using HIDAeroService.Data;
-using HIDAeroService.DTO;
-using HIDAeroService.DTO.Feature;
-using HIDAeroService.DTO.Role;
-using HIDAeroService.Entity;
-using HIDAeroService.Helpers;
-using HIDAeroService.Mapper;
+﻿using AeroService.Data;
+using AeroService.DTO;
+using AeroService.DTO.Feature;
+using AeroService.DTO.Role;
+using AeroService.Entity;
+using AeroService.Helpers;
+using AeroService.Mapper;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
-namespace HIDAeroService.Service.Impl
+namespace AeroService.Service.Impl
 {
     public sealed class RoleService(AppDbContext context,IHelperService<Role> helperService) : IRoleService
     {

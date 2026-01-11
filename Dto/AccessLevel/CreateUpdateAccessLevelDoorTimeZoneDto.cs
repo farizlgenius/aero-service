@@ -1,4 +1,4 @@
-﻿namespace HIDAeroService.DTO.AccessLevel
+﻿namespace AeroService.DTO.AccessLevel
 {
     public sealed class CreateUpdateAccessLevelDoorTimeZoneDto
     {

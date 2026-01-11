@@ -1,7 +1,7 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.TimeZone;
+﻿using AeroService.DTO;
+using AeroService.DTO.TimeZone;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface ITimeZoneService
     {

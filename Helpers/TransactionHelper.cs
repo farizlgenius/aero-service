@@ -1,14 +1,14 @@
 ﻿
 
 using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.Entity;
-using HIDAeroService.Enums;
-using HIDAeroService.Utility;
+using AeroService.Entity;
+using AeroService.Enums;
+using AeroService.Utility;
 using log4net.Core;
 using System.Reflection.Metadata.Ecma335;
 using static MiNET.Net.McpeUpdateBlock;
 
-namespace HIDAeroService.Helpers
+namespace AeroService.Helpers
 {
     public static class TransactionHelper
     {

@@ -1,10 +1,10 @@
-﻿using HIDAeroService.DTO;
-using HIDAeroService.DTO.Credential;
-using HIDAeroService.Entity.Interface;
+﻿using AeroService.DTO;
+using AeroService.DTO.Credential;
+using AeroService.Entity.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface ICredentialService
     {

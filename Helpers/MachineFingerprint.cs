@@ -1,0 +1,87 @@
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
+#if WINDOWS
+using System.Management;
+#endif
+
+
+namespace AeroService.Helpers;
+
+public static class MachineFingerprint
+{
+    public static string Get()
+    {
+        var raw = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+            ? GetWindowsFingerprint()
+            : GetLinuxFingerprint();
+
+        var hash = SHA256.HashData(Encoding.UTF8.GetBytes(raw));
+        return Convert.ToHexString(hash);
+    }
+
+    // ---------------- Windows ----------------
+
+    private static string GetWindowsFingerprint()
+    {
+        return string.Join("|",
+            GetWmi("Win32_Processor", "ProcessorId"),
+            GetWmi("Win32_BaseBoard", "SerialNumber"),
+            GetWmi("Win32_PhysicalMedia", "SerialNumber"));
+    }
+
+#if WINDOWS
+    private static string GetWmi(string table, string field)
+    {
+        try
+        {
+            using var searcher = new ManagementObjectSearcher($"SELECT {field} FROM {table}");
+            foreach (var obj in searcher.Get())
+                return obj[field]?.ToString()?.Trim() ?? "UNKNOWN";
+        }
+        catch { }
+        return "UNKNOWN";
+    }
+#else
+    private static string GetWmi(string _, string __) => "N/A";
+#endif
+
+    // ---------------- Linux ----------------
+
+    private static string GetLinuxFingerprint()
+    {
+        return string.Join("|",
+            ReadFile("/etc/machine-id"),
+            Run("lsblk", "-o UUID -n | head -n 1"),
+            ReadFile("/proc/sys/kernel/hostname"));
+    }
+
+    // ---------------- Helpers ----------------
+
+    private static string ReadFile(string path)
+    {
+        try
+        {
+            return File.Exists(path) ? File.ReadAllText(path).Trim() : "UNKNOWN";
+        }
+        catch { return "UNKNOWN"; }
+    }
+
+    private static string Run(string cmd, string args)
+    {
+        try
+        {
+            var psi = new ProcessStartInfo(cmd, args)
+            {
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
+            };
+            using var p = Process.Start(psi);
+            return p?.StandardOutput.ReadLine()?.Trim() ?? "UNKNOWN";
+        }
+        catch { return "UNKNOWN"; }
+    }
+}

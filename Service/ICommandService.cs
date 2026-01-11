@@ -1,10 +1,10 @@
 ﻿using HID.Aero.ScpdNet.Wrapper;
-using HIDAeroService.Aero.CommandService;
-using HIDAeroService.Aero.CommandService.Impl;
+using AeroService.Aero.CommandService;
+using AeroService.Aero.CommandService.Impl;
 using static HID.Aero.ScpdNet.Wrapper.SCPReplyMessage;
-using static HIDAeroService.Constants.Command;
+using static AeroService.Constants.Command;
 
-namespace HIDAeroService.Service
+namespace AeroService.Service
 {
     public interface ICommandService
     {
