@@ -2,6 +2,7 @@
 using HIDAeroService.DTO;
 using HIDAeroService.DTO.Feature;
 using HIDAeroService.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,26 +10,29 @@ namespace HIDAeroService.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class FeatureController(IFeatureService featureService) : ControllerBase
+    public class FeatureController(IFeatureService service) : ControllerBase
     {
         [HttpGet("list")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<FeatureDto>>>> GetFeatureListAsync()
         {
-            var res = await featureService.GetFeatureListAsync();
+            var res = await service.GetFeatureListAsync();
             return Ok(res);
         }
 
-        [HttpGet("role/{role_id}")]
-        public async Task<ActionResult<ResponseDto<IEnumerable<FeatureDto>>>> GetFeatureByRoleIdAsync(short RoleId)
+        [HttpGet("role/{roleid}")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<IEnumerable<FeatureDto>>>> GetFeatureByRoleIdAsync(short roleid)
         {
-            var res = await featureService.GetFeatureByRoleAsync(RoleId);
+            var res = await service.GetFeatureByRoleAsync(roleid);
             return Ok(res);
         }
 
-        [HttpGet("role/{role_id}/{feature_id}")]
-        public async Task<ActionResult<ResponseDto<FeatureDto>>> GetOneFeatureByRoleIdAsync(short RoleId,short FeatureId)
+        [HttpGet("role/{roleid}/{featureid}")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<FeatureDto>>> GetOneFeatureByRoleIdAsync(short roleid, short featureid)
         {
-            var res = await featureService.GetOneFeatureByRoleIdAsync(RoleId,FeatureId);
+            var res = await service.GetOneFeatureByRoleIdAsync(roleid, featureid);
             return Ok(res);
         }
     }

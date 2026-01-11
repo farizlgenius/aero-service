@@ -1,5 +1,6 @@
 ﻿using HIDAeroService.DTO;
 using HIDAeroService.DTO.Credential;
+using HIDAeroService.DTO.Token;
 using HIDAeroService.Entity;
 using HIDAeroService.Service;
 using Microsoft.AspNetCore.Mvc;
@@ -25,10 +26,10 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
-        [HttpGet("{user_id}")]
-        public async Task<ActionResult<ResponseDto<CredentialDto>>> GetByComponentAsync(string UserId)
+        [HttpGet("{userid}")]
+        public async Task<ActionResult<ResponseDto<CredentialDto>>> GetByComponentAsync(string userid)
         {
-            var res = await credentialService.GetByUserId(UserId);
+            var res = await credentialService.GetByUserId(userid);
             return Ok(res);
         }
 

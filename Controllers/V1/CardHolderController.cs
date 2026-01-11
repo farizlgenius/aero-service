@@ -18,10 +18,10 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
-        [HttpDelete("{user_id}")]
-        public async Task<ActionResult<ResponseDto<CardHolderDto>>> DeleteAsync(string UserId)
+        [HttpDelete("{userid}")]
+        public async Task<ActionResult<ResponseDto<CardHolderDto>>> DeleteAsync(string userid)
         {
-            var res = await cardHolderService.DeleteAsync(UserId);
+            var res = await cardHolderService.DeleteAsync(userid);
             return Ok(res);
         }
 
@@ -39,10 +39,10 @@ namespace HIDAeroService.Controllers.V1
             return Ok(res);
         }
 
-        [HttpGet("{user_id}")]
-        public async Task<ActionResult<ResponseDto<CardHolderDto>>> GetByComponentAsync(string UserId)
+        [HttpGet("{userid}")]
+        public async Task<ActionResult<ResponseDto<CardHolderDto>>> GetByComponentAsync(string userid)
         {
-            var res = await cardHolderService.GetByUserIdAsync(UserId);
+            var res = await cardHolderService.GetByUserIdAsync(userid);
             return Ok(res);
         }
 

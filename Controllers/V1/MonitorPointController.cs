@@ -4,6 +4,7 @@ using HIDAeroService.DTO.MonitorPoint;
 using HIDAeroService.Entity;
 using HIDAeroService.Service;
 using HIDAeroService.Service.Impl;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
@@ -16,6 +17,7 @@ namespace HIDAeroService.Controllers.V1
     {
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<MonitorPointDto>>>> GetAsync()
         {
             var res = await service.GetAsync();
@@ -23,6 +25,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpGet("/api/v1/{location}/[controller]")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<MonitorPointDto>>>> GetByLocationAsync(short location)
         {
             var res = await service.GetByLocationAsync(location);
@@ -30,6 +33,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpGet("{mac}/{component}")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<MonitorPointDto>>> GetByComponentAsync(string mac, short component)
         {
             var res = await service.GetByIdAndMacAsync(mac,component);
@@ -37,6 +41,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpGet("{mac}")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<MonitorPointDto>>>> GetByMacAsync(string mac)
         {
             var res = await service.GetByIdAndMacAsync(mac);
@@ -44,6 +49,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<MonitorPointDto>>> CreateAsync([FromBody] MonitorPointDto dto)
         {
            var res = await service.CreateAsync(dto);
@@ -51,6 +57,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<MonitorPointDto>>> UpdateAsync([FromBody] MonitorPointDto dto)
         {
             var res = await service.UpdateAsync(dto);
@@ -58,6 +65,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpDelete("{component}")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<MonitorPointDto>>> DeleteAsync(short component)
         {
             var res = await service.DeleteAsync(component);
@@ -65,6 +73,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpPost("delete/range")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<ResponseDto<bool>>>>> DeleteRangeAsync([FromBody] List<short> components)
         {
             var res = await service.DeleteRangeAsync(components);
@@ -74,6 +83,7 @@ namespace HIDAeroService.Controllers.V1
 
 
         [HttpGet("ip/{mac}/{component}")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<short>>>> GetAvailableIp(string mac ,short component)
         {
             var res = await service.GetAvailableIp(mac, component);
@@ -81,6 +91,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpGet("status/{mac}/{component}")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<bool>>> GetStatusAsync(string mac,short component)
         {
             var res = await service.GetStatusAsync(mac,component);
@@ -88,6 +99,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpGet("lf")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetLogFunctionAsync()
         {
             var res = await service.GetLogFunctionAsync();
@@ -96,6 +108,7 @@ namespace HIDAeroService.Controllers.V1
 
 
         [HttpGet("input/mode")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<IpModeDto>>>> GetInputMode()
         {
             var res = await service.GetModeAsync(0);
@@ -103,6 +116,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpGet("mode")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<IpModeDto>>>> GetMonitorPointMode()
         {
             var res = await service.GetModeAsync(1);
@@ -110,6 +124,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpPost("mask")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<MonitorPointDto>>> Mask(MonitorPointDto dto)
         {
             var res = await service.MaskAsync(dto, true);
@@ -117,6 +132,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpPost("unmask")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<MonitorPointDto>>> UnMask(MonitorPointDto dto)
         {
             var res = await service.MaskAsync(dto,false);

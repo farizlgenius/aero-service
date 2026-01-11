@@ -1,6 +1,7 @@
 ﻿using HIDAeroService.DTO;
 using HIDAeroService.DTO.MonitorGroup;
 using HIDAeroService.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,7 @@ namespace HIDAeroService.Controllers.V1
     public class MonitorGroupController(IMonitorGroupService service) : ControllerBase
     {
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<MonitorGroupDto>>>> GetAsync()
         {
             var res = await service.GetAsync();
@@ -18,6 +20,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpGet("/api/v1/{location}/[controller]")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<MonitorGroupDto>>>> GetByLocationIdAsync(short location)
         {
             var res = await service.GetByLocationAsync(location);
@@ -25,6 +28,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpGet("command")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<ModeDto>>> GetCommandAsync()
         {
             var res = await service.GetCommandAsync();
@@ -32,6 +36,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpGet("type")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetTypeAsync()
         {
             var res = await service.GetTypeAsync();
@@ -39,6 +44,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<MonitorGroupDto>>> CreateAsync([FromBody] MonitorGroupDto dto)
         {
             var res = await service.CreateAsync(dto);
@@ -46,6 +52,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpPost("command")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<bool>>> MonitorGroupCommand([FromBody] MonitorGroupCommandDto dto )
         {
             var res = await service.MonitorGroupCommandAsync(dto);
@@ -53,6 +60,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpDelete("{mac}/{component}")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<MonitorGroupDto>>> DeleteAsync(string mac,short component)
         {
             var res = await service.DeleteAsync(mac,component);
@@ -60,6 +68,7 @@ namespace HIDAeroService.Controllers.V1
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<MonitorGroupDto>>> UpdateAsync(MonitorGroupDto dto)
         {
             var res =  await service.UpdateAsync(dto);

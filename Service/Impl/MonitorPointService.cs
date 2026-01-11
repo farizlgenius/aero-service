@@ -42,6 +42,7 @@ namespace HIDAeroService.Service.Impl
                     // extend_desc 
                     Name = x.name,
                     ModuleId = x.module_id,
+                    ModuleDescription = x.module.model_desc,
                     InputNo = x.input_no,
                     InputMode = x.input_mode,
                     InputModeDescription = x.input_mode_desc,
@@ -80,6 +81,7 @@ namespace HIDAeroService.Service.Impl
                     // extend_desc 
                     Name = x.name,
                     ModuleId = x.module_id,
+                    ModuleDescription = x.module.model_desc,
                     InputNo = x.input_no,
                     InputMode = x.input_mode,
                     InputModeDescription = x.input_mode_desc,
@@ -311,6 +313,7 @@ namespace HIDAeroService.Service.Impl
                     // extend_desc 
                     Name = x.name,
                     ModuleId = x.module_id,
+                    ModuleDescription = x.module.model_desc,
                     InputNo = x.input_no,
                     InputMode = x.input_mode,
                     InputModeDescription = x.input_mode_desc,
@@ -350,6 +353,7 @@ namespace HIDAeroService.Service.Impl
                     // extend_desc 
                     Name = x.name,
                     ModuleId = x.module_id,
+                    ModuleDescription = x.module.model_desc,
                     InputNo = x.input_no,
                     InputMode = x.input_mode,
                     InputModeDescription = x.input_mode_desc,

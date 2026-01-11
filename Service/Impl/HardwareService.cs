@@ -1644,15 +1644,17 @@ namespace HIDAeroService.Service.Impl
                 }
             }
 
+            var report = await context.id_report
+               .Where(x => x.mac == dto.Mac && x.scp_id == dto.ComponentId)
+               .OrderBy(x => x.id)
+               .FirstOrDefaultAsync();
+
+            if (report is null) return ResponseHelper.NotFoundBuilder<bool>();
+
             await context.hardware.AddAsync(hardware);
             await context.SaveChangesAsync();
 
-            var report = await context.id_report
-                .Where(x => x.mac == dto.Mac && x.scp_id == dto.ComponentId)
-                .OrderBy(x => x.id)
-                .FirstOrDefaultAsync();
-
-            if (report is null) return ResponseHelper.NotFoundBuilder<bool>();
+           
 
             context.id_report.Remove(report);
             await context.SaveChangesAsync();

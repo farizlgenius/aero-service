@@ -4,6 +4,7 @@
     {
         public string Name { get; set; } = string.Empty;
         public short ModuleId { get; set; }
+        public string ModuleDescription { get; set; } = string.Empty;
         public short InputNo { get; set; }
         public short InputMode { get; set; }
         public string InputModeDescription { get; set; } = string.Empty;
