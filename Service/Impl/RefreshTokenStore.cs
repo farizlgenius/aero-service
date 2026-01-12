@@ -28,9 +28,9 @@ namespace AeroService.Service.Impl
                 user_name = username,
                 action = "create",
                 info = info,
-                created_date = DateTime.Now,
-                updated_date = DateTime.Now,
-                expire_date = DateTime.Now.Add(ttl)
+                created_date = DateTime.UtcNow,
+                updated_date = DateTime.UtcNow,
+                expire_date = DateTime.UtcNow.Add(ttl)
             };
             await context.refresh_token.AddAsync(audit);
             await context.SaveChangesAsync();
@@ -68,8 +68,8 @@ namespace AeroService.Service.Impl
                     user_name = username,
                     action = "rotate",
                     info = info,
-                    created_date = DateTime.Now,
-                    expire_date = DateTime.Now.Add(ttl)
+                    created_date = DateTime.UtcNow,
+                    expire_date = DateTime.UtcNow.Add(ttl)
                 }
             );
             await context.SaveChangesAsync();
@@ -86,7 +86,7 @@ namespace AeroService.Service.Impl
                     user_id = "unknown",
                     user_name = "unknown",
                     action = "revoke",
-                    created_date= DateTime.Now,
+                    created_date= DateTime.UtcNow,
                 }    
             );
             await context.SaveChangesAsync();

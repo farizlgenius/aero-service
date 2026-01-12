@@ -100,78 +100,37 @@ namespace AeroService.Data
         public DbSet<HardwareCredential> hardware_credential { get; set; }
         public DbSet<TransactionFlag> transaction_flag { get; set; }
         public DbSet<TransactionSourceType> transaction_source_type { get; set; }
-        public DbSet<KeyPair> KeyPairs { get; set; }
-
-        // New
-        //public DbSet<TransactionFlag> TransactionFlagDetails { get; set; }
-        //public DbSet<TypeSys> TypeSys { get; set; }
-        //public DbSet<TypeWebActivity> TypeWebActivities { get; set; }
-        //public DbSet<TypeFileDownloadStatus> TypeFileDownloadStatuses { get; set; }
-        //public DbSet<TypeCos> TypeCoses { get; set; }
-        //public DbSet<TypeSioDiag> TypeSioDiags { get; set; }
-        //public DbSet<TypeSioComm> TypeSioComms { get; set; }
-        //public DbSet<TypeCardBin> TypeCardBins { get; set; }
-        //public DbSet<TypeCardBcd> TypeCardBcds { get; set; }
-        //public DbSet<TypeCardFull> TypeCardFulls { get; set; }
-        //public DbSet<TypeCardID> TypeCardIDs { get; set; }
-        //public DbSet<TypeREX> TypeREXes { get; set; }
-        //public DbSet<TypeUserCmnd> TypeUserCmnds { get; set; }
-        //public DbSet<TypeAcr> TypeAcrs { get; set; }
-        //public DbSet<TypeUseLimit> TypeUseLimits { get; set; }
-        //public DbSet<TypeCosElevator> TypeCosElevator { get; set; }
-        //public DbSet<TypeCosElevatorAccess> TypeCosElevatorAccesses { get; set; }
-        //public DbSet<TypeAcrExtFeatureStls> TypeAcrExtFeatureStls { get; set; }
-        //public DbSet<TypeAcrExtFeatureCoS> TypeAcrExtFeatureCoSes { get; set; }
-        //public DbSet<TypeMPG> TypeMPGs { get; set; }
-        //public DbSet<TypeArea> TypeAreas { get; set; }
-
+        public DbSet<KeyPair> key_pair { get; set; }
+        public DbSet<SecretKey> secrete_key {get; set;}
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Entity.SecretKey>()
+                .Property(e => e.public_key)
+                .HasColumnType("bytea");
 
-            // put this inside OnModelCreating(ModelBuilder modelBuilder)
-            var datetimeInterface = typeof(IDatetime);
+            modelBuilder.Entity<Entity.SecretKey>()
+                .Property(e => e.shared_secret)
+                .HasColumnType("bytea");
 
-            foreach (var et in modelBuilder.Model.GetEntityTypes()
-                         .Where(t => t.ClrType != null && datetimeInterface.IsAssignableFrom(t.ClrType)))
-            {
-                // get the builder for the concrete CLR type (e.g. location, ArEvent, ...)
-                var builder = modelBuilder.Entity(et.ClrType);
+            modelBuilder.Entity<Entity.KeyPair>()
+                .Property(e => e.public_key)
+                .HasColumnType("bytea");
 
-                // configure created_date
-                builder.Property<DateTime>(nameof(IDatetime.created_date))
-                    .HasColumnType("timestamp without time zone")
-                    .HasDefaultValueSql("now()")
-                    .ValueGeneratedOnAdd();
+            modelBuilder.Entity<Entity.KeyPair>()
+                .Property(e => e.secret_key)
+                .HasColumnType("bytea");
+            
+            #region License
 
-                // configure updated_date
-                builder.Property<DateTime>(nameof(IDatetime.updated_date))
-                    .HasColumnType("timestamp without time zone")
-                    .HasDefaultValueSql("now()")
-                    // ValueGeneratedOnAddOrUpdate can be used, but in many DBs you'll still want to set updated_date in SaveChanges
-                    .ValueGeneratedOnAddOrUpdate();
-            }
+            modelBuilder.Entity<KeyPair>()
+                .HasMany(k => k.secrets)
+                .WithOne(s => s.key_pair)
+                .HasForeignKey(s => s.key_uuid)
+                .HasPrincipalKey(k => k.key_uuid);
 
-            //modelBuilder.Entity<IDatetime>()
-            //    .Property(nameof(IDatetime.created_date))
-            //    .HasColumnType("timestamp without time zone")
-            //    .HasDefaultValueSql("now()")
-            //    .ValueGeneratedOnAdd();
-
-            //modelBuilder.Entity<IDatetime>()
-            //    .Property(nameof(IDatetime.updated_date))
-            //    .HasColumnType("timestamp without time zone")
-            //    .HasDefaultValueSql("now()")
-            //    .ValueGeneratedOnAddOrUpdate();
-
-            modelBuilder.Entity<Hardware>().Property(nameof(Hardware.last_sync)).HasColumnType("timestamp without time zone").HasDefaultValueSql("now()")
-                    .ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<RefreshToken>().Property(nameof(RefreshToken.expire_date)).HasColumnType("timestamp without time zone").HasDefaultValueSql("now()")
-                    .ValueGeneratedOnAdd();
-
-
+            #endregion
 
             #region Hardware 
 
@@ -1566,24 +1525,24 @@ namespace AeroService.Data
 
             modelBuilder.Entity<FeatureRole>()
                 .HasData(
-                    new FeatureRole { feature_id=1,role_id=1,is_allow=true,is_create=true,is_modify=true,is_delete=true,is_action=true },
-                     new FeatureRole { feature_id = 2, role_id = 1, is_allow = true, is_create=true,is_modify=true,is_delete=true,is_action=true },
-                      new FeatureRole { feature_id = 3, role_id = 1, is_allow = true, is_create=true,is_modify=true,is_delete=true,is_action=true },
-                       new FeatureRole { feature_id = 4, role_id = 1, is_allow = true, is_create=true,is_modify=true,is_delete=true,is_action=true },
-                        new FeatureRole {  feature_id = 5, role_id = 1, is_allow = true, is_create=true,is_modify=true,is_delete=true,is_action=true },
-                         new FeatureRole { feature_id = 6, role_id = 1, is_allow = true, is_create=true,is_modify=true,is_delete=true,is_action=true },
-                          new FeatureRole { feature_id = 7, role_id = 1, is_allow = true, is_create=true,is_modify=true,is_delete=true,is_action=true },
-                           new FeatureRole {  feature_id = 8, role_id = 1, is_allow = true, is_create=true,is_modify=true,is_delete=true,is_action=true },
-                            new FeatureRole {  feature_id = 9, role_id = 1, is_allow = true, is_create=true,is_modify=true,is_delete=true,is_action=true },
-                             new FeatureRole {  feature_id = 10, role_id = 1, is_allow = true, is_create=true,is_modify=true,is_delete=true,is_action=true },
-                              new FeatureRole {  feature_id = 11, role_id = 1, is_allow = true, is_create=true,is_modify=true,is_delete=true,is_action=true },
-                               new FeatureRole {  feature_id = 12, role_id = 1, is_allow = true, is_create=true,is_modify=true,is_delete=true,is_action=true },
-                                new FeatureRole {  feature_id = 13, role_id = 1, is_allow = true, is_create=true,is_modify=true,is_delete=true,is_action=true },
-                                 new FeatureRole {  feature_id = 14, role_id = 1, is_allow = true, is_create=true,is_modify=true,is_delete=true,is_action=true },
-                                  new FeatureRole {  feature_id = 15, role_id = 1, is_allow = true, is_create=true,is_modify=true,is_delete=true,is_action=true },
-                     new FeatureRole { feature_id = 16, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
-                     new FeatureRole { feature_id = 17, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
-                     new FeatureRole { feature_id = 18, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true }
+                    new FeatureRole { feature_id = 1, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                    new FeatureRole { feature_id = 2, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                    new FeatureRole { feature_id = 3, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                    new FeatureRole { feature_id = 4, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                    new FeatureRole { feature_id = 5, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                    new FeatureRole { feature_id = 6, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                    new FeatureRole { feature_id = 7, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                    new FeatureRole { feature_id = 8, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                    new FeatureRole { feature_id = 9, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                    new FeatureRole { feature_id = 10, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                    new FeatureRole { feature_id = 11, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                    new FeatureRole { feature_id = 12, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                    new FeatureRole { feature_id = 13, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                    new FeatureRole { feature_id = 14, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                    new FeatureRole { feature_id = 15, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                    new FeatureRole { feature_id = 16, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                    new FeatureRole { feature_id = 17, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                    new FeatureRole { feature_id = 18, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true }
                 );
 
             #endregion
@@ -1854,6 +1813,19 @@ namespace AeroService.Data
 
             #endregion
 
+            #region Component
+
+            modelBuilder.Entity<HardwareComponent>().HasData(
+                new HardwareComponent { id = 1, model_no = 196, name = "HID Aero X1100", n_input = 7, n_output = 4, n_reader = 4 },
+                new HardwareComponent { id = 2, model_no = 193, name = "HID Aero X100", n_input = 7, n_output = 4, n_reader = 4 },
+                new HardwareComponent { id = 3, model_no = 194, name = "HID Aero X200", n_input = 19, n_output = 2, n_reader = 0 },
+                new HardwareComponent { id = 4, model_no = 195, name = "HID Aero X300", n_input = 5, n_output = 12, n_reader = 0 },
+                new HardwareComponent { id = 5, model_no = 190, name = "VertX V100", n_input = 7, n_output = 4, n_reader = 2 },
+                new HardwareComponent { id = 6, model_no = 191, name = "VertX V200", n_input = 19, n_output = 2, n_reader = 0 },
+                new HardwareComponent { id = 7, model_no = 192, name = "VertX V300", n_input = 5, n_output = 12, n_reader = 0 }
+             );
+
+            #endregion
          
 
 
@@ -1870,24 +1842,7 @@ namespace AeroService.Data
                 new SystemSetting { id = 1, m_msp1_port = 3, n_transaction = 60000, n_sio = 33, n_mp = 615, n_cp = 388, n_acr = 64, n_alvl = 32000, n_trgr = 1024, n_proc = 1024, gmt_offset = -25200, n_tz = 255, n_hol = 255, n_mpg = 128, n_card = 200,n_area= 127}
                 );
 
-            #region Component
-
-            modelBuilder.Entity<HardwareComponent>().HasData(
-                new HardwareComponent { id = 1, model_no = 196, name = "HID Aero X1100", n_input = 7, n_output = 4, n_reader = 4 },
-                new HardwareComponent { id = 2, model_no = 193, name = "HID Aero X100", n_input = 7, n_output = 4, n_reader = 4 },
-                new HardwareComponent { id = 3, model_no = 194, name = "HID Aero X200", n_input = 19, n_output = 2, n_reader = 0 },
-                new HardwareComponent { id = 4, model_no = 195, name = "HID Aero X300", n_input = 5, n_output = 12, n_reader = 0 },
-                new HardwareComponent { id = 5, model_no = 190, name = "VertX V100", n_input = 7, n_output = 4, n_reader = 2 },
-                new HardwareComponent { id = 6, model_no = 191, name = "VertX V200", n_input = 19, n_output = 2, n_reader = 0 },
-                new HardwareComponent { id = 7, model_no = 192, name = "VertX V300", n_input = 5, n_output = 12, n_reader = 0 }
-             );
-
-            #endregion
-
-
-
-  
-
+            
 
 
 

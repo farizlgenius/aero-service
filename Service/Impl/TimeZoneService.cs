@@ -174,8 +174,8 @@ namespace AeroService.Service.Impl
                 timezone_id = dto.ComponentId,
                 interval_id = s.component_id,
                 
-                created_date = DateTime.Now,
-                updated_date = DateTime.Now,
+                created_date = DateTime.UtcNow,
+                updated_date = DateTime.UtcNow,
 
             }).ToList();
             context.timezone_interval.UpdateRange(newLinked);

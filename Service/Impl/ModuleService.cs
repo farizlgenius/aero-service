@@ -650,8 +650,8 @@ namespace AeroService.Service.Impl
                     hardware_mac = mac,
                     location_id = await context.hardware.AsNoTracking().Where(x => x.mac.Equals(mac)).OrderBy(x => x.id).Select(x => x.location_id).FirstOrDefaultAsync(),
                     is_active = true,
-                    created_date = DateTime.Now,
-                    updated_date = DateTime.Now,
+                    created_date = DateTime.UtcNow,
+                    updated_date = DateTime.UtcNow,
 
                     // extend_desc
                     model = message.tran.s_comm.model,

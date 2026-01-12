@@ -20,8 +20,8 @@ namespace AeroService.Service.Impl
         public void Save(int ScpId, string ScpMac, short TagNo, short CommandStatus, string Command, SCPReplyNAK nak)
         {
             CommandLog s = new CommandLog();
-            s.created_date = DateTime.Now;
-            s.updated_date = DateTime.Now;
+            s.created_date = DateTime.UtcNow;
+            s.updated_date = DateTime.UtcNow;
             s.hardware_mac = ScpMac;
             s.tag_no = TagNo;
             s.status = CommandStatus == 1 ? 'S' : 'F';

@@ -13,9 +13,9 @@ namespace AeroService.Entity
         public string user_name { get; set; } = default!;
         public string action { get; set; } = default!; // "create", "rotate", "revoke"
         public string? info { get; set; } // optional JSON for ip/user-agent
-        public DateTime expire_date { get; set; } = DateTime.Now;
-        public DateTime created_date { get; set; } = DateTime.Now;
-        public DateTime updated_date { get; set; } = DateTime.Now;
+        public DateTime expire_date { get; set; } = DateTime.UtcNow;
+        public DateTime created_date { get; set; } = DateTime.UtcNow;
+        public DateTime updated_date { get; set; } = DateTime.UtcNow;
 
 
     }

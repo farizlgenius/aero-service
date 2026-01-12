@@ -16,7 +16,7 @@ namespace AeroService.Service.Impl
         {
             if (await context.location.AnyAsync(x => dto.LocationName == x.location_name)) return ResponseHelper.Duplicate<bool>();
             var LocationId = await helperService.GetLowestUnassignedNumberNoLimitAsync<Entity.Location>(context);
-            var entity = MapperHelper.DtoToLocation(dto,LocationId,DateTime.Now);
+            var entity = MapperHelper.DtoToLocation(dto,LocationId,DateTime.UtcNow);
             await context.location.AddAsync(entity);
             await context.SaveChangesAsync();
             return ResponseHelper.SuccessBuilder < bool > (true);

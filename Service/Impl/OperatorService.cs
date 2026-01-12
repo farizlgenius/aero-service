@@ -21,7 +21,7 @@ namespace AeroService.Service.Impl
 
             var ComponentId = await helperService.GetLowestUnassignedNumberNoLimitAsync<Operator>(context);
 
-            var en = MapperHelper.DtoToOperator(dto,ComponentId,DateTime.Now);
+            var en = MapperHelper.DtoToOperator(dto,ComponentId,DateTime.UtcNow);
 
             await context.@operator.AddAsync(en);
             await context.SaveChangesAsync();

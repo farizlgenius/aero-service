@@ -101,8 +101,8 @@ namespace AeroService.Service.Impl
             {
                 // Base
                 location_id = dto.LocationId,
-                created_date = DateTime.Now,
-                updated_date = DateTime.Now,
+                created_date = DateTime.UtcNow,
+                updated_date = DateTime.UtcNow,
                 is_active = true,
 
 
@@ -174,7 +174,7 @@ namespace AeroService.Service.Impl
             entity.year = dto.Year;
             entity.type_mask = dto.TypeMask;
             entity.extend = 0;
-            entity.updated_date = DateTime.Now;
+            entity.updated_date = DateTime.UtcNow;
 
             foreach (var id in ids)
             {

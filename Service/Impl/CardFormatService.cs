@@ -57,7 +57,7 @@ namespace AeroService.Service.Impl
                 }
             }
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
-            var entity = MapperHelper.DtoToCardFormat(dto,componentNo,DateTime.Now); 
+            var entity = MapperHelper.DtoToCardFormat(dto,componentNo,DateTime.UtcNow); 
             await context.card_format.AddAsync(entity);
             await context.SaveChangesAsync();
             return ResponseHelper.SuccessBuilder(true);

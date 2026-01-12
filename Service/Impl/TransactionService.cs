@@ -391,8 +391,8 @@ namespace AeroService.Service.Impl
                   .Where(h => h.component_id == (short)message.SCPId)
                   .Select(h => h.location_id)
                   .FirstOrDefaultAsync(),
-                created_date = DateTime.Now,
-                updated_date = DateTime.Now,
+                created_date = DateTime.UtcNow,
+                updated_date = DateTime.UtcNow,
 
                 // extend_desc
                 date = UtilityHelper.UnixToDateTimeParts(message.tran.time)[0],

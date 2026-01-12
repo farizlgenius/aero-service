@@ -26,7 +26,7 @@ namespace AeroService.Service.Impl
             // Send data 
             var ScpIds = await context.hardware.Select(x => new { x.component_id,x.mac }).ToArrayAsync();
 
-            var entity = MapperHelper.DtoToCardHolder(dto, CredentialComponentId, DateTime.Now);
+            var entity = MapperHelper.DtoToCardHolder(dto, CredentialComponentId, DateTime.UtcNow);
 
             foreach (var cred in entity.credentials)
             {

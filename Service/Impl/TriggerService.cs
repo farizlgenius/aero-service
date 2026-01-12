@@ -23,7 +23,7 @@ namespace AeroService.Service.Impl
             var ScpId = await helperService.GetIdFromMacAsync(dto.Mac);
             if (ScpId == 0) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var en = MapperHelper.DtoToTrigger(dto, ComponentId, DateTime.Now);
+            var en = MapperHelper.DtoToTrigger(dto, ComponentId, DateTime.UtcNow);
 
             if(!command.TriggerSpecification(ScpId,en,ComponentId))
             {

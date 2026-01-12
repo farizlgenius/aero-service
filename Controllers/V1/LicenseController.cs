@@ -11,7 +11,7 @@ namespace AeroService.Controllers.V1
     public class LicenseController(ILicenseService service) : ControllerBase
     {
         [HttpPost("trusted")]
-        public async Task<IActionResult> TrustServerAsync([FromBody] TrustServerDto dto)
+        public async Task<IActionResult> TrustServerAsync()
         {
             var res = await service.TrustServerAsync(dto);
             return Ok(res);

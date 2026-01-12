@@ -170,7 +170,7 @@ namespace AeroService.Service.Impl
             }
 
             if (IsMask) input.is_mask = true;
-            input.updated_date = DateTime.Now;
+            input.updated_date = DateTime.UtcNow;
             input.is_mask = IsMask ? true : false;
             context.monitor_point.Update(input);
             await context.SaveChangesAsync();
@@ -203,7 +203,7 @@ namespace AeroService.Service.Impl
             }
 
 
-            var entity = MapperHelper.DtoToMonitorPoint(dto, componentId,DateTime.Now);
+            var entity = MapperHelper.DtoToMonitorPoint(dto, componentId,DateTime.UtcNow);
             await context.monitor_point.AddAsync(entity);
             await context.SaveChangesAsync();
             return ResponseHelper.SuccessBuilder(true);

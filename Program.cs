@@ -82,6 +82,10 @@ namespace AeroService
                 };
             });
 
+            // Http Service
+            
+            builder.Services.AddHttpClient();
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddRouting(options =>
             {
@@ -163,14 +167,12 @@ namespace AeroService
             builder.Services.AddScoped<IMonitorGroupService, MonitorGroupService>();
             builder.Services.AddScoped<ICommandService, CommandService>();
             builder.Services.AddScoped<ISettingService, SettingService>();
+            builder.Services.AddScoped<IApiService,ApiService>();
 
             // command Service
             //builder.Services.AddScoped<IAeroCommandService, BaseCommandService>();
             builder.Services.AddScoped<ITimeZoneCommandService, TimeZoneCommandService>();
             builder.Services.AddScoped<IHolidayCommandService, HolidayCommandService>();
-
-
-            //
 
             builder.Services.AddScoped<MessageHandler>();
 

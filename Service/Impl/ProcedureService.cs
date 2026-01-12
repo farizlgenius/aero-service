@@ -33,7 +33,7 @@ namespace AeroService.Service.Impl
                
             }
 
-            var en = MapperHelper.DtoToProcedure(dto, ComponentId, DateTime.Now);
+            var en = MapperHelper.DtoToProcedure(dto, ComponentId, DateTime.UtcNow);
 
 
             var ids = await context.hardware.AsNoTracking().Select(x => x.component_id).ToListAsync();

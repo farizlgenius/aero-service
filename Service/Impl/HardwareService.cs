@@ -712,8 +712,8 @@ namespace AeroService.Service.Impl
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
 
-            entity.updated_date = DateTime.Now;
-            entity.last_sync = DateTime.Now;
+            entity.updated_date = DateTime.UtcNow;
+            entity.last_sync = DateTime.UtcNow;
             entity.is_upload = false;
             context.hardware.Update(entity);
             await context.SaveChangesAsync();
@@ -1106,7 +1106,7 @@ namespace AeroService.Service.Impl
             }
 
             hw.is_reset = mems.Any(x => x.IsSync == false);
-            hw.updated_date = DateTime.Now;
+            hw.updated_date = DateTime.UtcNow;
             context.hardware.Update(hw);
             await context.SaveChangesAsync();
 
@@ -1333,7 +1333,7 @@ namespace AeroService.Service.Impl
             var dev = await VerifyDeviceConfigurationAsync(hardware);
 
 
-            hardware.updated_date = DateTime.Now;
+            hardware.updated_date = DateTime.UtcNow;
             hardware.is_upload = dev.Any(s => s.IsUpload == true);
 
             context.hardware.Update(hardware);
@@ -1483,7 +1483,7 @@ namespace AeroService.Service.Impl
 
                 var component = await VerifyDeviceConfigurationAsync(hardware);
 
-                hardware.updated_date = DateTime.Now;
+                hardware.updated_date = DateTime.UtcNow;
                 hardware.is_upload = component.Any(s => s.IsUpload == true);
 
                 context.hardware.Update(hardware);
@@ -1585,7 +1585,7 @@ namespace AeroService.Service.Impl
 
         public async Task<ResponseDto<bool>> CreateAsync(CreateHardwareDto dto)
         {
-            var hardware = MapperHelper.CreateToHardware(dto,DateTime.Now);
+            var hardware = MapperHelper.CreateToHardware(dto,DateTime.UtcNow);
 
             if (!await VerifyMemoryAllocateAsync(hardware.mac))
             {

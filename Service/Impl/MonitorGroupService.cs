@@ -27,7 +27,7 @@ namespace AeroService.Service.Impl
             var ComponentId = await helperService.GetLowestUnassignedNumberAsync<MonitorGroup>(context,128);
             if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
-            var entity = MapperHelper.DtoToMonitorGroup(dto,ComponentId,DateTime.Now);
+            var entity = MapperHelper.DtoToMonitorGroup(dto,ComponentId,DateTime.UtcNow);
 
             if (!command.ConfigureMonitorPointGroup(ScpId,ComponentId,dto.nMpCount,entity.n_mp_list.ToList()))
             {

@@ -319,7 +319,7 @@ namespace AeroService.Service.Impl
 
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, errors);
-            var entity = MapperHelper.DtoToAccessLevel(dto,ComponentId,DateTime.Now);
+            var entity = MapperHelper.DtoToAccessLevel(dto,ComponentId,DateTime.UtcNow);
             await context.accesslevel.AddAsync(entity);
             await context.SaveChangesAsync();
             return ResponseHelper.SuccessBuilder(true);
@@ -382,7 +382,7 @@ namespace AeroService.Service.Impl
             }
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<AccessLevelDto>(ResponseMessage.COMMAND_UNSUCCESS, errors);
-            MapperHelper.DtoToAccessLevel(dto, dto.component_id, DateTime.Now);
+            MapperHelper.DtoToAccessLevel(dto, dto.component_id, DateTime.UtcNow);
             context.accesslevel.Update(entity);
             await context.SaveChangesAsync();
 

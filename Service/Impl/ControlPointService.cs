@@ -188,7 +188,7 @@ namespace AeroService.Service.Impl
             }
 
 
-            var output = MapperHelper.DtoToControlPoint(dto,componentId,DateTime.Now);
+            var output = MapperHelper.DtoToControlPoint(dto,componentId,DateTime.UtcNow);
             await context.control_point.AddAsync(output);
             await context.SaveChangesAsync();
             return ResponseHelper.SuccessBuilder(true);

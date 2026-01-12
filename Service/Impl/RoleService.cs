@@ -17,7 +17,7 @@ namespace AeroService.Service.Impl
             if (await context.role.AsNoTracking().AnyAsync(r => r.name == dto.Name)) return ResponseHelper.Duplicate<bool>();
             var ComponentId = await helperService.GetLowestUnassignedNumberNoLimitAsync<Role>(context);
 
-            var en = MapperHelper.DtoToRole(dto,ComponentId,DateTime.Now);
+            var en = MapperHelper.DtoToRole(dto,ComponentId,DateTime.UtcNow);
 
             await context.role.AddAsync(en);
             await context.SaveChangesAsync();

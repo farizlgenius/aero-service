@@ -121,9 +121,9 @@ namespace AeroService.Mapper
                 protocol_two = dto.ProtocolTwo,
                 baudrate_one = dto.BaudRateOne,
                 baudrate_two = dto.BaudRateTwo,
-                last_sync = DateTime.Now,
-                created_date = DateTime.Now,
-                updated_date = DateTime.Now
+                last_sync = DateTime.UtcNow,
+                created_date = DateTime.UtcNow,
+                updated_date = DateTime.UtcNow
             };
         }
 
@@ -131,7 +131,7 @@ namespace AeroService.Mapper
         {
             // Base 
             hw.mac = dto.Mac;
-            hw.updated_date = DateTime.Now;
+            hw.updated_date = DateTime.UtcNow;
 
             // Detail 
             hw.name = dto.Name;
@@ -199,7 +199,7 @@ namespace AeroService.Mapper
             // Base
             input.location_id = dto.LocationId;
             input.is_active = dto.IsActive;
-            input.updated_date = DateTime.Now;
+            input.updated_date = DateTime.UtcNow;
 
             // extend_desc
             input.name = dto.Name;
@@ -256,7 +256,7 @@ namespace AeroService.Mapper
         {
             // Base 
             en.location_id = dto.LocationId;
-            en.updated_date = DateTime.Now;
+            en.updated_date = DateTime.UtcNow;
 
             // Detail
             en.name = dto.Name;
@@ -300,7 +300,7 @@ namespace AeroService.Mapper
             // Base
             output.location_id = dto.LocationId;
             output.is_active = dto.IsActive;
-            output.updated_date = DateTime.Now;
+            output.updated_date = DateTime.UtcNow;
 
             // extend_desc
             output.name = dto.Name;
@@ -351,7 +351,7 @@ namespace AeroService.Mapper
             // Base
             reader.location_id = dto.LocationId;
             reader.is_active = dto.IsActive;
-            reader.updated_date = DateTime.Now;
+            reader.updated_date = DateTime.UtcNow;
 
             // extend_desc
             reader.module_id = dto.ModuleId;
@@ -527,7 +527,7 @@ namespace AeroService.Mapper
 
         public static void UpdateDoor(Door door,DoorDto dto,string ModeDesc,string OfflineModeDesc,string DefaultModeDesc) 
         {
-            DateTime time = DateTime.Now;
+            DateTime time = DateTime.UtcNow;
             // Base
 
             door.component_id = dto.ComponentId;
@@ -662,7 +662,7 @@ namespace AeroService.Mapper
             // Detial
             entity.location_id = dto.LocationId;
             entity.is_active = dto.IsActive;
-            entity.updated_date = DateTime.Now;
+            entity.updated_date = DateTime.UtcNow;
 
             // Base
             entity.user_id = dto.UserId;
@@ -681,7 +681,7 @@ namespace AeroService.Mapper
                 .ToArray();
             entity.image_path = dto.ImagePath;
             entity.credentials = dto.Credentials
-                .Select((x,i) => MapperHelper.DtoToCredential(x, ComponentId[i], DateTime.Now))
+                .Select((x,i) => MapperHelper.DtoToCredential(x, ComponentId[i], DateTime.UtcNow))
                 .ToArray();
         }
 
@@ -784,7 +784,7 @@ namespace AeroService.Mapper
             // Base
             entity.location_id = dto.LocationId;
             entity.is_active = dto.IsActive;
-            entity.updated_date = DateTime.Now;
+            entity.updated_date = DateTime.UtcNow;
 
             // extend_desc
             entity.name = dto.Name;
@@ -868,7 +868,7 @@ namespace AeroService.Mapper
             entity.active_time = dto.ActiveTime;
             entity.deactive_time = dto.DeactiveTime;
             entity.is_active = dto.IsActive;
-            entity.updated_date = DateTime.Now;
+            entity.updated_date = DateTime.UtcNow;
             return entity;
           
         }
@@ -938,7 +938,7 @@ namespace AeroService.Mapper
                 // Base 
                 
                 is_active = true,
-                updated_date = DateTime.Now,
+                updated_date = DateTime.UtcNow,
                 location_id = dto.LocationId,
 
                 // extend_desc
@@ -963,7 +963,7 @@ namespace AeroService.Mapper
         {
             // Base 
             interval.is_active = dto.IsActive;
-            interval.updated_date = DateTime.Now;
+            interval.updated_date = DateTime.UtcNow;
 
             // extend_desc
             interval.component_id = dto.ComponentId;
@@ -984,7 +984,7 @@ namespace AeroService.Mapper
         public static void UpdateInterval(Interval en,IntervalDto dto) 
         {
             // Base
-            en.updated_date = DateTime.Now;
+            en.updated_date = DateTime.UtcNow;
 
             // Detail
             en.days_desc = dto.DaysDesc;
@@ -1065,7 +1065,7 @@ namespace AeroService.Mapper
         public static void UpdateCardFormat(CardFormat card,CardFormatDto dto)
         {
             card.is_active = dto.IsActive;
-            card.updated_date = DateTime.Now;
+            card.updated_date = DateTime.UtcNow;
 
             card.name = dto.Name;
             card.component_id = dto.ComponentId;
@@ -1117,7 +1117,7 @@ namespace AeroService.Mapper
         {
             location.location_name = dto.LocationName;
             location.description = dto.Description;
-            location.updated_date = DateTime.Now;
+            location.updated_date = DateTime.UtcNow;
         }
 
         #endregion
@@ -1178,7 +1178,7 @@ namespace AeroService.Mapper
             // Base
             entity.location_id = dto.LocationId;
             entity.is_active = dto.IsActive;
-            entity.updated_date = DateTime.Now;
+            entity.updated_date = DateTime.UtcNow;
 
             // extend_desc
             entity.name = dto.Name;
@@ -1250,7 +1250,7 @@ namespace AeroService.Mapper
             {
                 en.operator_locations.Add(new OperatorLocation { location_id = id, operator_id = en.component_id });
             }
-            en.updated_date = DateTime.Now;
+            en.updated_date = DateTime.UtcNow;
 
             // extend_desc
             en.component_id = dto.ComponentId;
@@ -1344,7 +1344,7 @@ namespace AeroService.Mapper
         public static void UpdateRole(Role en,RoleDto dto)
         {
             en.name = dto.Name;
-            en.updated_date = DateTime.Now;
+            en.updated_date = DateTime.UtcNow;
             en.feature_roles.Clear();
             foreach(var id in dto.Features)
             {
@@ -1408,7 +1408,7 @@ namespace AeroService.Mapper
                 // Detail
                 name = dto.Name,
                 actions = dto.Actions
-                .Select(x => DtoToAction(x,ComponentId,DateTime.Now))
+                .Select(x => DtoToAction(x,ComponentId,DateTime.UtcNow))
                 .ToArray(),    
             };
         }

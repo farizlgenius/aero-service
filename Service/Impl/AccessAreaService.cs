@@ -66,7 +66,7 @@ namespace AeroService.Service.Impl
             //}
 
 
-            var entity = MapperHelper.DtoToAccessArea(dto,ComponentId,DateTime.Now);
+            var entity = MapperHelper.DtoToAccessArea(dto,ComponentId,DateTime.UtcNow);
             await context.area.AddAsync(entity);
             await context.SaveChangesAsync();
 

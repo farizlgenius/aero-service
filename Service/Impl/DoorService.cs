@@ -782,7 +782,7 @@ namespace AeroService.Service.Impl
                 .Where(x => x.value == dto.DefaultMode)
                 .Select(x => x.name)
                 .FirstOrDefaultAsync() ?? "",
-                DateTime.Now
+                DateTime.UtcNow
             );
 
             foreach (var reader in door.readers)

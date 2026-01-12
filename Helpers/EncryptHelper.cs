@@ -5,6 +5,8 @@ namespace AeroService.Helpers
 {
     public sealed class EncryptHelper
     {
+
+        #region Hash Algrithm
         public static string Hash(string raw)
         {
             using var sha = SHA256.Create();
@@ -52,5 +54,33 @@ namespace AeroService.Helpers
             // constant-time comparison to prevent timing attacks
             return CryptographicOperations.FixedTimeEquals(computedHash, storedHashBytes);
         }
+
+        #endregion
+
+        #region ECDH 
+        // Step 1 : Generate ECDH key pair
+        public static (byte[] publicKey, byte[] privateKey) GenerateEcdhKeyPair()
+        {
+            using var ecdh = ECDiffieHellman.Create(ECCurve.NamedCurves.nistP256);
+            var publicKey = ecdh.ExportSubjectPublicKeyInfo();
+            var privateKey = ecdh.ExportPkcs8PrivateKey();
+            return (publicKey, privateKey);
+        }
+
+        // Step 2 : Derive shared secret
+        public static byte[] DeriveSharedSecret(byte[] privateKey, byte[] peerPublicKey)
+        {
+            using var ecdh = ECDiffieHellman.Create();
+            ecdh.ImportPkcs8PrivateKey(privateKey, out _);
+            using var peerEcdh = ECDiffieHellman.Create();
+            peerEcdh.ImportSubjectPublicKeyInfo(peerPublicKey, out _);
+            return ecdh.DeriveKeyMaterial(peerEcdh.PublicKey);
+        }
+
+        #endregion
+
+        #region Symmetric
+
+        #endregion
     }
 }
