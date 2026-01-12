@@ -7,5 +7,6 @@ namespace AeroService.Service
     {
         Task<ResponseDto<MachineFingerPrintDto>> GetMachineIdAsync();
         Task<ResponseDto<bool>> AddLicenseAsync();
+        Task<ResponseDto<bool>> TrustServerAsync(TrustServerDto dto);
     }
 }

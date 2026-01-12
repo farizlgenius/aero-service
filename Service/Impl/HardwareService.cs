@@ -734,6 +734,9 @@ namespace AeroService.Service.Impl
             if (hw is null) return;
 
             var config = await context.system_setting.AsNoTracking().FirstOrDefaultAsync();
+
+            if(config is null) return;
+
             foreach (var i in message.str_sts.sStrSpec)
             {
                 switch ((ScpStructure)i.nStrType)

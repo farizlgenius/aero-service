@@ -16,7 +16,6 @@ namespace AeroService.Exceptions.Middleware
             
             try
             {
-                Console.WriteLine("[] >> " + httpContext.Connection.RemoteIpAddress.ToString());
                 await next(httpContext);
 
             }

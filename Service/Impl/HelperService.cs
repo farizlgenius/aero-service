@@ -38,7 +38,7 @@ namespace AeroService.Service.Impl
 
         public string GetMacFromId(short id)
         {
-            return context.hardware.Where(x => x.component_id == id).Select(x => x.mac).FirstOrDefault();
+            return context.hardware.Where(x => x.component_id == id).Select(x => x.mac).FirstOrDefault() ?? "";
         }
 
         public async Task<short> GetLowestUnassignedNumberAsync<TEntity>(DbContext db,string hardwareMac,int max, CancellationToken ct) where TEntity : class,IComponentId,IMac
@@ -193,7 +193,7 @@ namespace AeroService.Service.Impl
 
         public string GetMacFromId(short id)
         {
-            return context.hardware.Where(x => x.component_id == id).Select(x => x.mac).FirstOrDefault();
+            return context.hardware.Where(x => x.component_id == id).Select(x => x.mac).FirstOrDefault() ?? "";
         }
 
         public async Task<string> GetHardwareNameById(short id)

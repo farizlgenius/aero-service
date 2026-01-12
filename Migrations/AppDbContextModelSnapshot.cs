@@ -17,160 +17,12 @@ namespace AeroService.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.7")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("AeroService.Entity.ModuleBaudrate", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<string>("description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("value")
-                        .HasColumnType("integer");
-
-                    b.HasKey("id");
-
-                    b.ToTable("module_baudrate");
-
-                    b.HasData(
-                        new
-                        {
-                            id = 1,
-                            description = "9600",
-                            name = "9600",
-                            value = 9600
-                        },
-                        new
-                        {
-                            id = 2,
-                            description = "19200",
-                            name = "19200",
-                            value = 19200
-                        },
-                        new
-                        {
-                            id = 3,
-                            description = "38400",
-                            name = "38400",
-                            value = 38400
-                        },
-                        new
-                        {
-                            id = 4,
-                            description = "115200",
-                            name = "115200",
-                            value = 115200
-                        });
-                });
-
-            modelBuilder.Entity("AeroService.Entity.ModuleProtocol", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<string>("description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("value")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("id");
-
-                    b.ToTable("module_protocol");
-
-                    b.HasData(
-                        new
-                        {
-                            id = 1,
-                            description = "HID Aero X100, X200 and X300 protocol",
-                            name = "Aero",
-                            value = (short)0
-                        },
-                        new
-                        {
-                            id = 2,
-                            description = "VertX™ V100, V200 and V300 protocol",
-                            name = "VertX",
-                            value = (short)15
-                        },
-                        new
-                        {
-                            id = 3,
-                            description = "Aperio",
-                            name = "Aperio",
-                            value = (short)16
-                        });
-                });
-
-            modelBuilder.Entity("AeroService.Entity.MonitorPointLogFunction", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<string>("description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<short>("value")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("id");
-
-                    b.ToTable("monitor_point_log_function");
-
-                    b.HasData(
-                        new
-                        {
-                            id = 1,
-                            description = "Logs all changes",
-                            name = "Logs all",
-                            value = (short)0
-                        },
-                        new
-                        {
-                            id = 2,
-                            description = "Do not log contact change-of-state if masked",
-                            name = "No Masked",
-                            value = (short)1
-                        },
-                        new
-                        {
-                            id = 3,
-                            description = "Do not log contact change-of-state if masked and no fault-to-fault changes",
-                            name = "No Mask & Fault to Fault",
-                            value = (short)2
-                        });
-                });
-
-            modelBuilder.Entity("HIDAeroService.Entity.AccessAreaCommand", b =>
+            modelBuilder.Entity("AeroService.Entity.AccessAreaCommand", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -238,7 +90,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.AccessLevel", b =>
+            modelBuilder.Entity("AeroService.Entity.AccessLevel", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -304,7 +156,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.AccessLevelDoorTimeZone", b =>
+            modelBuilder.Entity("AeroService.Entity.AccessLevelDoorTimeZone", b =>
                 {
                     b.Property<short>("accesslevel_id")
                         .HasColumnType("smallint");
@@ -327,7 +179,7 @@ namespace AeroService.Migrations
                     b.ToTable("accesslevel_door_timezone");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Action", b =>
+            modelBuilder.Entity("AeroService.Entity.Action", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -408,7 +260,7 @@ namespace AeroService.Migrations
                     b.ToTable("action");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.ActionType", b =>
+            modelBuilder.Entity("AeroService.Entity.ActionType", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -497,7 +349,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.AntipassbackMode", b =>
+            modelBuilder.Entity("AeroService.Entity.AntipassbackMode", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -586,7 +438,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Area", b =>
+            modelBuilder.Entity("AeroService.Entity.Area", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -673,7 +525,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.AreaAccessControl", b =>
+            modelBuilder.Entity("AeroService.Entity.AreaAccessControl", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -720,7 +572,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.AreaFlag", b =>
+            modelBuilder.Entity("AeroService.Entity.AreaFlag", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -760,7 +612,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.CardFormat", b =>
+            modelBuilder.Entity("AeroService.Entity.CardFormat", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -869,7 +721,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.CardHolder", b =>
+            modelBuilder.Entity("AeroService.Entity.CardHolder", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -955,7 +807,7 @@ namespace AeroService.Migrations
                     b.ToTable("cardholder");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.CardHolderAccessLevel", b =>
+            modelBuilder.Entity("AeroService.Entity.CardHolderAccessLevel", b =>
                 {
                     b.Property<short>("access_level_id")
                         .HasColumnType("smallint");
@@ -973,7 +825,7 @@ namespace AeroService.Migrations
                     b.ToTable("cardholder_accesslevel");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.CardHolderAdditional", b =>
+            modelBuilder.Entity("AeroService.Entity.CardHolderAdditional", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -999,7 +851,7 @@ namespace AeroService.Migrations
                     b.ToTable("cardholder_additional");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.CommandLog", b =>
+            modelBuilder.Entity("AeroService.Entity.CommandLog", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -1050,7 +902,7 @@ namespace AeroService.Migrations
                     b.ToTable("commnad_log");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.ControlPoint", b =>
+            modelBuilder.Entity("AeroService.Entity.ControlPoint", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -1121,7 +973,7 @@ namespace AeroService.Migrations
                     b.ToTable("control_point");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Credential", b =>
+            modelBuilder.Entity("AeroService.Entity.Credential", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -1188,7 +1040,7 @@ namespace AeroService.Migrations
                     b.ToTable("credential");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.CredentialFlag", b =>
+            modelBuilder.Entity("AeroService.Entity.CredentialFlag", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -1270,7 +1122,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.DaysInWeek", b =>
+            modelBuilder.Entity("AeroService.Entity.DaysInWeek", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -1327,7 +1179,7 @@ namespace AeroService.Migrations
                     b.ToTable("days_in_week");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Door", b =>
+            modelBuilder.Entity("AeroService.Entity.Door", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -1487,7 +1339,7 @@ namespace AeroService.Migrations
                     b.ToTable("door");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.DoorAccessControlFlag", b =>
+            modelBuilder.Entity("AeroService.Entity.DoorAccessControlFlag", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -1597,7 +1449,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.DoorMode", b =>
+            modelBuilder.Entity("AeroService.Entity.DoorMode", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -1679,7 +1531,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.DoorSpareFlag", b =>
+            modelBuilder.Entity("AeroService.Entity.DoorSpareFlag", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -1803,7 +1655,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Feature", b =>
+            modelBuilder.Entity("AeroService.Entity.Feature", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -1955,7 +1807,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.FeatureRole", b =>
+            modelBuilder.Entity("AeroService.Entity.FeatureRole", b =>
                 {
                     b.Property<short>("role_id")
                         .HasColumnType("smallint");
@@ -2167,7 +2019,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.FileType", b =>
+            modelBuilder.Entity("AeroService.Entity.FileType", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -2273,7 +2125,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Hardware", b =>
+            modelBuilder.Entity("AeroService.Entity.Hardware", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -2379,7 +2231,7 @@ namespace AeroService.Migrations
                     b.ToTable("hardware");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.HardwareAccessLevel", b =>
+            modelBuilder.Entity("AeroService.Entity.HardwareAccessLevel", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -2406,7 +2258,7 @@ namespace AeroService.Migrations
                     b.ToTable("hardware_accesslevel");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.HardwareComponent", b =>
+            modelBuilder.Entity("AeroService.Entity.HardwareComponent", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -2500,7 +2352,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.HardwareCredential", b =>
+            modelBuilder.Entity("AeroService.Entity.HardwareCredential", b =>
                 {
                     b.Property<string>("hardware_mac")
                         .HasColumnType("text");
@@ -2523,7 +2375,7 @@ namespace AeroService.Migrations
                     b.ToTable("hardware_credential");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.HardwareType", b =>
+            modelBuilder.Entity("AeroService.Entity.HardwareType", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -2563,7 +2415,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Holiday", b =>
+            modelBuilder.Entity("AeroService.Entity.Holiday", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -2616,7 +2468,7 @@ namespace AeroService.Migrations
                     b.ToTable("holiday");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.IdReport", b =>
+            modelBuilder.Entity("AeroService.Entity.IdReport", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -2711,7 +2563,7 @@ namespace AeroService.Migrations
                     b.ToTable("id_report");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.InputMode", b =>
+            modelBuilder.Entity("AeroService.Entity.InputMode", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -2765,7 +2617,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Interval", b =>
+            modelBuilder.Entity("AeroService.Entity.Interval", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -2818,7 +2670,7 @@ namespace AeroService.Migrations
                     b.ToTable("interval");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Location", b =>
+            modelBuilder.Entity("AeroService.Entity.Location", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -2872,7 +2724,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Module", b =>
+            modelBuilder.Entity("AeroService.Entity.Module", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -2992,7 +2844,108 @@ namespace AeroService.Migrations
                     b.ToTable("module");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.MonitorGroup", b =>
+            modelBuilder.Entity("AeroService.Entity.ModuleBaudrate", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<string>("description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("value")
+                        .HasColumnType("integer");
+
+                    b.HasKey("id");
+
+                    b.ToTable("module_baudrate");
+
+                    b.HasData(
+                        new
+                        {
+                            id = 1,
+                            description = "9600",
+                            name = "9600",
+                            value = 9600
+                        },
+                        new
+                        {
+                            id = 2,
+                            description = "19200",
+                            name = "19200",
+                            value = 19200
+                        },
+                        new
+                        {
+                            id = 3,
+                            description = "38400",
+                            name = "38400",
+                            value = 38400
+                        },
+                        new
+                        {
+                            id = 4,
+                            description = "115200",
+                            name = "115200",
+                            value = 115200
+                        });
+                });
+
+            modelBuilder.Entity("AeroService.Entity.ModuleProtocol", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<string>("description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("value")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("id");
+
+                    b.ToTable("module_protocol");
+
+                    b.HasData(
+                        new
+                        {
+                            id = 1,
+                            description = "HID Aero X100, X200 and X300 protocol",
+                            name = "Aero",
+                            value = (short)0
+                        },
+                        new
+                        {
+                            id = 2,
+                            description = "VertX™ V100, V200 and V300 protocol",
+                            name = "VertX",
+                            value = (short)15
+                        },
+                        new
+                        {
+                            id = 3,
+                            description = "Aperio",
+                            name = "Aperio",
+                            value = (short)16
+                        });
+                });
+
+            modelBuilder.Entity("AeroService.Entity.MonitorGroup", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -3043,7 +2996,7 @@ namespace AeroService.Migrations
                     b.ToTable("monitor_group");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.MonitorGroupCommand", b =>
+            modelBuilder.Entity("AeroService.Entity.MonitorGroupCommand", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -3104,7 +3057,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.MonitorGroupList", b =>
+            modelBuilder.Entity("AeroService.Entity.MonitorGroupList", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -3132,7 +3085,7 @@ namespace AeroService.Migrations
                     b.ToTable("monitor_group_list");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.MonitorGroupType", b =>
+            modelBuilder.Entity("AeroService.Entity.MonitorGroupType", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -3179,7 +3132,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.MonitorPoint", b =>
+            modelBuilder.Entity("AeroService.Entity.MonitorPoint", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -3265,7 +3218,54 @@ namespace AeroService.Migrations
                     b.ToTable("monitor_point");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.MonitorPointMode", b =>
+            modelBuilder.Entity("AeroService.Entity.MonitorPointLogFunction", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<string>("description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("value")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("id");
+
+                    b.ToTable("monitor_point_log_function");
+
+                    b.HasData(
+                        new
+                        {
+                            id = 1,
+                            description = "Logs all changes",
+                            name = "Logs all",
+                            value = (short)0
+                        },
+                        new
+                        {
+                            id = 2,
+                            description = "Do not log contact change-of-state if masked",
+                            name = "No Masked",
+                            value = (short)1
+                        },
+                        new
+                        {
+                            id = 3,
+                            description = "Do not log contact change-of-state if masked and no fault-to-fault changes",
+                            name = "No Mask & Fault to Fault",
+                            value = (short)2
+                        });
+                });
+
+            modelBuilder.Entity("AeroService.Entity.MonitorPointMode", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -3312,7 +3312,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.MultiOccupancy", b =>
+            modelBuilder.Entity("AeroService.Entity.MultiOccupancy", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -3352,7 +3352,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.OccupancyControl", b =>
+            modelBuilder.Entity("AeroService.Entity.OccupancyControl", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -3392,7 +3392,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Operator", b =>
+            modelBuilder.Entity("AeroService.Entity.Operator", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -3492,7 +3492,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.OperatorLocation", b =>
+            modelBuilder.Entity("AeroService.Entity.OperatorLocation", b =>
                 {
                     b.Property<short>("location_id")
                         .HasColumnType("smallint");
@@ -3518,7 +3518,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.OsdpAddress", b =>
+            modelBuilder.Entity("AeroService.Entity.OsdpAddress", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -3572,7 +3572,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.OsdpBaudrate", b =>
+            modelBuilder.Entity("AeroService.Entity.OsdpBaudrate", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -3640,7 +3640,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.OutputMode", b =>
+            modelBuilder.Entity("AeroService.Entity.OutputMode", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -3716,7 +3716,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.PasswordRule", b =>
+            modelBuilder.Entity("AeroService.Entity.PasswordRule", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -3755,7 +3755,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Procedure", b =>
+            modelBuilder.Entity("AeroService.Entity.Procedure", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -3802,7 +3802,7 @@ namespace AeroService.Migrations
                     b.ToTable("procedure");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Reader", b =>
+            modelBuilder.Entity("AeroService.Entity.Reader", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -3880,7 +3880,7 @@ namespace AeroService.Migrations
                     b.ToTable("reader");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.ReaderConfigurationMode", b =>
+            modelBuilder.Entity("AeroService.Entity.ReaderConfigurationMode", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -3948,7 +3948,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.ReaderOutConfiguration", b =>
+            modelBuilder.Entity("AeroService.Entity.ReaderOutConfiguration", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -3988,7 +3988,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.RefreshToken", b =>
+            modelBuilder.Entity("AeroService.Entity.RefreshToken", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -4038,7 +4038,7 @@ namespace AeroService.Migrations
                     b.ToTable("refresh_token");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.RelayMode", b =>
+            modelBuilder.Entity("AeroService.Entity.RelayMode", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -4078,7 +4078,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.RelayOfflineMode", b =>
+            modelBuilder.Entity("AeroService.Entity.RelayOfflineMode", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -4125,7 +4125,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.RequestExit", b =>
+            modelBuilder.Entity("AeroService.Entity.RequestExit", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -4185,7 +4185,7 @@ namespace AeroService.Migrations
                     b.ToTable("request_exit");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Role", b =>
+            modelBuilder.Entity("AeroService.Entity.Role", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -4225,7 +4225,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Sensor", b =>
+            modelBuilder.Entity("AeroService.Entity.Sensor", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -4283,7 +4283,7 @@ namespace AeroService.Migrations
                     b.ToTable("sensor");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Strike", b =>
+            modelBuilder.Entity("AeroService.Entity.Strike", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -4344,7 +4344,7 @@ namespace AeroService.Migrations
                     b.ToTable("strike");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.StrikeMode", b =>
+            modelBuilder.Entity("AeroService.Entity.StrikeMode", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -4398,7 +4398,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.SubFeature", b =>
+            modelBuilder.Entity("AeroService.Entity.SubFeature", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -4517,7 +4517,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.SystemConfiguration", b =>
+            modelBuilder.Entity("AeroService.Entity.SystemConfiguration", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -4556,7 +4556,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.SystemSetting", b =>
+            modelBuilder.Entity("AeroService.Entity.SystemSetting", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -4635,7 +4635,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.TimeZone", b =>
+            modelBuilder.Entity("AeroService.Entity.TimeZone", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -4704,7 +4704,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.TimeZoneCommand", b =>
+            modelBuilder.Entity("AeroService.Entity.TimeZoneCommand", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -4772,7 +4772,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.TimeZoneInterval", b =>
+            modelBuilder.Entity("AeroService.Entity.TimeZoneInterval", b =>
                 {
                     b.Property<short>("timezone_id")
                         .HasColumnType("smallint");
@@ -4807,7 +4807,7 @@ namespace AeroService.Migrations
                     b.ToTable("timezone_interval");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.TimeZoneMode", b =>
+            modelBuilder.Entity("AeroService.Entity.TimeZoneMode", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -4875,7 +4875,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Transaction", b =>
+            modelBuilder.Entity("AeroService.Entity.Transaction", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -4977,7 +4977,7 @@ namespace AeroService.Migrations
                     b.ToTable("transaction");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.TransactionCode", b =>
+            modelBuilder.Entity("AeroService.Entity.TransactionCode", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -6376,7 +6376,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.TransactionFlag", b =>
+            modelBuilder.Entity("AeroService.Entity.TransactionFlag", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -6406,7 +6406,7 @@ namespace AeroService.Migrations
                     b.ToTable("transaction_flag");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.TransactionSource", b =>
+            modelBuilder.Entity("AeroService.Entity.TransactionSource", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -6586,7 +6586,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.TransactionSourceType", b =>
+            modelBuilder.Entity("AeroService.Entity.TransactionSourceType", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -6827,7 +6827,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.TransactionType", b =>
+            modelBuilder.Entity("AeroService.Entity.TransactionType", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -7029,7 +7029,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Trigger", b =>
+            modelBuilder.Entity("AeroService.Entity.Trigger", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -7101,7 +7101,7 @@ namespace AeroService.Migrations
                     b.ToTable("trigger");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.TriggerCommand", b =>
+            modelBuilder.Entity("AeroService.Entity.TriggerCommand", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -7190,7 +7190,7 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.TriggerTranCode", b =>
+            modelBuilder.Entity("AeroService.Entity.TriggerTranCode", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -7219,7 +7219,7 @@ namespace AeroService.Migrations
                     b.ToTable("trigger_tran_code");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.WeakPassword", b =>
+            modelBuilder.Entity("AeroService.Entity.WeakPassword", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -7267,9 +7267,9 @@ namespace AeroService.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.AccessLevel", b =>
+            modelBuilder.Entity("AeroService.Entity.AccessLevel", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("accesslevels")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
@@ -7279,23 +7279,23 @@ namespace AeroService.Migrations
                     b.Navigation("location");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.AccessLevelDoorTimeZone", b =>
+            modelBuilder.Entity("AeroService.Entity.AccessLevelDoorTimeZone", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.AccessLevel", "accesslevel")
+                    b.HasOne("AeroService.Entity.AccessLevel", "accesslevel")
                         .WithMany("accessleve_door_timezones")
                         .HasForeignKey("accesslevel_id")
                         .HasPrincipalKey("component_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Door", "door")
+                    b.HasOne("AeroService.Entity.Door", "door")
                         .WithMany("accesslevel_door_timezones")
                         .HasForeignKey("door_id")
                         .HasPrincipalKey("component_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.TimeZone", "timezone")
+                    b.HasOne("AeroService.Entity.TimeZone", "timezone")
                         .WithMany("accesslevel_door_timezones")
                         .HasForeignKey("timezone_id")
                         .HasPrincipalKey("component_id")
@@ -7309,16 +7309,16 @@ namespace AeroService.Migrations
                     b.Navigation("timezone");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Action", b =>
+            modelBuilder.Entity("AeroService.Entity.Action", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("actions")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Procedure", "procedure")
+                    b.HasOne("AeroService.Entity.Procedure", "procedure")
                         .WithMany("actions")
                         .HasForeignKey("procedure_id")
                         .HasPrincipalKey("component_id")
@@ -7330,9 +7330,9 @@ namespace AeroService.Migrations
                     b.Navigation("procedure");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Area", b =>
+            modelBuilder.Entity("AeroService.Entity.Area", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("areas")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
@@ -7342,9 +7342,9 @@ namespace AeroService.Migrations
                     b.Navigation("location");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.CardHolder", b =>
+            modelBuilder.Entity("AeroService.Entity.CardHolder", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("cardholders")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
@@ -7354,16 +7354,16 @@ namespace AeroService.Migrations
                     b.Navigation("location");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.CardHolderAccessLevel", b =>
+            modelBuilder.Entity("AeroService.Entity.CardHolderAccessLevel", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.AccessLevel", "access_level")
+                    b.HasOne("AeroService.Entity.AccessLevel", "access_level")
                         .WithMany("cardholder_accesslevel")
                         .HasForeignKey("access_level_id")
                         .HasPrincipalKey("component_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.CardHolder", "card_holder")
+                    b.HasOne("AeroService.Entity.CardHolder", "card_holder")
                         .WithMany("access_levels")
                         .HasForeignKey("cardholder_id")
                         .HasPrincipalKey("user_id")
@@ -7375,9 +7375,9 @@ namespace AeroService.Migrations
                     b.Navigation("card_holder");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.CardHolderAdditional", b =>
+            modelBuilder.Entity("AeroService.Entity.CardHolderAdditional", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.CardHolder", "card_holder")
+                    b.HasOne("AeroService.Entity.CardHolder", "card_holder")
                         .WithMany("additional")
                         .HasForeignKey("card_holderid")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -7386,16 +7386,16 @@ namespace AeroService.Migrations
                     b.Navigation("card_holder");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.ControlPoint", b =>
+            modelBuilder.Entity("AeroService.Entity.ControlPoint", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("control_points")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Module", "module")
+                    b.HasOne("AeroService.Entity.Module", "module")
                         .WithMany("control_points")
                         .HasForeignKey("module_id")
                         .HasPrincipalKey("component_id")
@@ -7407,16 +7407,16 @@ namespace AeroService.Migrations
                     b.Navigation("module");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Credential", b =>
+            modelBuilder.Entity("AeroService.Entity.Credential", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.CardHolder", "cardholder")
+                    b.HasOne("AeroService.Entity.CardHolder", "cardholder")
                         .WithMany("credentials")
                         .HasForeignKey("cardholder_id")
                         .HasPrincipalKey("user_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("credentials")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
@@ -7428,55 +7428,55 @@ namespace AeroService.Migrations
                     b.Navigation("location");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.DaysInWeek", b =>
+            modelBuilder.Entity("AeroService.Entity.DaysInWeek", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Interval", "interval")
+                    b.HasOne("AeroService.Entity.Interval", "interval")
                         .WithOne("days")
-                        .HasForeignKey("HIDAeroService.Entity.DaysInWeek", "component_id")
-                        .HasPrincipalKey("HIDAeroService.Entity.Interval", "component_id")
+                        .HasForeignKey("AeroService.Entity.DaysInWeek", "component_id")
+                        .HasPrincipalKey("AeroService.Entity.Interval", "component_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("interval");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Door", b =>
+            modelBuilder.Entity("AeroService.Entity.Door", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Area", "area_in")
+                    b.HasOne("AeroService.Entity.Area", "area_in")
                         .WithMany("door_in")
                         .HasForeignKey("antipassback_in")
                         .HasPrincipalKey("component_id");
 
-                    b.HasOne("HIDAeroService.Entity.Area", "area_out")
+                    b.HasOne("AeroService.Entity.Area", "area_out")
                         .WithMany("door_out")
                         .HasForeignKey("antipassback_out")
                         .HasPrincipalKey("component_id");
 
-                    b.HasOne("HIDAeroService.Entity.Hardware", "hardware")
+                    b.HasOne("AeroService.Entity.Hardware", "hardware")
                         .WithMany("doors")
                         .HasForeignKey("hardware_mac")
                         .HasPrincipalKey("mac")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("doors")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Sensor", "sensor")
+                    b.HasOne("AeroService.Entity.Sensor", "sensor")
                         .WithOne("sensor_door")
-                        .HasForeignKey("HIDAeroService.Entity.Door", "sensor_id")
-                        .HasPrincipalKey("HIDAeroService.Entity.Sensor", "component_id")
+                        .HasForeignKey("AeroService.Entity.Door", "sensor_id")
+                        .HasPrincipalKey("AeroService.Entity.Sensor", "component_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Strike", "strike")
+                    b.HasOne("AeroService.Entity.Strike", "strike")
                         .WithOne("strike_door")
-                        .HasForeignKey("HIDAeroService.Entity.Door", "strike_id")
-                        .HasPrincipalKey("HIDAeroService.Entity.Strike", "component_id")
+                        .HasForeignKey("AeroService.Entity.Door", "strike_id")
+                        .HasPrincipalKey("AeroService.Entity.Strike", "component_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -7493,16 +7493,16 @@ namespace AeroService.Migrations
                     b.Navigation("strike");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.FeatureRole", b =>
+            modelBuilder.Entity("AeroService.Entity.FeatureRole", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Feature", "feature")
+                    b.HasOne("AeroService.Entity.Feature", "feature")
                         .WithMany("feature_role")
                         .HasForeignKey("feature_id")
                         .HasPrincipalKey("component_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Role", "role")
+                    b.HasOne("AeroService.Entity.Role", "role")
                         .WithMany("feature_roles")
                         .HasForeignKey("role_id")
                         .HasPrincipalKey("component_id")
@@ -7514,9 +7514,9 @@ namespace AeroService.Migrations
                     b.Navigation("role");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Hardware", b =>
+            modelBuilder.Entity("AeroService.Entity.Hardware", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("hardwares")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
@@ -7526,15 +7526,15 @@ namespace AeroService.Migrations
                     b.Navigation("location");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.HardwareAccessLevel", b =>
+            modelBuilder.Entity("AeroService.Entity.HardwareAccessLevel", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.AccessLevel", "access_level")
+                    b.HasOne("AeroService.Entity.AccessLevel", "access_level")
                         .WithMany()
                         .HasForeignKey("access_levelid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Hardware", "hardware")
+                    b.HasOne("AeroService.Entity.Hardware", "hardware")
                         .WithMany("hardware_accesslevels")
                         .HasForeignKey("hardware_mac")
                         .HasPrincipalKey("mac")
@@ -7546,15 +7546,15 @@ namespace AeroService.Migrations
                     b.Navigation("hardware");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.HardwareCredential", b =>
+            modelBuilder.Entity("AeroService.Entity.HardwareCredential", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Credential", "credential")
+                    b.HasOne("AeroService.Entity.Credential", "credential")
                         .WithMany("hardware_credentials")
                         .HasForeignKey("credentialid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Hardware", "hardware")
+                    b.HasOne("AeroService.Entity.Hardware", "hardware")
                         .WithMany("hardware_credentials")
                         .HasForeignKey("hardware_credential_id")
                         .HasPrincipalKey("component_id")
@@ -7566,9 +7566,9 @@ namespace AeroService.Migrations
                     b.Navigation("hardware");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Holiday", b =>
+            modelBuilder.Entity("AeroService.Entity.Holiday", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("holidays")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
@@ -7578,9 +7578,9 @@ namespace AeroService.Migrations
                     b.Navigation("location");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Interval", b =>
+            modelBuilder.Entity("AeroService.Entity.Interval", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("intervals")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
@@ -7590,16 +7590,16 @@ namespace AeroService.Migrations
                     b.Navigation("location");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Module", b =>
+            modelBuilder.Entity("AeroService.Entity.Module", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Hardware", "hardware")
+                    b.HasOne("AeroService.Entity.Hardware", "hardware")
                         .WithMany("modules")
                         .HasForeignKey("hardware_mac")
                         .HasPrincipalKey("mac")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("modules")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
@@ -7611,16 +7611,16 @@ namespace AeroService.Migrations
                     b.Navigation("location");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.MonitorGroup", b =>
+            modelBuilder.Entity("AeroService.Entity.MonitorGroup", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Hardware", "hardware")
+                    b.HasOne("AeroService.Entity.Hardware", "hardware")
                         .WithMany("monitor_groups")
                         .HasForeignKey("hardware_mac")
                         .HasPrincipalKey("mac")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("monitor_groups")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
@@ -7632,9 +7632,9 @@ namespace AeroService.Migrations
                     b.Navigation("location");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.MonitorGroupList", b =>
+            modelBuilder.Entity("AeroService.Entity.MonitorGroupList", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.MonitorGroup", "monitor_group")
+                    b.HasOne("AeroService.Entity.MonitorGroup", "monitor_group")
                         .WithMany("n_mp_list")
                         .HasForeignKey("monitor_group_id")
                         .HasPrincipalKey("component_id")
@@ -7644,16 +7644,16 @@ namespace AeroService.Migrations
                     b.Navigation("monitor_group");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.MonitorPoint", b =>
+            modelBuilder.Entity("AeroService.Entity.MonitorPoint", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("monitor_points")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Module", "module")
+                    b.HasOne("AeroService.Entity.Module", "module")
                         .WithMany("monitor_points")
                         .HasForeignKey("module_id")
                         .HasPrincipalKey("component_id")
@@ -7665,9 +7665,9 @@ namespace AeroService.Migrations
                     b.Navigation("module");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Operator", b =>
+            modelBuilder.Entity("AeroService.Entity.Operator", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Role", "role")
+                    b.HasOne("AeroService.Entity.Role", "role")
                         .WithMany("operators")
                         .HasForeignKey("role_id")
                         .HasPrincipalKey("component_id")
@@ -7677,16 +7677,16 @@ namespace AeroService.Migrations
                     b.Navigation("role");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.OperatorLocation", b =>
+            modelBuilder.Entity("AeroService.Entity.OperatorLocation", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("operator_locations")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Operator", "operator")
+                    b.HasOne("AeroService.Entity.Operator", "operator")
                         .WithMany("operator_locations")
                         .HasForeignKey("operator_id")
                         .HasPrincipalKey("component_id")
@@ -7698,13 +7698,13 @@ namespace AeroService.Migrations
                     b.Navigation("operator");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Procedure", b =>
+            modelBuilder.Entity("AeroService.Entity.Procedure", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Hardware", null)
+                    b.HasOne("AeroService.Entity.Hardware", null)
                         .WithMany("procedures")
                         .HasForeignKey("Hardwareid");
 
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("procedures")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
@@ -7714,23 +7714,23 @@ namespace AeroService.Migrations
                     b.Navigation("location");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Reader", b =>
+            modelBuilder.Entity("AeroService.Entity.Reader", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Door", "door")
+                    b.HasOne("AeroService.Entity.Door", "door")
                         .WithMany("readers")
                         .HasForeignKey("component_id")
                         .HasPrincipalKey("component_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("readers")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Module", "module")
+                    b.HasOne("AeroService.Entity.Module", "module")
                         .WithMany("readers")
                         .HasForeignKey("module_id")
                         .HasPrincipalKey("component_id")
@@ -7744,23 +7744,23 @@ namespace AeroService.Migrations
                     b.Navigation("module");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.RequestExit", b =>
+            modelBuilder.Entity("AeroService.Entity.RequestExit", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Door", "door")
+                    b.HasOne("AeroService.Entity.Door", "door")
                         .WithMany("request_exits")
                         .HasForeignKey("component_id")
                         .HasPrincipalKey("component_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("request_exits")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Module", "module")
+                    b.HasOne("AeroService.Entity.Module", "module")
                         .WithMany("request_exits")
                         .HasForeignKey("module_id")
                         .HasPrincipalKey("component_id")
@@ -7774,16 +7774,16 @@ namespace AeroService.Migrations
                     b.Navigation("module");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Sensor", b =>
+            modelBuilder.Entity("AeroService.Entity.Sensor", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("sensors")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Module", "module")
+                    b.HasOne("AeroService.Entity.Module", "module")
                         .WithMany("sensors")
                         .HasForeignKey("module_id")
                         .HasPrincipalKey("component_id")
@@ -7795,16 +7795,16 @@ namespace AeroService.Migrations
                     b.Navigation("module");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Strike", b =>
+            modelBuilder.Entity("AeroService.Entity.Strike", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("strikes")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Module", "module")
+                    b.HasOne("AeroService.Entity.Module", "module")
                         .WithMany("strikes")
                         .HasForeignKey("module_id")
                         .HasPrincipalKey("component_id")
@@ -7816,9 +7816,9 @@ namespace AeroService.Migrations
                     b.Navigation("module");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.SubFeature", b =>
+            modelBuilder.Entity("AeroService.Entity.SubFeature", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Feature", "feature")
+                    b.HasOne("AeroService.Entity.Feature", "feature")
                         .WithMany("sub_feature")
                         .HasForeignKey("feature_id")
                         .HasPrincipalKey("component_id")
@@ -7828,9 +7828,9 @@ namespace AeroService.Migrations
                     b.Navigation("feature");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.TimeZone", b =>
+            modelBuilder.Entity("AeroService.Entity.TimeZone", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("timezones")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
@@ -7840,16 +7840,16 @@ namespace AeroService.Migrations
                     b.Navigation("location");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.TimeZoneInterval", b =>
+            modelBuilder.Entity("AeroService.Entity.TimeZoneInterval", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Interval", "interval")
+                    b.HasOne("AeroService.Entity.Interval", "interval")
                         .WithMany("timezone_intervals")
                         .HasForeignKey("interval_id")
                         .HasPrincipalKey("component_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.TimeZone", "timezone")
+                    b.HasOne("AeroService.Entity.TimeZone", "timezone")
                         .WithMany("timezone_intervals")
                         .HasForeignKey("timezone_id")
                         .HasPrincipalKey("component_id")
@@ -7861,9 +7861,9 @@ namespace AeroService.Migrations
                     b.Navigation("timezone");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Transaction", b =>
+            modelBuilder.Entity("AeroService.Entity.Transaction", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("transactions")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
@@ -7873,9 +7873,9 @@ namespace AeroService.Migrations
                     b.Navigation("location");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.TransactionCode", b =>
+            modelBuilder.Entity("AeroService.Entity.TransactionCode", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.TransactionType", "transaction_type")
+                    b.HasOne("AeroService.Entity.TransactionType", "transaction_type")
                         .WithMany("transaction_codes")
                         .HasForeignKey("transaction_type_value")
                         .HasPrincipalKey("value")
@@ -7885,9 +7885,9 @@ namespace AeroService.Migrations
                     b.Navigation("transaction_type");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.TransactionFlag", b =>
+            modelBuilder.Entity("AeroService.Entity.TransactionFlag", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Transaction", "transaction")
+                    b.HasOne("AeroService.Entity.Transaction", "transaction")
                         .WithMany("transaction_flag")
                         .HasForeignKey("transactionid")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -7896,16 +7896,16 @@ namespace AeroService.Migrations
                     b.Navigation("transaction");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.TransactionSourceType", b =>
+            modelBuilder.Entity("AeroService.Entity.TransactionSourceType", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.TransactionSource", "transaction_source")
+                    b.HasOne("AeroService.Entity.TransactionSource", "transaction_source")
                         .WithMany("transaction_source_type")
                         .HasForeignKey("transction_source_value")
                         .HasPrincipalKey("value")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.TransactionType", "transaction_type")
+                    b.HasOne("AeroService.Entity.TransactionType", "transaction_type")
                         .WithMany("transaction_source_types")
                         .HasForeignKey("transction_type_value")
                         .HasPrincipalKey("value")
@@ -7917,25 +7917,25 @@ namespace AeroService.Migrations
                     b.Navigation("transaction_type");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Trigger", b =>
+            modelBuilder.Entity("AeroService.Entity.Trigger", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Hardware", "hardware")
+                    b.HasOne("AeroService.Entity.Hardware", "hardware")
                         .WithMany()
                         .HasForeignKey("hardwareid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Location", "location")
+                    b.HasOne("AeroService.Entity.Location", "location")
                         .WithMany("triggers")
                         .HasForeignKey("location_id")
                         .HasPrincipalKey("component_id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("HIDAeroService.Entity.Procedure", "procedure")
+                    b.HasOne("AeroService.Entity.Procedure", "procedure")
                         .WithOne("trigger")
-                        .HasForeignKey("HIDAeroService.Entity.Trigger", "procedure_id")
-                        .HasPrincipalKey("HIDAeroService.Entity.Procedure", "component_id")
+                        .HasForeignKey("AeroService.Entity.Trigger", "procedure_id")
+                        .HasPrincipalKey("AeroService.Entity.Procedure", "component_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -7946,9 +7946,9 @@ namespace AeroService.Migrations
                     b.Navigation("procedure");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.TriggerTranCode", b =>
+            modelBuilder.Entity("AeroService.Entity.TriggerTranCode", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.Trigger", "trigger")
+                    b.HasOne("AeroService.Entity.Trigger", "trigger")
                         .WithMany("code_map")
                         .HasForeignKey("value")
                         .HasPrincipalKey("component_id")
@@ -7958,9 +7958,9 @@ namespace AeroService.Migrations
                     b.Navigation("trigger");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.WeakPassword", b =>
+            modelBuilder.Entity("AeroService.Entity.WeakPassword", b =>
                 {
-                    b.HasOne("HIDAeroService.Entity.PasswordRule", "password_rule")
+                    b.HasOne("AeroService.Entity.PasswordRule", "password_rule")
                         .WithMany("weaks")
                         .HasForeignKey("password_rule_id")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -7969,21 +7969,21 @@ namespace AeroService.Migrations
                     b.Navigation("password_rule");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.AccessLevel", b =>
+            modelBuilder.Entity("AeroService.Entity.AccessLevel", b =>
                 {
                     b.Navigation("accessleve_door_timezones");
 
                     b.Navigation("cardholder_accesslevel");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Area", b =>
+            modelBuilder.Entity("AeroService.Entity.Area", b =>
                 {
                     b.Navigation("door_in");
 
                     b.Navigation("door_out");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.CardHolder", b =>
+            modelBuilder.Entity("AeroService.Entity.CardHolder", b =>
                 {
                     b.Navigation("access_levels");
 
@@ -7992,12 +7992,12 @@ namespace AeroService.Migrations
                     b.Navigation("credentials");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Credential", b =>
+            modelBuilder.Entity("AeroService.Entity.Credential", b =>
                 {
                     b.Navigation("hardware_credentials");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Door", b =>
+            modelBuilder.Entity("AeroService.Entity.Door", b =>
                 {
                     b.Navigation("accesslevel_door_timezones");
 
@@ -8006,14 +8006,14 @@ namespace AeroService.Migrations
                     b.Navigation("request_exits");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Feature", b =>
+            modelBuilder.Entity("AeroService.Entity.Feature", b =>
                 {
                     b.Navigation("feature_role");
 
                     b.Navigation("sub_feature");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Hardware", b =>
+            modelBuilder.Entity("AeroService.Entity.Hardware", b =>
                 {
                     b.Navigation("doors");
 
@@ -8028,7 +8028,7 @@ namespace AeroService.Migrations
                     b.Navigation("procedures");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Interval", b =>
+            modelBuilder.Entity("AeroService.Entity.Interval", b =>
                 {
                     b.Navigation("days")
                         .IsRequired();
@@ -8036,7 +8036,7 @@ namespace AeroService.Migrations
                     b.Navigation("timezone_intervals");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Location", b =>
+            modelBuilder.Entity("AeroService.Entity.Location", b =>
                 {
                     b.Navigation("accesslevels");
 
@@ -8083,7 +8083,7 @@ namespace AeroService.Migrations
                     b.Navigation("triggers");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Module", b =>
+            modelBuilder.Entity("AeroService.Entity.Module", b =>
                 {
                     b.Navigation("control_points");
 
@@ -8098,22 +8098,22 @@ namespace AeroService.Migrations
                     b.Navigation("strikes");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.MonitorGroup", b =>
+            modelBuilder.Entity("AeroService.Entity.MonitorGroup", b =>
                 {
                     b.Navigation("n_mp_list");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Operator", b =>
+            modelBuilder.Entity("AeroService.Entity.Operator", b =>
                 {
                     b.Navigation("operator_locations");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.PasswordRule", b =>
+            modelBuilder.Entity("AeroService.Entity.PasswordRule", b =>
                 {
                     b.Navigation("weaks");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Procedure", b =>
+            modelBuilder.Entity("AeroService.Entity.Procedure", b =>
                 {
                     b.Navigation("actions");
 
@@ -8121,50 +8121,50 @@ namespace AeroService.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Role", b =>
+            modelBuilder.Entity("AeroService.Entity.Role", b =>
                 {
                     b.Navigation("feature_roles");
 
                     b.Navigation("operators");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Sensor", b =>
+            modelBuilder.Entity("AeroService.Entity.Sensor", b =>
                 {
                     b.Navigation("sensor_door")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Strike", b =>
+            modelBuilder.Entity("AeroService.Entity.Strike", b =>
                 {
                     b.Navigation("strike_door")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.TimeZone", b =>
+            modelBuilder.Entity("AeroService.Entity.TimeZone", b =>
                 {
                     b.Navigation("accesslevel_door_timezones");
 
                     b.Navigation("timezone_intervals");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Transaction", b =>
+            modelBuilder.Entity("AeroService.Entity.Transaction", b =>
                 {
                     b.Navigation("transaction_flag");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.TransactionSource", b =>
+            modelBuilder.Entity("AeroService.Entity.TransactionSource", b =>
                 {
                     b.Navigation("transaction_source_type");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.TransactionType", b =>
+            modelBuilder.Entity("AeroService.Entity.TransactionType", b =>
                 {
                     b.Navigation("transaction_codes");
 
                     b.Navigation("transaction_source_types");
                 });
 
-            modelBuilder.Entity("HIDAeroService.Entity.Trigger", b =>
+            modelBuilder.Entity("AeroService.Entity.Trigger", b =>
                 {
                     b.Navigation("code_map");
                 });

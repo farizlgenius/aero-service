@@ -83,6 +83,12 @@ namespace AeroService
             });
 
             builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddRouting(options =>
+            {
+                options.LowercaseUrls = true;
+                options.LowercaseQueryStrings = true; // optional
+            });
+
             builder.Services.AddSwaggerGen(c => 
                 {
                     c.SwaggerDoc("v1", new() { Title = "HIS API", Version = "v1" });
@@ -208,6 +214,10 @@ namespace AeroService
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
+                    builder.WithOrigins("http://localhost:5173")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
                     builder.WithOrigins("http://192.168.1.170:5173")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
@@ -255,10 +265,13 @@ namespace AeroService
 
             app.Lifetime.ApplicationStopping.Register(async () =>
             {
-                var context = app.Services.GetRequiredService<AppDbContext>();
-
-                // Delete all pending id report 
-                context.id_report.RemoveRange(context.id_report.ToArray());
+                using (var scope = app.Services.CreateScope())
+                {
+                    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                    // use db here
+                    // Delete all pending id report 
+                    db.id_report.RemoveRange(db.id_report.ToArray());
+                }                
 
                 readDriver.SetShutDownflag();
                 Thread.Sleep(1000);

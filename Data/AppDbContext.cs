@@ -100,7 +100,7 @@ namespace AeroService.Data
         public DbSet<HardwareCredential> hardware_credential { get; set; }
         public DbSet<TransactionFlag> transaction_flag { get; set; }
         public DbSet<TransactionSourceType> transaction_source_type { get; set; }
-
+        public DbSet<KeyPair> KeyPairs { get; set; }
 
         // New
         //public DbSet<TransactionFlag> TransactionFlagDetails { get; set; }
