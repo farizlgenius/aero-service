@@ -15,6 +15,8 @@ using AeroService.Aero.CommandService.Impl;
 using AeroService.Aero;
 using HID.Aero.ScpdNet.Wrapper;
 using System.Threading.Channels;
+using AeroService.Helpers;
+using AeroService.Worker;
 
 namespace AeroService
 {
@@ -185,7 +187,7 @@ namespace AeroService
             builder.Services.AddSignalR();
             builder.Services.AddScoped<IdReportService>();
             builder.Services.AddTransient<ExceptionHandlingMiddleware>();
-            
+            builder.Services.AddHostedService<StartupTask>();
 
 
 
@@ -242,7 +244,7 @@ namespace AeroService
 
             // Initial Driver
 
-            logger.LogInformation("Application starting at {time}", DateTime.Now);
+            logger.LogInformation("Application starting at {time}", DateTime.UtcNow.ToLocalTime());
             writeDriver.TurnOnDebug();
 
             using (var scope = app.Services.CreateScope())
@@ -271,6 +273,8 @@ namespace AeroService
                 {
                     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                     // use db here
+                    
+
                     // Delete all pending id report 
                     db.id_report.RemoveRange(db.id_report.ToArray());
                 }                

@@ -16,7 +16,7 @@ namespace AeroService.Controllers.V1
             {
                 code = HttpStatusCode.OK,
                 message = "Success",
-                timestamp = DateTime.Now,
+                timestamp = DateTime.UtcNow,
                 data = new HealthDto { ServerStatus = "UP" }
             };
             return Ok(dto);

@@ -3,6 +3,7 @@
     public sealed class AppConfigSettings
     {
         public short MaxCardFormat { get; set; }
-        public string LicenseUrl {get; set;}
+        public string LicenseServerUrl {get; set;} = string.Empty;
+
     }
 }

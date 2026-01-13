@@ -30,7 +30,7 @@ namespace AeroService.Service.Impl
             throw new NotImplementedException();
         }
 
-        public async Task<bool> TrustServerAsync(TrustServerDto dto)
+        public async Task<ResponseDto<bool>> ExchangeAsync(TrustServerDto dto)
         {
 
             // Step 1 : Checking key pair in database
@@ -39,14 +39,14 @@ namespace AeroService.Service.Impl
             .OrderBy(x => x.key_uuid)
             .FirstOrDefaultAsync(x => x.is_revoked == false);
 
-            if(key is null) return false;
+            if(key is null) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var res = await api.GetAs
+            var body = new TrustServerDto("","");
 
-
-
-            return true;
+            await api.PostTrustedLicenseServer(settings.LicenseServerUrl, body);
+            return ResponseHelper.SuccessBuilder(true);
         }
+
 
     }
 }

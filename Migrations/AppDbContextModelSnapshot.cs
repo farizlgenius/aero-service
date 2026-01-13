@@ -102,9 +102,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("is_active")
                         .HasColumnType("boolean");
@@ -117,9 +115,7 @@ namespace AeroService.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -219,9 +215,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<short>("delay_time")
                         .HasColumnType("smallint");
@@ -243,9 +237,7 @@ namespace AeroService.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -456,9 +448,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("is_active")
                         .HasColumnType("boolean");
@@ -489,9 +479,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -510,7 +498,7 @@ namespace AeroService.Migrations
                             access_control = (short)0,
                             area_flag = (short)0,
                             component_id = (short)-1,
-                            created_date = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            created_date = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             is_active = true,
                             location_id = (short)1,
                             multi_occ = (short)0,
@@ -520,7 +508,7 @@ namespace AeroService.Migrations
                             occ_max = (short)0,
                             occ_set = (short)0,
                             occ_up = (short)0,
-                            updated_date = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            updated_date = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             uuid = "00000000-0000-0000-0000-000000000001"
                         });
                 });
@@ -633,9 +621,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<short>("facility")
                         .HasColumnType("smallint");
@@ -681,9 +667,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -701,7 +685,7 @@ namespace AeroService.Migrations
                             ch_ln = (short)16,
                             ch_loc = (short)9,
                             component_id = (short)0,
-                            created_date = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            created_date = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             facility = (short)-1,
                             fc_ln = (short)0,
                             fc_loc = (short)0,
@@ -716,7 +700,7 @@ namespace AeroService.Migrations
                             pe_loc = (short)0,
                             po_ln = (short)13,
                             po_loc = (short)13,
-                            updated_date = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            updated_date = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             uuid = "00000000-0000-0000-0000-000000000001"
                         });
                 });
@@ -734,9 +718,7 @@ namespace AeroService.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("department")
                         .IsRequired()
@@ -788,9 +770,7 @@ namespace AeroService.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("user_id")
                         .IsRequired()
@@ -863,9 +843,7 @@ namespace AeroService.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("hardware_id")
                         .HasColumnType("integer");
@@ -889,9 +867,7 @@ namespace AeroService.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -914,9 +890,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<short>("default_pulse")
                         .HasColumnType("smallint");
@@ -956,9 +930,7 @@ namespace AeroService.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -999,9 +971,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("deactive_date")
                         .IsRequired()
@@ -1023,9 +993,7 @@ namespace AeroService.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -1134,9 +1102,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("friday")
                         .HasColumnType("boolean");
@@ -1160,9 +1126,7 @@ namespace AeroService.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -1212,9 +1176,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<short>("dc_held2")
                         .HasColumnType("smallint");
@@ -1312,9 +1274,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -2143,9 +2103,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("firmware")
                         .IsRequired()
@@ -2172,9 +2130,7 @@ namespace AeroService.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<DateTime>("last_sync")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<short>("location_id")
                         .HasColumnType("smallint");
@@ -2216,9 +2172,7 @@ namespace AeroService.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -2427,9 +2381,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<short>("day")
                         .HasColumnType("smallint");
@@ -2450,9 +2402,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -2629,9 +2579,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("days_desc")
                         .IsRequired()
@@ -2652,9 +2600,7 @@ namespace AeroService.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -2670,6 +2616,39 @@ namespace AeroService.Migrations
                     b.ToTable("interval");
                 });
 
+            modelBuilder.Entity("AeroService.Entity.KeyPair", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<DateTime>("created_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("expire_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("is_revoked")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("key_uuid")
+                        .HasColumnType("uuid");
+
+                    b.Property<byte[]>("public_key")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<byte[]>("secret_key")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.HasKey("id");
+
+                    b.ToTable("key_pair");
+                });
+
             modelBuilder.Entity("AeroService.Entity.Location", b =>
                 {
                     b.Property<int>("id")
@@ -2682,9 +2661,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("description")
                         .IsRequired()
@@ -2698,9 +2675,7 @@ namespace AeroService.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -2715,11 +2690,11 @@ namespace AeroService.Migrations
                         {
                             id = 1,
                             component_id = (short)1,
-                            created_date = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            created_date = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             description = "Main location",
                             is_active = true,
                             location_name = "Main",
-                            updated_date = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            updated_date = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             uuid = "00000000-0000-0000-0000-000000000001"
                         });
                 });
@@ -2746,9 +2721,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("hardware_mac")
                         .IsRequired()
@@ -2827,9 +2800,7 @@ namespace AeroService.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -2957,9 +2928,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("hardware_mac")
                         .IsRequired()
@@ -2979,9 +2948,7 @@ namespace AeroService.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -3144,9 +3111,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<short>("debounce")
                         .HasColumnType("smallint");
@@ -3201,9 +3166,7 @@ namespace AeroService.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -3404,9 +3367,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("email")
                         .IsRequired()
@@ -3447,9 +3408,7 @@ namespace AeroService.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("user_id")
                         .IsRequired()
@@ -3474,7 +3433,7 @@ namespace AeroService.Migrations
                         {
                             id = 1,
                             component_id = (short)1,
-                            created_date = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            created_date = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             email = "support@honorsupplying.com",
                             first_name = "Administrator",
                             image_path = "",
@@ -3485,7 +3444,7 @@ namespace AeroService.Migrations
                             phone = "",
                             role_id = (short)1,
                             title = "Mr.",
-                            updated_date = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            updated_date = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             user_id = "Administrator",
                             user_name = "admin",
                             uuid = "00000000-0000-0000-0000-000000000001"
@@ -3770,9 +3729,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("is_active")
                         .HasColumnType("boolean");
@@ -3785,9 +3742,7 @@ namespace AeroService.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -3814,9 +3769,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<short>("data_format")
                         .HasColumnType("smallint");
@@ -3861,9 +3814,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -4001,14 +3952,10 @@ namespace AeroService.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("expire_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("hashed_token")
                         .IsRequired()
@@ -4018,9 +3965,7 @@ namespace AeroService.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("user_id")
                         .IsRequired()
@@ -4137,9 +4082,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<short>("debounce")
                         .HasColumnType("smallint");
@@ -4166,9 +4109,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -4197,18 +4138,14 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("id");
 
@@ -4219,10 +4156,52 @@ namespace AeroService.Migrations
                         {
                             id = 1,
                             component_id = (short)1,
-                            created_date = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            created_date = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             name = "Administrator",
-                            updated_date = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            updated_date = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
+                });
+
+            modelBuilder.Entity("AeroService.Entity.SecretKey", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<DateTime>("created_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("expire_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("is_revoked")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("key_uuid")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("machine_id")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<byte[]>("public_key")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<Guid>("secret_uuid")
+                        .HasColumnType("uuid");
+
+                    b.Property<byte[]>("shared_secret")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("key_uuid");
+
+                    b.ToTable("secrete_key");
                 });
 
             modelBuilder.Entity("AeroService.Entity.Sensor", b =>
@@ -4237,9 +4216,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<short>("dc_held")
                         .HasColumnType("smallint");
@@ -4266,9 +4243,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -4295,9 +4270,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("is_active")
                         .HasColumnType("boolean");
@@ -4327,9 +4300,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -4651,9 +4622,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("deactive_time")
                         .IsRequired()
@@ -4673,9 +4642,7 @@ namespace AeroService.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -4781,9 +4748,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("id")
                         .HasColumnType("integer");
@@ -4792,9 +4757,7 @@ namespace AeroService.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -4891,9 +4854,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("date")
                         .IsRequired()
@@ -4962,9 +4923,7 @@ namespace AeroService.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -7044,9 +7003,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("created_date")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("hardware_mac")
                         .IsRequired()
@@ -7081,9 +7038,7 @@ namespace AeroService.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("updated_date")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("uuid")
                         .IsRequired()
@@ -7774,6 +7729,18 @@ namespace AeroService.Migrations
                     b.Navigation("module");
                 });
 
+            modelBuilder.Entity("AeroService.Entity.SecretKey", b =>
+                {
+                    b.HasOne("AeroService.Entity.KeyPair", "key_pair")
+                        .WithMany("secrets")
+                        .HasForeignKey("key_uuid")
+                        .HasPrincipalKey("key_uuid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("key_pair");
+                });
+
             modelBuilder.Entity("AeroService.Entity.Sensor", b =>
                 {
                     b.HasOne("AeroService.Entity.Location", "location")
@@ -8034,6 +8001,11 @@ namespace AeroService.Migrations
                         .IsRequired();
 
                     b.Navigation("timezone_intervals");
+                });
+
+            modelBuilder.Entity("AeroService.Entity.KeyPair", b =>
+                {
+                    b.Navigation("secrets");
                 });
 
             modelBuilder.Entity("AeroService.Entity.Location", b =>

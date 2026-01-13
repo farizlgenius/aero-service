@@ -1,19 +1,23 @@
-﻿using AeroService.DTO;
+﻿using AeroService.Data;
+using AeroService.DTO;
 using AeroService.DTO.License;
 using AeroService.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace AeroService.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class LicenseController(ILicenseService service) : ControllerBase
+    public class LicenseController(ILicenseService service,IOptions<AppConfigSettings> options) : ControllerBase
     {
-        [HttpPost("trusted")]
-        public async Task<IActionResult> TrustServerAsync()
+        private readonly AppConfigSettings settings = options.Value;
+
+        [HttpPost("exchange")]
+        public async Task<IActionResult> ExchangeAsync(TrustServerDto dto)
         {
-            var res = await service.TrustServerAsync(dto);
+            var res = await service.ExchangeAsync(dto);
             return Ok(res);
         }
 

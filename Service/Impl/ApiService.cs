@@ -11,7 +11,7 @@ public sealed class ApiService(HttpClient http,IOptions<AppConfigSettings> optio
     private readonly AppConfigSettings settings = options.Value;
     public async Task PostTrustedLicenseServer(string url, TrustServerDto body)
     {
-        var response = await http.PostAsJsonAsync(settings.LicenseUrl,body);
+        var response = await http.PostAsJsonAsync(url,body);
         if (response.IsSuccessStatusCode)
         {
             
