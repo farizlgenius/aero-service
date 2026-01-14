@@ -14,6 +14,13 @@ namespace AeroService.Controllers.V1
     {
         private readonly AppConfigSettings settings = options.Value;
 
+        [HttpGet]
+        public async Task<ActionResult<ResponseDto<bool>>> ChechLicenseAsync()
+        {
+            var res = await service.CheckLicenseAsync();
+            return Ok(res);
+        }
+
         [HttpPost("exchange")]
         public async Task<IActionResult> ExchangeAsync(TrustServerDto dto)
         {
