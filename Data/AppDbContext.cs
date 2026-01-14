@@ -100,37 +100,10 @@ namespace AeroService.Data
         public DbSet<HardwareCredential> hardware_credential { get; set; }
         public DbSet<TransactionFlag> transaction_flag { get; set; }
         public DbSet<TransactionSourceType> transaction_source_type { get; set; }
-        public DbSet<KeyPair> key_pair { get; set; }
-        public DbSet<SecretKey> secrete_key {get; set;}
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Entity.SecretKey>()
-                .Property(e => e.public_key)
-                .HasColumnType("bytea");
-
-            modelBuilder.Entity<Entity.SecretKey>()
-                .Property(e => e.shared_secret)
-                .HasColumnType("bytea");
-
-            modelBuilder.Entity<Entity.KeyPair>()
-                .Property(e => e.public_key)
-                .HasColumnType("bytea");
-
-            modelBuilder.Entity<Entity.KeyPair>()
-                .Property(e => e.secret_key)
-                .HasColumnType("bytea");
-            
-            #region License
-
-            modelBuilder.Entity<KeyPair>()
-                .HasMany(k => k.secrets)
-                .WithOne(s => s.key_pair)
-                .HasForeignKey(s => s.key_uuid)
-                .HasPrincipalKey(k => k.key_uuid);
-
-            #endregion
 
             #region Hardware 
 

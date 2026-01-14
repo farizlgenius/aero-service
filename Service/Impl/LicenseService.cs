@@ -1,4 +1,6 @@
-﻿using AeroService.Data;
+﻿using AeroService.Constant;
+using AeroService.Data;
+using AeroService.Dto.License;
 using AeroService.DTO;
 using AeroService.DTO.License;
 using AeroService.Entity;
@@ -30,20 +32,69 @@ namespace AeroService.Service.Impl
             throw new NotImplementedException();
         }
 
-        public async Task<ResponseDto<bool>> ExchangeAsync(TrustServerDto dto)
+        public async Task<ResponseDto<bool>> InitialSessionAsync()
         {
 
-            // Step 1 : Checking key pair in database
-            var key = await context.key_pair
-            .AsNoTracking()
-            .OrderBy(x => x.key_uuid)
-            .FirstOrDefaultAsync(x => x.is_revoked == false);
+            // Step 1 : Generate Dh and Load Signer from
+            var Dh = EncryptHelper.CreateDh();
+            var pubDh = Dh.ExportSubjectPublicKeyInfo();
 
-            if(key is null) return ResponseHelper.NotFoundBuilder<bool>();
+            // Step 2 : Get Public Sign from file
+            string pubSignFile = Path.Combine(Path.Combine(AppContext.BaseDirectory, "data"), "pub_sign.key");
+            if (!File.Exists(pubSignFile))
+            {
+                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.INTERNAL_ERROR,"Sign public key file not found");
+            }
 
-            var body = new TrustServerDto("","");
+            if(new FileInfo(pubSignFile).Length <= 0)
+            {
+                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.INTERNAL_ERROR, "Sign public key empty");
+            }
 
-            await api.PostTrustedLicenseServer(settings.LicenseServerUrl, body);
+            // Step 3 : Exchange Key with license server
+            var pubSign = await File.ReadAllBytesAsync(pubSignFile);
+
+            var body = new ExchangeRequest(Convert.ToBase64String(pubDh),Convert.ToBase64String(pubSign));
+
+            var response = await api.ExchangeAsync(body);
+            
+            // Step 4 : Calculate License server response
+            var licDhPub = Convert.FromBase64String(response.dhPub);
+            var licSignPub = Convert.FromBase64String(response.signPub);
+            var licSignature = Convert.FromBase64String(response.signature);
+
+            var licVerifyData = EncryptHelper.ExportDhPublicKey(Dh).Concat(licDhPub).ToArray();
+            if (!EncryptHelper.VerifyData(licVerifyData,licSignature,licSignPub))
+            {
+                // Verify fail
+                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.INTERNAL_ERROR,"Exchange key verify data fail");
+            }
+
+            // Step 5 : Get Sign private key for sign data
+            string priSignFile = Path.Combine(Path.Combine(AppContext.BaseDirectory, "data"), "pri_sign.key");
+            if (!File.Exists(priSignFile))
+            {
+                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.INTERNAL_ERROR,"Sign private key file not found");
+            }
+
+            if(new FileInfo(pubSignFile).Length <= 0)
+            {
+                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.INTERNAL_ERROR, "Sign private key empty");
+            }
+
+            var priSign = await File.ReadAllBytesAsync(priSignFile);
+
+            // Step 6 : Create signature for lic server to verify
+            var signData = licDhPub.Concat(pubDh).ToArray();
+            var signer = EncryptHelper.LoadSignerPrivateKey(priSign);
+            var signature = EncryptHelper.SignData(signer,signData);
+
+            // Step 7 : Send back to license server
+            var verifyBody = new VerifyRequest(Convert.ToBase64String(signature)); 
+            var verifyResponse = await api.VerifyAsync(verifyBody);
+
+            if (!verifyResponse) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.INTERNAL_ERROR,"Initial Session Verify signature fail");
+
             return ResponseHelper.SuccessBuilder(true);
         }
 

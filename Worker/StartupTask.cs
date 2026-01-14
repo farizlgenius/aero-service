@@ -28,21 +28,14 @@ public class StartupTask : IHostedService
 
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             // Check for key in specific table
-            string folderPath = Path.Combine(AppContext.BaseDirectory, "encrypt_data");
+            string folderPath = Path.Combine(AppContext.BaseDirectory, "data");
             if (!Directory.Exists(folderPath))
             {
                   Directory.CreateDirectory(folderPath);
             }
 
-            // secret
-            string secFile = Path.Combine(folderPath, "secret");
-            if (!File.Exists(secFile))
-            {
-                  File.Create(secFile).Close(); // Close immediately to release handle
-            }
-
             // public
-            string pubFile = Path.Combine(folderPath, "pub");
+            string pubFile = Path.Combine(folderPath, "pub_sign.key");
             if (!File.Exists(pubFile))
             {
                   File.Create(pubFile).Close(); // Close immediately to release handle
@@ -51,7 +44,7 @@ public class StartupTask : IHostedService
             bool pubContent = new FileInfo(pubFile).Length > 0;
 
             // private
-            string priFile = Path.Combine(folderPath, "pri");
+            string priFile = Path.Combine(folderPath, "pri_sign.key");
             if (!File.Exists(priFile))
             {
                   File.Create(priFile).Close(); // Close immediately to release handle
@@ -62,11 +55,11 @@ public class StartupTask : IHostedService
             // Generate keys if not exist
             if (!pubContent || !priContent)
             {
-                  var (publicKey, privateKey) = EncryptHelper.GenerateEcdhKeyPair();
+                  var signer = EncryptHelper.CreateSigner();
 
                   // Write to files
-                  await File.WriteAllBytesAsync(pubFile, publicKey);
-                  await File.WriteAllBytesAsync(priFile, privateKey);
+                  await File.WriteAllBytesAsync(pubFile, signer.ExportSubjectPublicKeyInfo());
+                  await File.WriteAllBytesAsync(priFile, signer.ExportPkcs8PrivateKey());
             }
       }
 }

@@ -15,19 +15,20 @@ namespace AeroService.Controllers.V1
         private readonly AppConfigSettings settings = options.Value;
 
         [HttpGet]
-        public async Task<ActionResult<ResponseDto<bool>>> ChechLicenseAsync()
+        public async Task<ActionResult<ResponseDto<bool>>> CheckLicenseAsync()
         {
             var res = await service.CheckLicenseAsync();
             return Ok(res);
         }
 
-        [HttpPost("exchange")]
-        public async Task<IActionResult> ExchangeAsync(TrustServerDto dto)
+        [HttpPost("session")]
+        public async Task<ActionResult<ResponseDto<bool>>> InitialSessionAsync()
         {
-            var res = await service.ExchangeAsync(dto);
+            var res = await service.InitialSessionAsync();
             return Ok(res);
         }
 
+       
         [HttpGet("identity")]
         public async Task<ActionResult<ResponseDto<MachineFingerPrintDto>>> GetMachineId()
         {
