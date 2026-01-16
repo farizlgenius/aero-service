@@ -17,6 +17,7 @@ using HID.Aero.ScpdNet.Wrapper;
 using System.Threading.Channels;
 using AeroService.Helpers;
 using AeroService.Worker;
+using StackExchange.Redis;
 
 namespace AeroService
 {
@@ -33,8 +34,18 @@ namespace AeroService
             var audience = jwtCfg["Audience"];
             var accessTokenMinute = int.Parse(jwtCfg["AccessTokenMinutes"] ?? "10");
 
-            // Redis config (StackExchange.Redis connection)
-            var redisConn = builder.Configuration.GetValue<string>("Redis:Configuration") ?? "localhost:6379";
+            // Register redis 
+            builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+            {
+                var configuration = builder.Configuration.GetSection("Redis")["ConnectionString"] ?? "localhost:6379";
+                return ConnectionMultiplexer.Connect(configuration);
+            });
+
+            builder.Services.AddSingleton(sp =>
+            {
+                var mux = sp.GetRequiredService<IConnectionMultiplexer>();
+                return mux.GetDatabase();
+            });
 
             // Bind AppSettings section
             // Bind AppSettings section to AppSettings class

@@ -1,9 +1,11 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using AeroService.Data;
+using Microsoft.Extensions.Options;
 
 namespace AeroService.Helpers
 {
-    public sealed class EncryptHelper
+    public sealed class EncryptHelper()
     {
 
         #region Hash Algrithm
@@ -54,32 +56,6 @@ namespace AeroService.Helpers
             // constant-time comparison to prevent timing attacks
             return CryptographicOperations.FixedTimeEquals(computedHash, storedHashBytes);
         }
-
-        #endregion
-
-        #region ECDH 
-        // Step 1 : Generate ECDH key pair
-        public static (byte[] publicKey, byte[] privateKey) GenerateEcdhKeyPair()
-        {
-            using var ecdh = ECDiffieHellman.Create(ECCurve.NamedCurves.nistP256);
-            var publicKey = ecdh.ExportSubjectPublicKeyInfo();
-            var privateKey = ecdh.ExportPkcs8PrivateKey();
-            return (publicKey, privateKey);
-        }
-
-        // Step 2 : Derive shared secret
-        public static byte[] DeriveSharedSecret(byte[] privateKey, byte[] peerPublicKey)
-        {
-            using var ecdh = ECDiffieHellman.Create();
-            ecdh.ImportPkcs8PrivateKey(privateKey, out _);
-            using var peerEcdh = ECDiffieHellman.Create();
-            peerEcdh.ImportSubjectPublicKeyInfo(peerPublicKey, out _);
-            return ecdh.DeriveKeyMaterial(peerEcdh.PublicKey);
-        }
-
-        #endregion
-
-        #region Symmetric
 
         #endregion
 
@@ -210,6 +186,41 @@ namespace AeroService.Helpers
             aes.Decrypt(iv, cipher, tag, plain);
 
             return plain;
+        }
+
+        /// <summary>
+        /// Derives AES key from shared secret using HKDF.
+        /// </summary>
+        /// <param name="sharedSecret"></param>
+        /// <returns></returns>
+        public static byte[] DeriveAesKey(byte[] sharedSecret,string Info)
+        {
+            return HKDF.DeriveKey(
+                HashAlgorithmName.SHA256,
+                sharedSecret,
+                32,
+                salt: null,
+                info: Encoding.UTF8.GetBytes(Info)
+            );
+        }
+
+        /// <summary>
+        /// Parses the payload into license and signature.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <returns></returns>
+        public static (byte[] license, byte[] signature) ParsePayload(byte[] payload)
+        {
+            using var ms = new MemoryStream(payload);
+            using var br = new BinaryReader(ms);
+
+            int licLen = br.ReadInt32();
+            byte[] license = br.ReadBytes(licLen);
+
+            int sigLen = br.ReadInt32();
+            byte[] sig = br.ReadBytes(sigLen);
+
+            return (license, sig);
         }
 
         #endregion

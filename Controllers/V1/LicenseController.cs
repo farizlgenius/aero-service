@@ -21,20 +21,22 @@ namespace AeroService.Controllers.V1
             return Ok(res);
         }
 
-        [HttpPost("session")]
-        public async Task<ActionResult<ResponseDto<bool>>> InitialSessionAsync()
-        {
-            var res = await service.InitialSessionAsync();
-            return Ok(res);
-        }
-
-       
         [HttpGet("identity")]
         public async Task<ActionResult<ResponseDto<MachineFingerPrintDto>>> GetMachineId()
         {
             var res = await service.GetMachineIdAsync();
             return Ok(res);
         }
+
+        [HttpPost("generate/demo")]
+        public async Task<ActionResult<ResponseDto<bool>>> GenerateDemoLicenseAsync([FromBody] GenerateDemoRequest request)
+        {
+            // TO DO : Implement Demo License Generation
+            var res = await service.GenerateDemoLicenseAsync(request);
+            return Ok(res);
+        }
+       
+        
 
         [HttpPost]
         public async Task<ActionResult<ResponseDto<bool>>> CreateAsync()

@@ -13,25 +13,21 @@ namespace AeroService.Service.Impl;
 public sealed class ApiService(HttpClient http,IOptions<AppConfigSettings> options) : IApiService
 {
     private readonly AppConfigSettings settings = options.Value;
-    public async Task<ExchangeResponse> ExchangeAsync(ExchangeRequest body)
+    public async Task<BaseHttpResponse<ExchangeResponse>> ExchangeAsync(ExchangeRequest body)
     {
-        var response = await http.PostAsJsonAsync(settings.LicenseServerUrl,body);
-        if (response.IsSuccessStatusCode)
-        {
-            var res = await response.Content.ReadFromJsonAsync<BaseHttpResponse<ExchangeResponse>>() ?? new BaseHttpResponse<ExchangeResponse>(HttpStatusCode.InternalServerError,new ExchangeResponse("","",""),new Guid(),ResponseMessage.INTERNAL_ERROR,DateTime.UtcNow.ToLocalTime());
-            return res.payload;
-        }
-        return new ExchangeResponse("","","");
+        var response = await http.PostAsJsonAsync(settings.LicenseServerUrl + settings.ApiEndpoints.Exchange,body);
+        return await response.Content.ReadFromJsonAsync<BaseHttpResponse<ExchangeResponse>>() ?? new BaseHttpResponse<ExchangeResponse>(HttpStatusCode.InternalServerError,null,new Guid(),ResponseMessage.INTERNAL_ERROR,DateTime.UtcNow.ToLocalTime());
     }
 
-    public async Task<bool> VerifyAsync(VerifyRequest body)
+      public async Task<BaseHttpResponse<EncryptedLicense>> GenerateDemoLicenseAsync(GenerateDemoRequest body)
+      {
+            var response = await http.PostAsJsonAsync(settings.LicenseServerUrl + settings.ApiEndpoints.GenerateDemo,body);
+            return await response.Content.ReadFromJsonAsync<BaseHttpResponse<EncryptedLicense>>() ?? new BaseHttpResponse<EncryptedLicense>(HttpStatusCode.InternalServerError,null,new Guid(),ResponseMessage.INTERNAL_ERROR,DateTime.UtcNow.ToLocalTime());
+      }
+
+      public async Task<BaseHttpResponse<bool>> VerifyAsync(VerifyRequest body)
     {
         var response = await http.PostAsJsonAsync(settings.LicenseServerUrl,body);
-        if (response.IsSuccessStatusCode)
-        {
-            var res = await response.Content.ReadFromJsonAsync<BaseHttpResponse<bool>>() ?? new BaseHttpResponse<bool>(HttpStatusCode.InternalServerError,false,new Guid(),ResponseMessage.INTERNAL_ERROR,DateTime.UtcNow.ToLocalTime());
-            return res.payload;
-        }
-        return false;
+        return await response.Content.ReadFromJsonAsync<BaseHttpResponse<bool>>() ?? new BaseHttpResponse<bool>(HttpStatusCode.InternalServerError,false,new Guid(),ResponseMessage.INTERNAL_ERROR,DateTime.UtcNow.ToLocalTime());
     }
 }
