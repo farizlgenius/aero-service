@@ -47,24 +47,24 @@ namespace AeroService.Service.Impl
             string pubSignFile = Path.Combine(Path.Combine(AppContext.BaseDirectory, "data"), "pub_sign.key");
             if (!File.Exists(pubSignFile))
             {
-                return ResponseHelper.UnsuccessBuilder<HandshakeResult>(ResponseMessage.INTERNAL_ERROR, "Sign public key file not found");
+                return ResponseHelper.UnsuccessBuilderWithString<HandshakeResult>(ResponseMessage.INTERNAL_ERROR, "Sign public key file not found");
             }
 
             if (new FileInfo(pubSignFile).Length <= 0)
             {
-                return ResponseHelper.UnsuccessBuilder<HandshakeResult>(ResponseMessage.INTERNAL_ERROR, "Sign public key empty");
+                return ResponseHelper.UnsuccessBuilderWithString<HandshakeResult>(ResponseMessage.INTERNAL_ERROR, "Sign public key empty");
             }
 
             // Step 3 : Get Private Sign from file
             string priSignFile = Path.Combine(Path.Combine(AppContext.BaseDirectory, "data"), "pri_sign.key");
             if (!File.Exists(priSignFile))
             {
-                return ResponseHelper.UnsuccessBuilder<HandshakeResult>(ResponseMessage.INTERNAL_ERROR, "Sign private key file not found");
+                return ResponseHelper.UnsuccessBuilderWithString<HandshakeResult>(ResponseMessage.INTERNAL_ERROR, "Sign private key file not found");
             }
 
             if (new FileInfo(pubSignFile).Length <= 0)
             {
-                return ResponseHelper.UnsuccessBuilder<HandshakeResult>(ResponseMessage.INTERNAL_ERROR, "Sign private key empty");
+                return ResponseHelper.UnsuccessBuilderWithString<HandshakeResult>(ResponseMessage.INTERNAL_ERROR, "Sign private key empty");
             }
 
             // Step 4 : Sign ECDH public key with Sign private key
@@ -79,7 +79,7 @@ namespace AeroService.Service.Impl
 
             var response = await api.ExchangeAsync(body);
 
-            if (response.payload is null) return ResponseHelper.UnsuccessBuilder<HandshakeResult>(ResponseMessage.INTERNAL_ERROR, response.message);
+            if (response.payload is null) return ResponseHelper.UnsuccessBuilderWithString<HandshakeResult>(ResponseMessage.INTERNAL_ERROR, response.message);
 
             // Step 6 : Calculate License server response
             var serverDhPublic = Convert.FromBase64String(response.payload.dhPub);
@@ -90,7 +90,7 @@ namespace AeroService.Service.Impl
             if (!EncryptHelper.VerifyData(licVerifyData, serverSignature, serverSignPublic))
             {
                 // Verify fail
-                return ResponseHelper.UnsuccessBuilder<HandshakeResult>(ResponseMessage.INTERNAL_ERROR, "Exchange key verify data fail");
+                return ResponseHelper.UnsuccessBuilderWithString<HandshakeResult>(ResponseMessage.INTERNAL_ERROR, "Exchange key verify data fail");
             }
 
             // Step 7 : Derive Shared Key
@@ -133,7 +133,7 @@ namespace AeroService.Service.Impl
             var body = new GenerateDemoRequest(request.company, request.customerSite, request.machineId, handshakeRes.data.sessionId);
             var response = await api.GenerateDemoLicenseAsync(body);
 
-            if (response.payload is null) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.INTERNAL_ERROR,response.message);
+            if (response.payload is null) return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.INTERNAL_ERROR,response.message);
 
             // Step 3 : Decrypt License Content
             var decryptedLicense = EncryptHelper.DecryptAes(Convert.FromBase64String(response.payload.Payload), handshakeRes.data.sharedKey);
@@ -144,7 +144,7 @@ namespace AeroService.Service.Impl
             // Step 5 : Verify License Signature
             if (!EncryptHelper.VerifyData(decryptedLicense, licensePayload.signature, Convert.FromBase64String(response.payload.ServerSignPublic)))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.INTERNAL_ERROR, "License signature verify fail");
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.INTERNAL_ERROR, "License signature verify fail");
             }
 
             // Step 6 : Encrypt License Data
@@ -155,7 +155,7 @@ namespace AeroService.Service.Impl
 
             // Step 6 : Save License File
             string folderPath = Path.Combine(AppContext.BaseDirectory, "data/license.lic");
-            await File.WriteAllTextAsync(folderPath, d);
+            await File.WriteAllTextAsync(folderPath, Convert.ToBase64String(d));
 
             return ResponseHelper.SuccessBuilder(true);
         }

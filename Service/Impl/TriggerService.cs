@@ -27,7 +27,7 @@ namespace AeroService.Service.Impl
 
             if(!command.TriggerSpecification(ScpId,en,ComponentId))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C117));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C117));
             }
 
             await context.trigger.AddAsync(en);

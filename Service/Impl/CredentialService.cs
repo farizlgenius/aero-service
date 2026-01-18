@@ -148,7 +148,7 @@ namespace AeroService.Service.Impl
             var ScpId = await helperService.GetIdFromMacAsync(dto.MacAddress);
             if(!command.CardDelete(ScpId,dto.CardNo))
             {
-                ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, "DeleteAsync Card Fail");
+                ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, "DeleteAsync Card Fail");
             }
             return ResponseHelper.SuccessBuilder<bool>(true);
         }

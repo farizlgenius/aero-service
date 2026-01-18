@@ -217,7 +217,7 @@ namespace AeroService.Service.Impl
 
             if (!command.DetachScp(id))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.C015));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.C015));
             }
 
             context.hardware.Remove(entity);
@@ -277,7 +277,7 @@ namespace AeroService.Service.Impl
             if(id == 0) return ResponseHelper.NotFoundBuilder<bool>();
             if (!command.ResetSCP(id))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.C301));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.C301));
             }
             return ResponseHelper.SuccessBuilder(true);
         }
@@ -286,7 +286,7 @@ namespace AeroService.Service.Impl
         {
             if (!command.ResetSCP(id))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C301));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C301));
             }
             return ResponseHelper.SuccessBuilder(true);
         }

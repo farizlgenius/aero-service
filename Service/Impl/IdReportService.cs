@@ -33,7 +33,7 @@ namespace AeroService.Service.Impl
             List<IdReportDto> dtos = new List<IdReportDto>();
             if (!command.GetIdReport(id))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C401));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C401));
             }
             return ResponseHelper.SuccessBuilder(true);
         }

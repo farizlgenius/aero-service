@@ -228,7 +228,7 @@ namespace AeroService.Service.Impl
             int id = await context.hardware.Where(d => d.mac == mac).Select(d => d.component_id).FirstOrDefaultAsync();
             if (!command.GetSioStatus((short)id, Id))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.C404));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.C404));
             }
             return ResponseHelper.SuccessBuilder<bool>(true);
 

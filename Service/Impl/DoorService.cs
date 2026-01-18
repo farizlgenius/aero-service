@@ -626,7 +626,7 @@ namespace AeroService.Service.Impl
             short id = await helperService.GetIdFromMacAsync(mac);
             if(!command.MomentaryUnlock(id,component))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.C311));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.C311));
             }
             return ResponseHelper.SuccessBuilder(true);
         }
@@ -720,7 +720,7 @@ namespace AeroService.Service.Impl
             var ScpId = await helperService.GetIdFromMacAsync(dto.MacAddress);
             if (!command.AcrMode(ScpId, dto.ComponentId, dto.Mode))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(dto.MacAddress,Command.C308));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(dto.MacAddress,Command.C308));
             }
 
             entity.mode = dto.Mode;
@@ -812,7 +812,7 @@ namespace AeroService.Service.Impl
                 reader.component_id = ReaderComponentId;
                 if (!command.ReaderSpecification(ReaderInId, reader.module_id, reader.reader_no, reader.data_format, reader.keypad_mode, readerLedDriveMode, readerInOsdpFlag))
                 {
-                    return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C112));
+                    return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C112));
                 }
             }
 
@@ -824,7 +824,7 @@ namespace AeroService.Service.Impl
             var StrikeId = await helperService.GetIdFromMacAsync(door.strike.module.hardware_mac);
             if (!command.OutputPointSpecification(StrikeId, door.strike.module_id, door.strike.output_no, door.strike.relay_mode))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C111));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C111));
             }
 
             // door sensor Config
@@ -833,7 +833,7 @@ namespace AeroService.Service.Impl
             door.sensor.component_id = SensorComponentId;
             if (!command.InputPointSpecification(SensorId, door.sensor.module_id, door.sensor.input_no, door.sensor.input_mode, door.sensor.debounce, door.sensor.holdtime))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C110));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C110));
             }
 
             foreach (var rex in door.request_exits)
@@ -844,13 +844,13 @@ namespace AeroService.Service.Impl
                 rex.component_id = rexComponentId;
                 if (!command.InputPointSpecification(Rex0Id, rex.module_id, rex.input_no, rex.input_mode, rex.debounce, rex.holdtime))
                 {
-                    return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C110));
+                    return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C110));
                 }
             }
 
             if (!command.AccessControlReaderConfiguration(ScpId, DoorId, door))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C115));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C115));
             }
 
 
@@ -929,7 +929,7 @@ namespace AeroService.Service.Impl
                 var ReaderInId = await helperService.GetIdFromMacAsync(reader.module.hardware_mac);
                 if (!command.ReaderSpecification(ReaderInId, reader.module_id, reader.reader_no, reader.data_format, reader.keypad_mode, readerLedDriveMode, readerInOsdpFlag))
                 {
-                    return ResponseHelper.UnsuccessBuilder<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C112));
+                    return ResponseHelper.UnsuccessBuilderWithString<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C112));
                 }
             }
 
@@ -937,14 +937,14 @@ namespace AeroService.Service.Impl
             var StrkId = await helperService.GetIdFromMacAsync(door.strike.module.hardware_mac);
             if (!command.OutputPointSpecification(StrkId, door.strike.module_id, door.strike.output_no, door.strike.relay_mode))
             {
-                return ResponseHelper.UnsuccessBuilder<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C111));
+                return ResponseHelper.UnsuccessBuilderWithString<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C111));
             }
 
             // door sensor Config
             var SensorId = await helperService.GetIdFromMacAsync(door.sensor.module.hardware_mac);
             if (!command.InputPointSpecification(SensorId, door.sensor.module_id, door.sensor.input_no, door.sensor.input_mode, door.sensor.debounce, door.sensor.holdtime))
             {
-                return ResponseHelper.UnsuccessBuilder<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C110));
+                return ResponseHelper.UnsuccessBuilderWithString<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C110));
             }
 
             foreach (var rex in door.request_exits)
@@ -953,13 +953,13 @@ namespace AeroService.Service.Impl
                 var Rex0Id = await helperService.GetIdFromMacAsync(rex.module.hardware_mac);
                 if (!command.InputPointSpecification(Rex0Id, rex.module_id, rex.input_no, rex.input_mode, rex.debounce, rex.holdtime))
                 {
-                    return ResponseHelper.UnsuccessBuilder<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C110));
+                    return ResponseHelper.UnsuccessBuilderWithString<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C110));
                 }
             }
 
             if (!command.AccessControlReaderConfiguration(ScpId, dto.ComponentId, door))
             {
-                return ResponseHelper.UnsuccessBuilder<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C115));
+                return ResponseHelper.UnsuccessBuilderWithString<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C115));
             }
 
             // DeleteAsync old 
@@ -978,7 +978,7 @@ namespace AeroService.Service.Impl
             short id = await helperService.GetIdFromMacAsync(mac);
             if (!command.GetAcrStatus(id, component, 1))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.C407));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.C407));
             }
             return ResponseHelper.SuccessBuilder(true);
         }
@@ -1002,7 +1002,7 @@ namespace AeroService.Service.Impl
                 case ComponentEnum.AcrServiceMode.AccessControlFlag:
                     return await GetAccessControlFlagAsync();
                 default:
-                    return ResponseHelper.UnsuccessBuilder<IEnumerable<ModeDto>>(ResponseMessage.NOT_FOUND,ResponseMessage.NOT_FOUND);
+                    return ResponseHelper.UnsuccessBuilderWithString<IEnumerable<ModeDto>>(ResponseMessage.NOT_FOUND,ResponseMessage.NOT_FOUND);
             }
 
         }

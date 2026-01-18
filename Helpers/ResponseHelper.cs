@@ -22,9 +22,16 @@ namespace AeroService.Helpers
             };
         }
 
-        public static ResponseDto<T> UnsuccessBuilder<T>(string message, string detail)
+        public static ResponseDto<T> UnsuccessBuilderWithString<T>(string message, string detail)
         {
-            return UnsuccessBuilder<T>(message, new List<string> { detail });
+            return new ResponseDto<T>()
+            {
+                code = HttpStatusCode.InternalServerError,
+                timestamp = DateTime.UtcNow,
+                message = message,
+                details = new List<string> { detail },
+                data = default
+            };
         }
 
         public static ResponseDto<T> UnsuccessBuilder<T>(string message, IEnumerable<string> details)

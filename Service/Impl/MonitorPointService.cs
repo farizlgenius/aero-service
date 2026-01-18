@@ -166,7 +166,7 @@ namespace AeroService.Service.Impl
 
             if (!command.MonitorPointMask((short)scpId, (short)input.component_id, IsMask ? 1 : 0))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C306));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C306));
             }
 
             if (IsMask) input.is_mask = true;
@@ -193,13 +193,13 @@ namespace AeroService.Service.Impl
 
             if (!command.InputPointSpecification(scpId, dto.ModuleId, dto.InputNo, dto.InputMode, dto.Debounce, dto.HoldTime))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C110));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C110));
             }
 
 
             if (!command.MonitorPointConfiguration(scpId, dto.ModuleId, dto.InputNo, dto.LogFunction, dto.MonitorPointMode, dto.DelayEntry, dto.DelayExit, componentId))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C113));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C113));
             }
 
 
@@ -223,7 +223,7 @@ namespace AeroService.Service.Impl
 
             if (!command.MonitorPointConfiguration(scpId,-1, input.input_no, input.log_function, input.monitor_point_mode, input.delay_entry, input.delay_exit, ComponentId))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(input.module.hardware_mac, Command.C113));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(input.module.hardware_mac, Command.C113));
             }
 
             context.monitor_point.Remove(input);
@@ -242,12 +242,12 @@ namespace AeroService.Service.Impl
             var scpId = await helperService.GetIdFromMacAsync(dto.Mac);
             if (!command.InputPointSpecification(scpId, dto.ModuleId, dto.InputNo, dto.InputMode, dto.Debounce, dto.HoldTime))
             {
-                return ResponseHelper.UnsuccessBuilder<MonitorPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C110));
+                return ResponseHelper.UnsuccessBuilderWithString<MonitorPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C110));
             }
 
             if (!command.MonitorPointConfiguration(scpId, dto.ModuleId, dto.InputNo, dto.LogFunction, dto.MonitorPointMode, dto.DelayEntry, dto.DelayExit, dto.ComponentId))
             {
-                return ResponseHelper.UnsuccessBuilder<MonitorPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C113));
+                return ResponseHelper.UnsuccessBuilderWithString<MonitorPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C113));
             }
 
             MapperHelper.UpdateMonitorPoint(input,dto);
@@ -263,7 +263,7 @@ namespace AeroService.Service.Impl
             if(id == 0) return ResponseHelper.NotFoundBuilder<bool>();
             if (!command.GetMpStatus(id, component, 1))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.C405));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.C405));
             }
             return ResponseHelper.SuccessBuilder<bool>(true);
         }

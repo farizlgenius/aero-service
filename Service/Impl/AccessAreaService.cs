@@ -92,7 +92,7 @@ namespace AeroService.Service.Impl
                 var ScpId = await helperService.GetIdFromMacAsync(mac);
                 if (!command.ConfigureAccessArea(ScpId, dto.component_id, dto.MultiOccupancy, dto.AccessControl, dto.OccControl, dto.OccSet, dto.OccMax, dto.OccUp, dto.OccDown, dto.AreaFlag))
                 {
-                    return ResponseHelper.UnsuccessBuilder<AccessAreaDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.C1121));
+                    return ResponseHelper.UnsuccessBuilderWithString<AccessAreaDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.C1121));
                 }
             }
 

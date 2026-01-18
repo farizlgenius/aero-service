@@ -31,7 +31,7 @@ namespace AeroService.Service.Impl
 
             if (!command.ConfigureMonitorPointGroup(ScpId,ComponentId,dto.nMpCount,entity.n_mp_list.ToList()))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C120));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C120));
             }
 
             await context.AddAsync(entity);
@@ -52,7 +52,7 @@ namespace AeroService.Service.Impl
 
             if(!command.ConfigureMonitorPointGroup(ScpId, Component, 0, []))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.C120));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.C120));
             }
 
             context.Remove(en);
@@ -160,7 +160,7 @@ namespace AeroService.Service.Impl
 
             if(!command.MonitorPointGroupArmDisarm(ScpId,dto.ComponentId,dto.Command,dto.Arg))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.MacAddress, Command.C321));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.MacAddress, Command.C321));
             }
 
             return ResponseHelper.SuccessBuilder<bool>(true);
@@ -184,7 +184,7 @@ namespace AeroService.Service.Impl
 
             if (!command.ConfigureMonitorPointGroup(ScpId, dto.ComponentId, dto.nMpCount, en.n_mp_list.ToList()))
             {
-                return ResponseHelper.UnsuccessBuilder<MonitorGroupDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C120));
+                return ResponseHelper.UnsuccessBuilderWithString<MonitorGroupDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C120));
             }
 
 

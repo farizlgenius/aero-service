@@ -5,7 +5,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Platforms>AnyCPU;x64</Platforms>
+    <RuntimeIdentifiers>linux-arm64</RuntimeIdentifiers>
   </PropertyGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.22" />
@@ -36,19 +38,44 @@
     <Folder Include="Worker\" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!-- <ItemGroup>
     <Reference Include="HIDAeroWrap64">
       <HintPath>HIDAeroWrap64.dll</HintPath>
     </Reference>
-  </ItemGroup>
+  </ItemGroup> -->
+
+  <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-arm64'">
+  <Reference Include="HIDAeroWrap64">
+    <HintPath>Libs/Linux/HIDAeroWrap64.dll</HintPath>
+  </Reference>
+
+  <!-- Ensure that the DLL is copied to the output directory -->
+  <None Include="Libs/Linux/HIDAeroWrap64.dll">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <TargetPath>%(Filename)%(Extension)</TargetPath> <!-- Copies the DLL with the same name -->
+  </None>
+
+  <!-- Copy files (without subfolders) -->
+  <None Include="Libs/Linux/**/*.*">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <TargetPath>%(Filename)%(Extension)</TargetPath>
+  </None>
+</ItemGroup>
+
+
+<ItemGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
+  <Reference Include="HIDAeroWrap64">
+    <HintPath>Libs/Windows/HIDAeroWrap64.dll</HintPath>
+  </Reference>
+
+  <None Include="Libs/Windows/**/*.*">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <TargetPath>%(Filename)%(Extension)</TargetPath>
+  </None>
+</ItemGroup>
+
 
   <ItemGroup>
-    <None Update="HIDAeroNet64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="HIDAeroWrap64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="HIDAeroWrapArm64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

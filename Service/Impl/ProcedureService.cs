@@ -43,21 +43,21 @@ namespace AeroService.Service.Impl
                 {
                     if (!command.ActionSpecificationAsyncForAllHW(ComponentId, ac, ids))
                     {
-                        return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
+                        return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
                     }
                 }
                 else if (ac.delay_time != 0) 
                 {
                     if(!command.ActionSpecificationDelayAsync(ComponentId, ac))
                     {
-                        return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
+                        return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
                     }
                 }
             }
 
             if (!command.ActionSpecificationAsync(ComponentId, en.actions.ToList()))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
             }
 
 
@@ -84,7 +84,7 @@ namespace AeroService.Service.Impl
 
             if(!command.ActionSpecificationAsync(ComponentId, [ac]))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
             }
 
             context.procedure.Remove(en);

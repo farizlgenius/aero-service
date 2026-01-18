@@ -117,7 +117,7 @@ namespace AeroService.Service.Impl
             if(id == 0) return ResponseHelper.NotFoundBuilder<bool>();
             if (!command.ControlPointCommand(id, dto.ComponentId, dto.Command))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(dto.macAddress,Command.C307));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(dto.macAddress,Command.C307));
             }
             return ResponseHelper.SuccessBuilder(true);
         }
@@ -175,7 +175,7 @@ namespace AeroService.Service.Impl
 
             if (!command.OutputPointSpecification(scpId, dto.ModuleId, dto.OutputNo, modeNo))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C111));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C111));
             }
 
 
@@ -183,7 +183,7 @@ namespace AeroService.Service.Impl
 
             if (!command.ControlPointConfiguration(scpId, dto.ModuleId, (short)componentId, dto.OutputNo, dto.DefaultPulse))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C114));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C114));
 
             }
 
@@ -206,7 +206,7 @@ namespace AeroService.Service.Impl
 
             if (!command.ControlPointConfiguration(scpId, -1, (short)output.component_id, output.output_no, output.default_pulse))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(output.module.hardware_mac,Command.C114));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(output.module.hardware_mac,Command.C114));
             }
 
             context.control_point.Remove(output);
@@ -225,12 +225,12 @@ namespace AeroService.Service.Impl
             short modeNo = await context.output_mode.AsNoTracking().Where(x => x.offline_mode == dto.OfflineMode && x.relay_mode == dto.RelayMode).Select(x => x.value).FirstOrDefaultAsync();
             if (!command.OutputPointSpecification(scpId, dto.ModuleId, dto.OutputNo, modeNo))
             {
-                return ResponseHelper.UnsuccessBuilder<ControlPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C111));
+                return ResponseHelper.UnsuccessBuilderWithString<ControlPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C111));
             }
 
             if (!command.ControlPointConfiguration(scpId, dto.ModuleId, (short)dto.ComponentId, dto.OutputNo, dto.DefaultPulse))
             {
-                return ResponseHelper.UnsuccessBuilder<ControlPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C114));
+                return ResponseHelper.UnsuccessBuilderWithString<ControlPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C114));
             }
 
 
@@ -246,7 +246,7 @@ namespace AeroService.Service.Impl
             var id = await helperService.GetIdFromMacAsync(mac);
             if (!command.GetCpStatus(id, component, 1))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.C406));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.C406));
             }
             return ResponseHelper.SuccessBuilder(true);
         }
