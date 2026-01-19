@@ -1,0 +1,8 @@
+/home/farizl/Desktop/code/aero-service/obj/Debug/net8.0/AeroService.csproj.AssemblyReference.cache
+/home/farizl/Desktop/code/aero-service/obj/Debug/net8.0/AeroService.GeneratedMSBuildEditorConfig.editorconfig
+/home/farizl/Desktop/code/aero-service/obj/Debug/net8.0/AeroService.AssemblyInfoInputs.cache
+/home/farizl/Desktop/code/aero-service/obj/Debug/net8.0/AeroService.AssemblyInfo.cs
+/home/farizl/Desktop/code/aero-service/obj/Debug/net8.0/AeroService.csproj.CoreCompileInputs.cache
+/home/farizl/Desktop/code/aero-service/obj/Debug/net8.0/AeroService.MvcApplicationPartsAssemblyInfo.cs
+/home/farizl/Desktop/code/aero-service/obj/Debug/net8.0/AeroService.MvcApplicationPartsAssemblyInfo.cache
+/home/farizl/Desktop/code/aero-service/obj/Debug/net8.0/AeroService.sourcelink.json

@@ -49,7 +49,7 @@ namespace AeroService
 
             // Bind AppSettings section
             // Bind AppSettings section to AppSettings class
-            builder.Services.Configure<AppConfigSettings>(
+            builder.Services.Configure<AppSettings>(
                 builder.Configuration.GetSection("AppSettings")
                 );
 

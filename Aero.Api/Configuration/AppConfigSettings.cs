@@ -1,6 +1,8 @@
-﻿namespace AeroService.Data
+﻿using Aero.Domain.Interface;
+
+namespace AeroService.Data
 {
-    public sealed class AppConfigSettings
+    public sealed class AppSettings 
     {
         public string Secret { get; set; } = string.Empty;
         public short MaxCardFormat { get; set; }
@@ -9,7 +11,7 @@
 
     }
 
-    public sealed class ApiEndpoints
+    public sealed class ApiEndpoints 
     {
         public string Exchange { get; set; } = string.Empty;
         public string GenerateDemo { get; set; } = string.Empty;

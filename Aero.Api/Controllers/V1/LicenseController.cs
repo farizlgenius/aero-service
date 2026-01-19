@@ -10,9 +10,9 @@ namespace AeroService.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class LicenseController(ILicenseService service,IOptions<AppConfigSettings> options) : ControllerBase
+    public class LicenseController(ILicenseService service,IOptions<AppSettings> options) : ControllerBase
     {
-        private readonly AppConfigSettings settings = options.Value;
+        private readonly AppSettings settings = options.Value;
 
         [HttpGet]
         public async Task<ActionResult<ResponseDto<bool>>> CheckLicenseAsync()
