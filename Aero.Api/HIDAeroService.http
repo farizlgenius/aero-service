@@ -1,0 +1,6 @@
+@HIDAeroService_HostAddress = http://localhost:5031
+
+GET {{HIDAeroService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
