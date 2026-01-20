@@ -1,4 +1,4 @@
-﻿namespace AeroService.Enums
+﻿namespace Aero.Infrastructure.Enums
 {
     public enum OutputComponents
     {

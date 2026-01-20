@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "/home/farizl/Desktop/code/aero-service/Aero.Data/Aero.Domain.csproj": {}
+    "D:\\Aero\\AeroService\\Aero.Data\\Aero.Domain.csproj": {}
   },
   "projects": {
-    "/home/farizl/Desktop/code/aero-service/Aero.Data/Aero.Domain.csproj": {
+    "D:\\Aero\\AeroService\\Aero.Data\\Aero.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/farizl/Desktop/code/aero-service/Aero.Data/Aero.Domain.csproj",
+        "projectUniqueName": "D:\\Aero\\AeroService\\Aero.Data\\Aero.Domain.csproj",
         "projectName": "Aero.Domain",
-        "projectPath": "/home/farizl/Desktop/code/aero-service/Aero.Data/Aero.Domain.csproj",
-        "packagesPath": "/home/farizl/.nuget/packages/",
-        "outputPath": "/home/farizl/Desktop/code/aero-service/Aero.Data/obj/",
+        "projectPath": "D:\\Aero\\AeroService\\Aero.Data\\Aero.Domain.csproj",
+        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+        "outputPath": "D:\\Aero\\AeroService\\Aero.Data\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/home/farizl/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -32,7 +38,13 @@
           "warnAsError": [
             "NU1605"
           ]
-        }
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -48,12 +60,26 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.23, 8.0.23]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.23, 8.0.23]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.23, 8.0.23]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.122/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

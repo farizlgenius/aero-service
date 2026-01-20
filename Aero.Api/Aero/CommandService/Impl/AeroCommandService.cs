@@ -237,17 +237,6 @@ namespace AeroService.Aero.CommandService
 
         }
 
-        public bool DetachScp(short ScpId)
-        {
-            var _commandValue = (short)enCfgCmnd.enCcDetachScp;
-            CC_ATTACHSCP c = new CC_ATTACHSCP();
-            c.nSCPId = ScpId;
-            c.nChannelId = 0;
-            
-            bool flag = SendCommand(_commandValue, c);
-            return flag;
-        }
-
         public bool ReadStructureStatus(short ScpId)
         {
             CC_STRSRQ cc_strsq = new CC_STRSRQ();
@@ -908,14 +897,6 @@ namespace AeroService.Aero.CommandService
         public short CheckSCPStatus(short scpID)
         {
             return SCPDLL.scpCheckOnline(scpID);
-        }
-
-        public bool ResetSCP(short ScpId)
-        {
-            CC_RESET cc_reset = new CC_RESET();
-            cc_reset.scp_number = ScpId;
-            bool flag = SendCommand((short)enCfgCmnd.enCcReset, cc_reset);
-            return flag;
         }
 
         public bool GetIdReport(short ScpId)

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using AeroService.Service;
 using Microsoft.AspNetCore.Authorization;
 
-namespace AeroService.Controllers.V1
+namespace Aero.Api.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]

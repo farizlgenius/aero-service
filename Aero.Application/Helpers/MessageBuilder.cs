@@ -1,6 +1,6 @@
-﻿using AeroService.Constant;
+﻿using Aero.Application.Constants;
 
-namespace AeroService.Utility
+namespace Aero.Application.Helpers
 {
     public sealed class MessageBuilder
     {

@@ -1,208 +1,37 @@
-﻿using AeroService.DTO.Hardware;
-using HID.Aero.ScpdNet.Wrapper;
-using AeroService.Aero.CommandService;
-using AeroService.Aero.CommandService.Impl;
-using AeroService.AeroLibrary;
-using AeroService.Constant;
-using AeroService.Constants;
-using AeroService.Data;
-using AeroService.DTO;
-using AeroService.DTO.AccessLevel;
-using AeroService.DTO.ControlPoint;
-using AeroService.DTO.Hardware;
-using AeroService.DTO.IdReport;
-using AeroService.DTO.Module;
-using AeroService.DTO.MonitorPoint;
-using AeroService.DTO.Reader;
-using AeroService.DTO.RequestExit;
-using AeroService.DTO.Scp;
-using AeroService.DTO.Sensor;
-using AeroService.DTO.Strike;
-using AeroService.Entity;
-using AeroService.Enums;
+﻿using Aero.Api.Constants;
+using Aero.Application.Constants;
+using Aero.Application.DTOs;
+using Aero.Application.Helpers;
+using Aero.Application.Interface;
+using Aero.Application.Interfaces;
+using Aero.Application.Mapper;
+using Aero.Domain.Interface;
 using AeroService.Helpers;
-using AeroService.Hubs;
-using AeroService.Mapper;
-using AeroService.Utility;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using MiNET.Entities.Passive;
-using System.ComponentModel;
-using System.Net;
-using static AeroService.AeroLibrary.Description;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
 
 namespace AeroService.Service.Impl
 {
-    public class HardwareService(AppDbContext context, AeroCommandService command,ITimeZoneCommandService timeZoneCommandService, IHubContext<AeroHub> hub,ITimeZoneService timeZoneService,ICardFormatService cardFormatService,IAccessLevelService accessLevelService, IHelperService<Hardware> helperService, CommandService cmndService, ICredentialService credentialService) : IHardwareService
+    public class HardwareService(IQueryHardwareRepository query,IHardwareRepository repository,IScpCommand scp) : IHardwareService
     {
 
         #region CRUD 
 
         public async Task<ResponseDto<IEnumerable<HardwareDto>>> GetAsync()
-        {
-            var dtos = await context.hardware
-                .AsNoTracking()
-                .Select(hardware => new HardwareDto
-                {
-                    // Base 
-                    Uuid = hardware.uuid,
-                    ComponentId = hardware.component_id,
-                    Mac = hardware.mac,
-                    LocationId = hardware.location_id,
-                    IsActive = hardware.is_active,
-
-                    // extend_desc
-                    Name = hardware.name,
-                    HardwareType = hardware.hardware_type,
-                    HardwareTypeDescription = hardware.hardware_type_desc,
-                    Firmware = hardware.firmware,
-                    Ip = hardware.ip,
-                    Port = hardware.port,
-                    SerialNumber = hardware.serial_number,
-                    IsReset = hardware.is_reset,
-                    IsUpload = hardware.is_upload,
-                    Modules = hardware.modules.Select(d => new ModuleDto
-                    {
-                        // Base 
-                        Uuid = d.uuid,
-                        ComponentId = d.component_id,
-                        HardwareName = hardware.name,
-                        Mac = hardware.mac,
-                        LocationId = d.location_id,
-                        IsActive = d.is_active,
-
-                        // extend_desc
-                        Model = d.model,
-                        ModelDescription = d.model_desc,
-                        Revision = d.revision,
-                        SerialNumber = d.serial_number,
-                        nHardwareId = d.n_hardware_id,
-                        nHardwareIdDescription = d.n_hardware_id_desc,
-                        nHardwareRev = d.n_hardware_rev,
-                        nProductId = d.n_product_id,
-                        nProductVer = d.n_product_ver,
-                        nEncConfig = d.n_enc_config,
-                        nEncConfigDescription = d.n_enc_config_desc,
-                        nEncKeyStatus = d.n_enc_key_status,
-                        nEncKeyStatusDescription = d.n_enc_key_status_desc,
-                        Readers = null,
-                        Sensors = null,
-                        Strikes = null,
-                        RequestExits = null,
-                        MonitorPoints = null,
-                        ControlPoints = null,
-                        Address = d.address,
-                        Port = d.port,
-                        nInput = d.n_input,
-                        nOutput = d.n_output,
-                        nReader = d.n_reader,
-                        Msp1No = d.msp1_no,
-                        BaudRate = d.baudrate,
-                        nProtocol = d.n_protocol,
-                        nDialect = d.n_dialect,
-                    }).ToList(),
-                    PortOne = hardware.port_one,
-                    ProtocolOne = hardware.protocol_one,
-                    ProtocolOneDescription = hardware.protocol_one_desc,
-                    PortTwo = hardware.port_two,
-                    ProtocolTwoDescription = hardware.protocol_two_desc,
-                    ProtocolTwo = hardware.protocol_two,
-                    BaudRateOne = hardware.baudrate_one,
-                    BaudRateTwo = hardware.baudrate_two,
-
-                })
-                .ToArrayAsync();
-
-            return ResponseHelper.SuccessBuilder<IEnumerable<HardwareDto>>(dtos);
+        {   
+            var res = await query.GetAsync();
+            return ResponseHelper.SuccessBuilder<IEnumerable<HardwareDto>>(res);
         }
 
         public async Task<ResponseDto<IEnumerable<HardwareDto>>> GetByLocationAsync(short location)
         {
-            var dtos = await context.hardware
-                 .AsNoTracking()
-                .Where(s => s.location_id == location)
-                .Select(hardware => new HardwareDto
-                {
-                    // Base 
-                    Uuid = hardware.uuid,
-                    ComponentId = hardware.component_id,
-                    Mac = hardware.mac,
-                    LocationId = hardware.location_id,
-                    IsActive = hardware.is_active,
-
-                    // extend_desc
-                    Name = hardware.name,
-                    HardwareType = hardware.hardware_type,
-                    HardwareTypeDescription = hardware.hardware_type_desc,
-                    Firmware = hardware.firmware,
-                    Ip = hardware.ip,
-                    Port = hardware.port,
-                    SerialNumber = hardware.serial_number,
-                    IsReset = hardware.is_reset,
-                    IsUpload = hardware.is_upload,
-                    Modules = hardware.modules.Select(d => new ModuleDto
-                    {
-                        // Base 
-                        Uuid = d.uuid,
-                        ComponentId = d.component_id,
-                        HardwareName = hardware.name,
-                        Mac = hardware.mac,
-                        LocationId = d.location_id,
-                        IsActive = d.is_active,
-
-                        // extend_desc
-                        Model = d.model,
-                        ModelDescription = d.model_desc,
-                        Revision = d.revision,
-                        SerialNumber = d.serial_number,
-                        nHardwareId = d.n_hardware_id,
-                        nHardwareIdDescription = d.n_hardware_id_desc,
-                        nHardwareRev = d.n_hardware_rev,
-                        nProductId = d.n_product_id,
-                        nProductVer = d.n_product_ver,
-                        nEncConfig = d.n_enc_config,
-                        nEncConfigDescription = d.n_enc_config_desc,
-                        nEncKeyStatus = d.n_enc_key_status,
-                        nEncKeyStatusDescription = d.n_enc_key_status_desc,
-                        Readers = null,
-                        Sensors = null,
-                        Strikes = null,
-                        RequestExits = null,
-                        MonitorPoints = null,
-                        ControlPoints = null,
-                        Address = d.address,
-                        Port = d.port,
-                        nInput = d.n_input,
-                        nOutput = d.n_output,
-                        nReader = d.n_reader,
-                        Msp1No = d.msp1_no,
-                        BaudRate = d.baudrate,
-                        nProtocol = d.n_protocol,
-                        nDialect = d.n_dialect,
-                    }).ToList(),
-                    PortOne = hardware.port_one,
-                    ProtocolOne = hardware.protocol_one,
-                    ProtocolOneDescription = hardware.protocol_one_desc,
-                    PortTwo = hardware.port_two,
-                    ProtocolTwoDescription = hardware.protocol_two_desc,
-                    ProtocolTwo = hardware.protocol_two,
-                    BaudRateOne = hardware.baudrate_one,
-                    BaudRateTwo = hardware.baudrate_two,
-
-                })
-                .ToArrayAsync();
-
-            return ResponseHelper.SuccessBuilder<IEnumerable<HardwareDto>>(dtos);
+            var res = await query.GetByLocationIdAsync(location);
+            return ResponseHelper.SuccessBuilder<IEnumerable<HardwareDto>>(res);
         }
 
         public async Task<ResponseDto<bool>> DeleteAsync(string mac)
         {
             List<string> errors = new List<string>();
-            var entity = await context.hardware.FirstOrDefaultAsync(x => x.mac == mac);
-            if (entity == null) return ResponseHelper.NotFoundBuilder<bool>();
-            var id = await helperService.GetIdFromMacAsync(mac);
+            if (!await query.IsAnyByMac(mac)) return ResponseHelper.NotFoundBuilder<bool>();
+            var id = await query.GetComponentFromMacAsync(mac);
             // CP
 
             // MP
@@ -212,19 +41,18 @@ namespace AeroService.Service.Impl
             // Access Area
 
             // modules Check first 
-            if (await context.hardware.AsNoTracking().Include(x => x.modules).AnyAsync(x => x.modules.Where(x => x.address != -1).Any())) return ResponseHelper.FoundReferenceBuilder<bool>();
+            if (await query.IsAnyModuleReferenceByMacAsync(mac)) return ResponseHelper.FoundReferenceBuilder<bool>();
             
 
-            if (!command.DetachScp(id))
+            if (!scp.DetachScp(id))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.C015));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.DELETE_SCP));
             }
 
-            context.hardware.Remove(entity);
-            await context.SaveChangesAsync();
+            
+            var res = await repository.DeleteByMacAsync(mac);
 
-
-            return ResponseHelper.SuccessBuilder<bool>(true);
+            return ResponseHelper.SuccessBuilder<bool>(res > 0 ? true : false);
 
         }
 
@@ -232,11 +60,6 @@ namespace AeroService.Service.Impl
 
         #region Web Socket
 
-        public void TriggerDeviceStatus(string ScpMac, int CommStatus)
-        {
-            //GetOnlineStatus()
-            var result = hub.Clients.All.SendAsync("CommStatus", ScpMac, CommStatus);
-        }
 
         public void TriggerSyncMemoryAllocate(string mac, List<MemoryAllocateDto> mem)
         {
@@ -265,28 +88,25 @@ namespace AeroService.Service.Impl
 
 
 
-
-
-
-
-        public async Task<ResponseDto<bool>> ResetAsync(string mac)
+        public async Task<ResponseDto<bool>> ResetByMacAsync(string mac)
         {
-            List<string> errors = new List<string>();
-            if (!await context.hardware.AnyAsync(x => x.mac == mac)) return ResponseHelper.NotFoundBuilder<bool>();
-            var id = await helperService.GetIdFromMacAsync(mac);
+            if (!await query.IsAnyByMac(mac)) return ResponseHelper.NotFoundBuilder<bool>();
+            var id = await query.GetComponentFromMacAsync(mac);
             if(id == 0) return ResponseHelper.NotFoundBuilder<bool>();
-            if (!command.ResetSCP(id))
+            if (!scp.ResetScp(id))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.C301));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.RESET_SCP));
             }
             return ResponseHelper.SuccessBuilder(true);
         }
 
-        public async Task<ResponseDto<bool>> ResetAsync(short id)
+        public async Task<ResponseDto<bool>> ResetByComponentAsync(short id)
         {
-            if (!command.ResetSCP(id))
+            string mac = await query.GetMacFromComponentAsync(id);
+            if(string.IsNullOrEmpty(mac)) return ResponseHelper.NotFoundBuilder<bool>();
+            if (!scp.ResetScp(id))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C301));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.RESET_SCP));
             }
             return ResponseHelper.SuccessBuilder(true);
         }

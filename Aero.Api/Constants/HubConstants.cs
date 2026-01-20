@@ -1,4 +1,4 @@
-﻿namespace AeroService.Constants
+﻿namespace Aero.Api.Constants
 {
     public sealed class HubConstants
     {

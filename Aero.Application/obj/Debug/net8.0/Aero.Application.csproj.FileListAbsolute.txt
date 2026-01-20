@@ -1,0 +1,6 @@
+D:\Aero\AeroService\Aero.Application\obj\Debug\net8.0\Aero.Application.csproj.AssemblyReference.cache
+D:\Aero\AeroService\Aero.Application\obj\Debug\net8.0\Aero.Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\Aero\AeroService\Aero.Application\obj\Debug\net8.0\Aero.Application.AssemblyInfoInputs.cache
+D:\Aero\AeroService\Aero.Application\obj\Debug\net8.0\Aero.Application.AssemblyInfo.cs
+D:\Aero\AeroService\Aero.Application\obj\Debug\net8.0\Aero.Application.csproj.CoreCompileInputs.cache
+D:\Aero\AeroService\Aero.Application\obj\Debug\net8.0\Aero.Application.sourcelink.json

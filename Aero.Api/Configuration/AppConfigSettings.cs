@@ -1,6 +1,6 @@
 ﻿using Aero.Domain.Interface;
 
-namespace AeroService.Data
+namespace Aero.Api.Configuration
 {
     public sealed class AppSettings 
     {

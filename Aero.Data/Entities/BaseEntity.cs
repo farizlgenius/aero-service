@@ -5,7 +5,7 @@ namespace Aero.Domain.Entities;
 public class BaseEntity
 {
     private short _componentId;
-    public string Uuid { get; }
+    public string Uuid { get; set; } = string.Empty;
     public short ComponentId { 
         get => _componentId; 
         set
@@ -33,11 +33,6 @@ public class BaseEntity
         }
     }
     public bool IsActive { get; set; }
-
-    public BaseEntity()
-    {   
-        Uuid = Guid.NewGuid().ToString();
-    }
 
 
 }

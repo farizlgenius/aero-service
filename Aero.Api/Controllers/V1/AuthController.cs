@@ -1,15 +1,6 @@
-﻿using AeroService.DTO;
-using AeroService.DTO.Auth;
-using AeroService.DTO.Token;
-using AeroService.Helpers;
-using AeroService.Service;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
+﻿
 
-namespace AeroService.Controllers.V1
+namespace Aero.Api.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]

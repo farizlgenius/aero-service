@@ -1,11 +1,9 @@
-﻿using AeroService.DTO;
-using AeroService.DTO.AccessArea;
-using AeroService.Service;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Asn1.Ocsp;
+﻿
 
-namespace AeroService.Controllers.V1
+using Aero.Application.DTOs;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Aero.Api.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]

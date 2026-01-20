@@ -10,7 +10,7 @@ public sealed class Hardware : BaseEntity
     public string Ip { get; set; } = string.Empty;
     public string Firmware { get; set; } = string.Empty;
     public string Port { get; set; } = string.Empty;
-    public List<Module> Modules { get; set; }
+    public List<Module> Modules { get; set; } = new List<Module>();
     public string SerialNumber { get; set; } = string.Empty;
     public bool IsUpload { get; set; } = false;
     public bool IsReset { get; set; } = false;

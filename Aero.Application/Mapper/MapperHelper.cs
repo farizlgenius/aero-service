@@ -1,4 +1,5 @@
 ﻿using Aero.Application.DTOs;
+using Aero.Domain.Entities;
 
 namespace Aero.Application.Mapper
 {

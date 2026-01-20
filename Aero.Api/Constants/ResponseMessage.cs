@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace AeroService.Constant
+namespace Aero.Api.Constants
 {
     public class ResponseMessage
     {

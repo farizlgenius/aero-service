@@ -8,7 +8,7 @@ using AeroService.DTO;
 using AeroService.DTO.Output;
 using AeroService.DTO.ControlPoint;
 
-namespace AeroService.Controllers.V1
+namespace Aero.Api.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]

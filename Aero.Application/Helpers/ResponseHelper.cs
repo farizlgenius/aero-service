@@ -1,10 +1,8 @@
-﻿using AeroService.Constants;
-using AeroService.Logging;
-using AeroService.Model;
-using AeroService.Utility;
+﻿
+
 using System.Net;
-using AeroService.Constant;
-using AeroService.DTO;
+using Aero.Application.Constants;
+using Aero.Application.DTOs;
 
 namespace AeroService.Helpers
 {
@@ -64,7 +62,7 @@ namespace AeroService.Helpers
             {
                 code = HttpStatusCode.NotFound,
                 timestamp = DateTime.UtcNow,
-                message = ResponseMessage.NOT_FOUND_RECORD,
+                message = ResponseMessage.NOT_FOUND,
                 details = Enumerable.Empty<string>(),
                 data = default
             };
@@ -76,7 +74,7 @@ namespace AeroService.Helpers
             {
                 code = HttpStatusCode.NotFound,
                 timestamp = DateTime.UtcNow,
-                message = ResponseMessage.NOT_FOUND_RECORD,
+                message = ResponseMessage.NOT_FOUND,
                 details=message,
                 data = default
             };
@@ -88,7 +86,7 @@ namespace AeroService.Helpers
             {
                 code = HttpStatusCode.InternalServerError,
                 timestamp = DateTime.UtcNow,
-                message = ResponseMessage.FOUND_RELATE_REFERENCE,
+                message = ResponseMessage.FOUND_REFERENCE,
                 details = Enumerable.Empty<string>(),
                 data = default
             };
@@ -100,7 +98,7 @@ namespace AeroService.Helpers
             {
                 code = HttpStatusCode.InternalServerError,
                 timestamp = DateTime.UtcNow,
-                message = ResponseMessage.FOUND_RELATE_REFERENCE,
+                message = ResponseMessage.FOUND_REFERENCE,
                 details = message,
                 data = default
             };

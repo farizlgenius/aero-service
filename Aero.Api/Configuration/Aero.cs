@@ -2,7 +2,7 @@
 using AeroService.Aero.CommandService.Impl;
 using AeroService.AeroLibrary;
 
-namespace AeroService.Data
+namespace Aero.Api.Configuration
 {
     public sealed class Aero 
     {

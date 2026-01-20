@@ -17,14 +17,13 @@ namespace Aero.Application.Interface
       Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param);
 
        Task<ResponseDto<HardwareDto>> GetByMacAsync(string mac);
-        Task<ResponseDto<bool>> ResetAsync(string mac);
-        Task<ResponseDto<bool>> ResetAsync(short id);
+        Task<ResponseDto<bool>> ResetByMacAsync(string mac);
+        Task<ResponseDto<bool>> ResetByComponentAsync(short id);
         Task<ResponseDto<bool>> UploadComponentConfigurationAsync(string mac);
         Task<ResponseDto<bool>> VerifyMemoryAllocateAsyncWithResponse(string mac);
         Task<bool> VerifyMemoryAllocateAsync(string mac);
         Task<ResponseDto<IEnumerable<VerifyHardwareDeviceConfigDto>>> VerifyComponentConfigurationAsync(string mac);
         Task<ResponseDto<HardwareStatus>> GetStatusAsync(string mac);
-        void TriggerDeviceStatus(string ScpMac, int CommStatus);
         void TriggerIdReport(List<IdReportDto> IdReports);
         void TriggerTranStatus(SCPReplyMessage message);
         Task VerifyAllocateHardwareMemoryAsync(SCPReplyMessage message);

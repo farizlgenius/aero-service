@@ -1,13 +1,11 @@
-﻿using AeroService.Constant;
-using AeroService.Constants;
-using AeroService.DTO;
-using AeroService.Exceptions.Custom;
+﻿using Aero.Api.Constants;
+using Aero.Application.DTOs;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Newtonsoft.Json;
 using System.Net;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace AeroService.Exceptions.Middleware
+namespace Aero.Api.Exceptions.Middleware
 {
     public sealed class ExceptionHandlingMiddleware : IMiddleware
     {

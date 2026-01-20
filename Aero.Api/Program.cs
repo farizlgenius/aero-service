@@ -1,22 +1,12 @@
-using AeroService.AeroLibrary;
-using AeroService.Constants;
-using AeroService.Data;
-using AeroService.Hubs;
-using AeroService.Service.Impl;
-using Microsoft.EntityFrameworkCore;
-using Serilog;
-using AeroService.Exceptions.Middleware;
-using AeroService.Service;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using AeroService.Aero.CommandService;
-using AeroService.Aero.CommandService.Impl;
-using AeroService.Aero;
-using HID.Aero.ScpdNet.Wrapper;
-using System.Threading.Channels;
-using AeroService.Helpers;
-using AeroService.Worker;
+using Aero.Api.Exceptions.Middleware;
+using Aero.Infrastructure.Data;
+using Mapster;
+using MapsterMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using StackExchange.Redis;
 
 namespace AeroService
@@ -94,6 +84,11 @@ namespace AeroService
                     ClockSkew = TimeSpan.FromSeconds(30)
                 };
             });
+
+            // Mapper Service
+            // Register Mapster DI
+            builder.Services.AddMapster();
+            builder.Services.AddScoped<IMapper, ServiceMapper>();
 
             // Http Service
             

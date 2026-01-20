@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.SignalR;
 using System.Collections.Generic;
 using System.Net;
 
-namespace AeroService.Controllers.V1
+namespace Aero.Api.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]

@@ -1,15 +1,10 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
-using AeroService.Data;
-using AeroService.Entity;
-using AeroService.Service;
-using AeroService.DTO;
-using AeroService.DTO.Scp;
-using AeroService.DTO.Hardware;
-using AeroService.DTO.Hardware;
 using Microsoft.AspNetCore.Authorization;
+using Aero.Application.Interface;
+using Aero.Application.DTOs;
 
-namespace AeroService.Controllers.V1
+namespace Aero.Api.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]
@@ -29,7 +24,7 @@ namespace AeroService.Controllers.V1
         [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<HardwareDto>>>> GetByLocationAsync(short location)
         {
-            var res = await service.GetAsync();
+            var res = await service.GetByLocationAsync(location);
             return Ok(res);
         }
 
@@ -87,7 +82,7 @@ namespace AeroService.Controllers.V1
         [Authorize]
         public async Task<ActionResult<ResponseDto<bool>>> ResetByIdAsync(string mac)
         {
-            var res = await service.ResetAsync(mac);
+            var res = await service.ResetByMacAsync(mac);
             return Ok(res);
         }
 
@@ -95,7 +90,7 @@ namespace AeroService.Controllers.V1
         [Authorize]
         public async Task<ActionResult<ResponseDto<bool>>> ResetByIdAsync(short id)
         {
-            var res = await service.ResetAsync(id);
+            var res = await service.ResetByComponentAsync(id);
             return Ok(res);
         }
 

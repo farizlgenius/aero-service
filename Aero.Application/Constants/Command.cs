@@ -1,4 +1,4 @@
-﻿namespace AeroService.Constants
+﻿namespace Aero.Api.Constants
 {
     public sealed class Command
     {
@@ -7,7 +7,7 @@
         public static string C3103 = "command 3103: Extended time Zone Act Specification";
         public static string C1102 = "command 1102: Card Formatter Configuration";
         public static string C208 = "command 208: Detach SCP from Channel";
-        public static string C301 = "command 301: Reset SCP";
+        public static string RESET_SCP = "command 301: Reset SCP";
         public static string C111 = "command 111: Strike Point Specification";
         public static string C114 = "command 114: Control Point Configuration";
         public static string C406 = "command 406: enCcCpSrq";
@@ -39,7 +39,7 @@
         public static string C314 = "command 314: time Zone Control";
         public static string C1107 = "command 1107: SCP Device Specification";
         public static string C1105 = "command 1105: Access Database Specification";
-        public static string C015 = "command 015: Delete SCP";
+        public static string DELETE_SCP = "command 015: Delete SCP";
         public static string C412 = "command 412: enCcAreaSrq";
         public static string C302 = "command 302: time Set";
         public enum CommandFlags

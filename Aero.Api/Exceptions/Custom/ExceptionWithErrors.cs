@@ -1,4 +1,4 @@
-﻿namespace AeroService.Exceptions.Custom
+﻿namespace Aero.Api.Exceptions.Custom
 {
     public class ExceptionWithErrors : Exception
     {
