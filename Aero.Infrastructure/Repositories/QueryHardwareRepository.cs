@@ -352,6 +352,50 @@ public sealed class QueryHardwareRepository(AppDbContext context) : IQueryHardwa
         return res;
     }
 
+    public async Task<ScpSetting> GetScpSettingAsync()
+    {
+        var res = await context.scp_setting
+        .AsNoTracking()
+        .OrderBy(x => x.id)
+        .Select(x => new Aero.Domain.Entities.ScpSetting
+        {
+            nMsp1Port = x.n_msp1_port,
+            nTransaction = x.n_transaction,
+            nSio = x.n_sio,
+            nMp = x.n_mp,
+            nCp = x.n_cp,
+            nAcr = x.n_acr,
+            nAlvl = x.n_alvl,
+            nTrgr = x.n_trgr,
+            nProc = x.n_proc,
+            gmtOffset = x.gmt_offset,
+            nTz = x.n_tz,
+            nHol = x.n_hol,
+            nMpg = x.n_mpg,
+            nCard = x.n_card,
+            nArea = x.n_area,
+        })
+        .FirstOrDefaultAsync();
+
+        return res;
+    }
+
+    public async Task<bool> IsAnyByComponet(short component)
+    {
+        return await context.hardware
+        .AsNoTracking()
+        .Where(x => x.component_id == component)
+        .AnyAsync();
+    }
+
+    public async Task<bool> IsAnyByMac(string mac)
+    {
+        return await context.hardware
+        .AsNoTracking()
+        .Where(x => x.mac.Equals(mac))
+        .AnyAsync();
+    }
+
     public async Task<bool> IsAnyModuleReferenceByMacAsync(string mac)
     {
         return await context.hardware

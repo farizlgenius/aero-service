@@ -10,13 +10,22 @@ using AeroService.Helpers;
 
 namespace AeroService.Service.Impl
 {
-    public class HardwareService(IQueryHardwareRepository query,IHardwareRepository repository,IScpCommand scp) : IHardwareService
+    public class HardwareService(
+        IQueryHardwareRepository query,
+        IHardwareRepository repository,
+        IQueryModuleRepository queryModule,
+        IQueryTimezoneRepository queryTimezone,
+        IScpCommand scp,
+        ISioCommand sio,
+        IMpCommand mp,
+        ITzCommand tz
+        ) : IHardwareService
     {
 
         #region CRUD 
 
         public async Task<ResponseDto<IEnumerable<HardwareDto>>> GetAsync()
-        {   
+        {
             var res = await query.GetAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<HardwareDto>>(res);
         }
@@ -42,47 +51,19 @@ namespace AeroService.Service.Impl
 
             // modules Check first 
             if (await query.IsAnyModuleReferenceByMacAsync(mac)) return ResponseHelper.FoundReferenceBuilder<bool>();
-            
+
 
             if (!scp.DetachScp(id))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.DELETE_SCP));
             }
 
-            
+
             var res = await repository.DeleteByMacAsync(mac);
 
             return ResponseHelper.SuccessBuilder<bool>(res > 0 ? true : false);
 
         }
-
-        #endregion
-
-        #region Web Socket
-
-
-        public void TriggerSyncMemoryAllocate(string mac, List<MemoryAllocateDto> mem)
-        {
-            //GetOnlineStatus()
-            var result = hub.Clients.All.SendAsync("MemoryAllocate", mac, mem);
-        }
-
-        public void TriggerSyncDeviceConfiguration(string mac, short location, List<VerifyHardwareDeviceConfigDto> dev)
-        {
-            var result = hub.Clients.All.SendAsync("DeviceConfiguration", mac, location, dev);
-        }
-
-        public void TriggerUploadMessage(string message, bool isFinish = false)
-        {
-            //GetOnlineStatus()
-            var result = hub.Clients.All.SendAsync("UploadStatus", message, isFinish);
-        }
-
-        public void TriggerIdReport(List<IdReportDto> IdReportDto)
-        {
-            hub.Clients.All.SendAsync("IdReport", IdReportDto);
-        }
-
 
         #endregion
 
@@ -92,10 +73,10 @@ namespace AeroService.Service.Impl
         {
             if (!await query.IsAnyByMac(mac)) return ResponseHelper.NotFoundBuilder<bool>();
             var id = await query.GetComponentFromMacAsync(mac);
-            if(id == 0) return ResponseHelper.NotFoundBuilder<bool>();
+            if (id == 0) return ResponseHelper.NotFoundBuilder<bool>();
             if (!scp.ResetScp(id))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.RESET_SCP));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.RESET_SCP));
             }
             return ResponseHelper.SuccessBuilder(true);
         }
@@ -103,7 +84,7 @@ namespace AeroService.Service.Impl
         public async Task<ResponseDto<bool>> ResetByComponentAsync(short id)
         {
             string mac = await query.GetMacFromComponentAsync(id);
-            if(string.IsNullOrEmpty(mac)) return ResponseHelper.NotFoundBuilder<bool>();
+            if (string.IsNullOrEmpty(mac)) return ResponseHelper.NotFoundBuilder<bool>();
             if (!scp.ResetScp(id))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.RESET_SCP));
@@ -113,47 +94,45 @@ namespace AeroService.Service.Impl
 
         public async Task<bool> VerifyHardwareConnection(short ScpId)
         {
-            var setting = await context.system_setting
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
+            var setting = await query.GetScpSettingAsync();
 
             if (setting is null) return false;
 
-            if (!command.SCPDeviceSpecification(ScpId, setting)) return false;
+            if (!scp.ScpDeviceSpecification(ScpId, setting)) return false;
 
             return true;
         }
 
         public async Task<bool> MappingHardwareAndAllocateMemory(short ScpId)
         {
-            var data = await context.system_setting.AsNoTracking().FirstOrDefaultAsync();
-            if (data is null) return false;
+            var setting = await query.GetScpSettingAsync();
+            if (setting is null) return false;
 
-            if (!command.SCPDeviceSpecification(ScpId, data)) return false;
+            if (!scp.ScpDeviceSpecification(ScpId, setting)) return false;
 
-            if (!command.AccessDatabaseSpecification(ScpId, data)) return false;
+            if (!scp.AccessDatabaseSpecification(ScpId, setting)) return false;
 
-            if (!command.TimeSet(ScpId)) return false;
+            if (!scp.TimeSet(ScpId)) return false;
 
             return true;
         }
 
         public async Task<ResponseDto<bool>> VerifyMemoryAllocateAsyncWithResponse(string Mac)
         {
-            var ScpId = await helperService.GetIdFromMacAsync(Mac);
+            var ScpId = await query.GetComponentFromMacAsync(Mac);
             if (ScpId == 0) return ResponseHelper.NotFoundBuilder<bool>();
-            if (!command.ReadStructureStatus(ScpId))
+            if (!scp.ReadStructureStatus(ScpId))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(Mac, Command.C1853), []); 
+                return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(Mac, Command.SCP_STRUCTURE_STATUS), []);
             }
             return ResponseHelper.SuccessBuilder<bool>(true);
         }
 
         public async Task<bool> VerifyMemoryAllocateAsync(string Mac)
         {
-            var ScpId = await helperService.GetIdFromMacAsync(Mac);
+            var ScpId = await query.GetComponentFromMacAsync(Mac);
             if (ScpId == 0) return false;
-            if (!command.ReadStructureStatus(ScpId))
+            if (!scp.ReadStructureStatus(ScpId))
             {
                 return false;
             }
@@ -164,24 +143,17 @@ namespace AeroService.Service.Impl
         public async Task<ResponseDto<bool>> UploadComponentConfigurationAsync(string mac)
         {
             List<string> errors = new List<string>();
-            short id = await helperService.GetIdFromMacAsync(mac);
-            var entity = await context.hardware
-                .Where(x => x.mac == mac)
-                .OrderBy(x => x.component_id)
-                .FirstOrDefaultAsync();
 
-            if (entity is null) return ResponseHelper.NotFoundBuilder<bool>();
+            if (!await query.IsAnyByMac(mac)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var ScpId = await helperService.GetIdFromMacAsync(mac);
+            var ScpId = await query.GetComponentFromMacAsync(mac);
 
 
             #region Module Upload
 
             // modules
-            var modules = await context.module
-                .AsNoTracking()
-                .Where(x => x.hardware_mac == mac)
-                .ToArrayAsync();
+            var modules = await queryModule.GetByMacAsync(mac);
+
 
             foreach (var module in modules)
             {
@@ -203,16 +175,18 @@ namespace AeroService.Service.Impl
                 //        break;
                 //}
                 // command place here
-                if (!command.SioDriverConfiguration(ScpId, module.msp1_no, module.port, module.baudrate, module.n_protocol))
+                if (!sio.SioDriverConfiguration(ScpId, module.Msp1No, module.Port, module.BaudRate, module.nProtocol))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C108));
-                };
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.SIO_DRIVER));
+                }
+                ;
 
                 // Enums.model.HIDAeroX1100
-                if (!command.SioPanelConfiguration(ScpId, (short)module.component_id, module.model, module.n_input, module.n_output, module.n_reader, module.address, module.msp1_no, true))
+                if (!sio.SioPanelConfiguration(ScpId, module.ComponentId, module.Model, module.nInput, module.nOutput, module.nReader, module.Address, module.Msp1No, true))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C109));
-                };
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.SIO_PANEL_CONFIG));
+                }
+                ;
 
                 //if (!command.SioPanelConfiguration(hardware_id, (short)modules.component_id, modules.model, modules.n_input, modules.n_output, modules.n_reader, modules.address, modules.msp1_no, true))
                 //{
@@ -221,13 +195,13 @@ namespace AeroService.Service.Impl
 
 
                 // Setting Input for Alarm 
-                for (short i = 0; i < module.n_input; i++)
+                for (short i = 0; i < module.nInput; i++)
                 {
-                    if (i + 1 >= module.n_input - 3)
+                    if (i + 1 >= module.nInput - 3)
                     {
-                        if (!command.InputPointSpecification(ScpId, module.component_id, i, 0, 2, 5))
+                        if (!mp.InputPointSpecification(ScpId, module.ComponentId, i, 0, 2, 5))
                         {
-                            errors.Add(MessageBuilder.Unsuccess(mac, Command.C110));
+                            errors.Add(MessageBuilder.Unsuccess(mac, Command.INPUT_SPEC));
                         }
                     }
 
@@ -242,20 +216,15 @@ namespace AeroService.Service.Impl
 
             // Timezone
 
-            var timezones = await context.timezone
-                .AsNoTracking()
-                .Include(x => x.timezone_intervals)
-                .ThenInclude(x => x.interval)
-                .ThenInclude(x => x.days)
-                .ToArrayAsync();
+            var timezones = await queryTimezone.GetAsync();
 
             var intervals = timezones
-                .SelectMany(x => x.timezone_intervals.Select(x => x.interval))
+                .Select(x => x.Intervals)
                 .ToList();
 
-            foreach (var tz in timezones)
+            foreach (var t in timezones)
             {
-                if (!await timeZoneCommandService.ExtendedTimeZoneActSpecificationAsync(ScpId, tz, intervals, !string.IsNullOrEmpty(tz.active_time) ? (int)helperService.DateTimeToElapeSecond(tz.active_time) : 0, !string.IsNullOrEmpty(tz.deactive_time) ? (int)helperService.DateTimeToElapeSecond(tz.deactive_time) : 0))
+                if (!await tz.ExtendedTimeZoneActSpecificationAsync(ScpId, t, intervals, !string.IsNullOrEmpty(t.ActiveTime) ? (int)UtilitiesHelper.DateTimeToElapeSecond(t.ActiveTime) : 0, !string.IsNullOrEmpty(t.DeactiveTime) ? (int)UtilitiesHelper.DateTimeToElapeSecond(t.DeactiveTime) : 0))
                 {
                     errors.Add(MessageBuilder.Unsuccess(mac, Command.C3103));
                 }
@@ -286,7 +255,8 @@ namespace AeroService.Service.Impl
                     if (!command.AccessLevelConfigurationExtended(ScpId, a.component_id, a.component_id == 1 ? (short)0 : (short)1))
                     {
                         errors.Add(MessageBuilder.Unsuccess(mac, Command.C2116));
-                    };
+                    }
+                    ;
                 }
                 else
                 {
@@ -311,7 +281,8 @@ namespace AeroService.Service.Impl
                 if (!command.CardFormatterConfiguration(ScpId, format.component_id, format.facility, 0, 1, 0, format.bits, format.pe_ln, format.pe_loc, format.po_ln, format.po_loc, format.fc_ln, format.fc_loc, format.ch_ln, format.ch_loc, format.ic_ln, format.ic_loc))
                 {
                     errors.Add(MessageBuilder.Unsuccess(mac, Command.C1102));
-                };
+                }
+                ;
             }
 
             #endregion
@@ -362,7 +333,7 @@ namespace AeroService.Service.Impl
                 // command place here
                 if (!command.InputPointSpecification(ScpId, mp.module_id, mp.input_no, mp.input_mode, mp.debounce, mp.holdtime))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C110));
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.INPUT_SPEC));
                 }
 
 
@@ -436,7 +407,7 @@ namespace AeroService.Service.Impl
                     var ReaderInId = await helperService.GetIdFromMacAsync(reader.module.hardware_mac);
                     if (!command.ReaderSpecification(ReaderInId, reader.module_id, reader.reader_no, reader.data_format, reader.keypad_mode, readerLedDriveMode, readerInOsdpFlag))
                     {
-                        errors.Add(MessageBuilder.Unsuccess(mac,Command.C112));
+                        errors.Add(MessageBuilder.Unsuccess(mac, Command.C112));
                     }
                 }
 
@@ -447,13 +418,14 @@ namespace AeroService.Service.Impl
                 if (!command.OutputPointSpecification(StrikeId, door.strike.module_id, door.strike.output_no, door.strike.relay_mode))
                 {
                     errors.Add(MessageBuilder.Unsuccess(mac, Command.C111));
-                };
+                }
+                ;
 
                 // door sensor Config
                 var SensorId = await helperService.GetIdFromMacAsync(door.sensor.module.hardware_mac);
                 if (!command.InputPointSpecification(SensorId, door.sensor.module_id, door.sensor.input_no, door.sensor.input_mode, door.sensor.debounce, door.sensor.holdtime))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C110));
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.INPUT_SPEC));
                 }
 
                 foreach (var rex in door.request_exits)
@@ -464,13 +436,13 @@ namespace AeroService.Service.Impl
                     rex.component_id = rexComponentId;
                     if (!command.InputPointSpecification(Rex0Id, rex.module_id, rex.input_no, rex.input_mode, rex.debounce, rex.holdtime))
                     {
-                        errors.Add(MessageBuilder.Unsuccess(mac, Command.C110));
+                        errors.Add(MessageBuilder.Unsuccess(mac, Command.INPUT_SPEC));
                     }
                 }
 
                 if (!command.AccessControlReaderConfiguration(ScpId, door.component_id, door))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(mac,Command.C115));
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C115));
                 }
 
             }
@@ -486,7 +458,7 @@ namespace AeroService.Service.Impl
                 .ThenInclude(x => x.access_level)
                 .ToArrayAsync();
 
-            foreach(var card in cards)
+            foreach (var card in cards)
             {
                 var ScpIds = await context.hardware.Select(x => new { x.component_id, x.mac }).ToArrayAsync();
                 foreach (var cred in card.credentials)
@@ -530,7 +502,7 @@ namespace AeroService.Service.Impl
 
             #endregion
 
-            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, errors);
 
             entity.updated_date = DateTime.UtcNow;
             entity.last_sync = DateTime.UtcNow;
@@ -542,7 +514,7 @@ namespace AeroService.Service.Impl
         }
 
 
-      
+
         public async Task VerifyAllocateHardwareMemoryAsync(SCPReplyMessage message)
         {
             List<MemoryAllocateDto> mems = new List<MemoryAllocateDto>();
@@ -555,7 +527,7 @@ namespace AeroService.Service.Impl
 
             var config = await context.system_setting.AsNoTracking().FirstOrDefaultAsync();
 
-            if(config is null) return;
+            if (config is null) return;
 
             foreach (var i in message.str_sts.sStrSpec)
             {
@@ -571,7 +543,7 @@ namespace AeroService.Service.Impl
                             nRecSize = i.nRecSize,
                             nActive = i.nActive,
                             nSwAlloc = config.n_transaction,
-                            nSwRecord= await context.transaction.AsNoTracking().CountAsync(),
+                            nSwRecord = await context.transaction.AsNoTracking().CountAsync(),
                             IsSync = config.n_transaction > i.nRecords,
                         });
                         break;
@@ -842,7 +814,7 @@ namespace AeroService.Service.Impl
                             nActive = i.nActive,
                             nSwAlloc = 0,
                             nSwRecord = 0,
-                            IsSync=true
+                            IsSync = true
                         });
                         break;
 
@@ -857,7 +829,7 @@ namespace AeroService.Service.Impl
                             nActive = i.nActive,
                             nSwAlloc = 0,
                             nSwRecord = 0,
-                            IsSync=true
+                            IsSync = true
                         });
                         break;
 
@@ -932,7 +904,7 @@ namespace AeroService.Service.Impl
 
             // Check mismatch device configuration
             //await VerifyDeviceConfigurationAsync(hw.mac,hw.location_id);
-            TriggerSyncMemoryAllocate(hw.mac,mems);
+            TriggerSyncMemoryAllocate(hw.mac, mems);
         }
 
 
@@ -1204,7 +1176,7 @@ namespace AeroService.Service.Impl
 
         public async Task AssignPort(SCPReplyMessage message)
         {
-            if(!string.IsNullOrEmpty(await helperService.GetMacFromIdAsync((short)message.SCPId)))
+            if (!string.IsNullOrEmpty(await helperService.GetMacFromIdAsync((short)message.SCPId)))
             {
                 var hw = context.hardware
                     .Where(x => x.component_id == message.SCPId)
@@ -1215,15 +1187,16 @@ namespace AeroService.Service.Impl
 
                 if (message.web_host_comm_prim is not null)
                 {
-                    if(message.web_host_comm_prim.ipclient is not null)
+                    if (message.web_host_comm_prim.ipclient is not null)
                     {
                         hw.port = message.web_host_comm_prim.ipclient.nPort.ToString();
                     }
-                    else if(message.web_host_comm_prim.ipserver is not null)
+                    else if (message.web_host_comm_prim.ipserver is not null)
                     {
                         hw.port = message.web_host_comm_prim.ipserver.nPort.ToString();
                     }
-                };
+                }
+                ;
 
                 context.hardware.Update(hw);
                 await context.SaveChangesAsync();
@@ -1255,7 +1228,8 @@ namespace AeroService.Service.Impl
                     {
                         report.port = message.web_host_comm_prim.ipserver.nPort.ToString();
                     }
-                };
+                }
+                ;
 
                 context.id_report.Update(report);
                 await context.SaveChangesAsync();
@@ -1268,7 +1242,7 @@ namespace AeroService.Service.Impl
                 TriggerIdReport(dto);
             }
 
-            
+
         }
 
         // Function for handle Detect IdReport
@@ -1318,16 +1292,16 @@ namespace AeroService.Service.Impl
             {
                 if (!await VerifyHardwareConnection(message.id.scp_id)) return;
 
-                
 
-                if(await context.id_report.AnyAsync(x => x.scp_id == message.id.scp_id && x.mac.Equals(UtilityHelper.ByteToHexStr(message.id.mac_addr))))
+
+                if (await context.id_report.AnyAsync(x => x.scp_id == message.id.scp_id && x.mac.Equals(UtilityHelper.ByteToHexStr(message.id.mac_addr))))
                 {
                     var iDReport = await context.id_report
                         .Where(x => x.scp_id == message.id.scp_id && x.mac.Equals(UtilityHelper.ByteToHexStr(message.id.mac_addr)))
                         .OrderBy(x => x.id)
                         .FirstOrDefaultAsync();
 
-                    if(iDReport is null) return;
+                    if (iDReport is null) return;
                     iDReport.device_id = message.id.device_id;
                     iDReport.device_ver = message.id.device_ver;
                     iDReport.software_rev_major = message.id.sft_rev_major;
@@ -1388,8 +1362,8 @@ namespace AeroService.Service.Impl
                     iDReport.ip = "";
                     await context.id_report.AddAsync(iDReport);
                 }
-                
-                
+
+
                 await context.SaveChangesAsync();
 
 
@@ -1397,7 +1371,7 @@ namespace AeroService.Service.Impl
 
 
             }
- 
+
         }
 
 
@@ -1405,7 +1379,7 @@ namespace AeroService.Service.Impl
 
         public async Task<ResponseDto<bool>> CreateAsync(CreateHardwareDto dto)
         {
-            var hardware = MapperHelper.CreateToHardware(dto,DateTime.UtcNow);
+            var hardware = MapperHelper.CreateToHardware(dto, DateTime.UtcNow);
 
             if (!await VerifyMemoryAllocateAsync(hardware.mac))
             {
@@ -1432,19 +1406,20 @@ namespace AeroService.Service.Impl
             {
                 if (!command.SioDriverConfiguration(dto.ComponentId, 1, 1, dto.BaudRateOne, dto.ProtocolOne))
                 {
-                    return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(dto.Mac, Command.C108), []);
-                };
+                    return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(dto.Mac, Command.SIO_DRIVER), []);
+                }
+                ;
 
                 // Send command for address 0-15 on port 1 if allow
-                for(int i = 0;i < 16; i++)
+                for (int i = 0; i < 16; i++)
                 {
                     // model = -1 for allow every model
                     // n_input = 19 Maximum
                     // n_output = 12 Maximum
                     // n_reader = 4 Maximum
-                    if (!command.SioPanelConfiguration(dto.ComponentId,(short)i,-1,19,12,4,(short)i,1,true))
+                    if (!command.SioPanelConfiguration(dto.ComponentId, (short)i, -1, 19, 12, 4, (short)i, 1, true))
                     {
-                        return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(dto.Mac, Command.C109), []);
+                        return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(dto.Mac, Command.SIO_PANEL_CONFIG), []);
                     }
                 }
             }
@@ -1453,8 +1428,9 @@ namespace AeroService.Service.Impl
             {
                 if (!command.SioDriverConfiguration(dto.ComponentId, 2, 2, dto.BaudRateTwo, dto.ProtocolTwo))
                 {
-                    return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(dto.Mac, Command.C108), []);
-                };
+                    return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(dto.Mac, Command.SIO_DRIVER), []);
+                }
+                ;
 
                 // Send command for address 16-31 on port 2 if allow
                 for (int i = 15; i < 31; i++)
@@ -1462,7 +1438,7 @@ namespace AeroService.Service.Impl
                     // model = -1 for allow every model
                     if (!command.SioPanelConfiguration(dto.ComponentId, (short)i, -1, 19, 12, 4, (short)i, 1, true))
                     {
-                        return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(dto.Mac, Command.C109), []);
+                        return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(dto.Mac, Command.SIO_PANEL_CONFIG), []);
                     }
                 }
             }
@@ -1477,7 +1453,7 @@ namespace AeroService.Service.Impl
             await context.hardware.AddAsync(hardware);
             await context.SaveChangesAsync();
 
-           
+
 
             context.id_report.Remove(report);
             await context.SaveChangesAsync();
@@ -1507,7 +1483,7 @@ namespace AeroService.Service.Impl
         public async Task<ResponseDto<HardwareStatus>> GetStatusAsync(string mac)
         {
             var ScpId = await helperService.GetIdFromMacAsync(mac);
-            if(ScpId == 0) return ResponseHelper.NotFoundBuilder<HardwareStatus>();
+            if (ScpId == 0) return ResponseHelper.NotFoundBuilder<HardwareStatus>();
             if (!await context.hardware.AsNoTracking().AnyAsync(x => x.mac == mac && x.component_id == ScpId)) return ResponseHelper.NotFoundBuilder<HardwareStatus>();
             short status = command.CheckSCPStatus(ScpId);
             return ResponseHelper.SuccessBuilder(new HardwareStatus()
@@ -1603,13 +1579,13 @@ namespace AeroService.Service.Impl
             return ResponseHelper.SuccessBuilder(dto);
         }
 
-        public async Task<ResponseDto<bool>> SetTransactionAsync(string mac,short IsOn)
+        public async Task<ResponseDto<bool>> SetTransactionAsync(string mac, short IsOn)
         {
             var ScpId = await helperService.GetIdFromMacAsync(mac);
             if (ScpId == 0) return ResponseHelper.NotFoundBuilder<bool>();
-            if (!command.SetTransactionLogIndex(ScpId,IsOn == 1 ? true : false))
+            if (!command.SetTransactionLogIndex(ScpId, IsOn == 1 ? true : false))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(mac,Command.C303),[]);
+                return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(mac, Command.C303), []);
             }
             return ResponseHelper.SuccessBuilder(true);
         }
@@ -1619,9 +1595,9 @@ namespace AeroService.Service.Impl
             var id = await helperService.GetIdFromMacAsync(mac);
             if (id == 0) return ResponseHelper.NotFoundBuilder<bool>();
 
-            if(!command.GetTransactionLogStatus(id))
+            if (!command.GetTransactionLogStatus(id))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(mac,Command.C402),[]);
+                return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(mac, Command.C402), []);
             }
 
             return ResponseHelper.SuccessBuilder(true);
@@ -1640,14 +1616,14 @@ namespace AeroService.Service.Impl
                 Status = message.tran_sts.disabled == 0 ? "Enable" : "Disable"
 
             };
-            await hub.Clients.All.SendAsync("TranStatus",tran);
+            await hub.Clients.All.SendAsync("TranStatus", tran);
         }
 
         public async Task<ResponseDto<IEnumerable<ModeDto>>> GetHardwareTypeAsync()
         {
             var dtos = await context.hardware_type
                 .AsNoTracking()
-                .Select(x => new ModeDto 
+                .Select(x => new ModeDto
                 {
                     Name = x.name,
                     Value = x.component_id,
@@ -1665,7 +1641,7 @@ namespace AeroService.Service.Impl
                 .OrderBy(x => x.id)
                 .FirstOrDefaultAsync();
 
-            if(report is null) return await context.id_report
+            if (report is null) return await context.id_report
                     .AsNoTracking()
                     .Select(x => MapperHelper.IdReportToDto(x))
                     .ToArrayAsync();
@@ -1685,7 +1661,7 @@ namespace AeroService.Service.Impl
             List<ResponseDto<bool>> data = new List<ResponseDto<bool>>();
             foreach (var dto in dtos)
             {
-                var re = await SetTransactionAsync(dto.MacAddress,dto.Param);
+                var re = await SetTransactionAsync(dto.MacAddress, dto.Param);
                 if (re.code != HttpStatusCode.OK) flag = false;
                 data.Add(re);
             }

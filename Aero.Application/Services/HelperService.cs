@@ -1,35 +1,13 @@
-﻿using AeroService.Data;
-using AeroService.Entity.Interface;
-using AeroService.Model;
-using LibNoise.Combiner;
-using Microsoft.EntityFrameworkCore;
+﻿using Aero.Application.Interfaces;
+
 using System.Globalization;
 
 namespace AeroService.Service.Impl
 {
-    public sealed class HelperService<TEntity>(AppDbContext context) : IHelperService<TEntity>
+    public sealed class HelperService : IHelper
     {
 
 
-        public async Task<string> GetMacFromIdAsync(short id)
-        {
-            return await context.hardware.Where(d => d.component_id == id).Select(d => d.mac).FirstOrDefaultAsync() ?? "";
-        }
-
-
-        public async Task<short> GetIdFromMacAsync(string mac)
-        {
-            return await context.hardware.Where(d => d.mac == mac).Select(d => (short)d.component_id).FirstOrDefaultAsync();
-        }
-
-        public long DateTimeToElapeSecond(string date)
-        {
-            if (date.Equals("") || date.Equals(null)) return 0;
-
-            DateTimeOffset dto = DateTimeOffset.Parse(date);
-
-            return dto.ToUnixTimeSeconds();
-        }
 
         public short GetIdFromMac(string mac)
         {
@@ -41,7 +19,7 @@ namespace AeroService.Service.Impl
             return context.hardware.Where(x => x.component_id == id).Select(x => x.mac).FirstOrDefault() ?? "";
         }
 
-        public async Task<short> GetLowestUnassignedNumberAsync<TEntity>(DbContext db,string hardwareMac,int max, CancellationToken ct) where TEntity : class,IComponentId,IMac
+        public async Task<short> GetLowestUnassignedNumberAsync<TEntity>(DbContext db, string hardwareMac, int max, CancellationToken ct) where TEntity : class, IComponentId, IMac
         {
             if (max <= 0) return -1;
 
@@ -101,7 +79,7 @@ namespace AeroService.Service.Impl
             return expected;
         }
 
-        public async Task<short> GetLowestUnassignedNumberNoLimitAsync<Entity>(DbContext db,CancellationToken ct) where Entity : class,IComponentId
+        public async Task<short> GetLowestUnassignedNumberNoLimitAsync<Entity>(DbContext db, CancellationToken ct) where Entity : class, IComponentId
         {
 
             var query = db.Set<Entity>()
@@ -134,7 +112,7 @@ namespace AeroService.Service.Impl
         }
     }
 
-    public class HelperService(AppDbContext context) : IHelperService
+    public class HelperService(AppDbContext context) : IHelper
     {
 
 

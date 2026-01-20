@@ -28,7 +28,7 @@ namespace Aero.Application.Mapper
         #region Hardware
 
 
-        public static Hardware CreateToHardware(CreateHardwareDto dto,DateTime Created)
+        public static Hardware CreateToHardware(CreateHardwareDto dto, DateTime Created)
         {
             return new Hardware
             {
@@ -90,7 +90,7 @@ namespace Aero.Application.Mapper
             };
         }
 
-        public static void UpdateHardware(Hardware hw,HardwareDto dto) 
+        public static void UpdateHardware(Hardware hw, HardwareDto dto)
         {
             // Base 
             hw.mac = dto.Mac;
@@ -118,16 +118,16 @@ namespace Aero.Application.Mapper
 
         #region Module
 
-       
-       
+
+
 
         #endregion
 
         #region MonitorPoint
 
-       
 
-        public static MonitorPoint DtoToMonitorPoint(MonitorPointDto dto,short ComponentId,DateTime Create) 
+
+        public static MonitorPoint DtoToMonitorPoint(MonitorPointDto dto, short ComponentId, DateTime Create)
         {
             return new MonitorPoint
             {
@@ -156,7 +156,7 @@ namespace Aero.Application.Mapper
             };
         }
 
-        public static void UpdateMonitorPoint(MonitorPoint input,MonitorPointDto dto)
+        public static void UpdateMonitorPoint(MonitorPoint input, MonitorPointDto dto)
         {
 
             // Base
@@ -185,7 +185,7 @@ namespace Aero.Application.Mapper
 
         #region Monitor Group
 
-        public static MonitorGroup DtoToMonitorGroup(MonitorGroupDto dto,short ComponentId,DateTime Create)
+        public static MonitorGroup DtoToMonitorGroup(MonitorGroupDto dto, short ComponentId, DateTime Create)
         {
             return new MonitorGroup
             {
@@ -200,11 +200,11 @@ namespace Aero.Application.Mapper
                 // Detail
                 name = dto.Name,
                 n_mp_count = dto.nMpCount,
-                n_mp_list = dto.nMpList.Select(x => DtoToMonitorGroupList(x,ComponentId)).ToList()
+                n_mp_list = dto.nMpList.Select(x => DtoToMonitorGroupList(x, ComponentId)).ToList()
             };
         }
 
-        public static MonitorGroupList DtoToMonitorGroupList(MonitorGroupListDto dto,short MonitorGroupId)
+        public static MonitorGroupList DtoToMonitorGroupList(MonitorGroupListDto dto, short MonitorGroupId)
         {
             return new MonitorGroupList
             {
@@ -215,7 +215,7 @@ namespace Aero.Application.Mapper
             };
         }
 
-        public static void UpdateMonitorGroup(MonitorGroup en,MonitorGroupDto dto)
+        public static void UpdateMonitorGroup(MonitorGroup en, MonitorGroupDto dto)
         {
             // Base 
             en.location_id = dto.LocationId;
@@ -224,7 +224,7 @@ namespace Aero.Application.Mapper
             // Detail
             en.name = dto.Name;
             en.n_mp_count = dto.nMpCount;
-            en.n_mp_list = dto.nMpList.Select(x => DtoToMonitorGroupList(x,dto.ComponentId)).ToList();
+            en.n_mp_list = dto.nMpList.Select(x => DtoToMonitorGroupList(x, dto.ComponentId)).ToList();
         }
 
         #endregion
@@ -232,7 +232,7 @@ namespace Aero.Application.Mapper
         #region ControlPoint
 
 
-        public static ControlPoint DtoToControlPoint(ControlPointDto dto,short ComponentId,DateTime Create)
+        public static ControlPoint DtoToControlPoint(ControlPointDto dto, short ComponentId, DateTime Create)
         {
             return new ControlPoint
             {
@@ -257,7 +257,7 @@ namespace Aero.Application.Mapper
 
         }
 
-        public static void UpdateControlPoint(ControlPoint output,ControlPointDto dto)
+        public static void UpdateControlPoint(ControlPoint output, ControlPointDto dto)
         {
 
             // Base
@@ -283,7 +283,7 @@ namespace Aero.Application.Mapper
 
 
 
-        public static Reader DtoToReader(ReaderDto dto,DateTime Create) 
+        public static Reader DtoToReader(ReaderDto dto, DateTime Create)
         {
             return new Reader
             {
@@ -299,17 +299,17 @@ namespace Aero.Application.Mapper
                 reader_no = dto.ReaderNo,
                 data_format = dto.DataFormat,
                 keypad_mode = dto.KeypadMode,
-                led_drive_mode= dto.LedDriveMode,
+                led_drive_mode = dto.LedDriveMode,
                 osdp_flag = dto.OsdpFlag,
                 osdp_address = dto.OsdpAddress,
-                osdp_baudrate= dto.OsdpBaudrate,
-                osdp_discover= dto.OsdpDiscover,
-                osdp_secure_channel= dto.OsdpSecureChannel,
-                osdp_tracing= dto.OsdpTracing,
+                osdp_baudrate = dto.OsdpBaudrate,
+                osdp_discover = dto.OsdpDiscover,
+                osdp_secure_channel = dto.OsdpSecureChannel,
+                osdp_tracing = dto.OsdpTracing,
             };
         }
 
-        public static void UpdateReader(Reader reader,ReaderDto dto) 
+        public static void UpdateReader(Reader reader, ReaderDto dto)
         {
             // Base
             reader.location_id = dto.LocationId;
@@ -335,25 +335,25 @@ namespace Aero.Application.Mapper
         #region Strike
 
 
-        public static Strike DtotoStrike(StrikeDto dto,DateTime Create)
+        public static Strike DtotoStrike(StrikeDto dto, DateTime Create)
         {
             return new Strike
             {
                 // Base
-                component_id= dto.ComponentId,
-                location_id= dto.LocationId,
+                component_id = dto.ComponentId,
+                location_id = dto.LocationId,
                 is_active = dto.IsActive,
                 created_date = Create,
                 updated_date = Create,
 
                 // extend_desc
-                module_id= dto.ModuleId,
-                output_no= dto.OutputNo,
-                relay_mode= dto.RelayMode,
-                offline_mode= dto.OfflineMode,
-                strike_max= dto.StrkMax,
-                strike_min= dto.StrkMin,
-                strike_mode= dto.StrkMode,
+                module_id = dto.ModuleId,
+                output_no = dto.OutputNo,
+                relay_mode = dto.RelayMode,
+                offline_mode = dto.OfflineMode,
+                strike_max = dto.StrkMax,
+                strike_min = dto.StrkMin,
+                strike_mode = dto.StrkMode,
             };
         }
 
@@ -362,24 +362,24 @@ namespace Aero.Application.Mapper
         #region RequestExit
 
 
-        public static RequestExit DtoToRequestExit(RequestExitDto dto,DateTime Create) 
+        public static RequestExit DtoToRequestExit(RequestExitDto dto, DateTime Create)
         {
             return new RequestExit
             {
                 // Base 
-                component_id= dto.ComponentId,
-                location_id= dto.LocationId,
-                is_active= dto.IsActive,
+                component_id = dto.ComponentId,
+                location_id = dto.LocationId,
+                is_active = dto.IsActive,
                 updated_date = Create,
                 created_date = Create,
 
                 // extend_desc
                 module_id = dto.ModuleId,
-                input_no= dto.InputNo,
-                input_mode= dto.InputMode,
+                input_no = dto.InputNo,
+                input_mode = dto.InputMode,
                 debounce = dto.Debounce,
-                holdtime= dto.HoldTime,
-                mask_timezone= dto.MaskTimeZone,
+                holdtime = dto.HoldTime,
+                mask_timezone = dto.MaskTimeZone,
             };
         }
 
@@ -388,7 +388,7 @@ namespace Aero.Application.Mapper
         #region Sensor
 
 
-        public static Sensor DtoToSensor(SensorDto dto,DateTime Create) 
+        public static Sensor DtoToSensor(SensorDto dto, DateTime Create)
         {
             return new Sensor
             {
@@ -413,7 +413,7 @@ namespace Aero.Application.Mapper
 
         #region Doors
 
-     
+
 
         public static Door DtoToDoor(
             DoorDto dto,
@@ -421,7 +421,7 @@ namespace Aero.Application.Mapper
             string ModeDesc,
             string OfflineModeDesc,
             string DefaultModeDesc,
-            DateTime Create) 
+            DateTime Create)
         {
             var door = new Door
             {
@@ -429,7 +429,7 @@ namespace Aero.Application.Mapper
                 component_id = ComponentId,
                 hardware_mac = dto.Mac,
                 location_id = dto.LocationId,
-                
+
                 is_active = true,
                 created_date = Create,
                 updated_date = Create,
@@ -441,14 +441,14 @@ namespace Aero.Application.Mapper
                 pair_door_no = dto.PairDoorNo,
                 readers = dto.Readers
                 .Where(x => !string.IsNullOrEmpty(x.Mac))
-                .Select(x => DtoToReader(x,Create))
+                .Select(x => DtoToReader(x, Create))
                 .ToList(),
 
-                strike = DtotoStrike(dto.Strk,Create),
-                sensor = DtoToSensor(dto.Sensor,Create),
-                request_exits =  dto.RequestExits is null ? new List<RequestExit>() : dto.RequestExits
+                strike = DtotoStrike(dto.Strk, Create),
+                sensor = DtoToSensor(dto.Sensor, Create),
+                request_exits = dto.RequestExits is null ? new List<RequestExit>() : dto.RequestExits
                 .Where(x => !string.IsNullOrEmpty(x.Mac))
-                .Select(x => DtoToRequestExit(x,Create))
+                .Select(x => DtoToRequestExit(x, Create))
                 .ToList(),
 
                 reader_out_config = dto.ReaderOutConfiguration,
@@ -479,7 +479,7 @@ namespace Aero.Application.Mapper
                 i_lpb_out_num = dto.IlPBOutNum,
                 df_filter_time = dto.DfOfFilterTime,
                 is_held_mask = dto.MaskHeldOpen,
-                is_force_mask = dto.MaskForceOpen,     
+                is_force_mask = dto.MaskForceOpen,
 
             };
 
@@ -488,7 +488,7 @@ namespace Aero.Application.Mapper
             return door;
         }
 
-        public static void UpdateDoor(Door door,DoorDto dto,string ModeDesc,string OfflineModeDesc,string DefaultModeDesc) 
+        public static void UpdateDoor(Door door, DoorDto dto, string ModeDesc, string OfflineModeDesc, string DefaultModeDesc)
         {
             DateTime time = DateTime.UtcNow;
             // Base
@@ -506,9 +506,9 @@ namespace Aero.Application.Mapper
             door.readers = dto.Readers.Select(s => DtoToReader(s, time)).ToList();
             door.strike = DtotoStrike(dto.Strk, time);
             door.sensor = DtoToSensor(dto.Sensor, time);
-            if(dto.RequestExits is not null && dto.RequestExits.Count > 0)
+            if (dto.RequestExits is not null && dto.RequestExits.Count > 0)
             {
-                door.request_exits = dto.RequestExits.Select(s => DtoToRequestExit(s,time)).ToList();
+                door.request_exits = dto.RequestExits.Select(s => DtoToRequestExit(s, time)).ToList();
             }
             door.reader_out_config = dto.ReaderOutConfiguration;
             door.card_format = dto.CardFormat;
@@ -548,7 +548,7 @@ namespace Aero.Application.Mapper
 
         public static CardHolderDto CardHolderToDto(CardHolder entity)
         {
-            return new CardHolderDto 
+            return new CardHolderDto
             {
                 // Base
                 Uuid = entity.uuid,
@@ -574,17 +574,17 @@ namespace Aero.Application.Mapper
                 .Select(x => x.additional).ToList(),
                 Credentials = entity.credentials
                 .Select(x => CredentialToDto(x)).ToList(),
-                
+
             };
         }
 
-        public static CardHolder DtoToCardHolder(CardHolderDto dto,List<short> ComponentIds,DateTime Create)
+        public static CardHolder DtoToCardHolder(CardHolderDto dto, List<short> ComponentIds, DateTime Create)
         {
             return new CardHolder
             {
                 // Base
                 location_id = dto.LocationId,
-                
+
                 is_active = true,
                 created_date = Create,
                 updated_date = Create,
@@ -611,7 +611,7 @@ namespace Aero.Application.Mapper
             };
         }
 
-        public static CardHolderAccessLevel DtoToCardHolderAccessLevel(short AccessLevelId,string UserId)
+        public static CardHolderAccessLevel DtoToCardHolderAccessLevel(short AccessLevelId, string UserId)
         {
             return new CardHolderAccessLevel
             {
@@ -620,7 +620,7 @@ namespace Aero.Application.Mapper
             };
         }
 
-        public static void UpdateCardHolder(CardHolder entity,CardHolderDto dto,List<short> ComponentId) 
+        public static void UpdateCardHolder(CardHolder entity, CardHolderDto dto, List<short> ComponentId)
         {
             // Detial
             entity.location_id = dto.LocationId;
@@ -644,11 +644,11 @@ namespace Aero.Application.Mapper
                 .ToArray();
             entity.image_path = dto.ImagePath;
             entity.credentials = dto.Credentials
-                .Select((x,i) => MapperHelper.DtoToCredential(x, ComponentId[i], DateTime.UtcNow))
+                .Select((x, i) => MapperHelper.DtoToCredential(x, ComponentId[i], DateTime.UtcNow))
                 .ToArray();
         }
 
-        public static CardHolderAdditional DtoToAdditional(string HolderId,string Additional)
+        public static CardHolderAdditional DtoToAdditional(string HolderId, string Additional)
         {
             return new CardHolderAdditional
             {
@@ -661,7 +661,7 @@ namespace Aero.Application.Mapper
 
         #region Credential
 
-        public static CredentialDto CredentialToDto(Credential entity) 
+        public static CredentialDto CredentialToDto(Credential entity)
         {
             return new CredentialDto
             {
@@ -684,9 +684,9 @@ namespace Aero.Application.Mapper
             };
         }
 
-        public static Credential DtoToCredential(CredentialDto dto,short ComponentId,DateTime Create)
+        public static Credential DtoToCredential(CredentialDto dto, short ComponentId, DateTime Create)
         {
-            return new Credential 
+            return new Credential
             {
                 // Base
                 location_id = dto.LocationId,
@@ -710,7 +710,7 @@ namespace Aero.Application.Mapper
         {
             return new ModeDto
             {
-                Name= flag.name,
+                Name = flag.name,
                 Description = flag.description,
                 Value = flag.value,
             };
@@ -723,26 +723,26 @@ namespace Aero.Application.Mapper
         #region AccessLevel
 
 
-        public static AccessLevel DtoToAccessLevel(CreateUpdateAccessLevelDto dto,short ComponentId,DateTime Create)
+        public static AccessLevel DtoToAccessLevel(CreateUpdateAccessLevelDto dto, short ComponentId, DateTime Create)
         {
-            return new AccessLevel 
+            return new AccessLevel
             {
                 // Base 
-                location_id= dto.LocationId,
-                is_active=true,
-                created_date= Create,
-                updated_date= Create,
+                location_id = dto.LocationId,
+                is_active = true,
+                created_date = Create,
+                updated_date = Create,
 
                 // extend_desc
-                component_id= ComponentId,
-                name= dto.Name,
-                accessleve_door_timezones=dto.CreateUpdateAccessLevelDoorTimeZoneDto
-                .Select(x => DtoToAccessLevelDoorTimeZone(x,ComponentId))
+                component_id = ComponentId,
+                name = dto.Name,
+                accessleve_door_timezones = dto.CreateUpdateAccessLevelDoorTimeZoneDto
+                .Select(x => DtoToAccessLevelDoorTimeZone(x, ComponentId))
                 .ToArray()
             };
         }
 
-        public static void UpdateAccessLeve(AccessLevel entity,CreateUpdateAccessLevelDto dto)
+        public static void UpdateAccessLeve(AccessLevel entity, CreateUpdateAccessLevelDto dto)
         {
             // Base
             entity.location_id = dto.LocationId;
@@ -752,17 +752,17 @@ namespace Aero.Application.Mapper
             // extend_desc
             entity.name = dto.Name;
             entity.accessleve_door_timezones = dto.CreateUpdateAccessLevelDoorTimeZoneDto
-                .Select(x => DtoToAccessLevelDoorTimeZone(x,dto.component_id))
+                .Select(x => DtoToAccessLevelDoorTimeZone(x, dto.component_id))
                 .ToArray();
         }
 
-        public static AccessLevelDoorTimeZone DtoToAccessLevelDoorTimeZone(CreateUpdateAccessLevelDoorTimeZoneDto dto,short ComponentId) 
+        public static AccessLevelDoorTimeZone DtoToAccessLevelDoorTimeZone(CreateUpdateAccessLevelDoorTimeZoneDto dto, short ComponentId)
         {
             return new AccessLevelDoorTimeZone
             {
                 accesslevel_id = ComponentId,
                 timezone_id = dto.TimeZoneId,
-                door_id=dto.DoorId
+                door_id = dto.DoorId
             };
         }
 
@@ -771,36 +771,16 @@ namespace Aero.Application.Mapper
 
         #region TimeZone
 
-        public static TimeZoneDto TimeZoneToDto(Entity.TimeZone t)
-        {
-            return new TimeZoneDto 
-            {
-                // Base
-                IsActive = t.is_active,
-
-                // extend_desc
-                ComponentId = t.component_id,
-                Name = t.name,
-                Mode = t.mode,
-                ActiveTime = t.active_time,
-                DeactiveTime = t.deactive_time,
-                Intervals = t.timezone_intervals is null ? null : t.timezone_intervals
-                .Select(s => s.interval)
-                .Select(s => IntervalToDto(s))
-                .ToList(),
-
-            };
-        }
 
         public static Entity.TimeZone TimeZoneDtoToTimeZone(TimeZoneDto t)
         {
-            return new Entity.TimeZone 
+            return new Entity.TimeZone
             {
                 // Base
                 is_active = t.IsActive,
 
                 // detail
-                component_id= t.ComponentId,
+                component_id = t.ComponentId,
                 name = t.Name,
                 mode = t.Mode,
                 active_time = t.ActiveTime,
@@ -808,7 +788,7 @@ namespace Aero.Application.Mapper
             };
         }
 
-        public static Entity.TimeZone CreateTimeZoneDtoToTimeZone(CreateTimeZoneDto t,short ComponentId)
+        public static Entity.TimeZone CreateTimeZoneDtoToTimeZone(CreateTimeZoneDto t, short ComponentId)
         {
             return new Entity.TimeZone
             {
@@ -824,7 +804,7 @@ namespace Aero.Application.Mapper
             };
         }
 
-        public static Entity.TimeZone TimeZoneDtoMapTimeZone(TimeZoneDto dto,Entity.TimeZone entity)
+        public static Entity.TimeZone TimeZoneDtoMapTimeZone(TimeZoneDto dto, Entity.TimeZone entity)
         {
             entity.name = dto.Name;
             entity.mode = dto.Mode;
@@ -833,47 +813,20 @@ namespace Aero.Application.Mapper
             entity.is_active = dto.IsActive;
             entity.updated_date = DateTime.UtcNow;
             return entity;
-          
+
         }
 
         #endregion
 
         #region Interval
 
-        public static IntervalDto IntervalToDto(Interval p)
-        {
-            return new IntervalDto
-            {
-                // Base 
-                IsActive = p.is_active,
-                LocationId = p.location_id,
-
-                // extend_desc
-                ComponentId = p.component_id,
-                DaysDesc = p.days_desc,
-                StartTime = p.start_time,
-                EndTime = p.end_time,
-                Days = new DaysInWeekDto
-                {
-                    Sunday = p.days.sunday,
-                    Monday = p.days.monday,
-                    Tuesday = p.days.tuesday,
-                    Wednesday = p.days.wednesday,
-                    Thursday = p.days.thursday,
-                    Friday = p.days.friday,
-                    Saturday = p.days.saturday
-                }
-
-            };
-        }
-
         public static Interval DtoToInterval(IntervalDto dto)
         {
-            return new Interval 
+            return new Interval
             {
                 // Base
                 uuid = dto.Uuid,
-                
+
                 is_active = dto.IsActive,
 
                 // extend_desc
@@ -881,25 +834,25 @@ namespace Aero.Application.Mapper
                 days_desc = dto.DaysDesc,
                 start_time = dto.StartTime,
                 end_time = dto.EndTime,
-                days = new DaysInWeek 
+                days = new DaysInWeek
                 {
                     sunday = dto.Days.Sunday,
                     monday = dto.Days.Monday,
                     tuesday = dto.Days.Tuesday,
                     wednesday = dto.Days.Wednesday,
-                    thursday= dto.Days.Thursday,
+                    thursday = dto.Days.Thursday,
                     friday = dto.Days.Friday,
-                    saturday= dto.Days.Saturday,
+                    saturday = dto.Days.Saturday,
                 }
             };
         }
 
-        public static Interval CreateToInterval(CreateIntervalDto dto,short componentId,string DaysDesc)
+        public static Interval CreateToInterval(CreateIntervalDto dto, short componentId, string DaysDesc)
         {
             return new Interval
             {
                 // Base 
-                
+
                 is_active = true,
                 updated_date = DateTime.UtcNow,
                 location_id = dto.LocationId,
@@ -922,7 +875,7 @@ namespace Aero.Application.Mapper
             };
         }
 
-        public static Interval IntervalDtoMapInterval(IntervalDto dto,Interval interval) 
+        public static Interval IntervalDtoMapInterval(IntervalDto dto, Interval interval)
         {
             // Base 
             interval.is_active = dto.IsActive;
@@ -944,7 +897,7 @@ namespace Aero.Application.Mapper
             return interval;
         }
 
-        public static void UpdateInterval(Interval en,IntervalDto dto) 
+        public static void UpdateInterval(Interval en, IntervalDto dto)
         {
             // Base
             en.updated_date = DateTime.UtcNow;
@@ -967,12 +920,12 @@ namespace Aero.Application.Mapper
 
         #region CardFormat
 
-        public static CardFormat DtoToCardFormat(CardFormatDto dto,short ComponentId,DateTime Create) 
+        public static CardFormat DtoToCardFormat(CardFormatDto dto, short ComponentId, DateTime Create)
         {
             return new CardFormat
             {
                 // Base 
-                uuid = dto.Uuid,           
+                uuid = dto.Uuid,
                 is_active = dto.IsActive,
                 created_date = Create,
                 updated_date = Create,
@@ -1025,7 +978,7 @@ namespace Aero.Application.Mapper
 
         }
 
-        public static void UpdateCardFormat(CardFormat card,CardFormatDto dto)
+        public static void UpdateCardFormat(CardFormat card, CardFormatDto dto)
         {
             card.is_active = dto.IsActive;
             card.updated_date = DateTime.UtcNow;
@@ -1050,14 +1003,14 @@ namespace Aero.Application.Mapper
 
         #region Location
 
-        public static Location DtoToLocation(LocationDto dto,short LocationId,DateTime Create)
+        public static Location DtoToLocation(LocationDto dto, short LocationId, DateTime Create)
         {
             return new Location
             {
                 uuid = dto.Uuid,
                 component_id = LocationId,
                 operator_locations = new List<OperatorLocation> { new OperatorLocation { location_id = LocationId, operator_id = 1 } },
-                
+
                 location_name = dto.LocationName,
                 description = dto.Description,
                 created_date = Create,
@@ -1076,7 +1029,7 @@ namespace Aero.Application.Mapper
         //    };
         //}
 
-        public static void UpdateLocation(Location location,LocationDto dto) 
+        public static void UpdateLocation(Location location, LocationDto dto)
         {
             location.location_name = dto.LocationName;
             location.description = dto.Description;
@@ -1110,14 +1063,14 @@ namespace Aero.Application.Mapper
             };
         }
 
-        public static Area DtoToAccessArea(AccessAreaDto dto,short ComponentId,DateTime Create) 
+        public static Area DtoToAccessArea(AccessAreaDto dto, short ComponentId, DateTime Create)
         {
             return new Area
             {
                 // Base
-                uuid=dto.Uuid,
-                location_id=dto.LocationId,
-                
+                uuid = dto.Uuid,
+                location_id = dto.LocationId,
+
                 is_active = dto.IsActive,
                 component_id = ComponentId,
                 created_date = Create,
@@ -1136,7 +1089,7 @@ namespace Aero.Application.Mapper
             };
         }
 
-        public static void UpdateAccessArea(Area entity,AccessAreaDto dto) 
+        public static void UpdateAccessArea(Area entity, AccessAreaDto dto)
         {
             // Base
             entity.location_id = dto.LocationId;
@@ -1182,11 +1135,11 @@ namespace Aero.Application.Mapper
         //    };
         //}
 
-        public static Operator DtoToOperator(CreateOperatorDto dto,short ComponentId,DateTime Created)
+        public static Operator DtoToOperator(CreateOperatorDto dto, short ComponentId, DateTime Created)
         {
             return new Operator
             {
-                operator_locations = dto.LocationIds.Select(x => new OperatorLocation { location_id=x,operator_id=ComponentId }).ToArray(),
+                operator_locations = dto.LocationIds.Select(x => new OperatorLocation { location_id = x, operator_id = ComponentId }).ToArray(),
                 is_active = true,
                 created_date = Created,
                 updated_date = Created,
@@ -1194,22 +1147,22 @@ namespace Aero.Application.Mapper
                 // extend_desc
                 user_id = dto.UserId,
                 component_id = ComponentId,
-                user_name= dto.Username,
-                password= EncryptHelper.HashPassword(dto.Password),
-                email= dto.Email,
-                title= dto.Title,
-                first_name= dto.FirstName,
-                middle_name= dto.MiddleName,
-                last_name= dto.LastName,
-                phone= dto.Phone,
-                image_path= dto.ImagePath,
-                role_id= dto.RoleId,
+                user_name = dto.Username,
+                password = EncryptHelper.HashPassword(dto.Password),
+                email = dto.Email,
+                title = dto.Title,
+                first_name = dto.FirstName,
+                middle_name = dto.MiddleName,
+                last_name = dto.LastName,
+                phone = dto.Phone,
+                image_path = dto.ImagePath,
+                role_id = dto.RoleId,
             };
         }
 
-        public static void UpdateOperator(Operator en,CreateOperatorDto dto) 
+        public static void UpdateOperator(Operator en, CreateOperatorDto dto)
         {
-            foreach(var id in dto.LocationIds)
+            foreach (var id in dto.LocationIds)
             {
                 en.operator_locations.Add(new OperatorLocation { location_id = id, operator_id = en.component_id });
             }
@@ -1242,7 +1195,7 @@ namespace Aero.Application.Mapper
             };
         }
 
-        public static void UpdatePasswordRule(PasswordRule en,PasswordRuleDto dto)
+        public static void UpdatePasswordRule(PasswordRule en, PasswordRuleDto dto)
         {
             en.len = dto.Len;
             en.is_lower = dto.IsLower;
@@ -1257,11 +1210,11 @@ namespace Aero.Application.Mapper
             {
                 en.weaks = new List<WeakPassword>();
             }
-            foreach(var w in dto.Weaks)
+            foreach (var w in dto.Weaks)
             {
-                en.weaks.Add(new WeakPassword {pattern = w });
+                en.weaks.Add(new WeakPassword { pattern = w });
             }
-        } 
+        }
 
         #endregion
 
@@ -1277,20 +1230,20 @@ namespace Aero.Application.Mapper
         //    };
         //}
 
-        public static Role DtoToRole(RoleDto dto,short ComponentId,DateTime Create)
+        public static Role DtoToRole(RoleDto dto, short ComponentId, DateTime Create)
         {
             return new Role
             {
                 component_id = ComponentId,
                 name = dto.Name,
-                feature_roles = dto.Features.Select(fr => DtoToFeatureRole(fr,ComponentId)).ToArray(),
+                feature_roles = dto.Features.Select(fr => DtoToFeatureRole(fr, ComponentId)).ToArray(),
                 created_date = Create,
                 updated_date = Create
 
             };
         }
 
-        public static FeatureRole DtoToFeatureRole(FeatureDto dto,short RoleId) 
+        public static FeatureRole DtoToFeatureRole(FeatureDto dto, short RoleId)
         {
             return new FeatureRole
             {
@@ -1304,14 +1257,14 @@ namespace Aero.Application.Mapper
             };
         }
 
-        public static void UpdateRole(Role en,RoleDto dto)
+        public static void UpdateRole(Role en, RoleDto dto)
         {
             en.name = dto.Name;
             en.updated_date = DateTime.UtcNow;
             en.feature_roles.Clear();
-            foreach(var id in dto.Features)
+            foreach (var id in dto.Features)
             {
-                en.feature_roles.Add(DtoToFeatureRole(id,dto.component_id));
+                en.feature_roles.Add(DtoToFeatureRole(id, dto.component_id));
             }
         }
 
@@ -1319,7 +1272,7 @@ namespace Aero.Application.Mapper
 
         #region Feature
 
-        public static FeatureDto FeatureToDto(Feature fn,bool isAllow, bool isCreate,bool isModify,bool isDelete,bool isAction)
+        public static FeatureDto FeatureToDto(Feature fn, bool isAllow, bool isCreate, bool isModify, bool isDelete, bool isAction)
         {
             return new FeatureDto
             {
@@ -1335,7 +1288,7 @@ namespace Aero.Application.Mapper
             };
         }
 
-        public static SubFeatureDto SubFeatureToDto(SubFeature s) 
+        public static SubFeatureDto SubFeatureToDto(SubFeature s)
         {
             return new SubFeatureDto
             {
@@ -1355,9 +1308,9 @@ namespace Aero.Application.Mapper
 
         #region Procedure
 
-       
-        
-        public static Procedure DtoToProcedure(ProcedureDto dto,short ComponentId,DateTime Create)
+
+
+        public static Procedure DtoToProcedure(ProcedureDto dto, short ComponentId, DateTime Create)
         {
             return new Procedure
             {
@@ -1371,14 +1324,14 @@ namespace Aero.Application.Mapper
                 // Detail
                 name = dto.Name,
                 actions = dto.Actions
-                .Select(x => DtoToAction(x,ComponentId,DateTime.UtcNow))
-                .ToArray(),    
+                .Select(x => DtoToAction(x, ComponentId, DateTime.UtcNow))
+                .ToArray(),
             };
         }
 
-        public static Entity.Action DtoToAction(ActionDto dto,short ComponentId,DateTime Create)
+        public static Entity.Action DtoToAction(ActionDto dto, short ComponentId, DateTime Create)
         {
-            return new Entity.Action 
+            return new Entity.Action
             {
                 // Base
                 component_id = ComponentId,
@@ -1428,7 +1381,7 @@ namespace Aero.Application.Mapper
                 SourceNumber = en.source_number,
                 SourceType = en.source_type,
                 TranType = en.tran_type,
-                CodeMap = en.code_map.Select(x => new TransactionCodeDto 
+                CodeMap = en.code_map.Select(x => new TransactionCodeDto
                 {
                     Name = x.name,
                     Value = x.value,
@@ -1438,7 +1391,7 @@ namespace Aero.Application.Mapper
             };
         }
 
-        public static Trigger DtoToTrigger(TriggerDto dto,short ComponentId,DateTime Create)
+        public static Trigger DtoToTrigger(TriggerDto dto, short ComponentId, DateTime Create)
         {
             return new Trigger
             {
@@ -1457,7 +1410,7 @@ namespace Aero.Application.Mapper
                 source_number = dto.SourceNumber,
                 source_type = dto.SourceType,
                 tran_type = dto.TranType,
-                code_map = dto.CodeMap.Select(x => new TriggerTranCode 
+                code_map = dto.CodeMap.Select(x => new TriggerTranCode
                 {
                     trigger_id = ComponentId,
                     name = x.Name,

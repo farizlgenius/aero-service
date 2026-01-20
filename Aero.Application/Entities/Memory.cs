@@ -1,6 +1,6 @@
-﻿namespace Aero.Application.DTOs
+﻿namespace Aero.Application.Entities
 {
-    public sealed class MemoryAllocateDto
+    public sealed class Memory
     {
         public short nStrType { get; set; }
         public string StrType { get; set; } = string.Empty;

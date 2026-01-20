@@ -3431,42 +3431,36 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\User\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "/Users/far-izlengha/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Aero.Infrastructure.csproj",
+      "projectUniqueName": "/Users/far-izlengha/Documents/VScode/dotnet/aero-service/Aero.Infrastructure/Aero.Infrastructure.csproj",
       "projectName": "Aero.Infrastructure",
-      "projectPath": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Aero.Infrastructure.csproj",
-      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "D:\\Aero\\AeroService\\Aero.Infrastructure\\obj\\",
+      "projectPath": "/Users/far-izlengha/Documents/VScode/dotnet/aero-service/Aero.Infrastructure/Aero.Infrastructure.csproj",
+      "packagesPath": "/Users/far-izlengha/.nuget/packages/",
+      "outputPath": "/Users/far-izlengha/Documents/VScode/dotnet/aero-service/Aero.Infrastructure/obj/",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/far-izlengha/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "/usr/local/share/dotnet/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\Aero\\AeroService\\Aero.Application\\Aero.Application.csproj": {
-              "projectPath": "D:\\Aero\\AeroService\\Aero.Application\\Aero.Application.csproj"
+            "/Users/far-izlengha/Documents/VScode/dotnet/aero-service/Aero.Application/Aero.Application.csproj": {
+              "projectPath": "/Users/far-izlengha/Documents/VScode/dotnet/aero-service/Aero.Application/Aero.Application.csproj"
             },
-            "D:\\Aero\\AeroService\\Aero.Data\\Aero.Domain.csproj": {
-              "projectPath": "D:\\Aero\\AeroService\\Aero.Data\\Aero.Domain.csproj"
+            "/Users/far-izlengha/Documents/VScode/dotnet/aero-service/Aero.Data/Aero.Domain.csproj": {
+              "projectPath": "/Users/far-izlengha/Documents/VScode/dotnet/aero-service/Aero.Data/Aero.Domain.csproj"
             }
           }
         }
@@ -3524,15 +3518,11 @@
         "downloadDependencies": [
           {
             "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[8.0.23, 8.0.23]"
+            "version": "[8.0.22, 8.0.22]"
           },
           {
             "name": "Microsoft.NETCore.App.Ref",
-            "version": "[8.0.23, 8.0.23]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[8.0.23, 8.0.23]"
+            "version": "[8.0.22, 8.0.22]"
           }
         ],
         "frameworkReferences": {
@@ -3540,7 +3530,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

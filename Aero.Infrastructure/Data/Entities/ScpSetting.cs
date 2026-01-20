@@ -2,12 +2,12 @@
 
 namespace Aero.Infrastructure.Data.Entities
 {
-    public sealed class SystemSetting 
+    public sealed class ScpSetting
     {
         [Key]
         public int id { get; set; }
-        public short m_msp1_port { get; set; }
-        public int n_transaction {  get; set; }
+        public short n_msp1_port { get; set; }
+        public int n_transaction { get; set; }
         public short n_sio { get; set; }
         public short n_mp { get; set; }
         public short n_cp { get; set; }

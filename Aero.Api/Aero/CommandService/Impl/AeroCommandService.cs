@@ -137,76 +137,9 @@ namespace AeroService.Aero.CommandService
 
         #region Configuring the intelligent controller: pre-connection
 
-        public bool SCPDeviceSpecification(short ScpId, SystemSetting setting)
-        {
-            var _commandValue = (short)enCfgCmnd.enCcScpScp;
-            CC_SCP_SCP cc_scp_scp = new CC_SCP_SCP();
-            cc_scp_scp.lastModified = 0;
-            cc_scp_scp.number = ScpId;
-            cc_scp_scp.ser_num_low = 0;
-            cc_scp_scp.ser_num_high = 0;
-            cc_scp_scp.rev_major = 0;
-            cc_scp_scp.rev_minor = 0;
-            cc_scp_scp.nMsp1Port = setting.m_msp1_port;
-            cc_scp_scp.nTransactions = setting.n_transaction;
-            cc_scp_scp.nSio = setting.n_sio;
-            cc_scp_scp.nMp = setting.n_mp;
-            cc_scp_scp.nCp = setting.n_cp;
-            cc_scp_scp.nAcr = setting.n_acr;
-            cc_scp_scp.nAlvl = setting.n_alvl;
-            cc_scp_scp.nTrgr = setting.n_trgr;
-            cc_scp_scp.nProc = setting.n_proc;
-            cc_scp_scp.gmt_offset = setting.gmt_offset;
-            cc_scp_scp.nDstID = 0;
-            cc_scp_scp.nTz = setting.n_tz;
-            cc_scp_scp.nHol = setting.n_hol;
-            cc_scp_scp.nMpg = setting.n_mpg;
-            cc_scp_scp.nTranLimit = 60000;
-            cc_scp_scp.nAuthModType = 0;
-            cc_scp_scp.nOperModes = 0;
-            cc_scp_scp.oper_type = 1;
-            cc_scp_scp.nLanguages = 0;
-            cc_scp_scp.nSrvcType = 0;
-            
-            bool flag = SendCommand(_commandValue, cc_scp_scp);
-            return flag; 
-        }
 
 
-        public bool AccessDatabaseSpecification(short ScpId, SystemSetting setting)
-        {
-            CC_SCP_ADBS cc_scp_adbs = new CC_SCP_ADBS();
-            cc_scp_adbs.lastModified = 0;
-            cc_scp_adbs.nScpID = ScpId;
-            cc_scp_adbs.nCards = setting.n_card;
-            //cc_scp_adbs.nCards = 100;
-            cc_scp_adbs.nAlvl = 32;
-            // pin Constant = 1
-            cc_scp_adbs.nPinDigits = 324;
-            cc_scp_adbs.bIssueCode = 2;
-            cc_scp_adbs.bApbLocation = 1;
-            cc_scp_adbs.bActDate = 2;
-            cc_scp_adbs.bDeactDate = 2;
-            cc_scp_adbs.bVacationDate = 1;
-            cc_scp_adbs.bUpgradeDate = 0;
-            cc_scp_adbs.bUserLevel = 0;
-            cc_scp_adbs.bUseLimit = 1;
-            cc_scp_adbs.bSupportTimedApb = 1;
-            cc_scp_adbs.nTz = 64;
-            cc_scp_adbs.bAssetGroup = 0;
-            cc_scp_adbs.nHostResponseTimeout = 5;
-            cc_scp_adbs.nMxmTypeIndex = 0;
-            cc_scp_adbs.nAlvlUse4Arq = 0;
-            cc_scp_adbs.nFreeformBlockSize = 0;
-            cc_scp_adbs.nEscortTimeout = 15;
-            cc_scp_adbs.nMultiCardTimeout = 15;
-            cc_scp_adbs.nAssetTimeout = 0;
-            cc_scp_adbs.bAccExceptionList = 0;
-            cc_scp_adbs.adbFlags = 1;
-            
-            bool flag = SendCommand((short)enCfgCmnd.enCcScpAdbSpec, cc_scp_adbs);
-            return flag;
-        }
+
 
         //public async Task<bool> ElevatorAccessLevelSpecification(short hardware_id, short MaxElvAvl, short MaxFloor)
         //{
@@ -231,45 +164,13 @@ namespace AeroService.Aero.CommandService
         {
             CC_NEWSCP c = new CC_NEWSCP();
             c.nSCPId = ScpId;
-            
-            bool flag = SendCommand((short)enCfgCmnd.enCcDeleteScp, c); 
+
+            bool flag = SendCommand((short)enCfgCmnd.enCcDeleteScp, c);
             return flag;
 
         }
 
-        public bool ReadStructureStatus(short ScpId)
-        {
-            CC_STRSRQ cc_strsq = new CC_STRSRQ();
-            cc_strsq.nScpID = ScpId;
-            cc_strsq.nListLength = 24;
-            for (int i = 0; i < cc_strsq.nListLength; i++)
-            {
-                switch (i)
-                {
-                    case >= 15 and <= 19:
-                        cc_strsq.nStructId[i] = (short)(i + 5);
-                        break;
-                    case 20:
-                        cc_strsq.nStructId[i] = 26;
-                        break;
-                    case 21:
-                        cc_strsq.nStructId[i] = 27;
-                        break;
-                    case 22:
-                        cc_strsq.nStructId[i] = 33;
-                        break;
-                    case 23:
-                        cc_strsq.nStructId[i] = 35;
-                        break;
-                    default:
-                        cc_strsq.nStructId[i] = (short)(i + 1);
-                        break;
-                }
-            }
-            
-            bool flag = SendCommand((short)enCfgCmnd.enCcStrSRq, cc_strsq);
-            return flag;
-        }
+
 
         public bool SetScpId(short oldId, short newId)
         {
@@ -290,7 +191,7 @@ namespace AeroService.Aero.CommandService
         {
             CC_TRANSRQ c = new CC_TRANSRQ();
             c.scp_number = ScpId;
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcTranSrq, c);
             return flag;
         }
@@ -301,7 +202,7 @@ namespace AeroService.Aero.CommandService
             CC_TRANINDEX cc_tranindex = new CC_TRANINDEX();
             cc_tranindex.scp_number = ScpId;
             cc_tranindex.tran_index = isEnable ? -2 : -1;
-            
+
             bool flag = SendCommand(_commandValue, cc_tranindex);
             return flag;
         }
@@ -324,7 +225,7 @@ namespace AeroService.Aero.CommandService
                 cc.tz[i] = TzAcr;
 
             }
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcAlvlEx, cc);
             return flag;
         }
@@ -340,7 +241,7 @@ namespace AeroService.Aero.CommandService
             {
                 cc.tz[d.DoorId] = d.TimeZoneId;
             }
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcAlvlEx, cc);
             return flag;
         }
@@ -351,55 +252,6 @@ namespace AeroService.Aero.CommandService
         #region SIO
 
 
-        public bool SioDriverConfiguration(short ScpId, short SIODriverNo, short IOModulePort, int BaudRate, short ProtocolType)
-        {
-            CC_MSP1 cc_msp1 = new CC_MSP1();
-            cc_msp1.lastModified = 0;
-            cc_msp1.scp_number = ScpId;
-            cc_msp1.msp1_number = SIODriverNo;
-            cc_msp1.port_number = IOModulePort;
-            cc_msp1.baud_rate = BaudRate;
-            cc_msp1.reply_time = 90;
-            cc_msp1.nProtocol = ProtocolType;
-            cc_msp1.nDialect = 0;
-            
-            bool flag = SendCommand((short)enCfgCmnd.enCcMsp1, cc_msp1);
-            return flag;
-        }
-
-
-
-        public bool SioPanelConfiguration(short ScpId, short SioNo, short Model, short nInput, short nOutput, short nReader, short ModuleAddress, short SIODriverPort, bool isEnable)
-        {
-
-            CC_SIO cc_sio = new CC_SIO();
-            cc_sio.lastModified = 0;
-            cc_sio.scp_number = ScpId;
-            cc_sio.sio_number = SioNo;
-            cc_sio.nInputs = nInput;
-            cc_sio.nOutputs = nOutput;
-            cc_sio.nReaders = nReader;
-            cc_sio.model = Model;
-            cc_sio.revision = 0;
-            cc_sio.ser_num_low = 0;
-            cc_sio.ser_num_high = -1;
-            cc_sio.enable = isEnable ? (short)1 : (short)0;
-            cc_sio.port = SIODriverPort;
-            cc_sio.channel_out = 0;
-            cc_sio.channel_in = 0;
-            cc_sio.address = ModuleAddress;
-            cc_sio.e_max = 3;
-            cc_sio.flags = 0x20;
-            cc_sio.nSioNextIn = -1;
-            cc_sio.nSioNextOut = -1;
-            cc_sio.nSioNextRdr = -1;
-            cc_sio.nSioConnectTest = 0;
-            cc_sio.nSioOemCode = 0;
-            cc_sio.nSioOemMask = 0;
-            
-            bool flag = SendCommand((short)enCfgCmnd.enCcSio, cc_sio);
-            return flag;
-        }
 
 
         #endregion
@@ -415,7 +267,7 @@ namespace AeroService.Aero.CommandService
             cc_op.sio_number = SioNo;
             cc_op.output = OutputNo;
             cc_op.mode = OutputMode;
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcOutput, cc_op);
             return flag;
         }
@@ -430,13 +282,13 @@ namespace AeroService.Aero.CommandService
             cc_cp.cp_number = CpNo;
             cc_cp.op_number = OutputNo;
             cc_cp.dflt_pulse = DefaultPulseTime;
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcCP, cc_cp);
             return flag;
 
         }
 
-       
+
 
         public bool ControlPointCommand(short ScpId, short cpNo, short command)
         {
@@ -447,7 +299,7 @@ namespace AeroService.Aero.CommandService
             cc_cpctl.on_time = 0;
             cc_cpctl.off_time = 0;
             cc_cpctl.repeat = 0;
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcCpCtl, cc_cpctl);
             return flag;
 
@@ -459,7 +311,7 @@ namespace AeroService.Aero.CommandService
             cc.scp_number = ScpId;
             cc.first = CpNo;
             cc.count = Count;
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcCpSrq, cc);
             return flag;
         }
@@ -468,21 +320,6 @@ namespace AeroService.Aero.CommandService
 
         #region Monitor Point
 
-
-        public bool InputPointSpecification(short ScpId, short SioNo, short InputNo, short InputMode, short Debounce, short HoldTime)
-        {
-            CC_IP cc_ip = new CC_IP();
-            cc_ip.lastModified = 0;
-            cc_ip.scp_number = ScpId;
-            cc_ip.sio_number = SioNo;
-            cc_ip.input = InputNo;
-            cc_ip.icvt_num = InputMode;
-            cc_ip.debounce = Debounce;
-            cc_ip.hold_time = HoldTime;
-            
-            bool flag = SendCommand((short)enCfgCmnd.enCcInput, cc_ip);
-            return flag;
-        }
 
 
         public bool MonitorPointConfiguration(short ScpId, short SioNo, short InputNo, short LfCode, short Mode, short DelayEntry, short DelayExit, short nMp)
@@ -497,7 +334,7 @@ namespace AeroService.Aero.CommandService
             cc_mp.mode = Mode;
             cc_mp.delay_entry = DelayEntry;
             cc_mp.delay_exit = DelayExit;
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcMP, cc_mp);
             return flag;
         }
@@ -508,7 +345,7 @@ namespace AeroService.Aero.CommandService
             cc.scp_number = ScpId;
             cc.mp_number = MpNo;
             cc.set_clear = (short)SetClear;
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcMpMask, cc);
             return flag;
         }
@@ -519,7 +356,7 @@ namespace AeroService.Aero.CommandService
             cc.scp_number = ScpId;
             cc.first = MpNo;
             cc.count = Count;
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcMpSrq, cc);
             return flag;
         }
@@ -544,7 +381,7 @@ namespace AeroService.Aero.CommandService
                 i += 1;
                 c.nMpList[i] = l.point_number;
             }
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcMpg, c);
             return flag;
         }
@@ -556,7 +393,7 @@ namespace AeroService.Aero.CommandService
             c.mpg_number = ComponentId;
             c.command = Command;
             c.arg1 = Arg1;
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcMpgSet, c);
             //if (flag)
             //{
@@ -582,7 +419,7 @@ namespace AeroService.Aero.CommandService
             cc_rdr.led_drive_mode = LedDriveMode;
             cc_rdr.osdp_flags = OsdpFlag;
             //cc_rdr.device_id
-            
+
             bool flag = SendCommand(_commandValue, cc_rdr);
             return flag;
         }
@@ -645,7 +482,7 @@ namespace AeroService.Aero.CommandService
             cc_acr.nAuthModFlags = 0;
             cc_acr.nExtFeatureType = 0;
             cc_acr.dfofFilterTime = 0;
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcACR, cc_acr);
             return flag;
 
@@ -657,7 +494,7 @@ namespace AeroService.Aero.CommandService
             CC_UNLOCK cc_unlock = new CC_UNLOCK();
             cc_unlock.scp_number = ScpId;
             cc_unlock.acr_number = AcrNo;
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcUnlock, cc_unlock);
             return flag;
 
@@ -669,7 +506,7 @@ namespace AeroService.Aero.CommandService
             cc.scp_number = ScpId;
             cc.first = AcrNo;
             cc.count = Count;
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcAcrSrq, cc);
             return flag;
         }
@@ -682,7 +519,7 @@ namespace AeroService.Aero.CommandService
             cc.acr_mode = Mode;
             cc.nAuthModFlags = 0;
             //cc.n_ext_feature_type
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcAcrMode, cc);
             return flag;
         }
@@ -704,7 +541,7 @@ namespace AeroService.Aero.CommandService
             cc.occ_up = OccUp;
             cc.occ_down = OccDown;
             cc.area_flags = AreaFlag;
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcAreaSpc, cc);
             return flag;
         }
@@ -715,7 +552,7 @@ namespace AeroService.Aero.CommandService
             cc.scp_number = ScpId;
             cc.first = ComponentId;
             cc.count = Number;
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcAreaSrq, cc);
             return flag;
         }
@@ -743,7 +580,7 @@ namespace AeroService.Aero.CommandService
             cc.arg.sensor.ch_loc = ch_loc;
             cc.arg.sensor.ic_ln = ic_ln;
             cc.arg.sensor.ic_loc = ic_loc;
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcScpCfmt, cc);
             return flag;
 
@@ -769,7 +606,7 @@ namespace AeroService.Aero.CommandService
             cc.arg.sensor.ch_loc = dto.ChLoc;
             cc.arg.sensor.ic_ln = dto.IcLn;
             cc.arg.sensor.ic_loc = dto.IcLoc;
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcScpCfmt, cc);
             return flag;
 
@@ -802,7 +639,7 @@ namespace AeroService.Aero.CommandService
             }
             cc.act_time = Active;
             cc.dact_time = Deactive;
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcAdbCardI64DTic32, cc);
             return flag;
 
@@ -813,7 +650,7 @@ namespace AeroService.Aero.CommandService
             CC_CARDDELETEI64 cc = new CC_CARDDELETEI64();
             cc.scp_number = ScpId;
             cc.cardholder_id = CardNo;
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcCardDeleteI64, cc);
             return flag;
         }
@@ -821,20 +658,6 @@ namespace AeroService.Aero.CommandService
 
         #endregion
 
-        #region Time
-
-
-        public bool TimeSet(short ScpId)
-        {
-            CC_TIME cc_time = new CC_TIME();
-            cc_time.scp_number = ScpId;
-            cc_time.custom_time = 0;
-            
-            bool flag = SendCommand((short)enCfgCmnd.enCcTime, cc_time);
-            return flag;
-        }
-
-        #endregion
 
         #region Utility
 
@@ -903,7 +726,7 @@ namespace AeroService.Aero.CommandService
         {
             CC_IDREQUEST cc_idrequest = new CC_IDREQUEST();
             cc_idrequest.scp_number = ScpId;
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcIDRequest, cc_idrequest);
             //if (flag)
             //{
@@ -912,7 +735,7 @@ namespace AeroService.Aero.CommandService
             return flag;
         }
 
-        public bool GetWebConfigRead(short ScpId,short type)
+        public bool GetWebConfigRead(short ScpId, short type)
         {
             CC_WEB_CONFIG_READ cc = new CC_WEB_CONFIG_READ();
             cc.scp_number = ScpId;
@@ -1012,7 +835,7 @@ namespace AeroService.Aero.CommandService
             //cc.arg[0] = 0;
 
 
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcTrgr, cc);
             return flag;
 
@@ -1184,7 +1007,7 @@ namespace AeroService.Aero.CommandService
                     default:
                         break;
                 }
-                
+
                 bool flag = SendCommand((short)enCfgCmnd.enCcProc, c);
                 return flag;
 
@@ -1203,7 +1026,7 @@ namespace AeroService.Aero.CommandService
             c.hdr.action_type = 127;
             c.delay.delay_time = action.arg1;
             //c.hdr.arg
-            
+
             bool flag = SendCommand((short)enCfgCmnd.enCcProc, c);
             return flag;
         }
@@ -1372,7 +1195,7 @@ namespace AeroService.Aero.CommandService
                     default:
                         break;
                 }
-                
+
                 bool flag = SendCommand((short)enCfgCmnd.enCcProc, c);
                 return flag;
 

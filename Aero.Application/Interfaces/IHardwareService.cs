@@ -6,17 +6,17 @@ namespace Aero.Application.Interface
 {
     public interface IHardwareService
     {
-        
+
         Task<ResponseDto<IEnumerable<HardwareDto>>> GetAsync();
         Task<ResponseDto<IEnumerable<ModeDto>>> GetHardwareTypeAsync();
         Task<ResponseDto<IEnumerable<HardwareDto>>> GetByLocationAsync(short location);
         Task<ResponseDto<bool>> CreateAsync(CreateHardwareDto dto);
-      Task<ResponseDto<bool>> DeleteAsync(string mac);
-       Task<ResponseDto<HardwareDto>> UpdateAsync(HardwareDto dto);
+        Task<ResponseDto<bool>> DeleteAsync(string mac);
+        Task<ResponseDto<HardwareDto>> UpdateAsync(HardwareDto dto);
 
-      Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param);
+        Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param);
 
-       Task<ResponseDto<HardwareDto>> GetByMacAsync(string mac);
+        Task<ResponseDto<HardwareDto>> GetByMacAsync(string mac);
         Task<ResponseDto<bool>> ResetByMacAsync(string mac);
         Task<ResponseDto<bool>> ResetByComponentAsync(short id);
         Task<ResponseDto<bool>> UploadComponentConfigurationAsync(string mac);
@@ -24,7 +24,6 @@ namespace Aero.Application.Interface
         Task<bool> VerifyMemoryAllocateAsync(string mac);
         Task<ResponseDto<IEnumerable<VerifyHardwareDeviceConfigDto>>> VerifyComponentConfigurationAsync(string mac);
         Task<ResponseDto<HardwareStatus>> GetStatusAsync(string mac);
-        void TriggerIdReport(List<IdReportDto> IdReports);
         void TriggerTranStatus(SCPReplyMessage message);
         Task VerifyAllocateHardwareMemoryAsync(SCPReplyMessage message);
         Task AssignPort(SCPReplyMessage message);
