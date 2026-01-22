@@ -1,6 +1,4 @@
 ﻿
-using AeroService.DTOs.Module;
-
 namespace Aero.Application.DTOs
 {
     public sealed class HardwareDto : BaseDto

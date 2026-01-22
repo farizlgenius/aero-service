@@ -46,7 +46,7 @@ namespace AeroService.AeroLibrary
         private void ProcessMessage(SCPReplyMessage message)
         {
             using var scope = scopeFactory.CreateScope();
-            var handle = scope.ServiceProvider.GetRequiredService<MessageHandler>();
+            var handle = scope.ServiceProvider.GetRequiredService<MessageHandlerHelper>();
             var hardwareService = scope.ServiceProvider.GetRequiredService<IHardwareService>();
             var transactionService = scope.ServiceProvider.GetRequiredService<ITransactionService>();
             var moduleService = scope.ServiceProvider.GetRequiredService<IModuleService>();

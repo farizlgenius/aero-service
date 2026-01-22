@@ -1,24 +1,45 @@
-﻿using Aero.Api.Constants;
+﻿using System.Net;
+using Aero.Api.Constants;
 using Aero.Application.Constants;
 using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
 using Aero.Application.Mapper;
+using Aero.Domain.Entities;
 using Aero.Domain.Interface;
-using AeroService.Helpers;
 
-namespace AeroService.Service.Impl
+namespace Aero.Application.Services
 {
     public class HardwareService(
-        IQueryHardwareRepository query,
-        IHardwareRepository repository,
-        IQueryModuleRepository queryModule,
-        IQueryTimezoneRepository queryTimezone,
+        IQHwRepository qHw,
+        IHwRepository rHw,
+        IQModuleRepository qModule,
+        IQTzRepository qTz,
+        IQAlvlRepository qAlvl,
+        IQCfmtRepository qCfmt,
+        IQCpRepository qCp,
+        IQMpgRepository qMpg,
+        IQMpRepository qMp,
+        IQDoorRepository qDoor,
+        IQHolderRepository qHolder,
+        IQAreaRepository qArea,
+        IQHolRepository qHol,
+        IQIntervalRepository qInterval,
+        IQTrigRepository qTrig,
+        IQProcRepository qProc,
+        IQActionRepository qAction,
+        IIdReportRepository idr,
         IScpCommand scp,
         ISioCommand sio,
         IMpCommand mp,
-        ITzCommand tz
+        ITzCommand tz,
+        IAlvlCommand alvl,
+        ICfmtCommand cfmt,
+        ICpCommand cp,
+        IMpgCommand mpg,
+        IDoorCommand d,
+        IHolderCommand holder
         ) : IHardwareService
     {
 
@@ -26,21 +47,21 @@ namespace AeroService.Service.Impl
 
         public async Task<ResponseDto<IEnumerable<HardwareDto>>> GetAsync()
         {
-            var res = await query.GetAsync();
+            var res = await qHw.GetAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<HardwareDto>>(res);
         }
 
         public async Task<ResponseDto<IEnumerable<HardwareDto>>> GetByLocationAsync(short location)
         {
-            var res = await query.GetByLocationIdAsync(location);
+            var res = await qHw.GetByLocationIdAsync(location);
             return ResponseHelper.SuccessBuilder<IEnumerable<HardwareDto>>(res);
         }
 
         public async Task<ResponseDto<bool>> DeleteAsync(string mac)
         {
             List<string> errors = new List<string>();
-            if (!await query.IsAnyByMac(mac)) return ResponseHelper.NotFoundBuilder<bool>();
-            var id = await query.GetComponentFromMacAsync(mac);
+            if (!await qHw.IsAnyByMac(mac)) return ResponseHelper.NotFoundBuilder<bool>();
+            var id = await qHw.GetComponentFromMacAsync(mac);
             // CP
 
             // MP
@@ -50,7 +71,7 @@ namespace AeroService.Service.Impl
             // Access Area
 
             // modules Check first 
-            if (await query.IsAnyModuleReferenceByMacAsync(mac)) return ResponseHelper.FoundReferenceBuilder<bool>();
+            if (await qHw.IsAnyModuleReferenceByMacAsync(mac)) return ResponseHelper.FoundReferenceBuilder<bool>();
 
 
             if (!scp.DetachScp(id))
@@ -59,7 +80,7 @@ namespace AeroService.Service.Impl
             }
 
 
-            var res = await repository.DeleteByMacAsync(mac);
+            var res = await rHw.DeleteByMacAsync(mac);
 
             return ResponseHelper.SuccessBuilder<bool>(res > 0 ? true : false);
 
@@ -71,8 +92,8 @@ namespace AeroService.Service.Impl
 
         public async Task<ResponseDto<bool>> ResetByMacAsync(string mac)
         {
-            if (!await query.IsAnyByMac(mac)) return ResponseHelper.NotFoundBuilder<bool>();
-            var id = await query.GetComponentFromMacAsync(mac);
+            if (!await qHw.IsAnyByMac(mac)) return ResponseHelper.NotFoundBuilder<bool>();
+            var id = await qHw.GetComponentFromMacAsync(mac);
             if (id == 0) return ResponseHelper.NotFoundBuilder<bool>();
             if (!scp.ResetScp(id))
             {
@@ -83,7 +104,7 @@ namespace AeroService.Service.Impl
 
         public async Task<ResponseDto<bool>> ResetByComponentAsync(short id)
         {
-            string mac = await query.GetMacFromComponentAsync(id);
+            string mac = await qHw.GetMacFromComponentAsync(id);
             if (string.IsNullOrEmpty(mac)) return ResponseHelper.NotFoundBuilder<bool>();
             if (!scp.ResetScp(id))
             {
@@ -94,7 +115,7 @@ namespace AeroService.Service.Impl
 
         public async Task<bool> VerifyHardwareConnection(short ScpId)
         {
-            var setting = await query.GetScpSettingAsync();
+            var setting = await qHw.GetScpSettingAsync();
 
             if (setting is null) return false;
 
@@ -105,7 +126,7 @@ namespace AeroService.Service.Impl
 
         public async Task<bool> MappingHardwareAndAllocateMemory(short ScpId)
         {
-            var setting = await query.GetScpSettingAsync();
+            var setting = await qHw.GetScpSettingAsync();
             if (setting is null) return false;
 
             if (!scp.ScpDeviceSpecification(ScpId, setting)) return false;
@@ -119,7 +140,7 @@ namespace AeroService.Service.Impl
 
         public async Task<ResponseDto<bool>> VerifyMemoryAllocateAsyncWithResponse(string Mac)
         {
-            var ScpId = await query.GetComponentFromMacAsync(Mac);
+            var ScpId = await qHw.GetComponentFromMacAsync(Mac);
             if (ScpId == 0) return ResponseHelper.NotFoundBuilder<bool>();
             if (!scp.ReadStructureStatus(ScpId))
             {
@@ -130,7 +151,7 @@ namespace AeroService.Service.Impl
 
         public async Task<bool> VerifyMemoryAllocateAsync(string Mac)
         {
-            var ScpId = await query.GetComponentFromMacAsync(Mac);
+            var ScpId = await qHw.GetComponentFromMacAsync(Mac);
             if (ScpId == 0) return false;
             if (!scp.ReadStructureStatus(ScpId))
             {
@@ -144,15 +165,15 @@ namespace AeroService.Service.Impl
         {
             List<string> errors = new List<string>();
 
-            if (!await query.IsAnyByMac(mac)) return ResponseHelper.NotFoundBuilder<bool>();
+            if (!await qHw.IsAnyByMac(mac)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var ScpId = await query.GetComponentFromMacAsync(mac);
+            var ScpId = await qHw.GetComponentFromMacAsync(mac);
 
 
             #region Module Upload
 
             // modules
-            var modules = await queryModule.GetByMacAsync(mac);
+            var modules = await qModule.GetByMacAsync(mac);
 
 
             foreach (var module in modules)
@@ -216,17 +237,17 @@ namespace AeroService.Service.Impl
 
             // Timezone
 
-            var timezones = await queryTimezone.GetAsync();
+            var timezones = await qTz.GetAsync();
 
             var intervals = timezones
-                .Select(x => x.Intervals)
+                .SelectMany(x => x.Intervals)
                 .ToList();
 
             foreach (var t in timezones)
             {
-                if (!await tz.ExtendedTimeZoneActSpecificationAsync(ScpId, t, intervals, !string.IsNullOrEmpty(t.ActiveTime) ? (int)UtilitiesHelper.DateTimeToElapeSecond(t.ActiveTime) : 0, !string.IsNullOrEmpty(t.DeactiveTime) ? (int)UtilitiesHelper.DateTimeToElapeSecond(t.DeactiveTime) : 0))
+                if (!tz.ExtendedTimeZoneActSpecificationAsync(ScpId, t, intervals, !string.IsNullOrEmpty(t.ActiveTime) ? (int)UtilitiesHelper.DateTimeToElapeSecond(t.ActiveTime) : 0, !string.IsNullOrEmpty(t.DeactiveTime) ? (int)UtilitiesHelper.DateTimeToElapeSecond(t.DeactiveTime) : 0))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C3103));
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.TIMEZONE_SPEC));
                 }
             }
 
@@ -237,32 +258,29 @@ namespace AeroService.Service.Impl
 
             // Access Level
 
-            var accessLevels = await context.accesslevel
-           .AsNoTracking()
-           .Include(x => x.accessleve_door_timezones)
-           .ToArrayAsync();
+            var accessLevels = await qAlvl.GetAsync();
 
-            var tzs = accessLevels.SelectMany(x => x.accessleve_door_timezones).Select(x => new CreateUpdateAccessLevelDoorTimeZoneDto
+            var tzs = accessLevels.SelectMany(x => x.AccessLevelDoorTimeZoneDto).Select(x => new CreateUpdateAccessLevelDoorTimeZoneDto
             {
-                TimeZoneId = x.timezone_id,
-                DoorId = x.door_id,
+                TimeZoneId = x.TimeZone.ComponentId,
+                DoorId = x.Doors.ComponentId,
             }).ToList();
 
             foreach (var a in accessLevels)
             {
                 if (a.component_id == 1 || a.component_id == 2)
                 {
-                    if (!command.AccessLevelConfigurationExtended(ScpId, a.component_id, a.component_id == 1 ? (short)0 : (short)1))
+                    if (!alvl.AccessLevelConfigurationExtended(ScpId, a.component_id, a.component_id == 1 ? (short)0 : (short)1))
                     {
-                        errors.Add(MessageBuilder.Unsuccess(mac, Command.C2116));
+                        errors.Add(MessageBuilder.Unsuccess(mac, Command.ALVL_CONFIG));
                     }
                     ;
                 }
                 else
                 {
-                    if (!command.AccessLevelConfigurationExtendedCreate(ScpId, a.component_id, tzs))
+                    if (!alvl.AccessLevelConfigurationExtendedCreate(ScpId, a.component_id, tzs))
                     {
-                        errors.Add(MessageBuilder.Unsuccess(mac, Command.C2116));
+                        errors.Add(MessageBuilder.Unsuccess(mac, Command.ALVL_CONFIG));
                     }
                 }
 
@@ -275,14 +293,14 @@ namespace AeroService.Service.Impl
 
             // Card format
 
-            var formats = await context.card_format.AsNoTracking().ToArrayAsync();
+            var formats = await qCfmt.GetAsync();
             foreach (var format in formats)
             {
-                if (!command.CardFormatterConfiguration(ScpId, format.component_id, format.facility, 0, 1, 0, format.bits, format.pe_ln, format.pe_loc, format.po_ln, format.po_loc, format.fc_ln, format.fc_loc, format.ch_ln, format.ch_loc, format.ic_ln, format.ic_loc))
+                if (!cfmt.CardFormatterConfiguration(ScpId, format.ComponentId, format.Facility, 0, 1, 0, format.Bits, format.PeLn, format.PeLn, format.PoLn, format.PoLoc, format.FcLn, format.FcLoc, format.ChLn, format.ChLoc, format.IcLn, format.IcLoc))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C1102));
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.CARDFORMAT_CONFIG));
                 }
-                ;
+
             }
 
             #endregion
@@ -290,28 +308,22 @@ namespace AeroService.Service.Impl
             #region Control Point
 
             // Control Point
-            var cps = await context.control_point
-                .AsNoTracking()
-                .Where(x => x.module.hardware_mac == mac)
-                .ToArrayAsync();
+            var controls = await qCp.GetByMacAsync(mac);
 
-            foreach (var cp in cps)
+            foreach (var control in controls)
             {
                 // command place here
-                short modeNo = await context.output_mode
-                    .AsNoTracking()
-                    .Where(x => x.offline_mode == cp.offline_mode && x.relay_mode == cp.relay_mode)
-                    .Select(x => x.value).FirstOrDefaultAsync();
+                short modeNo = await qCp.GetModeNoByOfflineAndRelayModeAsync(control.OfflineMode, control.RelayMode);
 
-                if (!command.OutputPointSpecification(ScpId, cp.module_id, cp.output_no, modeNo))
+                if (!cp.OutputPointSpecification(ScpId, control.ModuleId, control.OutputNo, modeNo))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C111));
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.OUTPUT_SPEC));
                 }
 
 
-                if (!command.ControlPointConfiguration(ScpId, cp.module_id, cp.component_id, cp.output_no, cp.default_pulse))
+                if (!cp.ControlPointConfiguration(ScpId, control.ModuleId, control.ComponentId, control.OutputNo, control.DefaultPulse))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C114));
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.CONTROL_CONFIG));
 
                 }
 
@@ -323,21 +335,18 @@ namespace AeroService.Service.Impl
             #region Monitor Point
 
             // Monitor Points
-            var mps = await context.monitor_point
-                .AsNoTracking()
-                .Where(x => x.module.hardware_mac == mac)
-                .ToArrayAsync();
+            var mps = await qMp.GetByMacAsync(mac);
 
-            foreach (var mp in mps)
+            foreach (var monitors in mps)
             {
                 // command place here
-                if (!command.InputPointSpecification(ScpId, mp.module_id, mp.input_no, mp.input_mode, mp.debounce, mp.holdtime))
+                if (!mp.InputPointSpecification(ScpId, monitors.ModuleId, monitors.InputNo, monitors.InputMode, monitors.Debounce, monitors.HoldTime))
                 {
                     errors.Add(MessageBuilder.Unsuccess(mac, Command.INPUT_SPEC));
                 }
 
 
-                if (!command.MonitorPointConfiguration(ScpId, mp.module_id, mp.input_no, mp.log_function, mp.monitor_point_mode, mp.delay_entry, mp.delay_exit, mp.component_id))
+                if (!mp.MonitorPointConfiguration(ScpId, monitors.ModuleId, monitors.InputNo, monitors.LogFunction, monitors.MonitorPointMode, monitors.DelayEntry, monitors.DelayExit, monitors.ComponentId))
                 {
                     errors.Add(MessageBuilder.Unsuccess(mac, Command.C113));
                 }
@@ -350,15 +359,11 @@ namespace AeroService.Service.Impl
             #region Monitor Group
 
             // Monitor Group
-            var mpgs = await context.monitor_group
-                .AsNoTracking()
-                .Include(x => x.n_mp_list)
-                .Where(x => x.hardware_mac == mac)
-                .ToArrayAsync();
+            var mpgs = await qMpg.GetByMacAsync(mac);
 
-            foreach (var mpg in mpgs)
+            foreach (var mpGroup in mpgs)
             {
-                if (!command.ConfigureMonitorPointGroup(ScpId, mpg.component_id, mpg.n_mp_count, mpg.n_mp_list.ToList()))
+                if (!mpg.ConfigureMonitorPointGroup(ScpId, mpGroup.ComponentId, mpGroup.nMpCount, mpGroup.nMpList.ToList()))
                 {
                     errors.Add(MessageBuilder.Unsuccess(mac, Command.C120));
                 }
@@ -370,30 +375,24 @@ namespace AeroService.Service.Impl
             #region Doors
 
             // door
-            var doors = await context.door
-                .Include(x => x.readers)
-                .Include(x => x.request_exits)
-                .Include(x => x.strike)
-                .Include(x => x.sensor)
-                .Where(x => x.hardware_mac == mac)
-                .ToArrayAsync();
+            var doors = await qDoor.GetByMacAsync(mac);
 
             foreach (var door in doors)
             {
                 // command place here
 
-                foreach (var reader in door.readers)
+                foreach (var reader in door.Readers)
                 {
-                    if (string.IsNullOrEmpty(reader.module.hardware_mac)) continue;
+                    if (string.IsNullOrEmpty(reader.Mac)) continue;
                     short readerInOsdpFlag = 0x00;
                     short readerLedDriveMode = 0;
-                    if (reader.osdp_flag)
+                    if (reader.OsdpFlag)
                     {
-                        readerInOsdpFlag |= reader.osdp_baudrate;
-                        readerInOsdpFlag |= reader.osdp_discover;
-                        readerInOsdpFlag |= reader.osdp_tracing;
-                        readerInOsdpFlag |= reader.osdp_address;
-                        readerInOsdpFlag |= reader.osdp_secure_channel;
+                        readerInOsdpFlag |= reader.OsdpBaudrate;
+                        readerInOsdpFlag |= reader.OsdpDiscover;
+                        readerInOsdpFlag |= reader.OsdpTracing;
+                        readerInOsdpFlag |= reader.OsdpAddress;
+                        readerInOsdpFlag |= reader.OsdpSecureChannel;
                         readerLedDriveMode = 7;
                     }
                     else
@@ -404,45 +403,45 @@ namespace AeroService.Service.Impl
 
                     // Reader In Config
 
-                    var ReaderInId = await helperService.GetIdFromMacAsync(reader.module.hardware_mac);
-                    if (!command.ReaderSpecification(ReaderInId, reader.module_id, reader.reader_no, reader.data_format, reader.keypad_mode, readerLedDriveMode, readerInOsdpFlag))
+                    var ReaderInId = await qHw.GetComponentFromMacAsync(reader.Mac);
+                    if (!d.ReaderSpecification(ReaderInId, reader.ModuleId, reader.ReaderNo, reader.DataFormat, reader.KeypadMode, readerLedDriveMode, readerInOsdpFlag))
                     {
-                        errors.Add(MessageBuilder.Unsuccess(mac, Command.C112));
+                        errors.Add(MessageBuilder.Unsuccess(mac, Command.READER_SPEC));
                     }
                 }
 
 
 
                 // Strike Strike Config
-                var StrikeId = await helperService.GetIdFromMacAsync(door.strike.module.hardware_mac);
-                if (!command.OutputPointSpecification(StrikeId, door.strike.module_id, door.strike.output_no, door.strike.relay_mode))
+                var StrikeId = await qHw.GetComponentFromMacAsync(door.Strk.Mac);
+                if (!cp.OutputPointSpecification(StrikeId, door.Strk.ModuleId, door.Strk.OutputNo, door.Strk.RelayMode))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C111));
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.OUTPUT_SPEC));
                 }
                 ;
 
                 // door sensor Config
-                var SensorId = await helperService.GetIdFromMacAsync(door.sensor.module.hardware_mac);
-                if (!command.InputPointSpecification(SensorId, door.sensor.module_id, door.sensor.input_no, door.sensor.input_mode, door.sensor.debounce, door.sensor.holdtime))
+                var SensorId = await qHw.GetComponentFromMacAsync(door.Sensor.Mac);
+                if (!mp.InputPointSpecification(SensorId, door.Sensor.ModuleId, door.Sensor.InputNo, door.Sensor.InputMode, door.Sensor.Debounce, door.Sensor.HoldTime))
                 {
                     errors.Add(MessageBuilder.Unsuccess(mac, Command.INPUT_SPEC));
                 }
 
-                foreach (var rex in door.request_exits)
+                foreach (var rex in door.RequestExits)
                 {
-                    if (string.IsNullOrEmpty(rex.module.hardware_mac)) continue;
-                    var Rex0Id = await helperService.GetIdFromMacAsync(rex.module.hardware_mac);
-                    var rexComponentId = await helperService.GetLowestUnassignedNumberNoLimitAsync<RequestExit>(context);
-                    rex.component_id = rexComponentId;
-                    if (!command.InputPointSpecification(Rex0Id, rex.module_id, rex.input_no, rex.input_mode, rex.debounce, rex.holdtime))
+                    if (string.IsNullOrEmpty(rex.Mac)) continue;
+                    var Rex0Id = await qHw.GetComponentFromMacAsync(rex.Mac);
+                    var rexComponentId = await qDoor.GetLowestUnassignedRexNumberAsync();
+                    rex.ComponentId = rexComponentId;
+                    if (!mp.InputPointSpecification(Rex0Id, rex.ModuleId, rex.InputNo, rex.InputMode, rex.Debounce, rex.HoldTime))
                     {
                         errors.Add(MessageBuilder.Unsuccess(mac, Command.INPUT_SPEC));
                     }
                 }
 
-                if (!command.AccessControlReaderConfiguration(ScpId, door.component_id, door))
+                if (!d.AccessControlReaderConfiguration(ScpId, door.ComponentId, door))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C115));
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.ACR_CONFIG));
                 }
 
             }
@@ -451,23 +450,19 @@ namespace AeroService.Service.Impl
 
             #region Card Holder
 
-            var cards = await context.cardholder
-                .AsNoTracking()
-                .Include(x => x.credentials)
-                .Include(x => x.access_levels)
-                .ThenInclude(x => x.access_level)
-                .ToArrayAsync();
+            var cards = await qHolder.GetAsync();
 
             foreach (var card in cards)
             {
-                var ScpIds = await context.hardware.Select(x => new { x.component_id, x.mac }).ToArrayAsync();
-                foreach (var cred in card.credentials)
+                //var ScpIds = await context.hardware.Select(x => new { x.component_id, x.mac }).ToArrayAsync();
+                var ScpIds = await qHw.GetAsync();
+                foreach (var cred in card.Credentials)
                 {
                     foreach (var i in ScpIds)
                     {
-                        if (!command.AccessDatabaseCardRecord(i.component_id, card.flag, cred.card_no, cred.issue_code, cred.pin, card.access_levels.Select(x => x.access_level).ToList(), (int)helperService.DateTimeToElapeSecond(cred.active_date), (int)helperService.DateTimeToElapeSecond(cred.deactive_date)))
+                        if (!holder.AccessDatabaseCardRecord(i.ComponentId, card.Flag, cred.CardNo, cred.IssueCode, cred.Pin, card.AccessLevels.ToList(), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.ActiveDate), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.DeactiveDate)))
                         {
-                            errors.Add(MessageBuilder.Unsuccess(i.mac, Command.C8304));
+                            errors.Add(MessageBuilder.Unsuccess(i.Mac, Command.C8304));
                         }
                     }
 
@@ -478,23 +473,12 @@ namespace AeroService.Service.Impl
 
             #endregion
 
-            #region Procedure
-
-
-
-            #endregion
-
-            #region Trigger
-
-
-            #endregion
-
             #region Transaction
 
 
             // Transction
 
-            if (!command.SetTransactionLogIndex(ScpId, true))
+            if (!scp.SetTransactionLogIndex(ScpId, true))
             {
                 errors.Add(MessageBuilder.Unsuccess(mac, Command.C208));
             }
@@ -504,408 +488,14 @@ namespace AeroService.Service.Impl
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, errors);
 
-            entity.updated_date = DateTime.UtcNow;
-            entity.last_sync = DateTime.UtcNow;
-            entity.is_upload = false;
-            context.hardware.Update(entity);
-            await context.SaveChangesAsync();
+            if (await rHw.UpdateSyncStatusByMacAsync(mac) <= 0)
+            {
+                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.UPLOAD_HW_CONFIG_FAIL, errors);
+            }
 
             return ResponseHelper.SuccessBuilder(true);
         }
 
-
-
-        public async Task VerifyAllocateHardwareMemoryAsync(SCPReplyMessage message)
-        {
-            List<MemoryAllocateDto> mems = new List<MemoryAllocateDto>();
-
-            var hw = await context.hardware
-                .Where(d => d.component_id == message.SCPId)
-                .FirstOrDefaultAsync();
-
-            if (hw is null) return;
-
-            var config = await context.system_setting.AsNoTracking().FirstOrDefaultAsync();
-
-            if (config is null) return;
-
-            foreach (var i in message.str_sts.sStrSpec)
-            {
-                switch ((ScpStructure)i.nStrType)
-                {
-                    case ScpStructure.SCPSID_TRAN:
-                        // Handle transaction
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = config.n_transaction,
-                            nSwRecord = await context.transaction.AsNoTracking().CountAsync(),
-                            IsSync = config.n_transaction > i.nRecords,
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_TZ:
-                        // Handle time zones
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = config.n_tz,
-                            nSwRecord = await context.timezone.AsNoTracking().CountAsync(),
-                            IsSync = config.n_tz + 1 == i.nRecords,
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_HOL:
-                        // Handle holiday
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = config.n_hol,
-                            nSwRecord = await context.holiday.AsNoTracking().CountAsync(),
-                            IsSync = config.n_hol == i.nRecords
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_MSP1:
-                        // Handle Msp1 ports (SIO drivers)
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = config.m_msp1_port,
-                            nSwRecord = 0,
-                            IsSync = true,
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_SIO:
-                        // Handle SIOs
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = config.n_sio,
-                            nSwRecord = await context.module.AsNoTracking().CountAsync(),
-                            IsSync = config.n_sio == i.nRecords,
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_MP:
-                        // Handle Monitor points
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = config.n_mp,
-                            nSwRecord = await context.monitor_point.AsNoTracking().CountAsync(),
-                            IsSync = config.n_mp == i.nRecords
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_CP:
-                        // Handle Control points
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = config.n_cp,
-                            nSwRecord = await context.control_point.AsNoTracking().CountAsync(),
-                            IsSync = config.n_cp == i.nRecords
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_ACR:
-                        // Handle Access control reader
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = config.n_acr,
-                            nSwRecord = await context.door.AsNoTracking().CountAsync(),
-                            IsSync = config.n_acr == i.nRecords
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_ALVL:
-                        // Handle Access levels
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = config.n_alvl,
-                            nSwRecord = await context.accesslevel.AsNoTracking().CountAsync(),
-                            IsSync = config.n_alvl == i.nRecords
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_TRIG:
-                        // Handle trigger
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = config.n_trgr,
-                            nSwRecord = await context.trigger.AsNoTracking().CountAsync(),
-                            IsSync = config.n_trgr == i.nRecords
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_PROC:
-                        // Handle procedure
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = config.n_proc,
-                            nSwRecord = await context.procedure.AsNoTracking().CountAsync(),
-                            IsSync = config.n_proc == i.nRecords
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_MPG:
-                        // Handle Monitor point groups
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = config.n_mpg,
-                            nSwRecord = await context.monitor_group.AsNoTracking().CountAsync(),
-                            IsSync = config.n_mpg == i.nRecords
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_AREA:
-                        // Handle Access area
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = config.n_area,
-                            nSwRecord = await context.area.AsNoTracking().CountAsync(),
-                            IsSync = true
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_EAL:
-                        // Handle Elevator access levels
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = 0,
-                            nSwRecord = 0,
-                            IsSync = true
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_CRDB:
-                        // Handle Cardholder database
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = config.n_card,
-                            nSwRecord = await context.credential.AsNoTracking().CountAsync(),
-                            IsSync = config.n_card == i.nRecords
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_FLASH:
-                        // Handle FLASH specs
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = 0,
-                            nSwRecord = 0,
-                            IsSync = true
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_BSQN:
-                        // Handle Build sequence number
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = 0,
-                            nSwRecord = 0,
-                            IsSync = true
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_SAVE_STAT:
-                        // Handle Flash save status
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = 0,
-                            nSwRecord = 0,
-                            IsSync = true
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_MAB1_FREE:
-                        // Handle Memory alloc block 1 free memory
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = 0,
-                            nSwRecord = 0,
-                            IsSync = true
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_MAB2_FREE:
-                        // Handle Memory alloc block 2 free memory
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = 0,
-                            nSwRecord = 0,
-                            IsSync = true
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_ARQ_BUFFER:
-                        // Handle Access request buffers
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = 0,
-                            nSwRecord = 0,
-                            IsSync = true
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_PART_FREE_CNT:
-                        // Handle Partition memory free info
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = 0,
-                            nSwRecord = 0,
-                            IsSync = true
-                        });
-                        break;
-
-                    case ScpStructure.SCPSID_LOGIN_STANDARD:
-                        // Handle Web logins - standard
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = 0,
-                            nSwRecord = 0,
-                            IsSync = true
-                        });
-                        break;
-                    case ScpStructure.SCPSID_FILE_SYSTEM:
-                        mems.Add(new MemoryAllocateDto
-                        {
-                            nStrType = i.nStrType,
-                            StrType = Description.ScpStructureToText(((ScpStructure)i.nStrType)),
-                            nRecord = i.nRecords,
-                            nRecSize = i.nRecSize,
-                            nActive = i.nActive,
-                            nSwAlloc = 0,
-                            nSwRecord = 0,
-                            IsSync = true
-                        });
-                        break;
-
-                    default:
-                        // Handle unknown/unsupported types
-                        break;
-                }
-            }
-
-            hw.is_reset = mems.Any(x => x.IsSync == false);
-            hw.updated_date = DateTime.UtcNow;
-            context.hardware.Update(hw);
-            await context.SaveChangesAsync();
-
-            // Check mismatch device configuration
-            //await VerifyDeviceConfigurationAsync(hw.mac,hw.location_id);
-            TriggerSyncMemoryAllocate(hw.mac, mems);
-        }
 
 
         private async Task<List<VerifyHardwareDeviceConfigDto>> VerifyDeviceConfigurationAsync(Hardware hw)
@@ -914,201 +504,119 @@ namespace AeroService.Service.Impl
 
             if (hw is null) return dev;
 
-            var hwSyn = hw.last_sync;
+            var hwSyn = hw.LastSync;
+
 
             // modules
             dev.Add(new VerifyHardwareDeviceConfigDto
             {
                 ComponentName = "modules",
-                nMismatchRecord = await context.module
-                .AsNoTracking()
-                .Where(m => m.hardware_mac == hw.mac && m.updated_date > hwSyn)
-                .CountAsync(),
-                IsUpload = await context.module
-                .AsNoTracking()
-                .Where(m => m.hardware_mac == hw.mac)
-                .AnyAsync(m => m.updated_date > hwSyn)
+                nMismatchRecord = await qModule.CountByMacAndUpdateTimeAsync(hw.Mac, hwSyn),
+                IsUpload = await qModule.CountByMacAndUpdateTimeAsync(hw.Mac, hwSyn) != 0
             });
 
             // MP
             dev.Add(new VerifyHardwareDeviceConfigDto
             {
                 ComponentName = "Monitor Point",
-                nMismatchRecord = await context.monitor_point
-                .AsNoTracking()
-                .Where(m => m.module.hardware_mac == hw.mac && m.updated_date > hwSyn)
-                .CountAsync(),
-                IsUpload = await context.monitor_point
-                .AsNoTracking()
-                .Where(m => m.module.hardware_mac == hw.mac)
-                .AnyAsync(m => m.updated_date > hwSyn)
+                nMismatchRecord = await qMp.CountByMacAndUpdateTimeAsync(hw.Mac, hwSyn),
+                IsUpload = await qMp.CountByMacAndUpdateTimeAsync(hw.Mac, hwSyn) != 0
             });
 
             // CP
             dev.Add(new VerifyHardwareDeviceConfigDto
             {
                 ComponentName = "Control Point",
-                nMismatchRecord = await context.control_point
-                .AsNoTracking()
-                .Where(m => m.module.hardware_mac == hw.mac && m.updated_date > hwSyn)
-                .CountAsync(),
-                IsUpload = await context.control_point
-                .AsNoTracking()
-                .Where(m => m.module.hardware_mac == hw.mac)
-                .AnyAsync(m => m.updated_date > hwSyn)
+                nMismatchRecord = await qCp.CountByMacAndUpdateTimeAsync(hw.Mac, hwSyn),
+                IsUpload = await qCp.CountByMacAndUpdateTimeAsync(hw.Mac, hwSyn) != 0
             });
 
             // MPG
             dev.Add(new VerifyHardwareDeviceConfigDto
             {
                 ComponentName = "Monitor Group",
-                nMismatchRecord = await context.monitor_group
-                .AsNoTracking()
-                .Where(m => m.hardware_mac == hw.mac && m.updated_date > hwSyn)
-                .CountAsync(),
-                IsUpload = await context.monitor_group
-                .AsNoTracking()
-                .Where(m => m.hardware_mac == hw.mac)
-                .AnyAsync(m => m.updated_date > hwSyn)
+                nMismatchRecord = await qMpg.CountByMacAndUpdateTimeAsync(hw.Mac, hwSyn),
+                IsUpload = await qMpg.CountByMacAndUpdateTimeAsync(hw.Mac, hwSyn) != 0
             });
 
             // ACR
             dev.Add(new VerifyHardwareDeviceConfigDto
             {
                 ComponentName = "Access Control Reader",
-                nMismatchRecord = await context.door
-                .AsNoTracking()
-                .Where(m => m.hardware_mac == hw.mac && m.updated_date > hwSyn)
-                .CountAsync(),
-                IsUpload = await context.door
-                .AsNoTracking()
-                .Where(m => m.hardware_mac == hw.mac)
-                .AnyAsync(m => m.updated_date > hwSyn)
+                nMismatchRecord = await qDoor.CountByMacAndUpdateTimeAsync(hw.Mac, hwSyn),
+                IsUpload = await qDoor.CountByMacAndUpdateTimeAsync(hw.Mac, hwSyn) != 0
             });
 
             // Access Level
             dev.Add(new VerifyHardwareDeviceConfigDto
             {
                 ComponentName = "Access Level",
-                nMismatchRecord = await context.accesslevel
-                .AsNoTracking()
-                .Where(m => m.location_id == hw.location_id && m.updated_date > hwSyn)
-                .CountAsync(),
-                IsUpload = await context.accesslevel
-                .AsNoTracking()
-                .Where(m => m.location_id == hw.location_id)
-                .AnyAsync(m => m.updated_date > hwSyn)
+                nMismatchRecord = await qAlvl.CountByLocationIdAndUpdateTimeAsync(hw.LocationId, hwSyn),
+                IsUpload = await qAlvl.CountByLocationIdAndUpdateTimeAsync(hw.LocationId, hwSyn) != 0
             });
 
             // Access Area
             dev.Add(new VerifyHardwareDeviceConfigDto
             {
                 ComponentName = "Access Area",
-                nMismatchRecord = await context.area
-                .AsNoTracking()
-                .Where(m => m.location_id == hw.location_id && m.updated_date > hwSyn)
-                .CountAsync(),
-                IsUpload = await context.area
-                .AsNoTracking()
-                .Where(m => m.location_id == hw.location_id)
-                .AnyAsync(m => m.updated_date > hwSyn)
+                nMismatchRecord = await qArea.CountByLocationIdAndUpdateTimeAsync(hw.LocationId, hwSyn),
+                IsUpload = await qArea.CountByLocationIdAndUpdateTimeAsync(hw.LocationId, hwSyn) != 0
             });
 
             // time Zone
             dev.Add(new VerifyHardwareDeviceConfigDto
             {
-                ComponentName = "time Zone",
-                nMismatchRecord = await context.timezone
-                .AsNoTracking()
-                .Where(m => m.location_id == hw.location_id && m.updated_date > hwSyn)
-                .CountAsync(),
-                IsUpload = await context.timezone
-                .AsNoTracking()
-                .Where(m => m.location_id == hw.location_id)
-                .AnyAsync(m => m.updated_date > hwSyn)
+                ComponentName = "Time Zone",
+                nMismatchRecord = await qTz.CountByLocationIdAndUpdateTimeAsync(hw.LocationId, hwSyn),
+                IsUpload = await qTz.CountByLocationIdAndUpdateTimeAsync(hw.LocationId, hwSyn) != 0
             });
 
             // Holiday
             dev.Add(new VerifyHardwareDeviceConfigDto
             {
                 ComponentName = "Holiday",
-                nMismatchRecord = await context.holiday
-                .AsNoTracking()
-                .Where(m => m.location_id == hw.location_id && m.updated_date > hwSyn)
-                .CountAsync(),
-                IsUpload = await context.holiday
-                .AsNoTracking()
-                .Where(m => m.location_id == hw.location_id)
-                .AnyAsync(m => m.updated_date > hwSyn)
+                nMismatchRecord = await qHol.CountByLocationIdAndUpdateTimeAsync(hw.LocationId, hwSyn),
+                IsUpload = await qHol.CountByLocationIdAndUpdateTimeAsync(hw.LocationId, hwSyn) != 0
             });
 
             // interval
             dev.Add(new VerifyHardwareDeviceConfigDto
             {
-                ComponentName = "interval",
-                nMismatchRecord = await context.interval
-                .AsNoTracking()
-                .Where(m => m.location_id == hw.location_id && m.updated_date > hwSyn)
-                .CountAsync(),
-                IsUpload = await context.interval
-                .AsNoTracking()
-                .Where(m => m.location_id == hw.location_id)
-                .AnyAsync(m => m.updated_date > hwSyn)
+                ComponentName = "Interval",
+                nMismatchRecord = await qInterval.CountByLocationIdAndUpdateTimeAsync(hw.LocationId, hwSyn),
+                IsUpload = await qInterval.CountByLocationIdAndUpdateTimeAsync(hw.LocationId, hwSyn) != 0
             });
 
             // trigger
             dev.Add(new VerifyHardwareDeviceConfigDto
             {
-                ComponentName = "trigger",
-                nMismatchRecord = await context.trigger
-                .AsNoTracking()
-                .Where(m => m.hardware_mac == hw.mac && m.updated_date > hwSyn)
-                .CountAsync(),
-                IsUpload = await context.trigger
-                .AsNoTracking()
-                .Where(m => m.hardware_mac == hw.mac)
-                .AnyAsync(m => m.updated_date > hwSyn)
+                ComponentName = "Trigger",
+                nMismatchRecord = await qTrig.CountByMacAndUpdateTimeAsync(hw.Mac, hwSyn),
+                IsUpload = await qTrig.CountByMacAndUpdateTimeAsync(hw.Mac, hwSyn) != 0
             });
 
             // Prcedure
             dev.Add(new VerifyHardwareDeviceConfigDto
             {
-                ComponentName = "Prcedure",
-                nMismatchRecord = await context.procedure
-                .AsNoTracking()
-                .Where(m => m.trigger.hardware_mac == hw.mac && m.updated_date > hwSyn)
-                .CountAsync(),
-                IsUpload = await context.procedure
-                .AsNoTracking()
-                .Where(m => m.trigger.hardware_mac == hw.mac)
-                .AnyAsync(m => m.updated_date > hwSyn)
+                ComponentName = "Procedure",
+                nMismatchRecord = await qProc.CountByMacAndUpdateTimeAsync(hw.Mac, hwSyn),
+                IsUpload = await qProc.CountByMacAndUpdateTimeAsync(hw.Mac, hwSyn) != 0
             });
 
             // action
             dev.Add(new VerifyHardwareDeviceConfigDto
             {
-                ComponentName = "action",
-                nMismatchRecord = await context.action
-                .AsNoTracking()
-                .Where(m => m.procedure.trigger.hardware_mac == hw.mac && m.updated_date > hwSyn)
-                .CountAsync(),
-                IsUpload = await context.action
-                .AsNoTracking()
-                .Where(m => m.procedure.trigger.hardware_mac == hw.mac)
-                .AnyAsync(m => m.updated_date > hwSyn)
+                ComponentName = "Action",
+                nMismatchRecord = await qAction.CountByMacAndUpdateTimeAsync(hw.Mac, hwSyn),
+                IsUpload = await qAction.CountByMacAndUpdateTimeAsync(hw.Mac, hwSyn) != 0
             });
 
             // card_format
             dev.Add(new VerifyHardwareDeviceConfigDto
             {
                 ComponentName = "Card Format",
-                nMismatchRecord = await context.card_format
-                .AsNoTracking()
-                .Where(m => m.updated_date > hwSyn)
-                .CountAsync(),
-                IsUpload = await context.card_format
-                .AsNoTracking()
-                .AnyAsync(m => m.updated_date > hwSyn)
+                nMismatchRecord = await qCfmt.CountByUpdateTimeAsync(hwSyn),
+                IsUpload = await qCfmt.CountByUpdateTimeAsync(hwSyn) != 0
             }
             );
             return dev;
@@ -1117,279 +625,38 @@ namespace AeroService.Service.Impl
 
         public async Task<ResponseDto<IEnumerable<VerifyHardwareDeviceConfigDto>>> VerifyComponentConfigurationAsync(string mac)
         {
-            var hardware = await context.hardware.Where(x => x.mac == mac)
-                .FirstOrDefaultAsync();
+            var hardware = await rHw.GetByMacAsync(mac);
 
             if (hardware is null) return ResponseHelper.NotFoundBuilder<IEnumerable<VerifyHardwareDeviceConfigDto>>();
 
             var dev = await VerifyDeviceConfigurationAsync(hardware);
 
 
-            hardware.updated_date = DateTime.UtcNow;
-            hardware.is_upload = dev.Any(s => s.IsUpload == true);
+            var status = dev.Any(s => s.IsUpload == true);
 
-            context.hardware.Update(hardware);
-            await context.SaveChangesAsync();
+            await rHw.UpdateVerifyHardwareCofigurationMyMacAsync(mac, status);
 
             return ResponseHelper.SuccessBuilder<IEnumerable<VerifyHardwareDeviceConfigDto>>(dev);
         }
 
-        public async Task AssignIpAddress(SCPReplyMessage message)
-        {
-            if (!string.IsNullOrEmpty(await helperService.GetMacFromIdAsync((short)message.SCPId)))
-            {
-                var hw = context.hardware
-                    .Where(x => x.component_id == message.SCPId)
-                    .OrderBy(x => x.component_id)
-                    .FirstOrDefault();
 
-                if (hw is null) return;
-
-
-                if (message.web_network is not null) hw.ip = UtilityHelper.IntegerToIp(message.web_network.cIpAddr);
-
-                context.hardware.Update(hw);
-                await context.SaveChangesAsync();
-
-                command.GetWebConfigRead((short)message.SCPId, 3);
-
-            }
-            else
-            {
-                var report = await context.id_report
-                    .Where(x => x.scp_id == message.SCPId)
-                    .OrderBy(x => x.id)
-                    .FirstOrDefaultAsync();
-
-                if (report is null) return;
-
-                if (message.web_network is not null) report.ip = UtilityHelper.IntegerToIp(message.web_network.cIpAddr);
-
-                context.id_report.Update(report);
-                await context.SaveChangesAsync();
-
-                command.GetWebConfigRead((short)message.SCPId, 3);
-            }
-
-
-        }
-
-        public async Task AssignPort(SCPReplyMessage message)
-        {
-            if (!string.IsNullOrEmpty(await helperService.GetMacFromIdAsync((short)message.SCPId)))
-            {
-                var hw = context.hardware
-                    .Where(x => x.component_id == message.SCPId)
-                    .OrderBy(x => x.component_id)
-                    .FirstOrDefault();
-
-                if (hw is null) return;
-
-                if (message.web_host_comm_prim is not null)
-                {
-                    if (message.web_host_comm_prim.ipclient is not null)
-                    {
-                        hw.port = message.web_host_comm_prim.ipclient.nPort.ToString();
-                    }
-                    else if (message.web_host_comm_prim.ipserver is not null)
-                    {
-                        hw.port = message.web_host_comm_prim.ipserver.nPort.ToString();
-                    }
-                }
-                ;
-
-                context.hardware.Update(hw);
-                await context.SaveChangesAsync();
-
-                var dto = await context.id_report
-                    .AsNoTracking()
-                    .Select(x => MapperHelper.IdReportToDto(x))
-                    .ToListAsync();
-
-                TriggerIdReport(dto);
-
-            }
-            else
-            {
-                var report = await context.id_report
-                    .Where(x => x.scp_id == message.SCPId)
-                    .OrderBy(x => x.id)
-                    .FirstOrDefaultAsync();
-
-                if (report is null) return;
-
-                if (message.web_host_comm_prim is not null)
-                {
-                    if (message.web_host_comm_prim.ipclient is not null)
-                    {
-                        report.port = message.web_host_comm_prim.ipclient.nPort.ToString();
-                    }
-                    else if (message.web_host_comm_prim.ipserver is not null)
-                    {
-                        report.port = message.web_host_comm_prim.ipserver.nPort.ToString();
-                    }
-                }
-                ;
-
-                context.id_report.Update(report);
-                await context.SaveChangesAsync();
-
-                var dto = await context.id_report
-                    .AsNoTracking()
-                    .Select(x => MapperHelper.IdReportToDto(x))
-                    .ToListAsync();
-
-                TriggerIdReport(dto);
-            }
-
-
-        }
-
-        // Function for handle Detect IdReport
-        public async Task HandleFoundHardware(SCPReplyMessage message)
-        {
-            if (await context.hardware.AnyAsync(x => x.mac.Equals(UtilityHelper.ByteToHexStr(message.id.mac_addr))))
-            {
-                var hardware = await context.hardware
-                    .FirstOrDefaultAsync(d => d.mac.Equals(UtilityHelper.ByteToHexStr(message.id.mac_addr)));
-
-                if (hardware is null) return;
-
-                if (!await MappingHardwareAndAllocateMemory(message.id.scp_id))
-                {
-                    hardware.is_reset = true;
-                }
-                else
-                {
-                    hardware.is_reset = false;
-                }
-
-                if (!await VerifyMemoryAllocateAsync(hardware.mac))
-                {
-                    hardware.is_reset = true;
-                }
-                else
-                {
-                    hardware.is_reset = false;
-                }
-
-                hardware.firmware = UtilityHelper.ParseFirmware(message.id.sft_rev_major, message.id.sft_rev_minor);
-
-                var component = await VerifyDeviceConfigurationAsync(hardware);
-
-                hardware.updated_date = DateTime.UtcNow;
-                hardware.is_upload = component.Any(s => s.IsUpload == true);
-
-                context.hardware.Update(hardware);
-                await context.SaveChangesAsync();
-
-                // Call Get ip
-                command.GetWebConfigRead(message.id.scp_id, 2);
-
-
-            }
-            else
-            {
-                if (!await VerifyHardwareConnection(message.id.scp_id)) return;
-
-
-
-                if (await context.id_report.AnyAsync(x => x.scp_id == message.id.scp_id && x.mac.Equals(UtilityHelper.ByteToHexStr(message.id.mac_addr))))
-                {
-                    var iDReport = await context.id_report
-                        .Where(x => x.scp_id == message.id.scp_id && x.mac.Equals(UtilityHelper.ByteToHexStr(message.id.mac_addr)))
-                        .OrderBy(x => x.id)
-                        .FirstOrDefaultAsync();
-
-                    if (iDReport is null) return;
-                    iDReport.device_id = message.id.device_id;
-                    iDReport.device_ver = message.id.device_ver;
-                    iDReport.software_rev_major = message.id.sft_rev_major;
-                    iDReport.software_rev_minor = message.id.sft_rev_minor;
-                    iDReport.firmware = UtilityHelper.ParseFirmware(message.id.sft_rev_major, message.id.sft_rev_minor);
-                    iDReport.serial_number = message.id.serial_number;
-                    iDReport.ram_size = message.id.ram_size;
-                    iDReport.ram_free = message.id.ram_free;
-                    iDReport.e_sec = UtilityHelper.UnixToDateTime(message.id.e_sec);
-                    iDReport.db_max = message.id.db_max;
-                    iDReport.db_active = message.id.db_active;
-                    iDReport.dip_switch_powerup = message.id.dip_switch_pwrup;
-                    iDReport.dip_switch_current = message.id.dip_switch_current;
-                    //iDReport.hardware_id = command.SetScpId(message.id.scp_id, id) ? id : message.id.scp_id;
-                    iDReport.firmware_advisory = message.id.firmware_advisory;
-                    iDReport.scp_in1 = message.id.scp_in_1;
-                    iDReport.scp_in2 = message.id.scp_in_2;
-                    iDReport.n_oem_code = message.id.nOemCode;
-                    iDReport.config_flag = message.id.config_flags;
-                    //iDReport.mac = UtilityHelper.ByteToHexStr(message.id.mac_addr);
-                    iDReport.tls_status = message.id.tls_status;
-                    iDReport.oper_mode = message.id.oper_mode;
-                    iDReport.scp_in3 = message.id.scp_in_3;
-                    iDReport.cumulative_bld_cnt = message.id.cumulative_bld_cnt;
-                    iDReport.port = "";
-                    iDReport.ip = "";
-                    context.id_report.Update(iDReport);
-                }
-                else
-                {
-                    short id = await helperService.GetLowestUnassignedNumberNoLimitAsync<Hardware>(context);
-                    IdReport iDReport = new IdReport();
-                    iDReport.device_id = message.id.device_id;
-                    iDReport.device_ver = message.id.device_ver;
-                    iDReport.software_rev_major = message.id.sft_rev_major;
-                    iDReport.software_rev_minor = message.id.sft_rev_minor;
-                    iDReport.firmware = UtilityHelper.ParseFirmware(message.id.sft_rev_major, message.id.sft_rev_minor);
-                    iDReport.serial_number = message.id.serial_number;
-                    iDReport.ram_size = message.id.ram_size;
-                    iDReport.ram_free = message.id.ram_free;
-                    iDReport.e_sec = UtilityHelper.UnixToDateTime(message.id.e_sec);
-                    iDReport.db_max = message.id.db_max;
-                    iDReport.db_active = message.id.db_active;
-                    iDReport.dip_switch_powerup = message.id.dip_switch_pwrup;
-                    iDReport.dip_switch_current = message.id.dip_switch_current;
-                    iDReport.scp_id = command.SetScpId(message.id.scp_id, id) ? id : message.id.scp_id;
-                    iDReport.firmware_advisory = message.id.firmware_advisory;
-                    iDReport.scp_in1 = message.id.scp_in_1;
-                    iDReport.scp_in2 = message.id.scp_in_2;
-                    iDReport.n_oem_code = message.id.nOemCode;
-                    iDReport.config_flag = message.id.config_flags;
-                    iDReport.mac = UtilityHelper.ByteToHexStr(message.id.mac_addr);
-                    iDReport.tls_status = message.id.tls_status;
-                    iDReport.oper_mode = message.id.oper_mode;
-                    iDReport.scp_in3 = message.id.scp_in_3;
-                    iDReport.cumulative_bld_cnt = message.id.cumulative_bld_cnt;
-                    iDReport.port = "";
-                    iDReport.ip = "";
-                    await context.id_report.AddAsync(iDReport);
-                }
-
-
-                await context.SaveChangesAsync();
-
-
-                command.GetWebConfigRead(message.id.scp_id, 2);
-
-
-            }
-
-        }
 
 
 
 
         public async Task<ResponseDto<bool>> CreateAsync(CreateHardwareDto dto)
         {
-            var hardware = MapperHelper.CreateToHardware(dto, DateTime.UtcNow);
+            var hardware = HardwareMapper.ToHardware(dto);
 
-            if (!await VerifyMemoryAllocateAsync(hardware.mac))
+            if (!await VerifyMemoryAllocateAsync(hardware.Mac))
             {
-                hardware.is_reset = true;
+                hardware.IsReset = true;
             }
 
 
             var component = await VerifyDeviceConfigurationAsync(hardware);
 
-            hardware.is_upload = component.Any(s => s.IsUpload == true);
+            hardware.IsUpload = component.Any(s => s.IsUpload == true);
 
             //// Internal modules Config
             //if (!command.SioDriverConfiguration(dto.component_id,0, 0, -1, 0))
@@ -1404,7 +671,7 @@ namespace AeroService.Service.Impl
 
             if (dto.PortOne)
             {
-                if (!command.SioDriverConfiguration(dto.ComponentId, 1, 1, dto.BaudRateOne, dto.ProtocolOne))
+                if (!sio.SioDriverConfiguration(dto.ComponentId, 1, 1, dto.BaudRateOne, dto.ProtocolOne))
                 {
                     return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(dto.Mac, Command.SIO_DRIVER), []);
                 }
@@ -1417,7 +684,7 @@ namespace AeroService.Service.Impl
                     // n_input = 19 Maximum
                     // n_output = 12 Maximum
                     // n_reader = 4 Maximum
-                    if (!command.SioPanelConfiguration(dto.ComponentId, (short)i, -1, 19, 12, 4, (short)i, 1, true))
+                    if (!sio.SioPanelConfiguration(dto.ComponentId, (short)i, -1, 19, 12, 4, (short)i, 1, true))
                     {
                         return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(dto.Mac, Command.SIO_PANEL_CONFIG), []);
                     }
@@ -1426,7 +693,7 @@ namespace AeroService.Service.Impl
 
             if (dto.PortTwo)
             {
-                if (!command.SioDriverConfiguration(dto.ComponentId, 2, 2, dto.BaudRateTwo, dto.ProtocolTwo))
+                if (!sio.SioDriverConfiguration(dto.ComponentId, 2, 2, dto.BaudRateTwo, dto.ProtocolTwo))
                 {
                     return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(dto.Mac, Command.SIO_DRIVER), []);
                 }
@@ -1436,27 +703,25 @@ namespace AeroService.Service.Impl
                 for (int i = 15; i < 31; i++)
                 {
                     // model = -1 for allow every model
-                    if (!command.SioPanelConfiguration(dto.ComponentId, (short)i, -1, 19, 12, 4, (short)i, 1, true))
+                    if (!sio.SioPanelConfiguration(dto.ComponentId, (short)i, -1, 19, 12, 4, (short)i, 1, true))
                     {
                         return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(dto.Mac, Command.SIO_PANEL_CONFIG), []);
                     }
                 }
             }
 
-            var report = await context.id_report
-               .Where(x => x.mac == dto.Mac && x.scp_id == dto.ComponentId)
-               .OrderBy(x => x.id)
-               .FirstOrDefaultAsync();
+            var report = await idr.GetByMacAndComponentIdAsync(dto.Mac, dto.ComponentId);
 
             if (report is null) return ResponseHelper.NotFoundBuilder<bool>();
 
-            await context.hardware.AddAsync(hardware);
-            await context.SaveChangesAsync();
+            var status = await rHw.AddAsync(hardware);
 
+            if (status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS, []);
 
+            status = await idr.DeleteByMacAndComponentIdAsync(report.Mac, report.ComponentId);
 
-            context.id_report.Remove(report);
-            await context.SaveChangesAsync();
+            if (status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS, []);
+
 
             return ResponseHelper.SuccessBuilder(true);
         }
@@ -1464,17 +729,16 @@ namespace AeroService.Service.Impl
 
         public async Task<ResponseDto<HardwareDto>> UpdateAsync(HardwareDto dto)
         {
-            var en = await context.hardware
-                .Where(x => x.mac == dto.Mac && x.component_id == dto.ComponentId)
-                .OrderBy(x => x.id)
-                .FirstOrDefaultAsync();
+
+            var en = await qHw.GetByMacAsync(dto.Mac);
 
             if (en is null) return ResponseHelper.NotFoundBuilder<HardwareDto>();
 
-            MapperHelper.UpdateHardware(en, dto);
+            var ens = HardwareMapper.ToHardware(dto);
 
-            context.hardware.Update(en);
-            await context.SaveChangesAsync();
+            var status = await rHw.UpdateAsync(ens);
+
+            if (status <= 0) return ResponseHelper.UnsuccessBuilder<HardwareDto>(ResponseMessage.UPDATE_RECORD_UNSUCCESS, []);
 
             return ResponseHelper.SuccessBuilder<HardwareDto>(dto);
         }
@@ -1482,108 +746,27 @@ namespace AeroService.Service.Impl
 
         public async Task<ResponseDto<HardwareStatus>> GetStatusAsync(string mac)
         {
-            var ScpId = await helperService.GetIdFromMacAsync(mac);
+            var ScpId = await qHw.GetComponentFromMacAsync(mac);
             if (ScpId == 0) return ResponseHelper.NotFoundBuilder<HardwareStatus>();
-            if (!await context.hardware.AsNoTracking().AnyAsync(x => x.mac == mac && x.component_id == ScpId)) return ResponseHelper.NotFoundBuilder<HardwareStatus>();
-            short status = command.CheckSCPStatus(ScpId);
+            if (!await qHw.IsAnyByMacAndComponent(mac, ScpId)) return ResponseHelper.NotFoundBuilder<HardwareStatus>();
+            short status = scp.CheckSCPStatus(ScpId);
             return ResponseHelper.SuccessBuilder(new HardwareStatus()
             {
-                MacAddress = mac,
+                Mac = mac,
                 Status = status,
                 ComponentId = ScpId
 
             });
         }
 
-        public Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param)
-        {
-            throw new NotImplementedException();
-        }
 
-        public async Task<ResponseDto<HardwareDto>> GetByMacAsync(string mac)
-        {
-            var dto = await context.hardware
-                .AsNoTracking()
-                .Where(x => x.mac == mac)
-               .Select(hardware => new HardwareDto
-               {
-                   // Base 
-                   Uuid = hardware.uuid,
-                   ComponentId = hardware.component_id,
-                   Mac = hardware.mac,
-                   LocationId = hardware.location_id,
-                   IsActive = hardware.is_active,
 
-                   // extend_desc
-                   Name = hardware.name,
-                   HardwareType = hardware.hardware_type,
-                   HardwareTypeDescription = hardware.hardware_type_desc,
-                   Firmware = hardware.firmware,
-                   Ip = hardware.ip,
-                   Port = hardware.port,
-                   SerialNumber = hardware.serial_number,
-                   IsReset = hardware.is_reset,
-                   IsUpload = hardware.is_upload,
-                   Modules = hardware.modules.Select(d => new ModuleDto
-                   {
-                       // Base 
-                       Uuid = d.uuid,
-                       ComponentId = d.component_id,
-                       Mac = hardware.mac,
-                       LocationId = d.location_id,
-                       IsActive = d.is_active,
-
-                       // extend_desc
-                       Model = d.model,
-                       ModelDescription = d.model_desc,
-                       Revision = d.revision,
-                       SerialNumber = d.serial_number,
-                       nHardwareId = d.n_hardware_id,
-                       nHardwareIdDescription = d.n_hardware_id_desc,
-                       nHardwareRev = d.n_hardware_rev,
-                       nProductId = d.n_product_id,
-                       nProductVer = d.n_product_ver,
-                       nEncConfig = d.n_enc_config,
-                       nEncConfigDescription = d.n_enc_config_desc,
-                       nEncKeyStatus = d.n_enc_key_status,
-                       nEncKeyStatusDescription = d.n_enc_key_status_desc,
-                       Readers = null,
-                       Sensors = null,
-                       Strikes = null,
-                       RequestExits = null,
-                       MonitorPoints = null,
-                       ControlPoints = null,
-                       Address = d.address,
-                       Port = d.port,
-                       nInput = d.n_input,
-                       nOutput = d.n_output,
-                       nReader = d.n_reader,
-                       Msp1No = d.msp1_no,
-                       BaudRate = d.baudrate,
-                       nProtocol = d.n_protocol,
-                       nDialect = d.n_dialect,
-                   }).ToList(),
-                   PortOne = hardware.port_one,
-                   ProtocolOne = hardware.protocol_one,
-                   ProtocolOneDescription = hardware.protocol_one_desc,
-                   PortTwo = hardware.port_two,
-                   ProtocolTwoDescription = hardware.protocol_two_desc,
-                   ProtocolTwo = hardware.protocol_two,
-                   BaudRateOne = hardware.baudrate_one,
-                   BaudRateTwo = hardware.baudrate_two,
-
-               })
-                .FirstOrDefaultAsync();
-
-            if (dto == null) return ResponseHelper.NotFoundBuilder<HardwareDto>();
-            return ResponseHelper.SuccessBuilder(dto);
-        }
 
         public async Task<ResponseDto<bool>> SetTransactionAsync(string mac, short IsOn)
         {
-            var ScpId = await helperService.GetIdFromMacAsync(mac);
+            var ScpId = await qHw.GetComponentFromMacAsync(mac);
             if (ScpId == 0) return ResponseHelper.NotFoundBuilder<bool>();
-            if (!command.SetTransactionLogIndex(ScpId, IsOn == 1 ? true : false))
+            if (!scp.SetTransactionLogIndex(ScpId, IsOn == 1 ? true : false))
             {
                 return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(mac, Command.C303), []);
             }
@@ -1592,10 +775,10 @@ namespace AeroService.Service.Impl
 
         public async Task<ResponseDto<bool>> GetTransactionLogStatusAsync(string mac)
         {
-            var id = await helperService.GetIdFromMacAsync(mac);
+            var id = await qHw.GetComponentFromMacAsync(mac);
             if (id == 0) return ResponseHelper.NotFoundBuilder<bool>();
 
-            if (!command.GetTransactionLogStatus(id))
+            if (!scp.GetTransactionLogStatus(id))
             {
                 return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(mac, Command.C402), []);
             }
@@ -1603,57 +786,14 @@ namespace AeroService.Service.Impl
             return ResponseHelper.SuccessBuilder(true);
         }
 
-        public async void TriggerTranStatus(SCPReplyMessage message)
-        {
-            TranStatusDto tran = new TranStatusDto
-            {
-                MacAddress = await helperService.GetMacFromIdAsync((short)message.SCPId),
-                Capacity = message.tran_sts.capacity,
-                Oldest = message.tran_sts.oldest,
-                LastLog = message.tran_sts.last_loggd,
-                LastReport = message.tran_sts.last_rprtd,
-                Disabled = message.tran_sts.disabled,
-                Status = message.tran_sts.disabled == 0 ? "Enable" : "Disable"
-
-            };
-            await hub.Clients.All.SendAsync("TranStatus", tran);
-        }
 
         public async Task<ResponseDto<IEnumerable<ModeDto>>> GetHardwareTypeAsync()
         {
-            var dtos = await context.hardware_type
-                .AsNoTracking()
-                .Select(x => new ModeDto
-                {
-                    Name = x.name,
-                    Value = x.component_id,
-                    Description = x.description
-                })
-                .ToArrayAsync();
-
+            var dtos = await qHw.GetHardwareTypeAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
-        public async Task<IEnumerable<IdReportDto>> RemoveIdReportAsync(SCPReplyMessage message)
-        {
-            var report = await context.id_report
-                .Where(x => x.scp_id == message.SCPId)
-                .OrderBy(x => x.id)
-                .FirstOrDefaultAsync();
 
-            if (report is null) return await context.id_report
-                    .AsNoTracking()
-                    .Select(x => MapperHelper.IdReportToDto(x))
-                    .ToArrayAsync();
-
-            context.id_report.Remove(report);
-            await context.SaveChangesAsync();
-
-            return await context.id_report
-                    .AsNoTracking()
-                    .Select(x => MapperHelper.IdReportToDto(x))
-                    .ToArrayAsync();
-        }
 
         public async Task<ResponseDto<IEnumerable<ResponseDto<bool>>>> SetRangeTransactionAsync(List<SetTranDto> dtos)
         {
@@ -1671,6 +811,12 @@ namespace AeroService.Service.Impl
             var res = ResponseHelper.SuccessBuilder<IEnumerable<ResponseDto<bool>>>(data);
 
             return res;
+        }
+
+        public async Task<ResponseDto<HardwareDto>> GetByMacAsync(string mac)
+        {
+            var res = await qHw.GetByMacAsync(mac);
+            return ResponseHelper.SuccessBuilder<HardwareDto>(res);
         }
     }
 }

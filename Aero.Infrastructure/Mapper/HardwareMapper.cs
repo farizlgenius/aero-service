@@ -1,6 +1,7 @@
-using System;
+
+
+using Aero.Domain.Enums;
 using Aero.Infrastructure.Data.Entities;
-using Aero.Infrastructure.Enums;
 
 namespace Aero.Infrastructure.Mapper;
 
@@ -140,4 +141,28 @@ public static class HardwareMapper
                   BaudRateTwo = ef.baudrate_two,
             };
       }
+
+      public static void Update(Hardware en, Aero.Domain.Entities.Hardware hw)
+        {
+            // Base 
+            en.mac = hw.Mac;
+            en.updated_date = DateTime.UtcNow;
+
+            // Detail 
+            en.name = hw.Name;
+            en.hardware_type = hw.HardwareType;
+            en.hardware_type_desc = hw.HardwareTypeDescription;
+            en.ip = hw.Ip;
+            en.port = hw.Port;
+            en.firmware = hw.Firmware;
+            en.serial_number = hw.SerialNumber;
+            en.port_one = hw.PortOne;
+            en.protocol_one = hw.ProtocolOne;
+            en.protocol_one_desc = hw.ProtocolOneDescription;
+            en.port_two = hw.PortTwo;
+            en.protocol_two_desc = hw.ProtocolTwoDescription;
+            en.protocol_two = hw.ProtocolTwo;
+            en.baudrate_one = hw.BaudRateOne;
+            en.baudrate_two = hw.BaudRateTwo;
+        }
 }

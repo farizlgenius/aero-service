@@ -4,7 +4,7 @@ using HID.Aero.ScpdNet.Wrapper;
 
 namespace Aero.Infrastructure.Services;
 
-public class SioCommandService : BaseAeroCommand, ISioCommand
+public sealed class SioCommandService : BaseAeroCommand, ISioCommand
 {
   public bool SioDriverConfiguration(short ScpId, short SioDriverNo, short IoModulePort, int BaudRate, short ProtocolType)
   {
@@ -51,4 +51,6 @@ public class SioCommandService : BaseAeroCommand, ISioCommand
     bool flag = Send((short)enCfgCmnd.enCcSio, cc_sio);
     return flag;
   }
+
+  
 }

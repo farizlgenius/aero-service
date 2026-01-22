@@ -141,4 +141,63 @@ public sealed class ScpCommandService : BaseAeroCommand, IScpCommand
             bool flag = Send((short)enCfgCmnd.enCcStrSRq, cc_strsq);
             return flag;
       }
+
+      public bool DeleteScp(short ScpId)
+      {
+            CC_NEWSCP c = new CC_NEWSCP();
+            c.nSCPId = ScpId;
+
+            bool flag = Send((short)enCfgCmnd.enCcDeleteScp, c);
+            return flag;
+
+      }
+
+
+
+      public bool SetScpId(short oldId, short newId)
+      {
+            CC_SCPID cc = new CC_SCPID();
+            cc.scp_number = oldId;
+            cc.scp_id = newId;
+            bool flag = Send((short)enCfgCmnd.enCcScpID, cc);
+            return flag;
+      }
+
+      public bool GetTransactionLogStatus(short ScpId)
+      {
+            CC_TRANSRQ c = new CC_TRANSRQ();
+            c.scp_number = ScpId;
+
+            bool flag = Send((short)enCfgCmnd.enCcTranSrq, c);
+            return flag;
+      }
+
+      public bool SetTransactionLogIndex(short ScpId, bool isEnable)
+      {
+            var _commandValue = (short)enCfgCmnd.enCcTranIndex;
+            CC_TRANINDEX cc_tranindex = new CC_TRANINDEX();
+            cc_tranindex.scp_number = ScpId;
+            cc_tranindex.tran_index = isEnable ? -2 : -1;
+
+            bool flag = Send(_commandValue, cc_tranindex);
+            return flag;
+      }
+
+      public bool GetWebConfigRead(short ScpId, short type)
+        {
+            CC_WEB_CONFIG_READ cc = new CC_WEB_CONFIG_READ();
+            cc.scp_number = ScpId;
+            cc.read_type = type;
+
+            bool flag = Send((short)enCfgCmnd.enCcWebConfigRead, cc);
+            return flag;
+        }
+
+        public short CheckSCPStatus(short scpID)
+        {
+            return SCPDLL.scpCheckOnline(scpID);
+        }
+
+      
+
 }

@@ -1,14 +1,15 @@
 using System;
 using Aero.Api.Hubs;
+using Aero.Application.DTOs;
 using Aero.Application.Entities;
 using Aero.Application.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Aero.Infrastructure.Data.Publisher;
+namespace Aero.Api.Publisher;
 
 public class ScpNotificationPublisher(IHubContext<AeroHub> hub) : IScpNotificationPublisher
 {
-      public async Task IdReportNotifyAsync(List<IdReport> idReports)
+      public async Task IdReportNotifyAsync(List<IdReportDto> idReports)
       {
             await hub.Clients.All.SendAsync("SCP.ID_REPORT", idReports);
       }
@@ -18,7 +19,7 @@ public class ScpNotificationPublisher(IHubContext<AeroHub> hub) : IScpNotificati
             await hub.Clients.All.SendAsync("SCP.DEVICE_CONFIGURATION", configuration);
       }
 
-      public async Task ScpNotifyMemoryAllocate(MemoryAllocate allocate)
+      public async Task ScpNotifyMemoryAllocate(MemoryAllocateDto allocate)
       {
             await hub.Clients.All.SendAsync("SCP.MEMORY_ALLOCATE", allocate);
       }
@@ -27,4 +28,10 @@ public class ScpNotificationPublisher(IHubContext<AeroHub> hub) : IScpNotificati
       {
             await hub.Clients.All.SendAsync("SCP.STATUS", status);
       }
+
+       public async Task ScpNotifyTranStatus(TranStatusDto tran)
+        {
+            await hub.Clients.All.SendAsync("SCP.TRAN", tran);
+        }
+
 }

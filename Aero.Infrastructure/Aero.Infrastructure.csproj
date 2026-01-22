@@ -58,8 +58,6 @@
 <ItemGroup>
   <Folder Include="Constant/" />
   <Folder Include="External/" />
-  <Folder Include="Mapper\" />
-  <Folder Include="Services\" />
 </ItemGroup>
 
 

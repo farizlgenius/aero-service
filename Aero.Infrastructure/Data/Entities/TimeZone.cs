@@ -1,6 +1,6 @@
 ﻿
 
-using Aero.Infrastructure.Data.Interface;
+using Aero.Domain.Interface;
 
 namespace Aero.Infrastructure.Data.Entities
 {

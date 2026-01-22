@@ -1,5 +1,4 @@
-﻿using AeroService.Model;
-
+﻿
 namespace Aero.Application.DTOs
 {
     public sealed class MonitorGroupDto : BaseDto

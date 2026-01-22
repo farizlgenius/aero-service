@@ -4,7 +4,7 @@ using System.Net;
 using Aero.Application.Constants;
 using Aero.Application.DTOs;
 
-namespace AeroService.Helpers
+namespace Aero.Application.Helpers
 {
     public sealed class ResponseHelper
     {

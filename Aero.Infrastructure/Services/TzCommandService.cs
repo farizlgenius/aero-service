@@ -6,7 +6,7 @@ using HID.Aero.ScpdNet.Wrapper;
 
 namespace Aero.Infrastructure.Services;
 
-public class TzCommandService : BaseAeroCommand, ITzCommand
+public sealed class TzCommandService : BaseAeroCommand, ITzCommand
 {
   public bool ExtendedTimeZoneActSpecificationAsync(short ScpId, TimeZoneDto dto, List<IntervalDto> intervals, int activeTime, int deactiveTime)
   {

@@ -13,4 +13,8 @@ public static class ResponseMessage
       public static string UNAUTHORIZED = "Unauthorized.";
       public static string DELETE_DEFAULT = "Delete default.";
       public static string COMMAND_UNSUCCESS = "Send command unsuccess.";
+      public static string UPLOAD_HW_CONFIG_FAIL = "Upload hardware configuration fail.";
+      public static string SAVE_DATABASE_UNSUCCESS = "Save to database unsuccess.";
+      public static string DELETE_DATABASE_UNSUCCESS = "Delete from database unsuccess.";
+      public static string UPDATE_RECORD_UNSUCCESS = "Update record in database unsuccess.";
 }

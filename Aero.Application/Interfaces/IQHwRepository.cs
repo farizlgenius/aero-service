@@ -1,0 +1,20 @@
+using System;
+using Aero.Application.DTOs;
+using Aero.Domain.Entities;
+using Aero.Domain.Interfaces;
+
+namespace Aero.Application.Interfaces;
+
+public interface IQHwRepository : IBaseQueryRespository<HardwareDto>
+{
+      Task<HardwareDto> GetByMacAsync(string mac);
+      Task<bool> IsAnyByMac(string mac);
+      Task<bool> IsAnyByMacAndComponent(string mac,short component);
+      Task<short> GetComponentFromMacAsync(string mac);
+      Task<string> GetMacFromComponentAsync(short component);
+      Task<bool> IsAnyModuleReferenceByMacAsync(string mac);
+      Task<ScpSetting> GetScpSettingAsync();
+      Task<IEnumerable<(short ComponentId, string Mac)>> GetComponentAndMacAsync(); 
+      Task<IEnumerable<ModeDto>> GetHardwareTypeAsync();
+
+}

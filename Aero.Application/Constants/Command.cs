@@ -2,14 +2,14 @@
 {
     public sealed class Command
     {
-        public static string C2116 = "command 2116: Access Level Configuration Extended";
+        public static string ALVL_CONFIG = "command 2116: Access Level Configuration Extended";
         public static string C1104 = "command 1104: Holiday Configuration";
-        public static string C3103 = "command 3103: Extended time Zone Act Specification";
-        public static string C1102 = "command 1102: Card Formatter Configuration";
+        public static string TIMEZONE_SPEC = "command 3103: Extended Time Zone Act Specification";
+        public static string CARDFORMAT_CONFIG = "command 1102: Card Formatter Configuration";
         public static string C208 = "command 208: Detach SCP from Channel";
         public static string RESET_SCP = "command 301: Reset SCP";
-        public static string C111 = "command 111: Strike Point Specification";
-        public static string C114 = "command 114: Control Point Configuration";
+        public static string OUTPUT_SPEC = "command 111: Output Point Specification";
+        public static string CONTROL_CONFIG = "command 114: Control Point Configuration";
         public static string C406 = "command 406: enCcCpSrq";
         public static string C113 = "command 113: Monitor Point Configuration";
         public static string INPUT_SPEC = "command 110: Input Point Specification";
@@ -18,8 +18,8 @@
         public static string C306 = "command 306: Monitor Point MaskAsync";
         public static string C404 = "command 404: enCcSioSrq";
         public static string C311 = "command 311: Momentary Unlock";
-        public static string C112 = "command 112: Reader Specification";
-        public static string C115 = "command 115: Access Control Reader Configuration";
+        public static string READER_SPEC = "command 112: Reader Specification";
+        public static string ACR_CONFIG = "command 115: Access Control Reader Configuration";
         public static string C407 = "command 407: enCcAcrSrq";
         public static string C308 = "command 308: ACR mode";
         public static string C401 = "command 401: enCcIDRequest";

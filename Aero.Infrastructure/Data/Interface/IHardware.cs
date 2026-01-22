@@ -1,7 +1,7 @@
 ﻿
 using Aero.Infrastructure.Data.Entities;
 
-namespace Aero.Infrastructure.Data.Interface
+namespace Aero.Domain.Interface
 {
     public interface IHardware
     {

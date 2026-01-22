@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "wKbb0o3jAXw=",
+  "dgSpecHash": "33RfqE27jd0=",
   "success": true,
-  "projectFilePath": "/Users/far-izlengha/Documents/VScode/dotnet/aero-service/Aero.Data/Aero.Domain.csproj",
+  "projectFilePath": "D:\\Aero\\AeroService\\Aero.Data\\Aero.Domain.csproj",
   "expectedPackageFiles": [
-    "/Users/far-izlengha/.nuget/packages/microsoft.netcore.app.ref/8.0.22/microsoft.netcore.app.ref.8.0.22.nupkg.sha512",
-    "/Users/far-izlengha/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.22/microsoft.aspnetcore.app.ref.8.0.22.nupkg.sha512"
+    "C:\\Users\\User\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.23\\microsoft.netcore.app.ref.8.0.23.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.23\\microsoft.windowsdesktop.app.ref.8.0.23.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.23\\microsoft.aspnetcore.app.ref.8.0.23.nupkg.sha512"
   ],
   "logs": []
 }

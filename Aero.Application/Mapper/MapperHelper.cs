@@ -6,113 +6,13 @@ namespace Aero.Application.Mapper
     public static class MapperHelper
     {
 
-        #region IdReport
-
-        public static IdReportDto IdReportToDto(IdReport en)
-        {
-            return new IdReportDto()
-            {
-                ComponentId = en.scp_id,
-                SerialNumber = en.serial_number,
-                MacAddress = en.mac,
-                Ip = en.ip,
-                Port = en.port,
-                Firmware = en.firmware,
-                HardwareTypeDescription = "HID Aero",
-                HardwareType = 1,
-            };
-        }
-
-        #endregion
+       
 
         #region Hardware
 
 
-        public static Hardware CreateToHardware(CreateHardwareDto dto, DateTime Created)
-        {
-            return new Hardware
-            {
-                component_id = dto.ComponentId,
-                mac = dto.Mac,
-                location_id = dto.LocationId,
-                name = dto.Name,
-                hardware_type = dto.HardwareType,
-                hardware_type_desc = dto.HardwareTypeDescription,
-                modules = new List<Module>
-                {
-                    new Module
-                    {
-                        // Base 
-                        component_id = 0,
-                        hardware_mac = dto.Mac,
-                        location_id = dto.LocationId,
-                        is_active = dto.IsActive,
-                        created_date =Created,
-                        updated_date = Created,
 
-                        // extend_desc
-                        model_desc = "Internal",
-                        model = (short)Enums.Model.AeroX1100,
-                        revision=dto.Firmware,
-                        serial_number = dto.SerialNumber,
-                        n_hardware_id = 217,
-                        n_hardware_id_desc = "HID Aero X1100",
-                        address = -1,
-                        address_desc = "Internal",
-                        port = 3,
-                        n_input = (short)InputComponents.HIDAeroX1100,
-                        n_output = (short)OutputComponents.HIDAeroX1100,
-                        n_reader = (short)ReaderComponents.HIDAeroX1100,
-                        msp1_no = 0,
-                        baudrate = -1,
-                        n_protocol = 0,
-                        n_dialect = 0,
-
-                    }
-                },
-                ip = dto.Ip,
-                port = dto.Port,
-                firmware = dto.Firmware,
-                serial_number = dto.SerialNumber,
-                is_upload = false,
-                is_reset = false,
-                port_one = dto.PortOne,
-                protocol_one = dto.ProtocolOne,
-                protocol_one_desc = dto.ProtocolOneDescription,
-                port_two = dto.PortTwo,
-                protocol_two_desc = dto.ProtocolTwoDescription,
-                protocol_two = dto.ProtocolTwo,
-                baudrate_one = dto.BaudRateOne,
-                baudrate_two = dto.BaudRateTwo,
-                last_sync = DateTime.UtcNow,
-                created_date = DateTime.UtcNow,
-                updated_date = DateTime.UtcNow
-            };
-        }
-
-        public static void UpdateHardware(Hardware hw, HardwareDto dto)
-        {
-            // Base 
-            hw.mac = dto.Mac;
-            hw.updated_date = DateTime.UtcNow;
-
-            // Detail 
-            hw.name = dto.Name;
-            hw.hardware_type = dto.HardwareType;
-            hw.hardware_type_desc = dto.HardwareTypeDescription;
-            hw.ip = dto.Ip;
-            hw.port = dto.Port;
-            hw.firmware = dto.Firmware;
-            hw.serial_number = dto.SerialNumber;
-            hw.port_one = dto.PortOne;
-            hw.protocol_one = dto.ProtocolOne;
-            hw.protocol_one_desc = dto.ProtocolOneDescription;
-            hw.port_two = dto.PortTwo;
-            hw.protocol_two_desc = dto.ProtocolTwoDescription;
-            hw.protocol_two = dto.ProtocolTwo;
-            hw.baudrate_one = dto.BaudRateOne;
-            hw.baudrate_two = dto.BaudRateTwo;
-        }
+        
 
         #endregion
 
@@ -950,33 +850,6 @@ namespace Aero.Application.Mapper
 
         }
 
-        public static CardFormatDto CardFormatToDto(CardFormat x)
-        {
-            return new CardFormatDto
-            {
-                // Baes 
-                Uuid = x.uuid,
-                IsActive = x.is_active,
-
-                // extend_desc
-                Name = x.name,
-                ComponentId = x.component_id,
-                Facility = x.facility,
-                Bits = x.bits,
-                PeLn = x.pe_ln,
-                PeLoc = x.pe_loc,
-                PoLn = x.po_ln,
-                PoLoc = x.po_loc,
-                FcLn = x.fc_ln,
-                FcLoc = x.fc_loc,
-                ChLn = x.ch_ln,
-                ChLoc = x.ch_loc,
-                IcLn = x.ic_ln,
-                IcLoc = x.ic_loc,
-
-            };
-
-        }
 
         public static void UpdateCardFormat(CardFormat card, CardFormatDto dto)
         {
