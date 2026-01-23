@@ -6,6 +6,16 @@ namespace Aero.Infrastructure.Services;
 
 public sealed class SioCommandService : BaseAeroCommand, ISioCommand
 {
+  public bool GetSioStatus(short ScpId, short SioNo)
+  {
+    CC_SIOSRQ cc_siosrq = new CC_SIOSRQ();
+    cc_siosrq.scp_number = ScpId;
+    cc_siosrq.first = SioNo;
+    cc_siosrq.count = 1;
+    bool flag = Send((short)enCfgCmnd.enCcSioSrq, cc_siosrq);
+    return flag;
+  }
+
   public bool SioDriverConfiguration(short ScpId, short SioDriverNo, short IoModulePort, int BaudRate, short ProtocolType)
   {
     CC_MSP1 cc_msp1 = new CC_MSP1();

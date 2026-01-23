@@ -6,4 +6,6 @@ public interface ISioCommand
 {
   bool SioDriverConfiguration(short ScpId, short SioDriverNo, short IoModulePort, int BaudRate, short ProtocolType);
   bool SioPanelConfiguration(short ScpId, short SioNo, short Model, short nInput, short nOutput, short nReader, short ModuleAddress, short SIODriverPort, bool isEnable);
+  bool GetSioStatus(short ScpId, short SioNo);
+
 }

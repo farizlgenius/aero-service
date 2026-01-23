@@ -38,7 +38,7 @@ public sealed class QHolRepository(AppDbContext context) : IQHolRepository
             throw new NotImplementedException();
       }
 
-      public Task<bool> IsAnyByComponet(short component)
+      public Task<bool> IsAnyByComponentId(short component)
       {
             throw new NotImplementedException();
       }

@@ -1,6 +1,5 @@
 using System;
-using Aero.Application.DTOs;
-using Aero.Application.Entities;
+using Aero.Domain.Entities;
 using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Interfaces;

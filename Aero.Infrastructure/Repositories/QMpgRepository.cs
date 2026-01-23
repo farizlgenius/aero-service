@@ -69,7 +69,7 @@ public class QMpgRepository(AppDbContext context) : IQMpgRepository
             throw new NotImplementedException();
       }
 
-      public Task<bool> IsAnyByComponet(short component)
+      public Task<bool> IsAnyByComponentId(short component)
       {
             throw new NotImplementedException();
       }

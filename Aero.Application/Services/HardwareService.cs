@@ -498,7 +498,7 @@ namespace Aero.Application.Services
 
 
 
-        private async Task<List<VerifyHardwareDeviceConfigDto>> VerifyDeviceConfigurationAsync(Hardware hw)
+        public async Task<List<VerifyHardwareDeviceConfigDto>> VerifyDeviceConfigurationAsync(Hardware hw)
         {
             List<VerifyHardwareDeviceConfigDto> dev = new List<VerifyHardwareDeviceConfigDto>();
 
@@ -718,7 +718,7 @@ namespace Aero.Application.Services
 
             if (status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS, []);
 
-            status = await idr.DeleteByMacAndComponentIdAsync(report.Mac, report.ComponentId);
+            status = await idr.DeleteByMacAndComponentIdAsync(report.Mac, report.ScpId);
 
             if (status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS, []);
 
@@ -818,5 +818,7 @@ namespace Aero.Application.Services
             var res = await qHw.GetByMacAsync(mac);
             return ResponseHelper.SuccessBuilder<HardwareDto>(res);
         }
+
+       
     }
 }

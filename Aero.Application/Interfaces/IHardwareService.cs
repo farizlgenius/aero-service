@@ -1,6 +1,7 @@
 ﻿
 
 using Aero.Application.DTOs;
+using Aero.Domain.Entities;
 
 namespace Aero.Application.Interface
 {
@@ -25,6 +26,9 @@ namespace Aero.Application.Interface
         Task<ResponseDto<bool>> GetTransactionLogStatusAsync(string mac);
         Task<ResponseDto<bool>> SetTransactionAsync(string mac, short IsOn);
         Task<ResponseDto<IEnumerable<ResponseDto<bool>>>> SetRangeTransactionAsync(List<SetTranDto> tran);
+        Task<bool> MappingHardwareAndAllocateMemory(short ScpId);
+        Task<List<VerifyHardwareDeviceConfigDto>> VerifyDeviceConfigurationAsync(Hardware hw);
+        Task<bool> VerifyHardwareConnection(short ScpId);
 
     }
 }

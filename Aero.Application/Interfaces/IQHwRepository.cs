@@ -16,5 +16,7 @@ public interface IQHwRepository : IBaseQueryRespository<HardwareDto>
       Task<ScpSetting> GetScpSettingAsync();
       Task<IEnumerable<(short ComponentId, string Mac)>> GetComponentAndMacAsync(); 
       Task<IEnumerable<ModeDto>> GetHardwareTypeAsync();
+      Task<IEnumerable<short>> GetComponentIdByLocationIdAsync(short location);
+      
 
 }

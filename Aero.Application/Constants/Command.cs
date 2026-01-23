@@ -16,7 +16,7 @@
         public static string C405 = "command 405: enCcMpSrq";
         public static string C307 = "command 307: Control Point command";
         public static string C306 = "command 306: Monitor Point MaskAsync";
-        public static string C404 = "command 404: enCcSioSrq";
+        public static string MODULE_STATUS = "command 404: Get Module Status";
         public static string C311 = "command 311: Momentary Unlock";
         public static string READER_SPEC = "command 112: Reader Specification";
         public static string ACR_CONFIG = "command 115: Access Control Reader Configuration";

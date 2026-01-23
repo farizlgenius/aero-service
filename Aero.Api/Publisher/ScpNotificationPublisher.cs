@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Aero.Api.Publisher;
 
-public class ScpNotificationPublisher(IHubContext<AeroHub> hub) : IScpNotificationPublisher
+public class ScpNotificationPublisher(IHubContext<AeroHub> hub) : INotificationPublisher
 {
       public async Task IdReportNotifyAsync(List<IdReportDto> idReports)
       {
@@ -29,9 +29,14 @@ public class ScpNotificationPublisher(IHubContext<AeroHub> hub) : IScpNotificati
             await hub.Clients.All.SendAsync("SCP.STATUS", status);
       }
 
-       public async Task ScpNotifyTranStatus(TranStatusDto tran)
-        {
+      public async Task ScpNotifyTranStatus(TranStatusDto tran)
+      {
             await hub.Clients.All.SendAsync("SCP.TRAN", tran);
-        }
+      }
+
+      public async Task SioNotifyStatus(SioStatus status)
+      {
+            await hub.Clients.All.SendAsync("SIO.STATUS",status);
+      }
 
 }

@@ -4,11 +4,19 @@ using Aero.Application.Entities;
 
 namespace Aero.Application.Interfaces;
 
-public interface IScpNotificationPublisher
+public interface INotificationPublisher
 {
+      #region SCP
       Task ScpNotifyStatus(ScpStatus status);
       Task ScpNotifyMemoryAllocate(MemoryAllocateDto allocate);
       Task ScpNotifyConfigurationAsync(ScpConfiguratiion configuration);
       Task IdReportNotifyAsync(List<IdReportDto> idReports);
       Task ScpNotifyTranStatus(TranStatusDto tran);
+
+      #endregion
+
+      #region SIO
+      Task SioNotifyStatus(SioStatus status);
+
+      #endregion
 }

@@ -104,7 +104,7 @@ public class QHolderRepository(AppDbContext context) : IQHolderRepository
             return expected;
       }
 
-      public Task<bool> IsAnyByComponet(short component)
+      public Task<bool> IsAnyByComponentId(short component)
       {
             throw new NotImplementedException();
       }

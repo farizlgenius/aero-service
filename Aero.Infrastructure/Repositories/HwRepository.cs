@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aero.Infrastructure.Repositories;
 
-public sealed class HwRepository(AppDbContext context, IScpCommand scp, IScpNotificationPublisher publisher) : IHwRepository
+public sealed class HwRepository(AppDbContext context, IScpCommand scp, INotificationPublisher publisher) : IHwRepository
 {
       public async Task<int> AddAsync(Hardware entity)
       {
@@ -303,133 +303,7 @@ public sealed class HwRepository(AppDbContext context, IScpCommand scp, IScpNoti
 
       }
 
-      public async Task HandleFoundHardware(SCPReplyMessage message)
-      {
-            if (await context.hardware.AnyAsync(x => x.mac.Equals(UtilitiesHelper.ByteToHexStr(message.id.mac_addr))))
-            {
-                  var hardware = await context.hardware
-                      .FirstOrDefaultAsync(d => d.mac.Equals(UtilitiesHelper.ByteToHexStr(message.id.mac_addr)));
-
-                  if (hardware is null) return;
-
-                  if (!await MappingHardwareAndAllocateMemory(message.id.scp_id))
-                  {
-                        hardware.is_reset = true;
-                  }
-                  else
-                  {
-                        hardware.is_reset = false;
-                  }
-
-                  if (!await VerifyMemoryAllocateAsync(hardware.mac))
-                  {
-                        hardware.is_reset = true;
-                  }
-                  else
-                  {
-                        hardware.is_reset = false;
-                  }
-
-                  hardware.firmware = UtilitiesHelper.ParseFirmware(message.id.sft_rev_major, message.id.sft_rev_minor);
-
-                  var component = await VerifyDeviceConfigurationAsync(hardware);
-
-                  hardware.updated_date = DateTime.UtcNow;
-                  hardware.is_upload = component.Any(s => s.IsUpload == true);
-
-                  context.hardware.Update(hardware);
-                  await context.SaveChangesAsync();
-
-                  // Call Get ip
-                  command.GetWebConfigRead(message.id.scp_id, 2);
-
-
-            }
-            else
-            {
-                  if (!await VerifyHardwareConnection(message.id.scp_id)) return;
-
-
-
-                  if (await context.id_report.AnyAsync(x => x.scp_id == message.id.scp_id && x.mac.Equals(UtilitiesHelper.ByteToHexStr(message.id.mac_addr))))
-                  {
-                        var iDReport = await context.id_report
-                            .Where(x => x.scp_id == message.id.scp_id && x.mac.Equals(UtilitiesHelper.ByteToHexStr(message.id.mac_addr)))
-                            .OrderBy(x => x.id)
-                            .FirstOrDefaultAsync();
-
-                        if (iDReport is null) return;
-                        iDReport.device_id = message.id.device_id;
-                        iDReport.device_ver = message.id.device_ver;
-                        iDReport.software_rev_major = message.id.sft_rev_major;
-                        iDReport.software_rev_minor = message.id.sft_rev_minor;
-                        iDReport.firmware = UtilitiesHelper.ParseFirmware(message.id.sft_rev_major, message.id.sft_rev_minor);
-                        iDReport.serial_number = message.id.serial_number;
-                        iDReport.ram_size = message.id.ram_size;
-                        iDReport.ram_free = message.id.ram_free;
-                        iDReport.e_sec = UtilitiesHelper.UnixToDateTime(message.id.e_sec);
-                        iDReport.db_max = message.id.db_max;
-                        iDReport.db_active = message.id.db_active;
-                        iDReport.dip_switch_powerup = message.id.dip_switch_pwrup;
-                        iDReport.dip_switch_current = message.id.dip_switch_current;
-                        //iDReport.hardware_id = command.SetScpId(message.id.scp_id, id) ? id : message.id.scp_id;
-                        iDReport.firmware_advisory = message.id.firmware_advisory;
-                        iDReport.scp_in1 = message.id.scp_in_1;
-                        iDReport.scp_in2 = message.id.scp_in_2;
-                        iDReport.n_oem_code = message.id.nOemCode;
-                        iDReport.config_flag = message.id.config_flags;
-                        //iDReport.mac = UtilityHelper.ByteToHexStr(message.id.mac_addr);
-                        iDReport.tls_status = message.id.tls_status;
-                        iDReport.oper_mode = message.id.oper_mode;
-                        iDReport.scp_in3 = message.id.scp_in_3;
-                        iDReport.cumulative_bld_cnt = message.id.cumulative_bld_cnt;
-                        iDReport.port = "";
-                        iDReport.ip = "";
-                        context.id_report.Update(iDReport);
-                  }
-                  else
-                  {
-                        short id = await helper.GetLowestUnassignedNumberNoLimitAsync<Hardware>(context);
-                        Aero.Infrastructure.Data.Entities.IdReport iDReport = new Aero.Infrastructure.Data.Entities.IdReport();
-                        iDReport.device_id = message.id.device_id;
-                        iDReport.device_ver = message.id.device_ver;
-                        iDReport.software_rev_major = message.id.sft_rev_major;
-                        iDReport.software_rev_minor = message.id.sft_rev_minor;
-                        iDReport.firmware = UtilitiesHelper.ParseFirmware(message.id.sft_rev_major, message.id.sft_rev_minor);
-                        iDReport.serial_number = message.id.serial_number;
-                        iDReport.ram_size = message.id.ram_size;
-                        iDReport.ram_free = message.id.ram_free;
-                        iDReport.e_sec = UtilitiesHelper.UnixToDateTime(message.id.e_sec);
-                        iDReport.db_max = message.id.db_max;
-                        iDReport.db_active = message.id.db_active;
-                        iDReport.dip_switch_powerup = message.id.dip_switch_pwrup;
-                        iDReport.dip_switch_current = message.id.dip_switch_current;
-                        iDReport.scp_id = command.SetScpId(message.id.scp_id, id) ? id : message.id.scp_id;
-                        iDReport.firmware_advisory = message.id.firmware_advisory;
-                        iDReport.scp_in1 = message.id.scp_in_1;
-                        iDReport.scp_in2 = message.id.scp_in_2;
-                        iDReport.n_oem_code = message.id.nOemCode;
-                        iDReport.config_flag = message.id.config_flags;
-                        iDReport.mac = UtilitiesHelper.ByteToHexStr(message.id.mac_addr);
-                        iDReport.tls_status = message.id.tls_status;
-                        iDReport.oper_mode = message.id.oper_mode;
-                        iDReport.scp_in3 = message.id.scp_in_3;
-                        iDReport.cumulative_bld_cnt = message.id.cumulative_bld_cnt;
-                        iDReport.port = "";
-                        iDReport.ip = "";
-                        await context.id_report.AddAsync(iDReport);
-                  }
-
-
-                  await context.SaveChangesAsync();
-
-
-                  command.GetWebConfigRead(message.id.scp_id, 2);
-
-
-            }
-
-      }
+      
 
       public async Task<int> DeleteByComponentIdAsync(short component)
       {

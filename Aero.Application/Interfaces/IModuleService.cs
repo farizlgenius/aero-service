@@ -15,9 +15,8 @@ namespace Aero.Application.Interface
         Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param);
         Task<ResponseDto<ModuleDto>> GetByComponentAsync(string mac, short component);
         Task<ResponseDto<IEnumerable<ModuleDto>>> GetByMacAsync(string mac);
-        void TriggerDeviceStatus(int ScpId, short SioNo, string Status, string Tamper, string Ac, string Batt);
         Task<ResponseDto<IEnumerable<ModeDto>>> GetBaudrateAsync();
         Task<ResponseDto<IEnumerable<ModeDto>>> GetProtocolAsync();
-        Task HandleFoundModuleAsync(SCPReplyMessage message);
+
     }
 }

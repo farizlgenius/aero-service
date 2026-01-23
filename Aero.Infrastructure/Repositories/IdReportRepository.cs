@@ -11,10 +11,7 @@ namespace Aero.Infrastructure.Repositories;
 
 public class IdReportRepository(AppDbContext context) : IIdReportRepository
 {
-      public async Task<int> AddAsync(IdReport data)
-      {
-            throw new NotImplementedException();
-      }
+
 
       public async Task<int> DeleteByComponentIdAsync(short component)
       {
@@ -71,7 +68,7 @@ public class IdReportRepository(AppDbContext context) : IIdReportRepository
 
             if (report is null) return await context.id_report
                     .AsNoTracking()
-                    .Select(x => MapperHelper.IdReportToDto(x))
+                    .Select(x => IdReportMapper.IdReportToDto(x))
                     .ToArrayAsync();
 
             context.id_report.Remove(report);
@@ -81,5 +78,25 @@ public class IdReportRepository(AppDbContext context) : IIdReportRepository
                     .AsNoTracking()
                     .Select(x => MapperHelper.IdReportToDto(x))
                     .ToArrayAsync();
+      }
+
+      Task<Domain.Entities.IdReport> IIdReportRepository.GetByMacAndComponentIdAsync(string mac, short component)
+      {
+            throw new NotImplementedException();
+      }
+
+      public async Task<int> AddAsync(Domain.Entities.IdReport data)
+      {
+            var en = IdReportMapper.ToEf(data);
+            await context.id_report.AddAsync(en);
+            return await context.SaveChangesAsync();
+      }
+
+      public async Task<int> UpdateAsync(Domain.Entities.IdReport newData)
+      {
+            var en = IdReportMapper.ToEf(newData);
+            context.id_report.Update(en);
+            return await context.SaveChangesAsync();
+
       }
 }

@@ -360,7 +360,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
             return expected;
       }
 
-      public Task<bool> IsAnyByComponet(short component)
+      public Task<bool> IsAnyByComponentId(short component)
       {
             throw new NotImplementedException();
       }

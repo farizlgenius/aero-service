@@ -408,7 +408,7 @@ public sealed class QHwRepository(AppDbContext context) : IQHwRepository
         return res;
     }
 
-    public async Task<bool> IsAnyByComponet(short component)
+    public async Task<bool> IsAnyByComponentId(short component)
     {
         return await context.hardware
         .AsNoTracking()
@@ -462,4 +462,12 @@ public sealed class QHwRepository(AppDbContext context) : IQHwRepository
 
         return res;
     }
+
+      public async Task<IEnumerable<short>> GetComponentIdByLocationIdAsync(short locationId)
+      {
+            return await context.hardware.AsNoTracking()
+            .Where(x => x.location_id == locationId)
+            .Select(x => x.component_id)
+            .ToArrayAsync();
+      }
 }

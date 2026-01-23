@@ -295,16 +295,7 @@ namespace AeroService.Aero.CommandService
             return flag;
         }
 
-        public bool GetSioStatus(short ScpId, short SioNo)
-        {
-            CC_SIOSRQ cc_siosrq = new CC_SIOSRQ();
-            cc_siosrq.scp_number = ScpId;
-            cc_siosrq.first = SioNo;
-            cc_siosrq.count = 1;
-            bool flag = SendCommand((short)enCfgCmnd.enCcSioSrq, cc_siosrq);
-            return flag;
-        }
-
+      
 
 
 

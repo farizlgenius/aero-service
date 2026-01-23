@@ -1,103 +1,61 @@
-﻿using AeroService.Aero.CommandService;
-using AeroService.Aero.CommandService.Impl;
-using AeroService.AeroLibrary;
-using AeroService.Constant;
-using AeroService.Constants;
-using AeroService.Data;
-using AeroService.DTO;
-using AeroService.DTO.Interval;
-using AeroService.Entity;
-using AeroService.Entity.Interface;
-using AeroService.Helpers;
-using AeroService.Mapper;
-using AeroService.Utility;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.EntityFrameworkCore;
-using MiNET.Entities;
-using MiNET.Worlds;
-using System.ComponentModel;
-using System.Net;
+﻿using System.Net;
+using Aero.Api.Constants;
+using Aero.Application.Constants;
+using Aero.Application.DTOs;
+using Aero.Application.Helpers;
+using Aero.Application.Interface;
+using Aero.Application.Interfaces;
+using Aero.Application.Mapper;
+using Aero.Domain.Interface;
 
 
-namespace AeroService.Service.Impl
+namespace Aero.Application.Services
 {
-    public class IntervalService(AppDbContext context, IHelperService<Interval> helperService,ITimeZoneCommandService timeZoneCommandService) : IIntervalService
+    public class IntervalService(IQIntervalRepository qInterval,IIntervalRepository rInterval,IQHwRepository qHw,ITzCommand tz,IQTzRepository qTz) : IIntervalService
     {
         public async Task<ResponseDto<IEnumerable<IntervalDto>>> GetAsync()
         {
-            var dtos = await context.interval
-                .AsNoTracking()
-                .Include(s => s.days)
-                .Select(p => MapperHelper.IntervalToDto(p))
-                .ToArrayAsync();
+            var dtos = await qInterval.GetAsync();
             
             return ResponseHelper.SuccessBuilder<IEnumerable<IntervalDto>>(dtos);
         }
         public async Task<ResponseDto<IntervalDto>> GetByIdAsync(short Id)
         {
-            var dto = await context.interval
-                .AsNoTracking()
-                .Include(s => s.days)
-                .Where(x => x.id == Id)
-                .Select(p => MapperHelper.IntervalToDto(p))
-                .FirstOrDefaultAsync();
+            var dto = await qInterval.GetByComponentIdAsync(Id);
 
             if(dto is null) return ResponseHelper.NotFoundBuilder<IntervalDto>();
             return ResponseHelper.SuccessBuilder(dto);
         }
         public async Task<ResponseDto<IEnumerable<IntervalDto>>> GetByLocationAsync(short location)
         {
-            var dtos = await context.interval
-                .AsNoTracking()
-                .Include(s => s.days)
-                .Where(x => x.location_id == location)
-                .Select(x => MapperHelper.IntervalToDto(x))
-                .ToArrayAsync();
-
+            var dtos = await qInterval.GetByLocationIdAsync(location);
             return ResponseHelper.SuccessBuilder<IEnumerable<IntervalDto>>(dtos);
         }
-        public async Task<ResponseDto<bool>> CreateAsync(CreateIntervalDto dto)
+        public async Task<ResponseDto<bool>> CreateAsync(IntervalDto dto)
         {
 
-            if (await context.interval.AnyAsync(p => 
-            p.start_time == dto.StartTime && 
-            p.end_time == dto.EndTime && 
-            p.days.sunday == dto.Days.Sunday &&
-            p.days.monday == dto.Days.Monday &&
-            p.days.tuesday == dto.Days.Tuesday &&
-            p.days.wednesday == dto.Days.Wednesday &&
-            p.days.thursday == dto.Days.Thursday &&
-            p.days.friday == dto.Days.Friday &&
-            p.days.saturday == dto.Days.Saturday
-            )) return ResponseHelper.Duplicate<bool>();
+            if (await qInterval.IsAnyOnEachDays(dto)) return ResponseHelper.Duplicate<bool>();
 
-            var componentId = await helperService.GetLowestUnassignedNumberNoLimitAsync<Interval>(context);
+            var componentId = await qInterval.GetLowestUnassignedNumberAsync(10);
 
-            var interval = MapperHelper.CreateToInterval(dto, componentId, DaysInWeekToString(dto.Days));
-            context.interval.Add(interval);
-            await context.SaveChangesAsync();
+            var status = await rInterval.AddAsync(IntervalMapper.ToDomain(dto));
+
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
+
             return ResponseHelper.SuccessBuilder(true);
         }
 
         public async Task<ResponseDto<bool>> DeleteAsync(short component)
         {
-            var en = await context.interval
-                .Include(x => x.timezone_intervals)
-                .OrderBy(x => x.id)
-                .Where(x => x.component_id == component)
-                .FirstOrDefaultAsync();
 
-            if (en is null) return ResponseHelper.NotFoundBuilder<bool>();
+            if (!await qInterval.IsAnyByComponentId(component)) return ResponseHelper.NotFoundBuilder<bool>();
             
-            var link = await context.interval
-                .AsNoTracking()
-                .AnyAsync(x => x.component_id == component && x.timezone_intervals.Any());
-            if (link) return ResponseHelper.FoundReferenceBuilder<bool>();
-
+            if(await qInterval.IsAnyReferenceByComponentAsync(component)) return ResponseHelper.FoundReferenceBuilder<bool>();
+        
             // DeleteAsync using a lightweight tracked entity
-            context.timezone_interval.RemoveRange(en.timezone_intervals);
-            context.interval.Remove(en);
-            await context.SaveChangesAsync();
+            var status = await rInterval.DeleteByComponentIdAsync(component);
+
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,[]);
 
             return ResponseHelper.SuccessBuilder(true);
         }
@@ -106,43 +64,44 @@ namespace AeroService.Service.Impl
         {
             // Update is need to send the time zone command again 
             List<string> errors = new List<string>();
-            var en = await context.interval
-                .Include(x => x.days)
-                .Include(x => x.timezone_intervals)
-                .OrderBy(x => x.id)
-                .Where(x => x.component_id == dto.ComponentId)
-                .FirstOrDefaultAsync();
 
-            if (en is null) return ResponseHelper.NotFoundBuilder<IntervalDto>();
+            if (!await qInterval.IsAnyByComponentId(dto.ComponentId)) return ResponseHelper.NotFoundBuilder<IntervalDto>();
 
-            MapperHelper.UpdateInterval(en, dto);
 
-            context.interval.Update(en);
-            await context.SaveChangesAsync();
+            var status = await rInterval.UpdateAsync(IntervalMapper.ToDomain(dto));
 
-            var hws = await context.hardware
-                .AsNoTracking()
-                .Where(x => x.location_id == en.location_id)
-                .Select(x => x.component_id)
-                .ToArrayAsync();
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<IntervalDto>(ResponseMessage.UPDATE_RECORD_UNSUCCESS,[]); 
 
-            foreach (var id in hws)
+            // var hws = await context.hardware
+            //     .AsNoTracking()
+            //     .Where(x => x.location_id == en.location_id)
+            //     .Select(x => x.component_id)
+            //     .ToArrayAsync();
+
+            var hws = await qHw.GetComponentIdByLocationIdAsync(dto.LocationId);
+
+            var ids = await qInterval.GetTimezoneIntervalIdByIntervalComponentIdAsync(dto.ComponentId);
+
+            foreach (var id in ids)
             {
-                foreach (var tzs in en.timezone_intervals)
+                foreach (var tzs in ids)
                 {
-                    var tz = await context.timezone
-                        .AsNoTracking()
-                        .Include(x => x.timezone_intervals)
-                        .ThenInclude(x => x.interval)
-                        .OrderBy(x => x.id)
-                        .Where(x => x.component_id == tzs.timezone_id)
-                        .FirstOrDefaultAsync();
+                    // var tz = await context.timezone
+                    //     .AsNoTracking()
+                    //     .Include(x => x.timezone_intervals)
+                    //     .ThenInclude(x => x.interval)
+                    //     .OrderBy(x => x.id)
+                    //     .Where(x => x.component_id == tzs.timezone_id)
+                    //     .FirstOrDefaultAsync();
 
-                    long active = helperService.DateTimeToElapeSecond(tz.active_time);
-                    long deactive = helperService.DateTimeToElapeSecond(tz.deactive_time);
-                    if (!await timeZoneCommandService.ExtendedTimeZoneActSpecificationAsync(id,tz,tz.timezone_intervals.Select(x => x.interval).ToList(),(int)active,(int)deactive))
+                    var t = await qTz.GetByComponentIdAsync(tzs);
+                    var a = await qInterval.GetIntervalFromTimezoneComponentIdAsync(tzs);
+
+                    long active = UtilitiesHelper.DateTimeToElapeSecond(t.ActiveTime);
+                    long deactive = UtilitiesHelper.DateTimeToElapeSecond(t.DeactiveTime);
+                    if (!tz.ExtendedTimeZoneActSpecificationAsync(id,t,a.ToList(),(int)active,(int)deactive))
                     {
-                        errors.Add(MessageBuilder.Unsuccess(await helperService.GetMacFromIdAsync(id),Command.C3103));
+                        errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id),Command.TIMEZONE_SPEC));
                     }
                 }
             }

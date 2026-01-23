@@ -5,7 +5,7 @@ using Aero.Application.Interfaces;
 
 namespace Aero.Application.Services;
 
-public class NotificationHandler(IScpNotificationPublisher publisher) : INotificationHandler
+public class NotificationHandler(INotificationPublisher publisher) : INotificationHandler
 {
       public async Task ScpNotifyMemoryAllocate(MemoryAllocateDto allocate)
       {

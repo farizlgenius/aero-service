@@ -38,7 +38,7 @@ public class QProcRepository(AppDbContext context) : IQProcRepository
             throw new NotImplementedException();
       }
 
-      public Task<bool> IsAnyByComponet(short component)
+      public Task<bool> IsAnyByComponentId(short component)
       {
             throw new NotImplementedException();
       }

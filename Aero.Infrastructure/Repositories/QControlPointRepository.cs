@@ -110,7 +110,7 @@ public class QControlPointRepository(AppDbContext context) : IQCpRepository
             return res;
       }
 
-      public Task<bool> IsAnyByComponet(short component)
+      public Task<bool> IsAnyByComponentId(short component)
       {
             throw new NotImplementedException();
       }

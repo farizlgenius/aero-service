@@ -1,53 +1,22 @@
 ﻿
-using AeroService.Data;
-using AeroService.Entity;
-using Microsoft.EntityFrameworkCore;
-using AeroService.Constants;
-using System.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Net;
-using System.Runtime.CompilerServices;
-using AeroService.Logging;
-using AeroService.AeroLibrary;
-using AeroService.Utility;
-using MiNET.Worlds;
-using AeroService.Helpers;
-using AeroService.Constant;
-using MiNET.Entities;
-using System.ComponentModel;
-using AeroService.DTO;
-using AeroService.DTO.TimeZone;
-using AeroService.DTO.Interval;
-using AeroService.Mapper;
-using AeroService.Aero.CommandService;
+using Aero.Application.DTOs;
+using Aero.Application.Helpers;
+using Aero.Application.Interface;
+using Aero.Application.Interfaces;
 
-namespace AeroService.Service.Impl
+namespace Aero.Application.Services
 {
-    public class TimeZoneService(AppDbContext context, IHelperService<Entity.TimeZone> helperService, ITimeZoneCommandService command,  ILogger<TimeZoneService> logger) : ITimeZoneService
+    public class TimeZoneService(IQTzRepository qTz) : ITimeZoneService
     {
         public async Task<ResponseDto<IEnumerable<TimeZoneDto>>> GetAsync()
         {
-            var dtos = await context.timezone
-                .AsNoTracking()
-                .Include(c => c.timezone_intervals)
-                .ThenInclude(x => x.interval)
-                .ThenInclude(x => x.days)
-                .Select(x => MapperHelper.TimeZoneToDto(x))
-                .ToArrayAsync();
-
+            var dtos = await qTz.GetAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<TimeZoneDto>>(dtos);
         }
 
         public async Task<ResponseDto<TimeZoneDto>> GetByComponentIdAsync(short component)
         {
-            var dto = await context.timezone
-                .AsNoTracking()
-                .Include(s => s.timezone_intervals)
-                .ThenInclude(x => x.interval)
-                .ThenInclude(x => x.days)
-                .Where(a => a.component_id == component)
-                .Select(x => MapperHelper.TimeZoneToDto(x))
-                .FirstOrDefaultAsync();
+            var dto = await qTz.GetByComponentIdAsync(component);
 
             if (dto is null) return ResponseHelper.NotFoundBuilder<TimeZoneDto>();
             return ResponseHelper.SuccessBuilder<TimeZoneDto>(dto);
