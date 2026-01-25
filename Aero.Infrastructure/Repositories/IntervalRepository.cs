@@ -33,7 +33,16 @@ public class IntervalRepository(AppDbContext context) : IIntervalRepository
 
       public async Task<int> UpdateAsync(Interval newData)
       {
-            context.interval.Update(IntervalMapper.ToEf(newData));
+            var en = await context.interval
+            .Where(x => x.component_id == newData.ComponentId)
+            .OrderBy(x => x.component_id)
+            .FirstOrDefaultAsync();
+
+            if(en is null) return 0;
+
+            IntervalMapper.Update(en,newData);
+
+            context.interval.Update(en);
             return await context.SaveChangesAsync();
             
       }

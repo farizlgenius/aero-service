@@ -245,7 +245,7 @@ namespace Aero.Application.Services
 
             foreach (var t in timezones)
             {
-                if (!tz.ExtendedTimeZoneActSpecificationAsync(ScpId, t, intervals, !string.IsNullOrEmpty(t.ActiveTime) ? (int)UtilitiesHelper.DateTimeToElapeSecond(t.ActiveTime) : 0, !string.IsNullOrEmpty(t.DeactiveTime) ? (int)UtilitiesHelper.DateTimeToElapeSecond(t.DeactiveTime) : 0))
+                if (!tz.ExtendedTimeZoneActSpecification(ScpId, t, intervals, !string.IsNullOrEmpty(t.ActiveTime) ? (int)UtilitiesHelper.DateTimeToElapeSecond(t.ActiveTime) : 0, !string.IsNullOrEmpty(t.DeactiveTime) ? (int)UtilitiesHelper.DateTimeToElapeSecond(t.DeactiveTime) : 0))
                 {
                     errors.Add(MessageBuilder.Unsuccess(mac, Command.TIMEZONE_SPEC));
                 }

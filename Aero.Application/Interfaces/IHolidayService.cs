@@ -10,7 +10,7 @@ namespace Aero.Application.Interface
         Task<ResponseDto<IEnumerable<HolidayDto>>> GetByLocationAsync(short location);
         
         Task<ResponseDto<HolidayDto>> GetByComponentIdAsync(short component);
-        Task<ResponseDto<bool>> CreateAsync(CreateHolidayDto dto);
+        Task<ResponseDto<bool>> CreateAsync(HolidayDto dto);
         Task<ResponseDto<bool>> DeleteAsync(short component);
         Task<ResponseDto<HolidayDto>> UpdateAsync(HolidayDto dto);
         Task<ResponseDto<bool>> ClearAsync();

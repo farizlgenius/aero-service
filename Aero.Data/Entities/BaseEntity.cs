@@ -1,8 +1,9 @@
 using System;
+using Aero.Domain.Interface;
 
 namespace Aero.Domain.Entities;
 
-public class BaseEntity
+public class BaseEntity : ILocation
 {
       public string Uuid { get; set; } = Guid.NewGuid().ToString();
         public short ComponentId { get; set; }

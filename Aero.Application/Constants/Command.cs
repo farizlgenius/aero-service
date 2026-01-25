@@ -3,7 +3,7 @@
     public sealed class Command
     {
         public static string ALVL_CONFIG = "command 2116: Access Level Configuration Extended";
-        public static string C1104 = "command 1104: Holiday Configuration";
+        public static string HOL_CONFIG = "command 1104: Holiday Configuration";
         public static string TIMEZONE_SPEC = "command 3103: Extended Time Zone Act Specification";
         public static string CARDFORMAT_CONFIG = "command 1102: Card Formatter Configuration";
         public static string C208 = "command 208: Detach SCP from Channel";
@@ -36,7 +36,7 @@
         public static string SIO_DRIVER = "command 108: Driver Configuration";
         public static string SIO_PANEL_CONFIG = "command 109: SIO Panel Configuration";
         public static string C402 = "command 402: enCcTranSrq";
-        public static string C314 = "command 314: time Zone Control";
+        public static string TZ_CONTROL = "command 314: Time zone Control";
         public static string C1107 = "command 1107: SCP Device Specification";
         public static string C1105 = "command 1105: Access Database Specification";
         public static string DELETE_SCP = "command 015: Delete SCP";

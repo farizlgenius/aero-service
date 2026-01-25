@@ -1,8 +1,10 @@
 ﻿
 
+using Aero.Domain.Entities;
+
 namespace Aero.Application.DTOs
 {
-    public sealed class DoorDto : BaseDto
+    public sealed class DoorDto : BaseEntity
     {
         public string Name { get; set; } = string.Empty;
         public short AccessConfig { get; set; }

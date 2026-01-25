@@ -1,5 +1,6 @@
 using System;
 using Aero.Application.DTOs;
+using Aero.Domain.Entities;
 
 namespace Aero.Application.Mapper;
 
@@ -7,13 +8,13 @@ public sealed class IntervalMapper
 {
       public static Aero.Domain.Entities.Interval ToDomain(IntervalDto dto)
       {
-            return new Domain.Entities.Interval
-            {
-                  ComponentId = dto.ComponentId,
-                  DaysDesc = dto.DaysDesc,
-                  StartTime = dto.StartTime,
-                  EndTime = dto.EndTime,
-                  Days = new Domain.Entities.DayInWeek
+            var res = new Interval();
+            // Base
+            NoMacBaseMapper.ToDomain(res,dto);
+            res.DaysDesc = dto.DaysDesc;
+            res.StartTime = dto.StartTime;
+            res.EndTime = dto.EndTime;
+            res.Days = new Domain.Entities.DaysInWeek
                   {
                         Sunday = dto.Days.Sunday,
                         Monday = dto.Days.Monday,
@@ -22,10 +23,8 @@ public sealed class IntervalMapper
                         Thursday = dto.Days.Thursday,
                         Friday = dto.Days.Friday,
                         Saturday = dto.Days.Saturday
-                  },
-                  LocationId = dto.LocationId,
-                  HardwareName = dto.HardwareName
+                  };
 
-            };
+            return res;
       }
 }

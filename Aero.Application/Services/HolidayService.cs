@@ -1,194 +1,133 @@
-﻿using AeroService.Aero.CommandService;
-using AeroService.AeroLibrary;
-using AeroService.Constant;
-using AeroService.Constants;
-using AeroService.Data;
-using AeroService.DTO;
-using AeroService.DTO.Holiday;
-using AeroService.Entity;
-using AeroService.Helpers;
-using AeroService.Utility;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MiNET.Blocks;
-using MiNET.Entities;
-using MiNET.Worlds;
-using System.Net;
+﻿using System.Net;
+using Aero.Api.Constants;
+using Aero.Application.Constants;
+using Aero.Application.DTOs;
+using Aero.Application.Helpers;
+using Aero.Application.Interface;
+using Aero.Application.Interfaces;
+using Aero.Application.Mapper;
+using Aero.Domain.Entities;
+using Aero.Domain.Interface;
+using Aero.Domain.Interfaces;
 
 namespace AeroService.Service.Impl
 {
-    public class HolidayService(IHolidayCommandService command, AppDbContext context, IHelperService<Holiday> helperService) : IHolidayService
+    public class HolidayService(IQHolRepository qHol,IQHwRepository qHw,IHolCommand hol,IHolRepository rHol) : IHolidayService
     {
 
         public async Task<ResponseDto<IEnumerable<HolidayDto>>> GetAsync()
         {
-            var dtos = await context.holiday.AsNoTracking()
-                .Select(p => new HolidayDto
-                {
-                    // Base
-                    Uuid = p.uuid,
-                    LocationId = p.location_id,
-                    IsActive = p.is_active,
-
-                    // extend_desc
-                    component_id = p.component_id,
-                    Day = p.day,
-                    Month = p.month,
-                    Year = p.year,
-                    Extend = p.extend,
-                    TypeMask = p.type_mask
-
-                }).ToArrayAsync();
-            if (dtos.Count() == 0) return ResponseHelper.NotFoundBuilder<IEnumerable<HolidayDto>>();
+            var dtos = await qHol.GetAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<HolidayDto>>(dtos);
         }
 
         public async Task<ResponseDto<bool>> ClearAsync()
         {
             List<string> errors = new List<string>();
-            var macs = await context.hardware.Select(x => x.mac).ToArrayAsync();
-            foreach (var mac in macs)
+            var ids = await qHw.GetComponentIdsAsync();
+            foreach (var id in ids)
             {
-                short ScpId = await helperService.GetIdFromMacAsync(mac);
-                //if (!await command.ClearHolidayConfigurationAsync(hardware_id))
-                //{
-                //    errors.Add(MessageBuilder.Unsuccess(mac, command.C1104));
-                //}
+                if (!hol.ClearHolidayConfiguration(id))
+                {
+                   errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id), Command.HOL_CONFIG));
+                }
             }
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
-            var holidays = await context.holiday.ToArrayAsync();
-            context.holiday.RemoveRange(holidays);
-            await context.SaveChangesAsync();
+            var status = await rHol.RemoveAllAsync();
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,errors);
             return ResponseHelper.SuccessBuilder(true);
         }
 
         public async Task<ResponseDto<HolidayDto>> GetByComponentIdAsync(short component)
         {
-            var dto = await context.holiday.AsNoTracking().Where(p => p.component_id == component).Select(p => new HolidayDto 
-            {
-                // Base
-                Uuid = p.uuid,
-                LocationId = p.location_id,
-                IsActive = p.is_active,
-
-                // extend_desc
-                Day = p.day,
-                Month = p.month,
-                Year = p.year,
-                Extend = p.extend,
-                TypeMask = p.type_mask
-
-            }).FirstOrDefaultAsync();
+            var dto = await qHol.GetByComponentIdAsync(component);
             if (dto == null) return ResponseHelper.NotFoundBuilder<HolidayDto>();
             return ResponseHelper.SuccessBuilder(dto);
         }
 
 
 
-        public async Task<ResponseDto<bool>> CreateAsync(CreateHolidayDto dto)
+        public async Task<ResponseDto<bool>> CreateAsync(HolidayDto dto)
         {
             List<string> errors = new List<string>();
 
-            if (await context.holiday.AnyAsync(u => u.day == dto.Day && u.month == dto.Month && u.year == dto.Year)) return ResponseHelper.Duplicate<bool>();
+            if (!await qHol.IsAnyWithSameDataAsync(dto.Day,dto.Month,dto.Year)) return ResponseHelper.Duplicate<bool>();
 
-            var ComponentId = await helperService.GetLowestUnassignedNumberNoLimitAsync<Holiday>(context);
+            var ComponentId = await qHol.GetLowestUnassignedNumberAsync(10);
             if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
+            dto.ComponentId = ComponentId;
+
+            var domain = HolidayMapper.ToDomain(dto);
+
             // Send command 
-            List<short> ids = await context.hardware.AsNoTracking().Select(p => p.component_id).ToListAsync();
-
-            var holiday = new Holiday
-            {
-                // Base
-                location_id = dto.LocationId,
-                created_date = DateTime.UtcNow,
-                updated_date = DateTime.UtcNow,
-                is_active = true,
-
-
-                // extend_desc
-                component_id = ComponentId,
-                day = dto.Day,
-                month = dto.Month,
-                year = dto.Year,
-                extend = 0,
-                type_mask = dto.TypeMask,
-
-            };
+            var ids = await qHw.GetComponentIdsAsync();
 
             foreach (var id in ids)
             {
-                string mac = await helperService.GetMacFromIdAsync(id);
-                //if (!await command.HolidayConfigurationAsync(holiday, id))
-                //{
-                //    errors.Add(MessageBuilder.Unsuccess(mac, command.C1104));
+                if (!hol.HolidayConfiguration(domain, id))
+                {
+                   errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id), Command.HOL_CONFIG));
 
-                //}
+                }
             }
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, errors);
 
-
-            await context.holiday.AddAsync(holiday);
-            await context.SaveChangesAsync();
+            var status = await rHol.AddAsync(domain);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,errors);
             return ResponseHelper.SuccessBuilder(true);
         }
 
         public async Task<ResponseDto<bool>> DeleteAsync(short component)
         {
             List<string> errors = new List<string>();
-            var entity = await context.holiday.FirstOrDefaultAsync(x => x.component_id == component);
-            if (entity is null) return ResponseHelper.NotFoundBuilder<bool>();
-            // Send command 
-            List<short> ids = await context.hardware.Select(p => p.component_id).ToListAsync();
 
+            var domain = await rHol.GetByComponentIdAsync(component);
+            
+            if (!await qHol.IsAnyByComponentId(component)) return ResponseHelper.NotFoundBuilder<bool>();
+            // Send command 
+           var ids = await qHw.GetComponentIdsAsync();
 
             foreach (var id in ids)
             {
-                string mac = await helperService.GetMacFromIdAsync(id);
-                //if (!await command.DeleteHolidayConfigurationAsync(entity, id))
-                //{
-                //    errors.Add(MessageBuilder.Unsuccess(mac, command.C1104));
-                //}
+                if (!hol.DeleteHolidayConfiguration(domain, id))
+                {
+                   errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id), Command.HOL_CONFIG));
+                }
             }
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
-            context.holiday.Remove(entity);
-            await context.SaveChangesAsync();
+            
+            var status = await rHol.DeleteByComponentIdAsync(component);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,errors);
             return ResponseHelper.SuccessBuilder(true);
         }
 
         public async Task<ResponseDto<HolidayDto>> UpdateAsync(HolidayDto dto)
         {
             List<string> errors = new List<string>();
-            var entity = await context.holiday.FirstOrDefaultAsync(p => p.component_id == dto.component_id);
-            if (entity is null) return ResponseHelper.NotFoundBuilder<HolidayDto>();
+            if (!await qHol.IsAnyByComponentId(dto.ComponentId)) return ResponseHelper.NotFoundBuilder<HolidayDto>();
 
-            if (await context.holiday.AnyAsync(u => u.day == dto.Day && u.month == dto.Month && u.year == dto.Year)) return ResponseHelper.Duplicate<HolidayDto>();
+            if (await qHol.IsAnyWithSameDataAsync(dto.Day,dto.Month,dto.Year)) return ResponseHelper.Duplicate<HolidayDto>();
 
             // Send command 
-            List<short> ids = await context.hardware.Select(p => p.component_id).ToListAsync();
+            var ids = await qHw.GetComponentIdsAsync();
 
-            entity.day = dto.Day;
-            entity.month = dto.Month;
-            entity.year = dto.Year;
-            entity.type_mask = dto.TypeMask;
-            entity.extend = 0;
-            entity.updated_date = DateTime.UtcNow;
+            var domain = HolidayMapper.ToDomain(dto);
 
             foreach (var id in ids)
             {
-                string mac = await helperService.GetMacFromIdAsync(id);
-                //if (!await command.HolidayConfigurationAsync(entity, id))
-                //{
-                //    errors.Add(MessageBuilder.Unsuccess(mac, command.C1104));
-                //}
+                if (!hol.HolidayConfiguration(domain, id))
+                {
+                   errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id), Command.HOL_CONFIG));
+                }
             }
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<HolidayDto>(ResponseMessage.COMMAND_UNSUCCESS,errors);
 
-            context.holiday.Update(entity);
-            await context.SaveChangesAsync();
+            var status = await rHol.UpdateAsync(domain);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<HolidayDto>(ResponseMessage.UPDATE_RECORD_UNSUCCESS,errors);
             return ResponseHelper.SuccessBuilder(dto);
         }
 
@@ -212,26 +151,8 @@ namespace AeroService.Service.Impl
 
         public async Task<ResponseDto<IEnumerable<HolidayDto>>> GetByLocationAsync(short location)
         {
-            var dtos = await context.holiday
-                .AsNoTracking()
-                .Where(x => x.location_id == location)
-                    .Select(p => new HolidayDto
-                    {
-                        // Base
-                        Uuid = p.uuid,
-                        LocationId = p.location_id,
-                        IsActive = p.is_active,
+            var dtos = await qHol.GetByLocationIdAsync(location);
 
-                        // extend_desc
-                        component_id = p.component_id,
-                        Day = p.day,
-                        Month = p.month,
-                        Year = p.year,
-                        Extend = p.extend,
-                        TypeMask = p.type_mask
-
-                    }).ToArrayAsync();
-            if (dtos.Count() == 0) return ResponseHelper.NotFoundBuilder<IEnumerable<HolidayDto>>();
             return ResponseHelper.SuccessBuilder<IEnumerable<HolidayDto>>(dtos);
         }
     }

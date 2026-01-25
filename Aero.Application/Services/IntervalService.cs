@@ -67,16 +67,9 @@ namespace Aero.Application.Services
 
             if (!await qInterval.IsAnyByComponentId(dto.ComponentId)) return ResponseHelper.NotFoundBuilder<IntervalDto>();
 
-
             var status = await rInterval.UpdateAsync(IntervalMapper.ToDomain(dto));
 
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<IntervalDto>(ResponseMessage.UPDATE_RECORD_UNSUCCESS,[]); 
-
-            // var hws = await context.hardware
-            //     .AsNoTracking()
-            //     .Where(x => x.location_id == en.location_id)
-            //     .Select(x => x.component_id)
-            //     .ToArrayAsync();
 
             var hws = await qHw.GetComponentIdByLocationIdAsync(dto.LocationId);
 
@@ -86,20 +79,13 @@ namespace Aero.Application.Services
             {
                 foreach (var tzs in ids)
                 {
-                    // var tz = await context.timezone
-                    //     .AsNoTracking()
-                    //     .Include(x => x.timezone_intervals)
-                    //     .ThenInclude(x => x.interval)
-                    //     .OrderBy(x => x.id)
-                    //     .Where(x => x.component_id == tzs.timezone_id)
-                    //     .FirstOrDefaultAsync();
 
                     var t = await qTz.GetByComponentIdAsync(tzs);
                     var a = await qInterval.GetIntervalFromTimezoneComponentIdAsync(tzs);
 
                     long active = UtilitiesHelper.DateTimeToElapeSecond(t.ActiveTime);
                     long deactive = UtilitiesHelper.DateTimeToElapeSecond(t.DeactiveTime);
-                    if (!tz.ExtendedTimeZoneActSpecificationAsync(id,t,a.ToList(),(int)active,(int)deactive))
+                    if (!tz.ExtendedTimeZoneActSpecification(id,t,a.ToList(),(int)active,(int)deactive))
                     {
                         errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id),Command.TIMEZONE_SPEC));
                     }

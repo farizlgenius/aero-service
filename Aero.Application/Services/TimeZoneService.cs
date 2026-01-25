@@ -1,12 +1,17 @@
 ﻿
+using Aero.Api.Constants;
+using Aero.Application.Constants;
 using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
+using Aero.Application.Mapper;
+using Aero.Domain.Interface;
+using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Services
 {
-    public class TimeZoneService(IQTzRepository qTz) : ITimeZoneService
+    public class TimeZoneService(IQTzRepository qTz,IQHwRepository qHw,ITzCommand tz,ITzRepository rTz) : ITimeZoneService
     {
         public async Task<ResponseDto<IEnumerable<TimeZoneDto>>> GetAsync()
         {
@@ -22,55 +27,33 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder<TimeZoneDto>(dto);
         }
 
-        public async Task<ResponseDto<bool>> CreateAsync(CreateTimeZoneDto dto)
+        public async Task<ResponseDto<bool>> CreateAsync(TimeZoneDto dto)
         {
             List<string> errors = new List<string>();
-            var max = await context.system_setting.AsNoTracking().Select(x => x.n_tz).FirstOrDefaultAsync();
-            var ComponentId = await helperService.GetLowestUnassignedNumberAsync<Entity.TimeZone>(context,max);
+            var ComponentId = await qTz.GetLowestUnassignedNumberAsync(10);
             if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
-            var timezone = MapperHelper.CreateTimeZoneDtoToTimeZone(dto,ComponentId);
-            List<Interval> intervals = new List<Interval>();
-            foreach(var interval in dto.Intervals)
-            {
-                intervals.Add(MapperHelper.DtoToInterval(interval));
-            }
+            dto.ComponentId = ComponentId;
+
+            var timezone = TimezoneMapper.ToDomain(dto);
             
+            var ids = await qHw.GetComponentIdsAsync();
 
-            List<string> macs = await context.hardware.AsNoTracking().Select(x => x.mac).ToListAsync();
-
-            foreach (var mac in macs)
+            foreach (var id in ids)
             {
-                short id = await helperService.GetIdFromMacAsync(mac);
-                long active = helperService.DateTimeToElapeSecond(dto.ActiveTime);
-                long deactive = helperService.DateTimeToElapeSecond(dto.DeactiveTime);
-                //if (!await command.ExtendedTimeZoneActSpecificationAsync(id, timezone,interval, (int)active, (int)deactive))
-                //{
-                //    errors.Add(MessageBuilder.Unsuccess(mac, command.C3103));
-                //}
+                long active = UtilitiesHelper.DateTimeToElapeSecond(dto.ActiveTime);
+                long deactive = UtilitiesHelper.DateTimeToElapeSecond(dto.DeactiveTime);
+                if (!tz.ExtendedTimeZoneActSpecification(id, timezone,timezone.Intervals is null ? [] : timezone.Intervals , (int)active, (int)deactive))
+                {
+                   errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id), Command.TIMEZONE_SPEC));
+                }
             }
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
 
-            await context.timezone.AddAsync(timezone);
-            await context.SaveChangesAsync();
 
-            List<TimeZoneInterval> links = new List<TimeZoneInterval>();
-            foreach (var interval in dto.Intervals)
-            {
-                links.Add(
-                    new TimeZoneInterval
-                    {
-                        uuid = dto.Uuid,
-                        is_active = dto.IsActive,
+            var status = await rTz.AddAsync(timezone);
 
-                        interval_id = interval.ComponentId,
-                        timezone_id = ComponentId
-                    }
-                );
-            }
-
-            await context.timezone_interval.AddRangeAsync(links);
-            await context.SaveChangesAsync();
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,errors);
 
             return ResponseHelper.SuccessBuilder(true);
         }
@@ -78,30 +61,23 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<bool>> DeleteAsync(short component)
         {
             List<string> errors = new List<string>();
-            var entity = await context.timezone
-                .Include(s => s.timezone_intervals)
-                .FirstOrDefaultAsync(x => x.component_id == component);
+            
+            if(!await qTz.IsAnyByComponentId(component)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            if (entity is null) return ResponseHelper.NotFoundBuilder<bool>();
-
-            var hw = await context.hardware
-                .AsNoTracking()
-                .Where(x => x.location_id == entity.location_id)
-                .Select(x => x.component_id)
-                .ToArrayAsync();
-
+            var hw = await qHw.GetComponentIdsAsync();
             foreach(var id in hw)
             {
-                //if (!await command.TimeZoneControlAsync(id,component,3))
-                //{
-                //    errors.Add(MessageBuilder.Unsuccess(await helperService.GetMacFromIdAsync(id),command.C314));
-                //}
+                if (!tz.TimeZoneControl(id,component,3))
+                {
+                   errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id),Command.TZ_CONTROL));
+                }
             }
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
 
-            context.timezone.Remove(entity);
-            await context.SaveChangesAsync();
+            var status = await rTz.DeleteByComponentIdAsync(component);
+
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,errors);
 
             return ResponseHelper.SuccessBuilder<bool>(true);
         }
@@ -109,46 +85,28 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<TimeZoneDto>> UpdateAsync(TimeZoneDto dto)
         {
             List<string> errors = new List<string>();
-            var entity = await context.timezone
-                .Include(x => x.timezone_intervals)
-                .ThenInclude(x => x.interval)
-                .FirstOrDefaultAsync(p => p.component_id == dto.ComponentId);
-            if (entity is null) return ResponseHelper.NotFoundBuilder<TimeZoneDto>();
 
-            entity = MapperHelper.TimeZoneDtoMapTimeZone(dto,entity);
-            var intervals = dto.Intervals.Select(s => MapperHelper.DtoToInterval(s)).ToList();
+            if (!await qTz.IsAnyByComponentId(dto.ComponentId)) return ResponseHelper.NotFoundBuilder<TimeZoneDto>();
 
-            List<string> macs = await context.hardware.AsNoTracking().Select(x => x.mac).ToListAsync();
-            foreach (var mac in macs)
+            var domain = TimezoneMapper.ToDomain(dto);
+
+            var ids = await qHw.GetComponentIdsAsync();
+            foreach (var id in ids)
             {
-                short id = await helperService.GetIdFromMacAsync(mac);
-                long active = helperService.DateTimeToElapeSecond(dto.ActiveTime);
-                long deactive = helperService.DateTimeToElapeSecond(dto.DeactiveTime);
-                //if (!await command.ExtendedTimeZoneActSpecificationAsync(id, entity, interval, (int)active, (int)deactive))
-                //{
-                //    errors.Add(MessageBuilder.Unsuccess(mac, command.C3103));
-                //}
+                long active = UtilitiesHelper.DateTimeToElapeSecond(dto.ActiveTime);
+                long deactive = UtilitiesHelper.DateTimeToElapeSecond(dto.DeactiveTime);
+                if (!tz.ExtendedTimeZoneActSpecification(id, domain, domain.Intervals.ToList(), (int)active, (int)deactive))
+                {
+                   errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id), Command.TIMEZONE_SPEC));
+                }
             }
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<TimeZoneDto>(ResponseMessage.COMMAND_UNSUCCESS,errors);
 
-            context.timezone.Update(entity);
-            await context.SaveChangesAsync();
+            var data = TimezoneMapper.ToDomain(dto);
 
-            var linked = await context.timezone_interval.Where(x => x.timezone_id == dto.ComponentId).ToListAsync();
+            var status = await rTz.UpdateAsync(data);
 
-            context.timezone_interval.RemoveRange(linked);
-
-            var newLinked = intervals.Select(s => new TimeZoneInterval 
-            {
-                timezone_id = dto.ComponentId,
-                interval_id = s.component_id,
-                
-                created_date = DateTime.UtcNow,
-                updated_date = DateTime.UtcNow,
-
-            }).ToList();
-            context.timezone_interval.UpdateRange(newLinked);
-            await context.SaveChangesAsync();
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<TimeZoneDto>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,errors);
 
             return ResponseHelper.SuccessBuilder(dto);
         }
@@ -156,39 +114,19 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param)
         {
-            var dtos = await context.timezone_mode.AsNoTracking().Select(s => new ModeDto
-            {
-                Name = s.name,
-                Value = s.value,
-                Description = s.description,
-
-            }).ToArrayAsync();
+            var dtos = await qTz.GetModeAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
         public async Task<ResponseDto<IEnumerable<ModeDto>>> GetCommandAsync()
         {
-            var dtos = await context.timezone_command.AsNoTracking().Select(s => new ModeDto
-            {
-                Name = s.name,
-                Value = s.value,
-                Description = s.description,
-
-            }).ToArrayAsync();
+            var dtos = await qTz.GetCommandAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
         public async Task<ResponseDto<IEnumerable<TimeZoneDto>>> GetByLocationAsync(short location)
         {
-            var dtos = await context.timezone
-                .AsNoTracking()
-                .Include(c => c.timezone_intervals)
-                .ThenInclude(x => x.interval)
-                .ThenInclude(x => x.days)
-                .Where(x => x.location_id == location)
-                .Select(x => MapperHelper.TimeZoneToDto(x))
-                .ToArrayAsync();
-
+            var dtos = await qTz.GetByLocationIdAsync(location);
             return ResponseHelper.SuccessBuilder<IEnumerable<TimeZoneDto>>(dtos);
         }
     }

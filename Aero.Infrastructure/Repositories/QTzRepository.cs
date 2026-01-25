@@ -166,11 +166,61 @@ public class QTzRepository(AppDbContext context) : IQTzRepository
 
   public async Task<short> GetLowestUnassignedNumberAsync(int max)
   {
-    throw new NotImplementedException();
+    if (max <= 0) return -1;
+
+    var query = context.timezone
+        .AsNoTracking()
+        .Select(x => x.component_id);
+
+    // Handle empty table case quickly
+    var hasAny = await query.AnyAsync();
+    if (!hasAny)
+      return 1; // start at 1 if table is empty
+
+    // Load all numbers into memory (only the column, so it's lightweight)
+    var numbers = await query.Distinct().OrderBy(x => x).ToListAsync();
+
+    short expected = 1;
+    foreach (var num in numbers)
+    {
+      if (num != expected)
+        return expected; // found the lowest missing number
+      expected++;
+    }
+
+    // If none missing in sequence, return next number
+    if (expected > max) return -1;
+    return expected;
+  }
+
+  public async Task<IEnumerable<ModeDto>> GetCommandAsync()
+  {
+    var dtos = await context.timezone_command.AsNoTracking().Select(s => new ModeDto
+    {
+      Name = s.name,
+      Value = s.value,
+      Description = s.description,
+
+    }).ToArrayAsync();
+
+    return dtos;
   }
 
   public async Task<bool> IsAnyByComponentId(short component)
   {
     return await context.hardware.AnyAsync(x => x.component_id == component);
+  }
+
+  public async Task<IEnumerable<ModeDto>> GetModeAsync()
+  {
+    var dtos = await context.timezone_mode.AsNoTracking().Select(s => new ModeDto
+    {
+      Name = s.name,
+      Value = s.value,
+      Description = s.description,
+
+    }).ToArrayAsync();
+
+    return dtos;
   }
 }

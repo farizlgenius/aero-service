@@ -8,7 +8,7 @@ namespace Aero.Infrastructure.Repositories;
 
 public class QAlvlRepository(AppDbContext context) : IQAlvlRepository
 {
-      public async Task<int> CountByLocationIdAndUpdateTimeAsync(short locationId,DateTime sync)
+      public async Task<int> CountByLocationIdAndUpdateTimeAsync(short locationId, DateTime sync)
       {
             var res = await context.accesslevel
             .AsNoTracking()

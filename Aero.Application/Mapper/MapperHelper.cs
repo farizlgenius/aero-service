@@ -797,24 +797,7 @@ namespace Aero.Application.Mapper
             return interval;
         }
 
-        public static void UpdateInterval(Interval en, IntervalDto dto)
-        {
-            // Base
-            en.updated_date = DateTime.UtcNow;
 
-            // Detail
-            en.days_desc = dto.DaysDesc;
-            en.start_time = dto.StartTime;
-            en.end_time = dto.EndTime;
-            en.days.sunday = dto.Days.Sunday;
-            en.days.monday = dto.Days.Monday;
-            en.days.tuesday = dto.Days.Tuesday;
-            en.days.wednesday = dto.Days.Wednesday;
-            en.days.thursday = dto.Days.Thursday;
-            en.days.friday = dto.Days.Friday;
-            en.days.saturday = dto.Days.Saturday;
-
-        }
 
         #endregion
 

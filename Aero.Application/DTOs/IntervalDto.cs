@@ -1,10 +1,10 @@
-﻿using AeroService.DTOs;
+﻿using Aero.Domain.Entities;
+using AeroService.DTOs;
 
 namespace Aero.Application.DTOs
 {
-    public sealed class IntervalDto : NoMacBaseDto
+    public sealed class IntervalDto : NoMacBaseEntity
     {
-        public short ComponentId { get; set; }
         public DaysInWeekDto Days { get; set; }
         public string DaysDesc { get; set; } = string.Empty;
         public string StartTime { get; set; } = string.Empty;   

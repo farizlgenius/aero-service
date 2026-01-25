@@ -1,10 +1,11 @@
 ﻿
 
+using Aero.Domain.Entities;
+
 namespace Aero.Application.DTOs
 {
-    public sealed class TimeZoneDto : NoMacBaseDto
+    public sealed class TimeZoneDto : NoMacBaseEntity
     {
-        public short ComponentId { get; set; }
         public string Name { get; set; } = string.Empty;
         public short Mode { get; set; }
         public string ActiveTime { get; set; } = string.Empty;

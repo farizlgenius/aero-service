@@ -470,4 +470,23 @@ public sealed class QHwRepository(AppDbContext context) : IQHwRepository
             .Select(x => x.component_id)
             .ToArrayAsync();
       }
+
+      public async Task<IEnumerable<string>> GetMacsAsync()
+      {
+            var res = await context.hardware
+            .AsNoTracking()
+            .Select(x => x.mac)
+            .ToArrayAsync();
+
+            return res;
+      }
+
+      public async Task<IEnumerable<short>> GetComponentIdsAsync()
+    {
+        var res = await context.hardware.AsNoTracking()
+        .Select(x => x.component_id)
+        .ToArrayAsync();
+
+        return res;
+    }
 }

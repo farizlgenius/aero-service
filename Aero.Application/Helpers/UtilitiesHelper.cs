@@ -69,7 +69,7 @@ public sealed class UtilitiesHelper
     return dto;
   }
 
-  public static int ConvertDayToBinary(DaysInWeekDto days)
+  public static int ConvertDayToBinary(DaysInWeek days)
   {
     int result = 0;
     result |= (days.Sunday ? 1 : 0) << 0;

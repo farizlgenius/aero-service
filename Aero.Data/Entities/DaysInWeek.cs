@@ -2,7 +2,7 @@ using System;
 
 namespace Aero.Domain.Entities;
 
-public sealed class DayInWeek
+public sealed class DaysInWeek
 {
   public bool Sunday { get; set; }
   public bool Monday { get; set; }

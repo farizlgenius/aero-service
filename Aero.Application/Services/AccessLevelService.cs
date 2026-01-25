@@ -1,27 +1,12 @@
-﻿using AeroService.Aero.CommandService;
-using AeroService.Aero.CommandService.Impl;
-using AeroService.Constant;
-using AeroService.Constants;
-using AeroService.Data;
-using AeroService.DTO;
-using AeroService.DTO.AccessLevel;
-using AeroService.DTO.Interval;
-using AeroService.DTO.Reader;
-using AeroService.DTO.TimeZone;
-using AeroService.Entity;
-using AeroService.Helpers;
-using AeroService.Mapper;
-using AeroService.Utility;
-using Microsoft.EntityFrameworkCore;
-using MiNET.Entities;
+﻿using Aero.Application.DTOs;
+using Aero.Application.Interface;
+using Aero.Application.Interfaces;
+using Aero.Domain.Interfaces;
 
-
-namespace AeroService.Service.Impl
+namespace Aero.Application.Services
 {
-    public sealed class AccessLevelService(AeroCommandService command, AppDbContext context, IHelperService<AccessLevel> helperService) : IAccessLevelService
+    public sealed class AccessLevelService(IQAlvlRepository qAlvl,IQHwRepository qHw,IAlvlCommand alvl) : IAccessLevelService
     {
-
-
         public async Task<ResponseDto<IEnumerable<AccessLevelDto>>> GetByLocationIdAsync(short location)
         {
             var dtos = await context.accesslevel

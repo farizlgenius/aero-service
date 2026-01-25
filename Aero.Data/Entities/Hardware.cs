@@ -1,4 +1,5 @@
 using System;
+using Aero.Domain.Interface;
 
 namespace Aero.Domain.Entities;
 
@@ -23,4 +24,5 @@ public sealed class Hardware : BaseEntity
     public string ProtocolTwoDescription { get; set; } = string.Empty;
     public short BaudRateTwo { get; set; }
     public DateTime LastSync { get; set; }
+
 }

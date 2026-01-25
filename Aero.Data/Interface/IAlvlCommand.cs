@@ -1,7 +1,7 @@
 using System;
-using Aero.Application.DTOs;
 
-namespace Aero.Application.Interfaces;
+
+namespace Aero.Domain.Interfaces;
 
 public interface IAlvlCommand
 {

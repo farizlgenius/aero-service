@@ -3,7 +3,7 @@ using Aero.Domain.Interface;
 
 namespace Aero.Infrastructure.Data.Entities
 {
-    public class NoMacBaseEntity : IDatetime
+    public class NoMacBaseEntity : IDatetime,IComponentId
     {
         [Key]
         public int id { get; set; }
@@ -13,5 +13,6 @@ namespace Aero.Infrastructure.Data.Entities
         public bool is_active { get; set; } = true;
         public DateTime created_date { get; set; }
         public DateTime updated_date { get; set; }
-    }
+        public short component_id {get; set;}
+      }
 }

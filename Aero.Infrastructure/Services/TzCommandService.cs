@@ -2,13 +2,14 @@ using System;
 using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using HID.Aero.ScpdNet.Wrapper;
 
 namespace Aero.Infrastructure.Services;
 
 public sealed class TzCommandService : BaseAeroCommand, ITzCommand
 {
-  public bool ExtendedTimeZoneActSpecificationAsync(short ScpId, TimeZoneDto dto, List<IntervalDto> intervals, int activeTime, int deactiveTime)
+  public bool ExtendedTimeZoneActSpecification(short ScpId, Timezone dto, List<Interval> intervals, int activeTime, int deactiveTime)
   {
     CC_SCP_TZEX_ACT cc = new CC_SCP_TZEX_ACT();
     cc.lastModified = 0;
@@ -32,5 +33,16 @@ public sealed class TzCommandService : BaseAeroCommand, ITzCommand
     }
     bool flag = Send((short)enCfgCmnd.enCcScpTimezoneExAct, cc);
     return flag;
+  }
+
+  public bool TimeZoneControl(short ScpId, short TzNo, short Command)
+  {
+    CC_TZCOMMAND cc = new CC_TZCOMMAND();
+    cc.scp_number = ScpId;
+    cc.tz_number = TzNo;
+    cc.command = Command;
+    bool flag = Send((short)enCfgCmnd.enCcTzCommand, cc);
+    return flag;
+
   }
 }
