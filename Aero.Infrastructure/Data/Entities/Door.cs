@@ -3,6 +3,7 @@ namespace Aero.Infrastructure.Data.Entities
 {
     public sealed class Door : BaseEntity
     {
+        public short acr_id {get; set;}
         public string name { get; set; } = string.Empty;   
         public short access_config { get; set; }
         public short pair_door_no { get; set; }
@@ -20,14 +21,15 @@ namespace Aero.Infrastructure.Data.Entities
         public short sensor_id { get; set; }
         public Sensor sensor { get; set; }
         
-
         //sensor setting for rex0 / rex1
         public ICollection<RequestExit>? request_exits { get; set; }
         public short card_format { get; set; } = 255;
         public short antipassback_mode { get; set; }
         public short? antipassback_in { get; set; }
+        public short area_in_id {get; set;}
         public Area? area_in { get; set; }
         public short? antipassback_out { get; set; }
+        public short area_out_id {get; set;}
         public Area? area_out { get; set; }
         public short spare_tag { get; set; }
         public short access_control_flag { get; set; }

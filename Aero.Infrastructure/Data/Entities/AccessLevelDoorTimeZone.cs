@@ -13,7 +13,5 @@ namespace Aero.Infrastructure.Data.Entities
         public short door_id { get; set; }
         public Door door { get; set; }
 
-
-      
     }
 }

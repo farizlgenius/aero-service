@@ -1,11 +1,11 @@
 ﻿using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 
 namespace Aero.Application.DTOs
 {
-    public sealed class CreateUpdateAccessLevelDto : NoMacBaseDto,IComponentId
+    public sealed class CreateUpdateAccessLevelDto : NoMacBaseEntity
     {
-        public string Name { get; set; }
-        public short component_id { get; set; }
+        public string Name { get; set; } = string.Empty;
         public List<CreateUpdateAccessLevelDoorTimeZoneDto> CreateUpdateAccessLevelDoorTimeZoneDto { get; set; } = new List<CreateUpdateAccessLevelDoorTimeZoneDto>();
     }
 }

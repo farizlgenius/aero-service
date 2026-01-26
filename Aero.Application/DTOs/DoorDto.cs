@@ -6,6 +6,7 @@ namespace Aero.Application.DTOs
 {
     public sealed class DoorDto : BaseEntity
     {
+        public short AcrId {get; set;}
         public string Name { get; set; } = string.Empty;
         public short AccessConfig { get; set; }
         public short PairDoorNo { get; set; }
@@ -24,7 +25,9 @@ namespace Aero.Application.DTOs
         public short CardFormat { get; set; }
         public short AntiPassbackMode { get; set; }
         public short AntiPassBackIn { get; set; }
+        public short AreaInId {get; set;}
         public short AntiPassBackOut { get; set; }
+        public short AreaOutId {get; set;}
         public short SpareTags { get; set; }
         public short AccessControlFlags { get; set; }
         public short Mode { get; set; }

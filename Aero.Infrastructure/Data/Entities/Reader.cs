@@ -1,4 +1,6 @@
-﻿namespace Aero.Infrastructure.Data.Entities
+﻿using Aero.Domain.Enums;
+
+namespace Aero.Infrastructure.Data.Entities
 {
     public sealed class Reader : BaseEntity
     {
@@ -9,7 +11,7 @@
         public short data_format { get; set; } = 0x01;
         public short keypad_mode { get; set; } = 2;
         public short led_drive_mode { get; set; }
-        public short direction { get; set; }    
+        public DoorDirection direction { get; set; }    
         public bool osdp_flag { get; set; }
         public short osdp_baudrate { get; set; } = 0x01;
         public short osdp_discover { get; set; } = 0x08;

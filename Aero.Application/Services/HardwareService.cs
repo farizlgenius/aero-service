@@ -263,7 +263,7 @@ namespace Aero.Application.Services
             var tzs = accessLevels.SelectMany(x => x.AccessLevelDoorTimeZoneDto).Select(x => new CreateUpdateAccessLevelDoorTimeZoneDto
             {
                 TimeZoneId = x.TimeZone.ComponentId,
-                DoorId = x.Doors.ComponentId,
+                DoorId = x.Door.ComponentId,
             }).ToList();
 
             foreach (var a in accessLevels)

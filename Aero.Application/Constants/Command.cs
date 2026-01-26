@@ -17,11 +17,11 @@
         public static string C307 = "command 307: Control Point command";
         public static string C306 = "command 306: Monitor Point MaskAsync";
         public static string MODULE_STATUS = "command 404: Get Module Status";
-        public static string C311 = "command 311: Momentary Unlock";
+        public static string MOMENT_UNLOCK = "command 311: Momentary Unlock";
         public static string READER_SPEC = "command 112: Reader Specification";
         public static string ACR_CONFIG = "command 115: Access Control Reader Configuration";
         public static string C407 = "command 407: enCcAcrSrq";
-        public static string C308 = "command 308: ACR mode";
+        public static string ACR_MODE = "command 308: ACR mode";
         public static string C401 = "command 401: enCcIDRequest";
         public static string C8304 = "command 8304: Access Database Card Records";
         public static string C3305 = "command 3305: Card DeleteAsync";

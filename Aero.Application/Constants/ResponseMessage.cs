@@ -17,4 +17,5 @@ public static class ResponseMessage
       public static string SAVE_DATABASE_UNSUCCESS = "Save to database unsuccess.";
       public static string DELETE_DATABASE_UNSUCCESS = "Delete from database unsuccess.";
       public static string UPDATE_RECORD_UNSUCCESS = "Update record in database unsuccess.";
+      public static string UPDATE_DOOR_MODE_UNSUCCESS = "Update door mode record unsuccess.";
 }

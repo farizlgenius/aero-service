@@ -1,736 +1,94 @@
-﻿using AeroService.Aero.CommandService;
-using AeroService.Aero.CommandService.Impl;
-using AeroService.AeroLibrary;
-using AeroService.Constant;
-using AeroService.Constants;
-using AeroService.Data;
-using AeroService.DTO;
-using AeroService.DTO.Door;
-using AeroService.DTO.Reader;
-using AeroService.DTO.RequestExit;
-using AeroService.DTO.Sensor;
-using AeroService.DTO.Strike;
-using AeroService.Entity;
-using AeroService.Helpers;
-using AeroService.Hubs;
-using AeroService.Mapper;
-using AeroService.Utility;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
+﻿using Aero.Api.Constants;
+using Aero.Application.Constants;
+using Aero.Application.DTOs;
+using Aero.Application.Helpers;
+using Aero.Application.Interface;
+using Aero.Application.Interfaces;
+using Aero.Application.Mapper;
+using Aero.Domain.Interface;
+using Aero.Domain.Interfaces;
 
-
-namespace AeroService.Service.Impl
+namespace Aero.Application.Services
 {
-    public class DoorService(AppDbContext context, AeroMessage read, AeroCommandService command, IHelperService<Door> helperService, IHubContext<AeroHub> hub) : IDoorService
+    public class DoorService(IQDoorRepository qDoor,IDoorCommand door,IQHwRepository qHw,IDoorRepository rDoor,ICpCommand cp,IMpCommand mp) : IDoorService
     {
         public async Task<ResponseDto<IEnumerable<DoorDto>>> GetAsync()
         {
-            var dtos = await context.door
-                .AsNoTracking()
-                .Select(x => new DoorDto
-                {
-                    // Base 
-                    Uuid = x.uuid,
-                    ComponentId = x.component_id,
-                    Mac = x.hardware_mac,
-                    LocationId = x.location_id,
-                    IsActive = x.is_active,
-
-                    // extend_desc
-                    Name = x.name,
-                    AccessConfig = x.access_config,
-                    PairDoorNo = x.pair_door_no,
-
-                    // Reader
-                    Readers = x.readers == null ? new List<ReaderDto>() : x.readers
-                    .Select(x => new ReaderDto
-                    {
-                        // Base
-                        Uuid = x.uuid,
-                        ComponentId = x.component_id,
-                        Mac = x.module.hardware_mac,
-                        HardwareName = x.module.hardware.name,
-                        LocationId = x.location_id,
-                        IsActive = x.is_active,
-
-                        // extend_desc
-                        ModuleId = x.module_id,
-                        ReaderNo = x.reader_no,
-                        DataFormat = x.data_format,
-                        KeypadMode = x.keypad_mode,
-                        LedDriveMode = x.led_drive_mode,
-                        OsdpFlag = x.osdp_flag,
-                        OsdpAddress = x.osdp_address,
-                        OsdpBaudrate = x.osdp_baudrate,
-                        OsdpDiscover = x.osdp_discover,
-                        OsdpSecureChannel = x.osdp_secure_channel,
-                        OsdpTracing = x.osdp_tracing,
-                    })
-                    .ToList(),
-                    ReaderOutConfiguration = x.reader_out_config,
-
-                    // Strike
-                    StrkComponentId = x.strike_id,
-                    Strk = x.strike == null ? null : new StrikeDto
-                    {
-                        // Base 
-                        Uuid = x.strike.uuid,
-                        ComponentId = x.strike.component_id,
-                        Mac = x.strike.module.hardware_mac,
-                        HardwareName = x.strike.module.hardware.name,
-                        LocationId = x.location_id,
-                        IsActive = x.is_active,
-
-                        // extend_desc
-                        ModuleId = x.strike.module_id,
-                        OutputNo = x.strike.output_no,
-                        RelayMode = x.strike.relay_mode,
-                        OfflineMode = x.strike.offline_mode,
-                        StrkMax = x.strike.strike_max,
-                        StrkMin = x.strike.strike_min,
-                        StrkMode = x.strike.strike_mode,
-                    },
-
-                    // sensor
-                    SensorComponentId = x.sensor_id,
-                    Sensor = x.sensor == null ? null : new SensorDto
-                    {
-
-                        // Base 
-                        Uuid = x.sensor.uuid,
-                        ComponentId = x.sensor.component_id,
-                        Mac = x.sensor.module.hardware_mac,
-                        HardwareName = x.sensor.module.hardware.name,
-                        LocationId = x.sensor.location_id,
-                        IsActive = x.sensor.is_active,
-
-                        // extend_desc
-                        ModuleId = x.sensor.module_id,
-                        InputNo = x.sensor.input_no,
-                        InputMode = x.sensor.input_mode,
-                        Debounce = x.sensor.debounce,
-                        HoldTime = x.sensor.holdtime,
-                        DcHeld = x.sensor.dc_held,
-
-                    },
-
-                    // Request Exit
-                    RequestExits = x.request_exits == null ? new List<RequestExitDto>() : x.request_exits
-                    .Select(x => new RequestExitDto
-                    {
-                        // Base
-                        Uuid = x.uuid,
-                        ComponentId = x.component_id,
-                        Mac = x.module.hardware_mac,
-                        HardwareName = x.module.hardware.name,
-                        LocationId = x.location_id,
-                        IsActive = x.is_active,
-
-                        // extend_desc
-                        ModuleId = x.module_id,
-                        InputNo = x.input_no,
-                        InputMode = x.input_mode,
-                        Debounce = x.debounce,
-                        HoldTime = x.holdtime,
-                        MaskTimeZone = x.mask_timezone,
-                    })
-                    .ToList(),
-
-
-                    CardFormat = x.card_format,
-                    AntiPassbackMode = x.antipassback_mode,
-                    AntiPassBackIn = (short)(x.antipassback_in == null ? 0 : (short)x.antipassback_in),
-                    AntiPassBackOut = (short)(x.antipassback_out == null ? 0 : (short)x.antipassback_out),
-                    SpareTags = x.spare_tag,
-                    AccessControlFlags = x.access_control_flag,
-                    Mode = x.mode,
-                    ModeDesc = x.mode_desc,
-                    OfflineMode = x.offline_mode,
-                    OfflineModeDesc = x.offline_mode_desc,
-                    DefaultMode = x.default_mode,
-                    DefaultModeDesc = x.default_mode_desc,
-                    DefaultLEDMode = x.default_led_mode,
-                    PreAlarm = x.pre_alarm,
-                    AntiPassbackDelay = x.antipassback_delay,
-                    StrkT2 = x.strike_t2,
-                    DcHeld2 = x.dc_held2,
-                    StrkFollowPulse = x.strike_follow_pulse,
-                    StrkFollowDelay = x.strike_follow_delay,
-                    nExtFeatureType = x.n_ext_feature_type,
-                    IlPBSio = x.i_lpb_sio,
-                    IlPBNumber = x.i_lpb_number,
-                    IlPBLongPress = x.i_lpb_long_press,
-                    IlPBOutSio = x.i_lpb_out_sio,
-                    IlPBOutNum = x.i_lpb_out_num,
-                    DfOfFilterTime = x.df_filter_time,
-                    MaskForceOpen = x.is_force_mask,
-                    MaskHeldOpen = x.is_held_mask,
-
-                })
-                .ToArrayAsync();
-
+            var dtos = await qDoor.GetAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<DoorDto>>(dtos);
         }
         public async Task<ResponseDto<IEnumerable<DoorDto>>> GetByLocationIdAsync(short location)
         {
-            var dtos = await context.door
-                .AsNoTracking()
-                .Where(x => x.location_id == location)
-                .Select(x => new DoorDto
-                {
-                    // Base 
-                    Uuid = x.uuid,
-                    ComponentId = x.component_id,
-                    Mac = x.hardware_mac,
-                    LocationId = x.location_id,
-                    IsActive = x.is_active,
-
-                    // extend_desc
-                    Name = x.name,
-                    AccessConfig = x.access_config,
-                    PairDoorNo = x.pair_door_no,
-
-                    // Reader
-                    Readers = x.readers == null ? new List<ReaderDto>() : x.readers
-                    .Select(x => new ReaderDto
-                    {
-                        // Base
-                        Uuid = x.uuid,
-                        ComponentId = x.component_id,
-                        Mac = x.module.hardware_mac,
-                        HardwareName = x.module.hardware.name,
-                        LocationId = x.location_id,
-                        IsActive = x.is_active,
-
-                        // extend_desc
-                        ModuleId = x.module_id,
-                        ReaderNo = x.reader_no,
-                        DataFormat = x.data_format,
-                        KeypadMode = x.keypad_mode,
-                        LedDriveMode = x.led_drive_mode,
-                        OsdpFlag = x.osdp_flag,
-                        OsdpAddress = x.osdp_address,
-                        OsdpBaudrate = x.osdp_baudrate,
-                        OsdpDiscover = x.osdp_discover,
-                        OsdpSecureChannel = x.osdp_secure_channel,
-                        OsdpTracing = x.osdp_tracing,
-                    })
-                    .ToList(),
-                    ReaderOutConfiguration = x.reader_out_config,
-
-                    // Strike
-                    StrkComponentId = x.strike_id,
-                    Strk = x.strike == null ? null : new StrikeDto
-                    {
-                        // Base 
-                        Uuid = x.strike.uuid,
-                        ComponentId = x.strike.component_id,
-                        Mac = x.strike.module.hardware_mac,
-                        HardwareName = x.strike.module.hardware.name,
-                        LocationId = x.location_id,
-                        IsActive = x.is_active,
-
-                        // extend_desc
-                        ModuleId = x.strike.module_id,
-                        OutputNo = x.strike.output_no,
-                        RelayMode = x.strike.relay_mode,
-                        OfflineMode = x.strike.offline_mode,
-                        StrkMax = x.strike.strike_max,
-                        StrkMin = x.strike.strike_min,
-                        StrkMode = x.strike.strike_mode,
-                    },
-
-                    // sensor
-                    SensorComponentId = x.sensor_id,
-                    Sensor = x.sensor == null ? null : new SensorDto
-                    {
-
-                        // Base 
-                        Uuid = x.sensor.uuid,
-                        ComponentId = x.sensor.component_id,
-                        Mac = x.sensor.module.hardware_mac,
-                        HardwareName = x.sensor.module.hardware.name,
-                        LocationId = x.sensor.location_id,
-                        IsActive = x.sensor.is_active,
-
-                        // extend_desc
-                        ModuleId = x.sensor.module_id,
-                        InputNo = x.sensor.input_no,
-                        InputMode = x.sensor.input_mode,
-                        Debounce = x.sensor.debounce,
-                        HoldTime = x.sensor.holdtime,
-                        DcHeld = x.sensor.dc_held,
-
-                    },
-
-                    // Request Exit
-                    RequestExits = x.request_exits == null ? new List<RequestExitDto>() : x.request_exits
-                    .Select(x => new RequestExitDto
-                    {
-                        // Base
-                        Uuid = x.uuid,
-                        ComponentId = x.component_id,
-                        Mac = x.module.hardware_mac,
-                        HardwareName = x.module.hardware.name,
-                        LocationId = x.location_id,
-                        IsActive = x.is_active,
-
-                        // extend_desc
-                        ModuleId = x.module_id,
-                        InputNo = x.input_no,
-                        InputMode = x.input_mode,
-                        Debounce = x.debounce,
-                        HoldTime = x.holdtime,
-                        MaskTimeZone = x.mask_timezone,
-                    })
-                    .ToList(),
-
-
-                    CardFormat = x.card_format,
-                    AntiPassbackMode = x.antipassback_mode,
-                    AntiPassBackIn = (short)(x.antipassback_in == null ? 0 : (short)x.antipassback_in),
-                    AntiPassBackOut = (short)(x.antipassback_out == null ? 0 : (short)x.antipassback_out),
-                    SpareTags = x.spare_tag,
-                    AccessControlFlags = x.access_control_flag,
-                    Mode = x.mode,
-                    ModeDesc = x.mode_desc,
-                    OfflineMode = x.offline_mode,
-                    OfflineModeDesc = x.offline_mode_desc,
-                    DefaultMode = x.default_mode,
-                    DefaultModeDesc = x.default_mode_desc,
-                    DefaultLEDMode = x.default_led_mode,
-                    PreAlarm = x.pre_alarm,
-                    AntiPassbackDelay = x.antipassback_delay,
-                    StrkT2 = x.strike_t2,
-                    DcHeld2 = x.dc_held2,
-                    StrkFollowPulse = x.strike_follow_pulse,
-                    StrkFollowDelay = x.strike_follow_delay,
-                    nExtFeatureType = x.n_ext_feature_type,
-                    IlPBSio = x.i_lpb_sio,
-                    IlPBNumber = x.i_lpb_number,
-                    IlPBLongPress = x.i_lpb_long_press,
-                    IlPBOutSio = x.i_lpb_out_sio,
-                    IlPBOutNum = x.i_lpb_out_num,
-                    DfOfFilterTime = x.df_filter_time,
-                    MaskForceOpen = x.is_force_mask,
-                    MaskHeldOpen = x.is_held_mask,
-
-                })
-                .ToArrayAsync();
-
+            var dtos = await qDoor.GetByLocationIdAsync(location);
             return ResponseHelper.SuccessBuilder<IEnumerable<DoorDto>>(dtos);
         }
 
         public async Task<ResponseDto<IEnumerable<DoorDto>>> GetByMacAsync(string mac)
         {
-            var dtos = await context.door
-                .AsNoTracking()
-                .Where(x => x.hardware_mac == mac)
-                .Select(x => new DoorDto
-                {
-                    // Base 
-                    Uuid = x.uuid,
-                    ComponentId = x.component_id,
-                    Mac = x.hardware_mac,
-                    LocationId = x.location_id,
-                    IsActive = x.is_active,
-
-                    // extend_desc
-                    Name = x.name,
-                    AccessConfig = x.access_config,
-                    PairDoorNo = x.pair_door_no,
-
-                    // Reader
-                    Readers = x.readers == null ? new List<ReaderDto>() : x.readers
-                    .Select(x => new ReaderDto
-                    {
-                        // Base
-                        Uuid = x.uuid,
-                        ComponentId = x.component_id,
-                        Mac = x.module.hardware_mac,
-                        HardwareName = x.module.hardware.name,
-                        LocationId = x.location_id,
-                        IsActive = x.is_active,
-
-                        // extend_desc
-                        ModuleId = x.module_id,
-                        ReaderNo = x.reader_no,
-                        DataFormat = x.data_format,
-                        KeypadMode = x.keypad_mode,
-                        LedDriveMode = x.led_drive_mode,
-                        OsdpFlag = x.osdp_flag,
-                        OsdpAddress = x.osdp_address,
-                        OsdpBaudrate = x.osdp_baudrate,
-                        OsdpDiscover = x.osdp_discover,
-                        OsdpSecureChannel = x.osdp_secure_channel,
-                        OsdpTracing = x.osdp_tracing,
-                    })
-                    .ToList(),
-                    ReaderOutConfiguration = x.reader_out_config,
-
-                    // Strike
-                    StrkComponentId = x.strike_id,
-                    Strk = x.strike == null ? null : new StrikeDto
-                    {
-                        // Base 
-                        Uuid = x.strike.uuid,
-                        ComponentId = x.strike.component_id,
-                        Mac = x.strike.module.hardware_mac,
-                        HardwareName = x.strike.module.hardware.name,
-                        LocationId = x.location_id,
-                        IsActive = x.is_active,
-
-                        // extend_desc
-                        ModuleId = x.strike.module_id,
-                        OutputNo = x.strike.output_no,
-                        RelayMode = x.strike.relay_mode,
-                        OfflineMode = x.strike.offline_mode,
-                        StrkMax = x.strike.strike_max,
-                        StrkMin = x.strike.strike_min,
-                        StrkMode = x.strike.strike_mode,
-                    },
-
-                    // sensor
-                    SensorComponentId = x.sensor_id,
-                    Sensor = x.sensor == null ? null : new SensorDto
-                    {
-
-                        // Base 
-                        Uuid = x.sensor.uuid,
-                        ComponentId = x.sensor.component_id,
-                        Mac = x.sensor.module.hardware_mac,
-                        HardwareName = x.sensor.module.hardware.name,
-                        LocationId = x.sensor.location_id,
-                        IsActive = x.sensor.is_active,
-
-                        // extend_desc
-                        ModuleId = x.sensor.module_id,
-                        InputNo = x.sensor.input_no,
-                        InputMode = x.sensor.input_mode,
-                        Debounce = x.sensor.debounce,
-                        HoldTime = x.sensor.holdtime,
-                        DcHeld = x.sensor.dc_held,
-
-                    },
-
-                    // Request Exit
-                    RequestExits = x.request_exits == null ? new List<RequestExitDto>() : x.request_exits
-                    .Select(x => new RequestExitDto
-                    {
-                        // Base
-                        Uuid = x.uuid,
-                        ComponentId = x.component_id,
-                        Mac = x.module.hardware_mac,
-                        HardwareName = x.module.hardware.name,
-                        LocationId = x.location_id,
-                        IsActive = x.is_active,
-
-                        // extend_desc
-                        ModuleId = x.module_id,
-                        InputNo = x.input_no,
-                        InputMode = x.input_mode,
-                        Debounce = x.debounce,
-                        HoldTime = x.holdtime,
-                        MaskTimeZone = x.mask_timezone,
-                    })
-                    .ToList(),
-
-
-                    CardFormat = x.card_format,
-                    AntiPassbackMode = x.antipassback_mode,
-                    AntiPassBackIn = (short)(x.antipassback_in == null ? 0 : (short)x.antipassback_in),
-                    AntiPassBackOut = (short)(x.antipassback_out == null ? 0 : (short)x.antipassback_out),
-                    SpareTags = x.spare_tag,
-                    AccessControlFlags = x.access_control_flag,
-                    Mode = x.mode,
-                    ModeDesc = x.mode_desc,
-                    OfflineMode = x.offline_mode,
-                    OfflineModeDesc = x.offline_mode_desc,
-                    DefaultMode = x.default_mode,
-                    DefaultModeDesc = x.default_mode_desc,
-                    DefaultLEDMode = x.default_led_mode,
-                    PreAlarm = x.pre_alarm,
-                    AntiPassbackDelay = x.antipassback_delay,
-                    StrkT2 = x.strike_t2,
-                    DcHeld2 = x.dc_held2,
-                    StrkFollowPulse = x.strike_follow_pulse,
-                    StrkFollowDelay = x.strike_follow_delay,
-                    nExtFeatureType = x.n_ext_feature_type,
-                    IlPBSio = x.i_lpb_sio,
-                    IlPBNumber = x.i_lpb_number,
-                    IlPBLongPress = x.i_lpb_long_press,
-                    IlPBOutSio = x.i_lpb_out_sio,
-                    IlPBOutNum = x.i_lpb_out_num,
-                    DfOfFilterTime = x.df_filter_time,
-                    MaskForceOpen = x.is_force_mask,
-                    MaskHeldOpen = x.is_held_mask,
-
-                })
-                .ToArrayAsync();
-
-            return ResponseHelper.SuccessBuilder<IEnumerable<DoorDto>>(dtos);
-        }
-
-        public async Task<ResponseDto<DoorDto>> GetByComponentAsync(string mac, short component)
-        {
-            var dto = await context.door
-                .AsNoTracking()
-                .Where(x => x.hardware_mac == mac && x.component_id == component)
-                .Select(x => new DoorDto
-                {
-                    // Base 
-                    Uuid = x.uuid,
-                    ComponentId = x.component_id,
-                    Mac = x.hardware_mac,
-                    LocationId = x.location_id,
-                    IsActive = x.is_active,
-
-                    // extend_desc
-                    Name = x.name,
-                    AccessConfig = x.access_config,
-                    PairDoorNo = x.pair_door_no,
-
-                    // Reader
-                    Readers = x.readers == null ? new List<ReaderDto>() : x.readers
-                    .Select(x => new ReaderDto
-                    {
-                        // Base
-                        Uuid = x.uuid,
-                        ComponentId = x.component_id,
-                        Mac = x.module.hardware_mac,
-                        HardwareName = x.module.hardware.name,
-                        LocationId = x.location_id,
-                        IsActive = x.is_active,
-
-                        // extend_desc
-                        ModuleId = x.module_id,
-                        ReaderNo = x.reader_no,
-                        DataFormat = x.data_format,
-                        KeypadMode = x.keypad_mode,
-                        LedDriveMode = x.led_drive_mode,
-                        OsdpFlag = x.osdp_flag,
-                        OsdpAddress = x.osdp_address,
-                        OsdpBaudrate = x.osdp_baudrate,
-                        OsdpDiscover = x.osdp_discover,
-                        OsdpSecureChannel = x.osdp_secure_channel,
-                        OsdpTracing = x.osdp_tracing,
-                    })
-                    .ToList(),
-                    ReaderOutConfiguration = x.reader_out_config,
-
-                    // Strike
-                    StrkComponentId = x.strike_id,
-                    Strk = x.strike == null ? null : new StrikeDto
-                    {
-                        // Base 
-                        Uuid = x.strike.uuid,
-                        ComponentId = x.strike.component_id,
-                        Mac = x.strike.module.hardware_mac,
-                        HardwareName = x.strike.module.hardware.name,
-                        LocationId = x.location_id,
-                        IsActive = x.is_active,
-
-                        // extend_desc
-                        ModuleId = x.strike.module_id,
-                        OutputNo = x.strike.output_no,
-                        RelayMode = x.strike.relay_mode,
-                        OfflineMode = x.strike.offline_mode,
-                        StrkMax = x.strike.strike_max,
-                        StrkMin = x.strike.strike_min,
-                        StrkMode = x.strike.strike_mode,
-                    },
-
-                    // sensor
-                    SensorComponentId = x.sensor_id,
-                    Sensor = x.sensor == null ? null : new SensorDto
-                    {
-
-                        // Base 
-                        Uuid = x.sensor.uuid,
-                        ComponentId = x.sensor.component_id,
-                        Mac = x.sensor.module.hardware_mac,
-                        HardwareName = x.sensor.module.hardware.name,
-                        LocationId = x.sensor.location_id,
-                        IsActive = x.sensor.is_active,
-
-                        // extend_desc
-                        ModuleId = x.sensor.module_id,
-                        InputNo = x.sensor.input_no,
-                        InputMode = x.sensor.input_mode,
-                        Debounce = x.sensor.debounce,
-                        HoldTime = x.sensor.holdtime,
-                        DcHeld = x.sensor.dc_held,
-
-                    },
-
-                    // Request Exit
-                    RequestExits = x.request_exits == null ? new List<RequestExitDto>() : x.request_exits
-                    .Select(x => new RequestExitDto
-                    {
-                        // Base
-                        Uuid = x.uuid,
-                        ComponentId = x.component_id,
-                        Mac = x.module.hardware_mac,
-                        HardwareName = x.module.hardware.name,
-                        LocationId = x.location_id,
-                        IsActive = x.is_active,
-
-                        // extend_desc
-                        ModuleId = x.module_id,
-                        InputNo = x.input_no,
-                        InputMode = x.input_mode,
-                        Debounce = x.debounce,
-                        HoldTime = x.holdtime,
-                        MaskTimeZone = x.mask_timezone,
-                    })
-                    .ToList(),
-
-
-                    CardFormat = x.card_format,
-                    AntiPassbackMode = x.antipassback_mode,
-                    AntiPassBackIn = (short)(x.antipassback_in == null ? 0 : (short)x.antipassback_in),
-                    AntiPassBackOut = (short)(x.antipassback_out == null ? 0 : (short)x.antipassback_out),
-                    SpareTags = x.spare_tag,
-                    AccessControlFlags = x.access_control_flag,
-                    Mode = x.mode,
-                    ModeDesc = x.mode_desc,
-                    OfflineMode = x.offline_mode,
-                    OfflineModeDesc = x.offline_mode_desc,
-                    DefaultMode = x.default_mode,
-                    DefaultModeDesc = x.default_mode_desc,
-                    DefaultLEDMode = x.default_led_mode,
-                    PreAlarm = x.pre_alarm,
-                    AntiPassbackDelay = x.antipassback_delay,
-                    StrkT2 = x.strike_t2,
-                    DcHeld2 = x.dc_held2,
-                    StrkFollowPulse = x.strike_follow_pulse,
-                    StrkFollowDelay = x.strike_follow_delay,
-                    nExtFeatureType = x.n_ext_feature_type,
-                    IlPBSio = x.i_lpb_sio,
-                    IlPBNumber = x.i_lpb_number,
-                    IlPBLongPress = x.i_lpb_long_press,
-                    IlPBOutSio = x.i_lpb_out_sio,
-                    IlPBOutNum = x.i_lpb_out_num,
-                    DfOfFilterTime = x.df_filter_time,
-                    MaskForceOpen = x.is_force_mask,
-                    MaskHeldOpen = x.is_held_mask,
-
-                })
-                .FirstOrDefaultAsync();
-            if(dto is null) return ResponseHelper.NotFoundBuilder<DoorDto>();
-            return ResponseHelper.SuccessBuilder(dto);
+            var dtos = await qDoor.GetByMacAsync(mac);
+            return ResponseHelper.SuccessBuilder(dtos);
         }
 
         public async Task<ResponseDto<bool>> UnlockAsync(string mac, short component)
         {
-            short id = await helperService.GetIdFromMacAsync(mac);
-            if(!command.MomentaryUnlock(id,component))
+            short id = await qHw.GetComponentFromMacAsync(mac);
+            if(!door.MomentaryUnlock(id,component))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.C311));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.MOMENT_UNLOCK));
             }
             return ResponseHelper.SuccessBuilder(true);
         }
 
         private async Task<ResponseDto<IEnumerable<ModeDto>>> ReaderModeAsync()
         {
-            var dtos = await context.reader_configuration_mode.Select(x => new ModeDto 
-            {
-                Name = x.name,
-                Value = x.value,
-                Description = x.description
-
-            }).ToArrayAsync();
+            var dtos = await qDoor.GetReaderModeAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
         private async Task<ResponseDto<IEnumerable<ModeDto>>> StrikeModeAsync()
         {
-            var dtos = await context.strike_mode.Select(x => new ModeDto 
-            {
-                Name = x.name,
-                Value = x.value,
-                Description = x.description
-
-            }).ToArrayAsync();
+            var dtos = await qDoor.GetStrikeModeAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
         private async Task<ResponseDto<IEnumerable<ModeDto>>> AcrModeAsync()
         {
-            var dtos = await context.door_mode.Select(x => new ModeDto 
-            {
-                Name = x.name,
-                Value = x.value,
-                Description = x.description
-
-            }).ToArrayAsync();
+            var dtos = await qDoor.GetDoorModeAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
         public async Task<ResponseDto<IEnumerable<ModeDto>>> ApbModeAsync()
         {
-            var dtos = await context.antipassback_mode.Select(x => new ModeDto 
-            {
-                Name = x.name,
-                Value = x.value,
-                Description = x.description
-
-            }).ToArrayAsync();
+            var dtos = await qDoor.GetApbModeAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
 
         public async Task<ResponseDto<IEnumerable<ModeDto>>> ReaderOutConfigurationAsync()
         {
-            var dtos = await context.reader_out_configuration
-                .Select(x => new ModeDto
-                {
-                    Name = x.name,
-                    Value = x.value,
-                    Description = x.description
-
-                }).ToArrayAsync();
+            var dtos = await qDoor.GetReaderOutModeAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
+
         public async Task<ResponseDto<IEnumerable<short>>> AvailableReaderAsync(string mac, short component)
         {
-            var reader = await context.module
-                .AsNoTracking()
-                .Where(cp => cp.component_id == component && cp.hardware_mac == mac)
-                .Select(cp => (short)cp.n_reader)
-                .FirstOrDefaultAsync();
-
-            var rdrNos = await context.reader
-                .AsNoTracking()
-                .Where(cp => cp.module_id == component && cp.module.hardware_mac == mac)
-                .Select(x => x.reader_no)
-                .ToArrayAsync();
-
-
-            List<short> all = Enumerable.Range(0, reader).Select(i => (short)i).ToList();
-            return ResponseHelper.SuccessBuilder<IEnumerable<short>>(all.Except(rdrNos).ToList());
+            var reader = await qDoor.GetAvailableReaderFromMacAndComponentIdAsync(mac,component);
+            return ResponseHelper.SuccessBuilder<IEnumerable<short>>(reader);
         }
 
 
         public async Task<ResponseDto<bool>> ChangeModeAsync(ChangeDoorModeDto dto)
         {
-            var entity = await context.door.FirstOrDefaultAsync(x => x.hardware_mac == dto.Mac && x.component_id == dto.ComponentId);
-            if (entity == null) return ResponseHelper.NotFoundBuilder<bool>();
+            if (!await qDoor.IsAnyByComponentId(dto.ComponentId)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var ScpId = await helperService.GetIdFromMacAsync(dto.Mac);
-            if (!command.AcrMode(ScpId, dto.ComponentId, dto.Mode))
+            var ScpId = await qHw.GetComponentFromMacAsync(dto.Mac);
+            if (!door.AcrMode(ScpId, dto.ComponentId, dto.Mode))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(dto.Mac,Command.C308));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(dto.Mac,Command.ACR_MODE));
             }
 
-            entity.mode = dto.Mode;
-            entity.mode_desc = await context.door_mode
-                .AsNoTracking()
-                .Where(x => x.value == entity.mode)
-                .Select(x => x.name)
-                .FirstOrDefaultAsync() ?? "";
-            context.Update(entity);
-            await context.SaveChangesAsync();
+            var status = await rDoor.ChangeDoorModeAsync(dto.Mac,dto.ComponentId,dto.AcrId,dto.Mode);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.UPDATE_DOOR_MODE_UNSUCCESS,[]);
             return ResponseHelper.SuccessBuilder(true);
 
         }
@@ -752,51 +110,30 @@ namespace AeroService.Service.Impl
 
         public async Task<ResponseDto<bool>> CreateAsync(DoorDto dto)
         {
-            var maxDoor = await context.system_setting
-                .AsNoTracking()
-                .Select(x => x.n_acr)
-                .FirstOrDefaultAsync();
+            if(!await qHw.IsAnyByMac(dto.Mac)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            short DoorId = await helperService
-                .GetLowestUnassignedNumberAsync<Door>(context, maxDoor);
+            short DoorId = await qDoor.GetLowestUnassignedNumberAsync(10);
+            short AcrId = await qDoor.GetLowestUnassignedNumberByMacAsync(dto.Mac,10);
 
-            if (DoorId == -1) return ResponseHelper.ExceedLimit<bool>();
+            if (DoorId == -1 || AcrId == -1) return ResponseHelper.ExceedLimit<bool>();
 
-            short ScpId = await helperService.GetIdFromMacAsync(dto.Mac);
+            var domain = DoorMapper.ToDomain(dto);
 
-            var door = MapperHelper.DtoToDoor(
-                dto,
-                DoorId,
-                await context.door_mode
-                .AsNoTracking()
-                .Where(x => x.value == dto.Mode)
-                .Select(x => x.name)
-                .FirstOrDefaultAsync() ?? "",
-                await context.door_mode
-                .AsNoTracking()
-                .Where(x => x.value == dto.OfflineMode)
-                .Select(x => x.name)
-                .FirstOrDefaultAsync() ?? "",
-                await context.door_mode
-                .AsNoTracking()
-                .Where(x => x.value == dto.DefaultMode)
-                .Select(x => x.name)
-                .FirstOrDefaultAsync() ?? "",
-                DateTime.UtcNow
-            );
+            short ScpId = await qHw.GetComponentFromMacAsync(dto.Mac);
 
-            foreach (var reader in door.readers)
+
+            foreach (var reader in domain.Readers)
             {
-                if (string.IsNullOrEmpty(reader.module.hardware_mac)) continue;
+                if (string.IsNullOrEmpty(reader.Mac)) continue;
                 short readerInOsdpFlag = 0x00;
                 short readerLedDriveMode = 0;
-                if (reader.osdp_flag)
+                if (reader.OsdpFlag)
                 {
-                    readerInOsdpFlag |= reader.osdp_baudrate;
-                    readerInOsdpFlag |= reader.osdp_discover;
-                    readerInOsdpFlag |= reader.osdp_tracing;
-                    readerInOsdpFlag |= reader.osdp_address;
-                    readerInOsdpFlag |= reader.osdp_secure_channel;
+                    readerInOsdpFlag |= reader.OsdpBaudrate;
+                    readerInOsdpFlag |= reader.OsdpDiscover;
+                    readerInOsdpFlag |= reader.OsdpTracing;
+                    readerInOsdpFlag |= reader.OsdpAddress;
+                    readerInOsdpFlag |= reader.OsdpSecureChannel;
                     readerLedDriveMode = 7;
                 }
                 else
@@ -807,116 +144,86 @@ namespace AeroService.Service.Impl
 
                 // Reader In Config
 
-                var ReaderInId = await helperService.GetIdFromMacAsync(reader.module.hardware_mac);
-                var ReaderComponentId = await helperService.GetLowestUnassignedNumberNoLimitAsync<Reader>(context);
-                reader.component_id = ReaderComponentId;
-                if (!command.ReaderSpecification(ReaderInId, reader.module_id, reader.reader_no, reader.data_format, reader.keypad_mode, readerLedDriveMode, readerInOsdpFlag))
+                var ReaderInId = await qHw.GetComponentFromMacAsync(reader.Mac);
+                var ReaderComponentId = await qDoor.GetLowestUnassignedReaderNumberNoLimitAsync();
+                reader.ComponentId = ReaderComponentId;
+                if (!door.ReaderSpecification(ReaderInId, reader.ModuleId, reader.ReaderNo, reader.DataFormat, reader.KeypadMode, readerLedDriveMode, readerInOsdpFlag))
                 {
-                    return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C112));
+                    return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.READER_SPEC));
                 }
             }
 
 
 
             // Strike Strike Config
-            var StrikeComponentId = await helperService.GetLowestUnassignedNumberNoLimitAsync<Strike>(context);
-            door.strike.component_id = StrikeComponentId;
-            var StrikeId = await helperService.GetIdFromMacAsync(door.strike.module.hardware_mac);
-            if (!command.OutputPointSpecification(StrikeId, door.strike.module_id, door.strike.output_no, door.strike.relay_mode))
+            var StrikeComponentId = await qDoor.GetLowestUnassignedStrikeNumberNoLimitAsync();
+            domain.Strk.ComponentId = StrikeComponentId;
+            var StrikeId = await qHw.GetComponentFromMacAsync(domain.Strk.Mac);
+            if (!cp.OutputPointSpecification(StrikeId, domain.Strk.ModuleId, domain.Strk.OutputNo, domain.Strk.RelayMode))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C111));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.OUTPUT_SPEC));
             }
 
             // door sensor Config
-            var SensorId = await helperService.GetIdFromMacAsync(door.sensor.module.hardware_mac);
-            var SensorComponentId = await helperService.GetLowestUnassignedNumberNoLimitAsync<Sensor>(context);
-            door.sensor.component_id = SensorComponentId;
-            if (!command.InputPointSpecification(SensorId, door.sensor.module_id, door.sensor.input_no, door.sensor.input_mode, door.sensor.debounce, door.sensor.holdtime))
+            var SensorId = await qHw.GetComponentFromMacAsync(domain.Sensor.Mac);
+            var SensorComponentId = await qDoor.GetLowestUnassignedSensorNumberNoLimitAsync();
+            domain.Sensor.ComponentId = SensorComponentId;
+            if (!mp.InputPointSpecification(SensorId, domain.Sensor.ModuleId, domain.Sensor.InputNo, domain.Sensor.InputMode, domain.Sensor.Debounce, domain.Sensor.HoldTime))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C110));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.INPUT_SPEC));
             }
 
-            foreach (var rex in door.request_exits)
+            foreach (var rex in domain.RequestExits)
             {
-                if (string.IsNullOrEmpty(rex.module.hardware_mac)) continue;
-                var Rex0Id = await helperService.GetIdFromMacAsync(rex.module.hardware_mac);
-                var rexComponentId = await helperService.GetLowestUnassignedNumberNoLimitAsync<RequestExit>(context);
-                rex.component_id = rexComponentId;
-                if (!command.InputPointSpecification(Rex0Id, rex.module_id, rex.input_no, rex.input_mode, rex.debounce, rex.holdtime))
+                if (string.IsNullOrEmpty(rex.Mac)) continue;
+                var Rex0Id = await qHw.GetComponentFromMacAsync(rex.Mac);
+                var rexComponentId = await qDoor.GetLowestUnassignedRexNumberAsync();
+                rex.ComponentId = rexComponentId;
+                if (!mp.InputPointSpecification(Rex0Id, rex.ModuleId, rex.InputNo, rex.InputMode, rex.Debounce, rex.HoldTime))
                 {
-                    return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C110));
+                    return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.INPUT_SPEC));
                 }
             }
 
-            if (!command.AccessControlReaderConfiguration(ScpId, DoorId, door))
+            if (!door.AccessControlReaderConfiguration(ScpId, DoorId, domain))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(door.hardware_mac, Command.C115));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.ACR_CONFIG));
             }
 
+            var status = await rDoor.AddAsync(domain);
 
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
 
-            await context.door.AddAsync(door);
-            await context.SaveChangesAsync();
             return ResponseHelper.SuccessBuilder(true);
         }
 
-        public async Task<ResponseDto<bool>> DeleteAsync(string mac, short component)
+        public async Task<ResponseDto<bool>> DeleteAsync(short component)
         {
-            var reader = await context.door.FirstOrDefaultAsync(x => x.hardware_mac == mac && x.component_id == component);
-            if(reader is null) return ResponseHelper.NotFoundBuilder<bool>();
-            context.door.Remove(reader);
-            await context.SaveChangesAsync();
+            if(!await qDoor.IsAnyByComponentId(component)) return ResponseHelper.NotFoundBuilder<bool>();
+            var status = await rDoor.DeleteByComponentIdAsync(component);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,[]);
             return ResponseHelper.SuccessBuilder<bool>(true);
         }
 
         public async Task<ResponseDto<DoorDto>> UpdateAsync(DoorDto dto)
         {
 
-            var door = await context.door
-                .Include(x => x.readers)
-                //.ThenInclude(x => x.module)
-                .Include(x => x.sensor)
-                //.ThenInclude(x => x.module)
-                .Include(x => x.request_exits)
-                //.ThenInclude(x => x.module)
-                .Include(x => x.strike)
-                //.ThenInclude(x => x.module)
-                .Where(x => x.component_id == dto.ComponentId && x.hardware_mac == dto.Mac)
-                .FirstOrDefaultAsync();
+            if (!await qDoor.IsAnyByComponentId(dto.ComponentId)) return ResponseHelper.NotFoundBuilder<DoorDto>();
 
-            if (door is null) return ResponseHelper.NotFoundBuilder<DoorDto>();
-            short ScpId = await helperService.GetIdFromMacAsync(dto.Mac);
+            var domain = DoorMapper.ToDomain(dto);
 
-            MapperHelper.UpdateDoor(door, dto,
-                 await context.door_mode
-                .AsNoTracking()
-                .Where(x => x.value == dto.Mode)
-                .Select(x => x.name)
-                .FirstOrDefaultAsync() ?? "",
-                await context.door_mode
-                .AsNoTracking()
-                .Where(x => x.value == dto.OfflineMode)
-                .Select(x => x.name)
-                .FirstOrDefaultAsync() ?? "",
-                await context.door_mode
-                .AsNoTracking()
-                .Where(x => x.value == dto.DefaultMode)
-                .Select(x => x.name)
-                .FirstOrDefaultAsync() ?? ""
-             );
-
-            foreach (var reader in door.readers)
+            foreach (var reader in domain.Readers)
             {
-                if (string.IsNullOrEmpty(reader.module.hardware_mac)) continue;
+                if (string.IsNullOrEmpty(reader.Mac)) continue;
                 short readerInOsdpFlag = 0x00;
                 short readerLedDriveMode = 0;
-                if (reader.osdp_flag)
+                if (reader.OsdpFlag)
                 {
-                    readerInOsdpFlag |= reader.osdp_baudrate;
-                    readerInOsdpFlag |= reader.osdp_discover;
-                    readerInOsdpFlag |= reader.osdp_tracing;
-                    readerInOsdpFlag |= reader.osdp_address;
-                    readerInOsdpFlag |= reader.osdp_secure_channel;
+                    readerInOsdpFlag |= reader.OsdpBaudrate;
+                    readerInOsdpFlag |= reader.OsdpDiscover;
+                    readerInOsdpFlag |= reader.OsdpTracing;
+                    readerInOsdpFlag |= reader.OsdpAddress;
+                    readerInOsdpFlag |= reader.OsdpSecureChannel;
                     readerLedDriveMode = 7;
                 }
                 else

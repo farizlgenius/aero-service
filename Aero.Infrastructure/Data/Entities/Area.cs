@@ -5,7 +5,6 @@ namespace Aero.Infrastructure.Data.Entities
 {
     public sealed class Area : NoMacBaseEntity,IComponentId
     {
-        public short component_id { get; set; }
         public string name { get; set; } = string.Empty;    
         public short multi_occ { get; set; }
         public short access_control { get; set; }

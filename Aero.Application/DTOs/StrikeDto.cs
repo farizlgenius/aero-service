@@ -1,6 +1,8 @@
-﻿namespace Aero.Application.DTOs
+﻿using Aero.Domain.Entities;
+
+namespace Aero.Application.DTOs
 {
-    public sealed class StrikeDto : BaseDto
+    public sealed class StrikeDto : BaseEntity
     {
         public short ModuleId { get; set; }
         public short OutputNo { get; set; }

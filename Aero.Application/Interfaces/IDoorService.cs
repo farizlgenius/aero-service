@@ -9,7 +9,7 @@ namespace Aero.Application.Interface
         Task<ResponseDto<IEnumerable<DoorDto>>> GetAsync(); 
             Task<ResponseDto<IEnumerable<DoorDto>>> GetByLocationIdAsync(short location);
         Task<ResponseDto<bool>> CreateAsync(DoorDto dto);
-        Task<ResponseDto<bool>> DeleteAsync(string mac, short component);
+        Task<ResponseDto<bool>> DeleteAsync(short component);
         Task<ResponseDto<DoorDto>> UpdateAsync(DoorDto dto);
         Task<ResponseDto<bool>> GetStatusAsync(string mac, short component);
         Task<ResponseDto<IEnumerable<DoorDto>>> GetByMacAsync(string mac);

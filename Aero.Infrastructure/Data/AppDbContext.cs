@@ -290,7 +290,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         modelBuilder.Entity<AccessLevelDoorTimeZone>()
             .HasOne(s => s.accesslevel)
-            .WithMany(s => s.accessleve_door_timezones)
+            .WithMany(s => s.accesslevel_door_timezones)
             .HasForeignKey(p => p.accesslevel_id)
             .HasPrincipalKey(p => p.component_id)
             .OnDelete(DeleteBehavior.Cascade);

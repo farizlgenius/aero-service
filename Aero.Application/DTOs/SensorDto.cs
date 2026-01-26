@@ -1,6 +1,8 @@
-﻿namespace Aero.Application.DTOs
+﻿using Aero.Domain.Entities;
+
+namespace Aero.Application.DTOs
 {
-    public sealed class SensorDto : BaseDto
+    public sealed class SensorDto : BaseEntity
     {
         public short ModuleId { get; set; }
         public short InputNo { get; set; }
