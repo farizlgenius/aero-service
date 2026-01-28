@@ -34,7 +34,7 @@ public class QHolderRepository(AppDbContext context) : IQHolderRepository
                   Position = c.position,
                   Department = c.department,
                   ImagePath = c.image_path,
-                  Additionals = c.additional
+                  Additionals = c.additionals
                 .Where(x => x.holder_id == c.user_id)
                 .Select(x => x.additional).ToList(),
                   Credentials = c.credentials
@@ -46,7 +46,7 @@ public class QHolderRepository(AppDbContext context) : IQHolderRepository
                       IsActive = c.is_active,
 
                       // extend_desc
-                      component_id = c.component_id,
+                      ComponentId = c.component_id,
                       Bits = c.bits,
                       IssueCode = c.issue_code,
                       FacilityCode = c.fac_code,
@@ -64,16 +64,176 @@ public class QHolderRepository(AppDbContext context) : IQHolderRepository
             return res;
       }
 
-      public Task<CardHolderDto> GetByComponentIdAsync(short componentId)
+      public async Task<CardHolderDto> GetByComponentIdAsync(short componentId)
       {
-            throw new NotImplementedException();
+             var res = await context.cardholder
+            .AsNoTracking()
+            .Where(x => x.component_id == componentId)
+            .OrderBy(x => x.created_date)
+            .Select(c => new CardHolderDto
+            {
+                  // Base
+                  Uuid = c.uuid,
+                  LocationId = c.location_id,
+                  IsActive = c.is_active,
+
+                  // extend_desc
+                  Flag = c.flag,
+                  UserId = c.user_id,
+                  Title = c.title,
+                  FirstName = c.first_name,
+                  MiddleName = c.middle_name,
+                  LastName = c.last_name,
+                  Sex = c.sex,
+                  Email = c.email,
+                  Phone = c.phone,
+                  Company = c.company,
+                  Position = c.position,
+                  Department = c.department,
+                  ImagePath = c.image_path,
+                  Additionals = c.additionals
+                .Where(x => x.holder_id == c.user_id)
+                .Select(x => x.additional).ToList(),
+                  Credentials = c.credentials
+                .Select(c => new CredentialDto
+                {
+                      // Base
+                      Uuid = c.uuid,
+                      LocationId = c.location_id,
+                      IsActive = c.is_active,
+
+                      // extend_desc
+                      ComponentId = c.component_id,
+                      Bits = c.bits,
+                      IssueCode = c.issue_code,
+                      FacilityCode = c.fac_code,
+                      CardNo = c.card_no,
+                      Pin = c.pin,
+                      ActiveDate = c.active_date,
+                      DeactiveDate = c.deactive_date,
+                      //card_holder = entity.card_holder is not null ? CardHolderToDto(entity.card_holder) : null,
+
+                }).ToList(),
+
+            })
+            .FirstOrDefaultAsync();
+
+            return res;
       }
 
-      public Task<IEnumerable<CardHolderDto>> GetByLocationIdAsync(short locationId)
+      public async Task<IEnumerable<CardHolderDto>> GetByLocationIdAsync(short locationId)
       {
-            throw new NotImplementedException();
+             var res = await context.cardholder
+            .AsNoTracking()
+            .Where(x => x.location_id == locationId)
+            .OrderBy(x => x.created_date)
+            .Select(c => new CardHolderDto
+            {
+                  // Base
+                  Uuid = c.uuid,
+                  LocationId = c.location_id,
+                  IsActive = c.is_active,
+
+                  // extend_desc
+                  Flag = c.flag,
+                  UserId = c.user_id,
+                  Title = c.title,
+                  FirstName = c.first_name,
+                  MiddleName = c.middle_name,
+                  LastName = c.last_name,
+                  Sex = c.sex,
+                  Email = c.email,
+                  Phone = c.phone,
+                  Company = c.company,
+                  Position = c.position,
+                  Department = c.department,
+                  ImagePath = c.image_path,
+                  Additionals = c.additionals
+                .Where(x => x.holder_id == c.user_id)
+                .Select(x => x.additional).ToList(),
+                  Credentials = c.credentials
+                .Select(c => new CredentialDto
+                {
+                      // Base
+                      Uuid = c.uuid,
+                      LocationId = c.location_id,
+                      IsActive = c.is_active,
+
+                      // extend_desc
+                      ComponentId = c.component_id,
+                      Bits = c.bits,
+                      IssueCode = c.issue_code,
+                      FacilityCode = c.fac_code,
+                      CardNo = c.card_no,
+                      Pin = c.pin,
+                      ActiveDate = c.active_date,
+                      DeactiveDate = c.deactive_date,
+                      //card_holder = entity.card_holder is not null ? CardHolderToDto(entity.card_holder) : null,
+
+                }).ToList(),
+
+            })
+            .ToArrayAsync();
+
+            return res;
       }
 
+      public async Task<CardHolderDto> GetByUserIdAsync(string UserId)
+      {
+             var res = await context.cardholder
+            .AsNoTracking()
+            .Where(x => x.user_id.Equals(UserId))
+            .OrderBy(x => x.created_date)
+            .Select(c => new CardHolderDto
+            {
+                  // Base
+                  Uuid = c.uuid,
+                  LocationId = c.location_id,
+                  IsActive = c.is_active,
+
+                  // extend_desc
+                  Flag = c.flag,
+                  UserId = c.user_id,
+                  Title = c.title,
+                  FirstName = c.first_name,
+                  MiddleName = c.middle_name,
+                  LastName = c.last_name,
+                  Sex = c.sex,
+                  Email = c.email,
+                  Phone = c.phone,
+                  Company = c.company,
+                  Position = c.position,
+                  Department = c.department,
+                  ImagePath = c.image_path,
+                  Additionals = c.additionals
+                .Where(x => x.holder_id == c.user_id)
+                .Select(x => x.additional).ToList(),
+                  Credentials = c.credentials
+                .Select(c => new CredentialDto
+                {
+                      // Base
+                      Uuid = c.uuid,
+                      LocationId = c.location_id,
+                      IsActive = c.is_active,
+
+                      // extend_desc
+                      ComponentId = c.component_id,
+                      Bits = c.bits,
+                      IssueCode = c.issue_code,
+                      FacilityCode = c.fac_code,
+                      CardNo = c.card_no,
+                      Pin = c.pin,
+                      ActiveDate = c.active_date,
+                      DeactiveDate = c.deactive_date,
+                      //card_holder = entity.card_holder is not null ? CardHolderToDto(entity.card_holder) : null,
+
+                }).ToList(),
+
+            })
+            .FirstOrDefaultAsync();
+
+            return res;
+      }
 
       public async Task<short> GetLowestUnassignedNumberAsync(int max)
       {
@@ -104,8 +264,19 @@ public class QHolderRepository(AppDbContext context) : IQHolderRepository
             return expected;
       }
 
+      public async Task<IEnumerable<string>> GetMacsRelateCredentialByUserIdAsync(string UserId)
+      {
+            var m = await context.credential
+            .Where(x => x.cardholder_id.Equals(UserId)).Select(x => x.)
+      }
+
       public Task<bool> IsAnyByComponentId(short component)
       {
             throw new NotImplementedException();
+      }
+
+      public async Task<bool> IsAnyByUserId(string userid)
+      {
+            return await context.cardholder.AnyAsync(x => x.user_id.Equals(userid));
       }
 }

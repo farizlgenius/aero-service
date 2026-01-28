@@ -39,7 +39,7 @@
 
 <ItemGroup>
   <ProjectReference Include="..\Aero.Application\Aero.Application.csproj" />
-  <ProjectReference Include="..\Aero.Data\Aero.Domain.csproj" />
+  <ProjectReference Include="..\Aero.Domain\Aero.Domain.csproj" />
 </ItemGroup>
 
 

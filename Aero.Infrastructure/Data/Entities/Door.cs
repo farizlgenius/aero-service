@@ -27,10 +27,10 @@ namespace Aero.Infrastructure.Data.Entities
         public short antipassback_mode { get; set; }
         public short? antipassback_in { get; set; }
         public short area_in_id {get; set;}
-        public Area? area_in { get; set; }
+        public AccessArea? area_in { get; set; }
         public short? antipassback_out { get; set; }
         public short area_out_id {get; set;}
-        public Area? area_out { get; set; }
+        public AccessArea? area_out { get; set; }
         public short spare_tag { get; set; }
         public short access_control_flag { get; set; }
         public short mode { get; set; }
@@ -55,7 +55,6 @@ namespace Aero.Infrastructure.Data.Entities
         public short df_filter_time { get; set; }
         public bool is_held_mask { get; set; } = false;
         public bool is_force_mask { get; set; } = false;
-        public ICollection<AccessLevelDoorTimeZone> accesslevel_door_timezones { get; set; }
 
     }
 }

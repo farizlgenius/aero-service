@@ -17,11 +17,11 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<ControlPoint> control_point { get; set; }
     public DbSet<Strike> strike { get; set; }
     public DbSet<Reader> reader { get; set; }
+    public DbSet<AccessLevel> access_level {get; set;}
     public DbSet<ScpSetting> scp_setting { get; set; }
     public DbSet<HardwareComponent> hardware_component { get; set; }
     public DbSet<CardFormat> card_format { get; set; }
     public DbSet<Aero.Infrastructure.Data.Entities.TimeZone> timezone { get; set; }
-    public DbSet<AccessLevel> accesslevel { get; set; }
     public DbSet<Holiday> holiday { get; set; }
     public DbSet<Door> door { get; set; }
     public DbSet<DoorMode> door_mode { get; set; }
@@ -35,10 +35,11 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<InputMode> input_mode { get; set; }
     public DbSet<ReaderConfigurationMode> reader_configuration_mode { get; set; }
     public DbSet<AntipassbackMode> antipassback_mode { get; set; }
-    public DbSet<AccessLevelDoorTimeZone> accesslevel_door_timezone { get; set; }
+    public DbSet<AccessLevelComponent> access_level_component { get; set; }
+    public DbSet<AccessLevelDoorComponent> access_level_door_component { get; set; }
     public DbSet<CardHolder> cardholder { get; set; }
     public DbSet<Credential> credential { get; set; }
-    public DbSet<Area> area { get; set; }
+    public DbSet<AccessArea> area { get; set; }
     public DbSet<TimeZoneInterval> timezone_interval { get; set; }
     public DbSet<ReaderOutConfiguration> reader_out_configuration { get; set; }
     public DbSet<MonitorPointMode> monitor_point_mode { get; set; }
@@ -72,7 +73,8 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<Aero.Infrastructure.Data.Entities.Action> action { get; set; }
     public DbSet<Trigger> trigger { get; set; }
     public DbSet<CardHolderAdditional> cardholder_additional { get; set; }
-    public DbSet<CardHolderAccessLevel> cardholder_accesslevel { get; set; }
+    public DbSet<CardHolderAccessLevel> cardholder_access_level {get; set;}
+
     public DbSet<ActionType> action_type { get; set; }
     public DbSet<TimeZoneCommand> timezone_command { get; set; }
     public DbSet<TriggerCommand> trigger_command { get; set; }
@@ -87,7 +89,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<MonitorPointLogFunction> monitor_point_log_function { get; set; }
     public DbSet<CommandLog> commnad_log { get; set; }
     public DbSet<DaysInWeek> days_in_week { get; set; }
-    public DbSet<HardwareAccessLevel> hardware_accesslevel { get; set; }
+    public DbSet<HardwareAccessLevel> hardware_access_level { get; set; }
     public DbSet<HardwareCredential> hardware_credential { get; set; }
     public DbSet<TransactionFlag> transaction_flag { get; set; }
     public DbSet<TransactionSourceType> transaction_source_type { get; set; }
@@ -285,29 +287,20 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         #region Access Level
 
-        modelBuilder.Entity<AccessLevelDoorTimeZone>()
-            .HasKey(p => new { p.accesslevel_id, p.timezone_id, p.door_id });
 
-        modelBuilder.Entity<AccessLevelDoorTimeZone>()
-            .HasOne(s => s.accesslevel)
-            .WithMany(s => s.accesslevel_door_timezones)
-            .HasForeignKey(p => p.accesslevel_id)
+        modelBuilder.Entity<AccessLevel>()
+            .HasMany(s => s.component)
+            .WithOne(s => s.access_level)
+            .HasForeignKey(p => p.access_level_id)
             .HasPrincipalKey(p => p.component_id)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<AccessLevelDoorTimeZone>()
-            .HasOne(x => x.timezone)
-            .WithMany(x => x.accesslevel_door_timezones)
-            .HasForeignKey(x => x.timezone_id)
-            .HasPrincipalKey(x => x.component_id)
+        modelBuilder.Entity<AccessLevelComponent>()
+            .HasMany(x => x.door_component)
+            .WithOne(x => x.access_level_component)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<AccessLevelDoorTimeZone>()
-            .HasOne(x => x.door)
-            .WithMany(x => x.accesslevel_door_timezones)
-            .HasForeignKey(x => x.door_id)
-            .HasPrincipalKey(x => x.component_id)
-            .OnDelete(DeleteBehavior.Cascade);
+
 
         var NoAccess = new AccessLevel { id = 1, uuid = SeedDefaults.SystemGuid, name = "No Access", component_id = 1, location_id = 1, is_active = true };
 
@@ -529,28 +522,31 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
         #region User & Credentials
 
         modelBuilder.Entity<CardHolderAccessLevel>()
-            .HasKey(x => new { x.access_level_id, x.cardholder_id });
+            .HasKey(x => new { x.accesslevel_id, x.holder_id });
 
         modelBuilder.Entity<CardHolderAccessLevel>()
-            .HasOne(e => e.card_holder)
-            .WithMany(e => e.access_levels)
-            .HasForeignKey(e => e.cardholder_id)
-            .HasPrincipalKey(e => e.user_id)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<CardHolderAccessLevel>()
-            .HasOne(e => e.access_level)
-            .WithMany(e => e.cardholder_accesslevel)
-            .HasForeignKey(e => e.access_level_id)
+            .HasOne(e => e.cardholder)
+            .WithMany(e => e.cardholder_access_levels)
+            .HasForeignKey(e => e.accesslevel_id)
             .HasPrincipalKey(e => e.component_id)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<CardHolder>()
-            .HasMany(e => e.credentials)
-            .WithOne(e => e.cardholder)
-            .HasForeignKey(e => e.cardholder_id)
+        modelBuilder.Entity<CardHolderAccessLevel>()
+            .HasOne(e => e.cardholder)
+            .WithMany(e => e.cardholder_access_levels)
+            .HasForeignKey(e => e.holder_id)
             .HasPrincipalKey(e => e.user_id)
             .OnDelete(DeleteBehavior.Cascade);
+
+
+        
+        modelBuilder.Entity<CardHolder>()
+            .HasMany(e => e.additionals)
+            .WithOne(e => e.card_holder)
+            .HasForeignKey(e => e.holder_id)
+            .HasPrincipalKey(e => e.user_id)
+            .OnDelete(DeleteBehavior.Cascade); 
+
 
         modelBuilder.Entity<CredentialFlag>()
             .HasData(
@@ -1380,21 +1376,21 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         #region Access Area
 
-        modelBuilder.Entity<Area>()
+        modelBuilder.Entity<AccessArea>()
             .HasMany(a => a.door_in)
             .WithOne(d => d.area_in)
             .HasForeignKey(f => f.antipassback_in)
             .HasPrincipalKey(p => p.component_id);
 
-        modelBuilder.Entity<Area>()
+        modelBuilder.Entity<AccessArea>()
             .HasMany(a => a.door_out)
             .WithOne(d => d.area_out)
             .HasForeignKey(f => f.antipassback_out)
             .HasPrincipalKey(p => p.component_id);
 
-        modelBuilder.Entity<Area>()
+        modelBuilder.Entity<AccessArea>()
             .HasData(
-                new Area { id = 1, component_id = -1, multi_occ = 0, access_control = 0, occ_control = 0, occ_set = 0, occ_max = 0, occ_up = 0, occ_down = 0, area_flag = 0, uuid = SeedDefaults.SystemGuid, location_id = 1, is_active = true, created_date = SeedDefaults.SystemDate, updated_date = SeedDefaults.SystemDate, name = "Any Area", }
+                new AccessArea { id = 1, component_id = -1, multi_occ = 0, access_control = 0, occ_control = 0, occ_set = 0, occ_max = 0, occ_up = 0, occ_down = 0, area_flag = 0, uuid = SeedDefaults.SystemGuid, location_id = 1, is_active = true, created_date = SeedDefaults.SystemDate, updated_date = SeedDefaults.SystemDate, name = "Any Area", }
             );
 
         modelBuilder.Entity<AccessAreaCommand>()

@@ -462,7 +462,7 @@ namespace Aero.Application.Services
                     {
                         if (!holder.AccessDatabaseCardRecord(i.ComponentId, card.Flag, cred.CardNo, cred.IssueCode, cred.Pin, card.AccessLevels.ToList(), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.ActiveDate), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.DeactiveDate)))
                         {
-                            errors.Add(MessageBuilder.Unsuccess(i.Mac, Command.C8304));
+                            errors.Add(MessageBuilder.Unsuccess(i.Mac, Command.CARD_RECORD));
                         }
                     }
 

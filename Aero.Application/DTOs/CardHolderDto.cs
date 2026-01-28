@@ -1,9 +1,10 @@
 ﻿
+using Aero.Domain.Entities;
 using AeroService.DTOs;
 
 namespace Aero.Application.DTOs
 {
-    public sealed class CardHolderDto : NoMacBaseDto
+    public sealed class CardHolderDto : NoMacBaseEntity
     {
         public required string UserId { get; set; }
         public string Title { get; set; } = string.Empty;

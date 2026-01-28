@@ -1,7 +1,9 @@
 ﻿
+using Aero.Domain.Entities;
+
 namespace Aero.Application.DTOs
 {
-    public sealed class CreateTimeZoneDto : NoMacBaseDto
+    public sealed class CreateTimeZoneDto : NoMacBaseEntity
     {
         public string Name { get; set; } = string.Empty;
         public short Mode { get; set; }

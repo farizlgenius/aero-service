@@ -27,7 +27,7 @@ public sealed class AlvlCommandService : BaseAeroCommand,IAlvlCommand
         }
 
 
-      public bool AccessLevelConfigurationExtendedCreate(short ScpId, short number, List<CreateUpdateAccessLevelDoorTimeZone> accessLevelDoorTimeZoneDto)
+      public bool AccessLevelConfigurationExtendedCreate(short ScpId, short number, List<CreateUpdateAccessLevelDoorComponent> accessLevelDoorTimeZoneDto)
       {
             CC_ALVL_EX cc = new CC_ALVL_EX();
             cc.lastModified = 0;

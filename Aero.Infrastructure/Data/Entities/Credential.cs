@@ -7,7 +7,6 @@ namespace Aero.Infrastructure.Data.Entities
 {
     public sealed class Credential : NoMacBaseEntity,IComponentId
     {
-        public short component_id { get; set; }
         public int bits { get; set; }
         public int issue_code{ get; set; }
         public int fac_code { get; set; }

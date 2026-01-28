@@ -11,7 +11,7 @@ public interface INotificationPublisher
       Task ScpNotifyMemoryAllocate(MemoryAllocateDto allocate);
       Task ScpNotifyConfigurationAsync(ScpConfiguratiion configuration);
       Task IdReportNotifyAsync(List<IdReportDto> idReports);
-      Task ScpNotifyTranStatus(TranStatusDto tran);
+      Task ScpNotifyTranStatus(TranStatus tran);
 
       #endregion
 

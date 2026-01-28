@@ -37,13 +37,11 @@ namespace Aero.Application.Services
             
             var domain = AccessLevelMapper.ToCreateDomain(dto);
 
-            var macs = domain.CreateUpdateAccessLevelDoorTimeZone.Select(x => x.DoorMac);
-
-            foreach(var mac in macs.Distinct())
+            foreach(var component in domain.Components)
             {
-                if (!alvl.AccessLevelConfigurationExtendedCreate(await qHw.GetComponentFromMacAsync(mac), ComponentId, domain.CreateUpdateAccessLevelDoorTimeZone.Where(x => x.DoorMac == mac).ToList()))
+                if (!alvl.AccessLevelConfigurationExtendedCreate(await qHw.GetComponentFromMacAsync(component.Mac), ComponentId,component.DoorComponents))
                 {
-                   errors.Add(MessageBuilder.Unsuccess(mac, Command.ALVL_CONFIG));
+                   errors.Add(MessageBuilder.Unsuccess(component.Mac, Command.ALVL_CONFIG));
 
                 }
             }
@@ -61,14 +59,14 @@ namespace Aero.Application.Services
             List<string> errors = new List<string>();
             if (!await qAlvl.IsAnyByComponentId(ComponentId)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var macs = await qAlvl.GetUniqueMacFromDoorIdAsync(ComponentId);
+            var domain = await qAlvl.GetByComponentIdAsync(ComponentId);
 
-            foreach (var mac in macs)
+            foreach (var component in domain.Components)
             {
-                var ScpId = await qHw.GetComponentFromMacAsync(mac);
+                var ScpId = await qHw.GetComponentFromMacAsync(component.Mac);
                 if (!alvl.AccessLevelConfigurationExtended(ScpId,ComponentId, 0))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.ALVL_CONFIG));
+                    errors.Add(MessageBuilder.Unsuccess(component.Mac, Command.ALVL_CONFIG));
                 }
             }
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
@@ -87,20 +85,17 @@ namespace Aero.Application.Services
 
             List<string> errors = new List<string>();
 
-            var macs = domain.CreateUpdateAccessLevelDoorTimeZone.Select(x => x.DoorMac).ToList();
-
-            foreach (var mac in macs)
+            foreach (var component in domain.Components)
             {
-                var ScpId = await qHw.GetComponentFromMacAsync(mac);
+                var ScpId = await qHw.GetComponentFromMacAsync(component.Mac);
                 if (ScpId == 0)
                 {
                     errors.Add(MessageBuilder.Notfound());
                     continue;
                 }
-                if (!alvl.AccessLevelConfigurationExtendedCreate(ScpId, dto.ComponentId, domain.CreateUpdateAccessLevelDoorTimeZone
-                    .Where(x => x.DoorMac == mac).ToList()))
+                if (!alvl.AccessLevelConfigurationExtendedCreate(ScpId, dto.ComponentId,component.DoorComponents))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.ALVL_CONFIG));
+                    errors.Add(MessageBuilder.Unsuccess(component.Mac, Command.ALVL_CONFIG));
 
                 }
 
@@ -125,5 +120,11 @@ namespace Aero.Application.Services
         {
             return await qAlvl.GetTimezoneNameByComponentIdAsync(component);
         }
-    }
+
+            public async Task<ResponseDto<IEnumerable<AccessLevelDto>>> GetAsync()
+            {
+                  var res = await qAlvl.GetAsync();
+                  return ResponseHelper.SuccessBuilder(res);
+            }
+      }
 }

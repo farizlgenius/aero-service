@@ -20,7 +20,7 @@ namespace Aero.Infrastructure.Data.Entities
         public ICollection<ControlPoint> control_points { get; set; }
         public ICollection<MonitorPoint> monitor_points { get; set; }
         public ICollection<AccessLevel> accesslevels { get; set; }
-        public ICollection<Area> areas { get; set; }
+        public ICollection<AccessArea> areas { get; set; }
         public ICollection<CardHolder> cardholders { get; set; }
         public ICollection<Door> doors { get; set; }
         public ICollection<MonitorGroup> monitor_groups { get; set; }

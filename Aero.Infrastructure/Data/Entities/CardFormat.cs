@@ -4,13 +4,9 @@ using Aero.Domain.Interface;
 
 namespace Aero.Infrastructure.Data.Entities
 {
-    public class CardFormat : IComponentId,IDatetime
+    public class CardFormat : NoMacBaseEntity,IComponentId,IDatetime
     {
-        [Key]
-        public int id { get; set; }
-        public string uuid { get; set; } = Guid.NewGuid().ToString();
         public string name { get; set; } = string.Empty;
-        public short component_id { get; set; }
         public short facility { get; set; }
         public short offset { get; set; }
         public short function_id { get; set; }
@@ -26,8 +22,5 @@ namespace Aero.Infrastructure.Data.Entities
         public short ch_loc { get; set; }
         public short ic_ln { get; set; }
         public short ic_loc { get; set; }
-        public bool is_active { get; set; } = true;
-        public DateTime created_date { get; set; }
-        public DateTime updated_date { get; set; }
     }
 }

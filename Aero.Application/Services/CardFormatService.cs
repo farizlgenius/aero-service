@@ -1,43 +1,28 @@
-﻿
-using HID.Aero.ScpdNet.Wrapper;
-using AeroService.Constants;
-using AeroService.Data;
-using AeroService.Entity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Net;
-using AeroService.Utility;
-using AeroService.Helpers;
-using AeroService.Constant;
-using AeroService.DTO;
-using AeroService.DTO.CardFormat;
-using AeroService.Mapper;
-using AeroService.Aero.CommandService.Impl;
-using AeroService.Aero.CommandService;
+﻿using Aero.Api.Constants;
+using Aero.Application.Constants;
+using Aero.Application.DTOs;
+using Aero.Application.Helpers;
+using Aero.Application.Interface;
+using Aero.Application.Interfaces;
+using Aero.Application.Mapper;
+using Aero.Domain.Interface;
+using Aero.Domain.Interfaces;
 
 namespace AeroService.Service.Impl
 {
 
-    public class CardFormatService(AppDbContext context, ILogger<CardFormatService> logger, AeroCommandService command, IHelperService<CardFormat> helperService) : ICardFormatService
+    public class CardFormatService(IQCfmtRepository qCfmt,IQHwRepository qHw,ICfmtCommand cfmt,ICfmtRepository rCfmt) : ICardFormatService
     {
 
         public async Task<ResponseDto<IEnumerable<CardFormatDto>>> GetAsync()
         {
-            var dtos = await context.card_format
-                .AsNoTracking()
-                .Select(x => MapperHelper.CardFormatToDto(x))
-                .ToArrayAsync();
-            
+            var dtos = await qCfmt.GetAsync();    
             return ResponseHelper.SuccessBuilder<IEnumerable<CardFormatDto>>(dtos);
         }
 
         public async Task<ResponseDto<CardFormatDto>> GetByComponentIdAsync(short ComponentId)
         {
-            var dto = await context.card_format
-                .Where(x => x.component_id == ComponentId)
-                .Select(x => MapperHelper.CardFormatToDto(x))
-                .FirstOrDefaultAsync();
+            var dto = await qCfmt.GetByComponentIdAsync(ComponentId);
             return ResponseHelper.SuccessBuilder(dto);
 
         }
@@ -45,65 +30,72 @@ namespace AeroService.Service.Impl
         public async Task<ResponseDto<bool>> CreateAsync(CardFormatDto dto)
         {
             List<string> errors = new List<string>();
-            var componentNo = await helperService.GetLowestUnassignedNumberNoLimitAsync<CardFormat>(context);
-            if (componentNo == -1) return ResponseHelper.ExceedLimit<bool>();
-            List<short> ScpIds = await context.hardware.Select(x => x.component_id).ToListAsync();
-            foreach (var id in ScpIds)
+            var ComponentId = await qCfmt.GetLowestUnassignedNumberAsync(10);
+            if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
+
+            var domain = CardFormatMapper.ToDomain(dto); 
+
+            var macs = await qHw.GetMacsAsync();
+            foreach (var mac in macs)
             {
-                string mac = await helperService.GetMacFromIdAsync(id);
-                if (!command.CardFormatterConfiguration(id, dto, 1))
+                var id = await qHw.GetComponentFromMacAsync(mac);
+                if (!cfmt.CardFormatterConfiguration(id, domain, 1))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C1102));
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.CARDFORMAT_CONFIG));
                 }
             }
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
-            var entity = MapperHelper.DtoToCardFormat(dto,componentNo,DateTime.UtcNow); 
-            await context.card_format.AddAsync(entity);
-            await context.SaveChangesAsync();
+
+            var status = await rCfmt.AddAsync(domain);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
+
             return ResponseHelper.SuccessBuilder(true);
         }
 
         public async Task<ResponseDto<bool>> DeleteAsync(short component)
         {
             List<string> errors = new List<string>();
-            var entity = await context.card_format.Where(x => x.component_id == component).FirstOrDefaultAsync();
-            if (entity is null) return ResponseHelper.NotFoundBuilder<bool>();
-            var dto = MapperHelper.CardFormatToDto(entity);
-            List<short> scpIds = await context.hardware.Select(x => x.component_id).ToListAsync();
-            foreach (var id in scpIds)
+            if (!await qCfmt.IsAnyByComponentId(component)) return ResponseHelper.NotFoundBuilder<bool>();
+
+            var data = await qCfmt.GetByComponentIdAsync(component);
+
+            var domain = CardFormatMapper.ToDomain(data);
+            var macs = await qHw.GetMacsAsync();
+            foreach (var mac in macs)
             {
-                string mac = await helperService.GetMacFromIdAsync(id);
-                if (!command.CardFormatterConfiguration(id, dto, 0))
+                var ScpId = await qHw.GetComponentFromMacAsync(mac);
+                 if (!cfmt.CardFormatterConfiguration(ScpId, domain, 0))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C1102));
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.CARDFORMAT_CONFIG));
                 }
 
             }
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>( ResponseMessage.COMMAND_UNSUCCESS, errors);
-            context.card_format.Remove(entity);
-            await context.SaveChangesAsync();
+
+            var status = await rCfmt.DeleteByComponentIdAsync(component);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,[]);
             return ResponseHelper.SuccessBuilder(true);
         }
 
         public async Task<ResponseDto<CardFormatDto>> UpdateAsync(CardFormatDto dto)
         {
             List<string> errors = new List<string>();
-            var entity = await context.card_format.Where(x => x.component_id == dto.ComponentId).FirstOrDefaultAsync();
-            if (entity is null) return ResponseHelper.NotFoundBuilder<CardFormatDto>();
-            List<short> ids = await context.hardware.Select(x => x.component_id).ToListAsync();
-            foreach (var id in ids)
+            if (!await qCfmt.IsAnyByComponentId(dto.ComponentId)) return ResponseHelper.NotFoundBuilder<CardFormatDto>();
+            var macs = await qHw.GetMacsAsync();
+            var domain = CardFormatMapper.ToDomain(dto);
+            foreach (var mac in macs)
             {
-                string mac = await helperService.GetMacFromIdAsync(id);
-                if (!command.CardFormatterConfiguration(id, dto, 1))
+                var id = await qHw.GetComponentFromMacAsync(mac);
+                if (!cfmt.CardFormatterConfiguration(id, domain, 1))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(mac,Command.C1102));
+                    errors.Add(MessageBuilder.Unsuccess(mac,Command.CARDFORMAT_CONFIG));
                 }
 
             }
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<CardFormatDto>(ResponseMessage.COMMAND_UNSUCCESS,errors);
-            MapperHelper.UpdateCardFormat(entity,dto);
-            context.card_format.Update(entity);
-            await context.SaveChangesAsync();
+            
+            var status = await rCfmt.UpdateAsync(domain);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<CardFormatDto>(ResponseMessage.UPDATE_RECORD_UNSUCCESS,[]); 
 
             return ResponseHelper.SuccessBuilder(dto);
         }

@@ -10,8 +10,8 @@ namespace Aero.Application.Interface
         Task<ResponseDto<bool>> CreateAsync(CreateUpdateAccessLevelDto dto);
         Task<ResponseDto<bool>> DeleteAsync(short component);
         Task<ResponseDto<AccessLevelDto>> UpdateAsync(CreateUpdateAccessLevelDto dto);
+        Task<string> GetAcrName(string mac, short component);
+        Task<string> GetTzName(short component);
 
-        string GetAcrName(string mac, short component);
-        string GetTzName(short component);
     }
 }

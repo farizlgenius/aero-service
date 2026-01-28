@@ -7,7 +7,7 @@ namespace Aero.Infrastructure.Data.Entities
     public sealed class CardHolder : NoMacBaseEntity, IComponentId
     {
         [Required]
-        public string user_id { get; set; }
+        public string user_id { get; set; } = string.Empty;
         public string title { get; set; } = string.Empty;
         public string first_name { get; set; } = string.Empty;
         public string middle_name { get; set; } = string.Empty;
@@ -19,10 +19,9 @@ namespace Aero.Infrastructure.Data.Entities
         public string department { get; set; } = string.Empty;
         public string position { get; set; } = string.Empty;
         public short flag { get; set; }
-        public ICollection<CardHolderAdditional> additional { get; set; }
+        public ICollection<CardHolderAdditional> additionals { get; set; }
         public string image_path { get; set; } = string.Empty;
         public ICollection<Credential> credentials { get; set; }
-        public ICollection<CardHolderAccessLevel> access_levels { get; set; }
-        public short component_id { get; set; }
+        public ICollection<CardHolderAccessLevel> cardholder_access_levels { get; set; }
     }
 }

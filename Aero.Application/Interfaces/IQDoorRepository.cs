@@ -19,5 +19,9 @@ public interface IQDoorRepository : IBaseQueryRespository<DoorDto>
       Task<short> GetLowestUnassignedReaderNumberNoLimitAsync();
       Task<short> GetLowestUnassignedSensorNumberNoLimitAsync();
       Task<short> GetLowestUnassignedStrikeNumberNoLimitAsync();
+      Task<IEnumerable<ModeDto>> GetDoorAccessControlFlagAsync();
+      Task<IEnumerable<ModeDto>> GetDoorSpareFlagAsync();
+      Task<IEnumerable<ModeDto>> GetOsdpBaudrateAsync();
+      Task<IEnumerable<ModeDto>> GetOsdpAddressAsync();
 
 }

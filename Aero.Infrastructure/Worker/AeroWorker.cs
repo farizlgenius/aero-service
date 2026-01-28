@@ -54,7 +54,7 @@ namespace Aero.Infrastructure.Mapper
                             }
                             break;
                         case (int)enSCPReplyType.enSCPReplyTranStatus:
-                            TranStatusDto t = new TranStatusDto
+                            TranStatus t = new TranStatus
                             {
                                 MacAddress = await hw.GetMacFromComponentAsync((short)message.SCPId),
                                 Capacity = message.tran_sts.capacity,

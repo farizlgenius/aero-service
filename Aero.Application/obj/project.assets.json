@@ -134,8 +134,8 @@
     },
     "Aero.Domain/1.0.0": {
       "type": "project",
-      "path": "../Aero.Data/Aero.Domain.csproj",
-      "msbuildProject": "../Aero.Data/Aero.Domain.csproj"
+      "path": "../Aero.Domain/Aero.Domain.csproj",
+      "msbuildProject": "../Aero.Domain/Aero.Domain.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -177,8 +177,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\Aero\\AeroService\\Aero.Data\\Aero.Domain.csproj": {
-              "projectPath": "D:\\Aero\\AeroService\\Aero.Data\\Aero.Domain.csproj"
+            "D:\\Aero\\AeroService\\Aero.Domain\\Aero.Domain.csproj": {
+              "projectPath": "D:\\Aero\\AeroService\\Aero.Domain\\Aero.Domain.csproj"
             }
           }
         }

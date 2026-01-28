@@ -32,8 +32,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\Aero\\AeroService\\Aero.Data\\Aero.Domain.csproj": {
-                "projectPath": "D:\\Aero\\AeroService\\Aero.Data\\Aero.Domain.csproj"
+              "D:\\Aero\\AeroService\\Aero.Domain\\Aero.Domain.csproj": {
+                "projectPath": "D:\\Aero\\AeroService\\Aero.Domain\\Aero.Domain.csproj"
               }
             }
           }
@@ -97,14 +97,14 @@
         }
       }
     },
-    "D:\\Aero\\AeroService\\Aero.Data\\Aero.Domain.csproj": {
+    "D:\\Aero\\AeroService\\Aero.Domain\\Aero.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Aero\\AeroService\\Aero.Data\\Aero.Domain.csproj",
+        "projectUniqueName": "D:\\Aero\\AeroService\\Aero.Domain\\Aero.Domain.csproj",
         "projectName": "Aero.Domain",
-        "projectPath": "D:\\Aero\\AeroService\\Aero.Data\\Aero.Domain.csproj",
+        "projectPath": "D:\\Aero\\AeroService\\Aero.Domain\\Aero.Domain.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "D:\\Aero\\AeroService\\Aero.Data\\obj\\",
+        "outputPath": "D:\\Aero\\AeroService\\Aero.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -207,8 +207,8 @@
               "D:\\Aero\\AeroService\\Aero.Application\\Aero.Application.csproj": {
                 "projectPath": "D:\\Aero\\AeroService\\Aero.Application\\Aero.Application.csproj"
               },
-              "D:\\Aero\\AeroService\\Aero.Data\\Aero.Domain.csproj": {
-                "projectPath": "D:\\Aero\\AeroService\\Aero.Data\\Aero.Domain.csproj"
+              "D:\\Aero\\AeroService\\Aero.Domain\\Aero.Domain.csproj": {
+                "projectPath": "D:\\Aero\\AeroService\\Aero.Domain\\Aero.Domain.csproj"
               }
             }
           }

@@ -8,7 +8,7 @@ namespace Aero.Infrastructure.Services;
 public sealed class HolderCommandService : BaseAeroCommand, IHolderCommand
 {
 
-      public bool AccessDatabaseCardRecord(short ScpId, short Flags, long CardNumber, int IssueCode, string Pin, List<AccessLevelDto> AccessLevel, int Active, int Deactive = 2085970000)
+      public bool AccessDatabaseCardRecord(short ScpId, short Flags, long CardNumber, int IssueCode, string Pin, List<short> AccessLevel, int Active, int Deactive = 2085970000)
       {
             CC_ADBC_I64DTIC32 cc = new CC_ADBC_I64DTIC32();
             cc.lastModified = 0;
@@ -26,7 +26,7 @@ public sealed class HolderCommandService : BaseAeroCommand, IHolderCommand
             }
             for (int i = 0; i < AccessLevel.Count; i++)
             {
-                  cc.alvl[i] = AccessLevel[i].component_id;
+                  cc.alvl[i] = AccessLevel[i];
             }
             cc.act_time = Active;
             cc.dact_time = Deactive;

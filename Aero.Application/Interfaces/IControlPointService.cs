@@ -17,7 +17,6 @@ namespace Aero.Application.Interface
         Task<ResponseDto<ControlPointDto>> GetByMacAndIdAsync(string mac, short component);
         Task<ResponseDto<bool>> ToggleAsync(ToggleControlPointDto cpTriggerDto);
         Task<ResponseDto<IEnumerable<short>>> GetAvailableOpAsync(string mac, short component);
-        void TriggerDeviceStatus(string ScpMac, int first, string status);
         Task<ResponseDto<IEnumerable<ResponseDto<bool>>>> DeleteRangeAsync(List<short> components);
 
     }

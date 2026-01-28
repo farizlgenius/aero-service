@@ -1,9 +1,11 @@
 ﻿using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
+using Aero.Domain.Interface;
 
 
 namespace Aero.Application.DTOs
 {
-    public sealed class AccessAreaDto : NoMacBaseDto,IComponentId
+    public sealed class AccessAreaDto : NoMacBaseEntity,IComponentId
     {
         public string Name { get; set; } = string.Empty;
         public short component_id { get; set; }

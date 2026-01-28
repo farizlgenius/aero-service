@@ -1,6 +1,8 @@
-﻿namespace Aero.Application.DTOs
+﻿using Aero.Domain.Entities;
+
+namespace Aero.Application.DTOs
 {
-    public class ControlPointDto : BaseDto
+    public class ControlPointDto : BaseEntity
     {
         public string Name { get; set; } = string.Empty;
         public short ModuleId { get; set; }

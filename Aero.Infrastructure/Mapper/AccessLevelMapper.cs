@@ -1,5 +1,6 @@
 using System;
 using Aero.Domain.Entities;
+using Aero.Infrastructure.Data.Entities;
 
 namespace Aero.Infrastructure.Mapper;
 
@@ -10,13 +11,17 @@ public sealed class AccessLevelMapper
             var res = new Aero.Infrastructure.Data.Entities.AccessLevel();
             // Base 
             NoMacBaseMapper.ToEf(data,res);
+            res.name = data.Name;
             res.component_id = data.ComponentId;
-            res.accesslevel_door_timezones =  data.CreateUpdateAccessLevelDoorTimeZone
-            .Select(x => new Aero.Infrastructure.Data.Entities.AccessLevelDoorTimeZone
+            res.component =  data.Components
+            .Select(x => new AccessLevelComponent
             {
-                  accesslevel_id = data.ComponentId,
-                  timezone_id = x.TimezoneId,
-                  door_id = x.DoorId,
+                  mac = x.Mac,
+                  door_component = x.DoorComponents.Select(x => new AccessLevelDoorComponent
+                  {
+                        acr_id = x.AcrId,
+                        timezone_id = x.TimezoneId
+                  }).ToList()
             }).ToList();
 
             return res;
@@ -27,12 +32,15 @@ public sealed class AccessLevelMapper
             // Base 
             NoMacBaseMapper.Update(from,to);
             to.name = from.Name;
-            to.accesslevel_door_timezones = from.CreateUpdateAccessLevelDoorTimeZone.Select(x => new Aero.Infrastructure.Data.Entities.AccessLevelDoorTimeZone
+            to.component = from.Components.Select(x => new AccessLevelComponent
             {
-                  accesslevel_id = from.ComponentId,
-                  timezone_id = x.TimezoneId,
-                  door_id = x.DoorId
-            }).ToArray();
+                  mac = x.Mac,
+                  door_component = x.DoorComponents.Select(a => new AccessLevelDoorComponent
+                  {
+                        acr_id = a.AcrId,
+                        timezone_id = a.TimezoneId
+                  }).ToList()
+            }).ToList();
       }
 
 }

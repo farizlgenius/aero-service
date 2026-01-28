@@ -1,0 +1,18 @@
+using System;
+
+namespace Aero.Domain.Entities;
+
+public sealed class AccessArea : NoMacBaseEntity
+{
+
+      public string Name { get; set; } = string.Empty;
+      public short MultiOccupancy { get; set; }
+      public short AccessControl { get; set; }
+      public short OccControl { get; set; }
+      public short OccSet { get; set; }
+      public short OccMax { get; set; }
+      public short OccUp { get; set; }
+      public short OccDown { get; set; }
+      public short AreaFlag { get; set; }
+
+}

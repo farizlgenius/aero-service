@@ -6,6 +6,6 @@ namespace Aero.Application.DTOs
     public sealed class CreateUpdateAccessLevelDto : NoMacBaseEntity
     {
         public string Name { get; set; } = string.Empty;
-        public List<CreateUpdateAccessLevelDoorTimeZoneDto> CreateUpdateAccessLevelDoorTimeZoneDto { get; set; } = new List<CreateUpdateAccessLevelDoorTimeZoneDto>();
+        public List<AccessLevelComponentDto> Components { get; set; } = new List<AccessLevelComponentDto>();
     }
 }

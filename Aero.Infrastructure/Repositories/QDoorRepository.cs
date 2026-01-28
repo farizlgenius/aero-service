@@ -873,4 +873,56 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
       {
             throw new NotImplementedException();
       }
+
+      public async Task<IEnumerable<ModeDto>> GetDoorAccessControlFlagAsync()
+      {
+            var dtos = await context.door_access_control_flag
+                .Select(x => new ModeDto 
+                {
+                    Name = x.name,
+                    Value = x.value,
+                    Description = x.description
+                })
+                .ToArrayAsync();
+
+            return dtos;
+      }
+
+      public async Task<IEnumerable<ModeDto>> GetDoorSpareFlagAsync()
+      {
+             var dtos = await context.door_spare_flag
+                .Select(x => new ModeDto 
+                {
+                    Name = x.name,
+                    Value = x.value,
+                    Description = x.description
+                })
+                .ToArrayAsync();
+
+            return dtos;
+      }
+
+      public async Task<IEnumerable<ModeDto>> GetOsdpBaudrateAsync()
+      {
+             var dtos = await context.osdp_baudrate.Select(x => new ModeDto
+            {
+                Name = x.name,
+                Value = x.value,
+                Description = x.description,
+            }).ToArrayAsync();
+
+            return dtos;
+      }
+
+      public async Task<IEnumerable<ModeDto>> GetOsdpAddressAsync()
+      {
+             var dtos = await context.osdp_address.Select(x => new ModeDto
+            {
+                Name = x.name,
+                Value = x.value,
+                Description = x.description,
+            }).ToArrayAsync();
+
+            return dtos;
+      }
 }

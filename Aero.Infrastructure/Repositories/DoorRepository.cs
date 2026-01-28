@@ -40,8 +40,28 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
             throw new NotImplementedException();
       }
 
-      public Task<int> UpdateAsync(Door newData)
+      public async Task<int> UpdateAsync(Door newData)
       {
-            throw new NotImplementedException();
+            var en = await context.door
+            .Include(x => x.readers)
+            .Include(x => x.sensor)
+            .Include(x => x.request_exits)
+            .Include(x => x.strike)
+            .Where(x => x.component_id == newData.ComponentId)
+            .OrderBy(x => x.component_id)
+            .FirstOrDefaultAsync();
+
+            if(en is null) return 0;
+
+            // Delete old component
+            context.reader.RemoveRange(en.readers);
+            context.sensor.Remove(en.sensor);
+            context.strike.Remove(en.strike);
+            if(en.request_exits != null) context.request_exit.RemoveRange(en.request_exits);
+
+            DoorMapper.Update(newData,en);
+
+            return await context.SaveChangesAsync();
+
       }
 }

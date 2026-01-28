@@ -1,19 +1,8 @@
-﻿using HID.Aero.ScpdNet.Wrapper;
-using AeroService.Aero.CommandService;
-using AeroService.Aero.CommandService.Impl;
-using AeroService.AeroLibrary;
-using AeroService.Data;
-using AeroService.DTO.Scp;
-using AeroService.Entity;
-using AeroService.Hubs;
-using Microsoft.AspNetCore.SignalR;
-using MiNET.Entities.Passive;
-using Org.BouncyCastle.Crypto.Parameters;
-using static HID.Aero.ScpdNet.Wrapper.SCPReplyMessage;
+﻿using Aero.Application.Interface;
 
-namespace AeroService.Service.Impl
+namespace Aero.Application.Services
 {
-    public sealed class CommandService(ILogger<CommandService> logger, AppDbContext context, IHelperService<CommandLog> helperService, AeroCommandService write) : ICommandService
+    public sealed class CommandService() : ICommandService
     {
 
 

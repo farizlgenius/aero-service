@@ -1,13 +1,13 @@
 ﻿
 
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using AeroService.DTOs;
 
 namespace Aero.Application.DTOs
 {
-    public sealed class CredentialDto : NoMacBaseDto,IComponentId
+    public sealed class CredentialDto : NoMacBaseEntity
     {
-        public short component_id { get; set; }
         public int Bits { get; set; }
         public int IssueCode { get; set; }
         public int FacilityCode { get; set; }

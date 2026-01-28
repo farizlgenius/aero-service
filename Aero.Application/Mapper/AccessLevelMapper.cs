@@ -13,12 +13,14 @@ public sealed class AccessLevelMapper
             // Base 
             NoMacBaseMapper.ToDomain(dto,res);
             res.Name = dto.Name;
-            res.CreateUpdateAccessLevelDoorTimeZone = dto.CreateUpdateAccessLevelDoorTimeZoneDto.Select(x => new CreateUpdateAccessLevelDoorTimeZone
+            res.Components = dto.Components.Select(x => new CreateUpdateAccessLevelComponent
             {
-                  DoorId = x.DoorId,
-                  AcrId = x.AcrId,
-                  DoorMac = x.DoorMac,
-                  TimezoneId = x.TimezoneId
+                  Mac = x.Mac,
+                  DoorComponents = x.DoorComponent.Select(x => new CreateUpdateAccessLevelDoorComponent
+                  {
+                        AcrId = x.AcrId,
+                        TimezoneId = x.TimezoneId
+                  }).ToList()
             }).ToList();
 
             return res;

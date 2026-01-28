@@ -29,7 +29,7 @@ public class ScpNotificationPublisher(IHubContext<AeroHub> hub) : INotificationP
             await hub.Clients.All.SendAsync("SCP.STATUS", status);
       }
 
-      public async Task ScpNotifyTranStatus(TranStatusDto tran)
+      public async Task ScpNotifyTranStatus(TranStatus tran)
       {
             await hub.Clients.All.SendAsync("SCP.TRAN", tran);
       }
@@ -38,5 +38,18 @@ public class ScpNotificationPublisher(IHubContext<AeroHub> hub) : INotificationP
       {
             await hub.Clients.All.SendAsync("SIO.STATUS",status);
       }
+
+      public async Task DoorNotifyStatus(DoorStatus status)
+      {
+            await hub.Clients.All.SendAsync("DOOR.STATUS", status);
+      }
+
+      public void CpNotifyStatus(CpStatus status)
+      {
+            //GetOnlineStatus()
+            var result = hub.Clients.All.SendAsync("CP.STATUS",status);
+      }
+
+
 
 }

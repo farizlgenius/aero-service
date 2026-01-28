@@ -6,5 +6,7 @@ namespace Aero.Application.Interfaces;
 
 public interface IQHolderRepository : IBaseQueryRespository<CardHolderDto>
 {
-      
+      Task<bool> IsAnyByUserId(string userid);
+      Task<CardHolderDto> GetByUserIdAsync(string UserId);
+      Task<IEnumerable<string>> GetMacsRelateCredentialByUserIdAsync(string UserId);
 }
