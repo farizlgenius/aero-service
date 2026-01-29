@@ -1,26 +1,4 @@
-﻿using HID.Aero.ScpdNet.Wrapper;
-using AeroService.Aero.CommandService;
-using AeroService.Aero.CommandService.Impl;
-using AeroService.Constant;
-using AeroService.Constants;
-using AeroService.Data;
-using AeroService.DTO;
-using AeroService.DTO.MonitorPoint;
-using AeroService.Entity;
-using AeroService.Helpers;
-using AeroService.Hubs;
-using AeroService.Mapper;
-using AeroService.Utility;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using MiNET.Entities;
-using MiNET.Entities.Passive;
-using System.Net;
-
-
-namespace AeroService.Service.Impl
+﻿namespace Aero.Application.Services
 {
     public sealed class MonitorPointService(IHelperService<Sensor> helperService, AeroCommandService command, AppDbContext context, IHubContext<AeroHub> hub, ILogger<MonitorPointService> logger) : IMonitorPointService
     {

@@ -26,7 +26,7 @@ namespace Aero.Infrastructure.Mapper
                 var hw = scope.ServiceProvider.GetRequiredService<IHardwareService>();
                 var rhw = scope.ServiceProvider.GetRequiredService<IHwRepository>();
                 var scp = scope.ServiceProvider.GetRequiredService<IScpCommand>();
-                var rId = scope.ServiceProvider.GetRequiredService<IIdReportRepository>();
+                var rId = scope.ServiceProvider.GetRequiredService<IQIdReportRepository>();
 
                 try
                 {
@@ -93,7 +93,7 @@ namespace Aero.Infrastructure.Mapper
         }
 
 
-        public async Task HandleFoundHardware(SCPReplyMessage message,IQHwRepository qhw,IHardwareService hw,IHwRepository rhw,IScpCommand scp,IIdReportRepository rId)
+        public async Task HandleFoundHardware(SCPReplyMessage message,IQHwRepository qhw,IHardwareService hw,IHwRepository rhw,IScpCommand scp,IQIdReportRepository rId)
         {
             if(await qhw.IsAnyByMac(UtilitiesHelper.ByteToHexStr(message.id.mac_addr)))
             {

@@ -228,18 +228,7 @@ namespace AeroService.Aero.CommandService
 
         
 
-        public bool GetIdReport(short ScpId)
-        {
-            CC_IDREQUEST cc_idrequest = new CC_IDREQUEST();
-            cc_idrequest.scp_number = ScpId;
-
-            bool flag = SendCommand((short)enCfgCmnd.enCcIDRequest, cc_idrequest);
-            //if (flag)
-            //{
-            //    return await TrackCommandAsync(tag, hardware_id, Constants.command.C401);
-            //}
-            return flag;
-        }
+        
 
         
 

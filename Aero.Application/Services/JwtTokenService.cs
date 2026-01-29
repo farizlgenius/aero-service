@@ -1,14 +1,10 @@
-﻿using AeroService.Data;
-using AeroService.Entity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using Aero.Application.Interface;
 
-namespace AeroService.Service.Impl
+namespace Aero.Application.Services
 {
     public sealed class JwtTokenService : IJwtTokenService
     {

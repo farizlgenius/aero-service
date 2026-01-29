@@ -1,16 +1,11 @@
-﻿using AeroService.Data;
-using AeroService.DTO;
-using AeroService.DTO.Location;
-using AeroService.DTO.Token;
-using AeroService.Entity;
-using AeroService.Helpers;
-using AeroService.Mapper;
-using Microsoft.EntityFrameworkCore;
-using System.Net;
+﻿using System.Net;
+using Aero.Application.DTOs;
+using Aero.Application.Helpers;
+using Aero.Application.Interface;
 
-namespace AeroService.Service.Impl
+namespace Aero.Application.Services
 {
-    public sealed class LocationService(AppDbContext context,IHelperService<Entity.Location> helperService) : ILocationService
+    public sealed class LocationService() : ILocationService
     {
         public async Task<ResponseDto<bool>> CreateAsync(LocationDto dto)
         {

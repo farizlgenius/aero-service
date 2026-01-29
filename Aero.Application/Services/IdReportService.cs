@@ -1,29 +1,18 @@
-﻿using AeroService.Aero.CommandService;
-using AeroService.Aero.CommandService.Impl;
-using AeroService.AeroLibrary;
-using AeroService.Constant;
-using AeroService.Constants;
-using AeroService.Data;
-using AeroService.DTO;
-using AeroService.DTO.IdReport;
-using AeroService.Helpers;
-using AeroService.Mapper;
-using AeroService.Utility;
-using Microsoft.EntityFrameworkCore;
-using System.Net;
+﻿using Aero.Api.Constants;
+using Aero.Application.Constants;
+using Aero.Application.DTOs;
+using Aero.Application.Helpers;
+using Aero.Application.Interfaces;
 
-namespace AeroService.Service.Impl
+namespace Aero.Application.Services
 {
-    public class IdReportService(AeroCommandService command, AeroMessage read, AppDbContext context, ILogger<IdReportService> logger)
+    public class IdReportService(IQIdReportRepository qReport,IScpCommand scp) 
     {
 
         public async Task<ResponseDto<IEnumerable<IdReportDto>>> GetAsync()
         {
 
-            var dtos = await context.id_report
-                .AsNoTracking()
-                .Select(data => MapperHelper.IdReportToDto(data))
-                .ToArrayAsync();
+            var dtos = await qReport.GetAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<IdReportDto>>(dtos);
         }
 
@@ -31,7 +20,7 @@ namespace AeroService.Service.Impl
         {
 
             List<IdReportDto> dtos = new List<IdReportDto>();
-            if (!command.GetIdReport(id))
+            if (!scp.GetIdReport(id))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C401));
             }
@@ -40,9 +29,7 @@ namespace AeroService.Service.Impl
 
         public async Task<ResponseDto<int>> GetCount()
         {
-            List<string> errors = new List<string>();
-            int count = 0;
-            count = await context.id_report.CountAsync();
+            int count = await qReport.GetCountAsync();
             return ResponseHelper.SuccessBuilder(count);
 
         }

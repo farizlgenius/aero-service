@@ -1,22 +1,12 @@
 ﻿using System.Text;
 using System.Text.Json;
-using AeroService.Constant;
-using AeroService.Data;
-using AeroService.Dto.License;
-using AeroService.DTO;
-using AeroService.DTO.License;
-using AeroService.Entity;
-using AeroService.Helpers;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Win32;
-using StackExchange.Redis;
+using Aero.Application.DTOs;
+using Aero.Application.Helpers;
 #if WINDOWS
 using System.Management;
 #endif
 
-namespace AeroService.Service.Impl
+namespace Aero.Application.Services
 {
     public sealed class LicenseService(AppDbContext context, IApiService api, IOptions<AppConfigSettings> options, IDatabase redis) : ILicenseService
     {

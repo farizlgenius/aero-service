@@ -1,11 +1,5 @@
-﻿using AeroService.Data;
-using AeroService.Entity;
-using AeroService.Helpers;
-using AeroService.Model;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
-
-namespace AeroService.Service.Impl
+﻿
+namespace Aero.Application.Services
 {
     public sealed class RefreshTokenStore(AppDbContext context) : IRefreshTokenStore
     {

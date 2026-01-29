@@ -1,22 +1,8 @@
-﻿using AeroService.Data;
-using AeroService.DTO;
-using AeroService.DTO.Auth;
-using AeroService.DTO.Operator;
-using AeroService.DTO.Token;
-using AeroService.Entity;
-using AeroService.Helpers;
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Org.BouncyCastle.Asn1.Ocsp;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json;
+﻿using Aero.Application.DTOs;
+using Aero.Application.Helpers;
+using Aero.Application.Interface;
 
-namespace AeroService.Service.Impl
+namespace Aero.Application.Services
 {
     public class AuthService(IConfiguration configuration, AppDbContext context, IJwtTokenService tokenService, IRefreshTokenStore refresh) : IAuthService
     {

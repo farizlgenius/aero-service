@@ -1,14 +1,8 @@
-﻿using AeroService.Data;
-using AeroService.DTO;
-using AeroService.DTO.Feature;
-using AeroService.DTO.Role;
-using AeroService.Entity;
-using AeroService.Helpers;
-using AeroService.Mapper;
-using Microsoft.EntityFrameworkCore;
-using System.Net;
+﻿using System.Net;
+using Aero.Application.DTOs;
+using Aero.Application.Helpers;
 
-namespace AeroService.Service.Impl
+namespace Aero.Application.Services
 {
     public sealed class RoleService(AppDbContext context,IHelperService<Role> helperService) : IRoleService
     {

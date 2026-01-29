@@ -3,6 +3,7 @@ using Aero.Api.Hubs;
 using Aero.Application.DTOs;
 using Aero.Application.Entities;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Aero.Api.Publisher;
@@ -44,12 +45,18 @@ public class ScpNotificationPublisher(IHubContext<AeroHub> hub) : INotificationP
             await hub.Clients.All.SendAsync("DOOR.STATUS", status);
       }
 
-      public void CpNotifyStatus(CpStatus status)
+      public async Task CpNotifyStatus(CpStatus status)
       {
             //GetOnlineStatus()
-            var result = hub.Clients.All.SendAsync("CP.STATUS",status);
+            await hub.Clients.All.SendAsync("CP.STATUS",status);
       }
 
+      public async Task CardScanNotifyStatus(CardScanStatus status)
+      {
+            await hub.Clients.All.SendAsync("CRED.STATUS",status);
+            // read.isWaitingCardScan = false;
+      }
 
+     
 
 }

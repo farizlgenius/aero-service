@@ -16,5 +16,7 @@ public interface IScpCommand
       bool SetTransactionLogIndex(short ScpId, bool isEnable);
       bool GetWebConfigRead(short ScpId, short type);
       short CheckSCPStatus(short scpID);
+
+      bool GetIdReport(short ScpId);
       
 }

@@ -1,19 +1,8 @@
-﻿using AeroService.Aero.CommandService;
-using AeroService.Aero.CommandService.Impl;
-using AeroService.Constant;
-using AeroService.Constants;
-using AeroService.Data;
-using AeroService.DTO;
-using AeroService.DTO.Action;
-using AeroService.DTO.Procedure;
-using AeroService.Entity;
-using AeroService.Helpers;
-using AeroService.Mapper;
-using AeroService.Utility;
-using Microsoft.EntityFrameworkCore;
+﻿using Aero.Application.DTOs;
+using Aero.Application.Helpers;
+using Aero.Application.Interface;
 
-namespace AeroService.Service.Impl
-{
+namespace Aero.Application.Services{
     public sealed class ProcedureService(AppDbContext context,AeroCommandService command,IHelperService<Procedure> helperService) : IProcedureService
     {
         public async Task<ResponseDto<bool>> CreateAsync(ProcedureDto dto)

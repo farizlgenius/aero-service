@@ -95,7 +95,50 @@ public sealed class QCredRepository(AppDbContext context) : IQCredRepository
             return res;
       }
 
-      public async Task<short> GetLowestUnassignedIssueCodeByUserIdAsync(int max,string UserId)
+      public async Task<IEnumerable<CredentialDto>> GetByUserIdAsync(string UserId)
+      {
+            var res = await context.credential
+            .AsNoTracking()
+            .Where(x => x.cardholder_id.Equals(UserId))
+            .Select(entity => new CredentialDto
+            {
+                // Base
+                Uuid = entity.uuid,
+                LocationId = entity.location_id,
+                IsActive = entity.is_active,
+
+                // extend_desc
+                ComponentId = entity.component_id,
+                Bits = entity.bits,
+                IssueCode = entity.issue_code,
+                FacilityCode = entity.fac_code,
+                CardNo = entity.card_no,
+                Pin = entity.pin,
+                ActiveDate = entity.active_date,
+                DeactiveDate = entity.deactive_date,
+                //card_holder = entity.card_holder is not null ? CardHolderToDto(entity.card_holder) : null,
+
+            }).ToArrayAsync();
+
+            return res;
+
+      }
+
+    public async Task<IEnumerable<ModeDto>> GetCredentialFlagAsync()
+    {
+        var dtos = await context.credential_flag
+            .Select(flag => new ModeDto
+            {
+                Name = flag.name,
+                Description = flag.description,
+                Value = flag.value,
+            })
+            .ToArrayAsync();
+
+        return dtos;
+    }
+
+    public async Task<short> GetLowestUnassignedIssueCodeByUserIdAsync(int max,string UserId)
       {
             if (max <= 0) return -1;
 

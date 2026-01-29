@@ -24,7 +24,7 @@
         public static string ACR_MODE = "command 308: ACR mode";
         public static string C401 = "command 401: enCcIDRequest";
         public static string CARD_RECORD = "command 8304: Access Database Card Records";
-        public static string C3305 = "command 3305: Card DeleteAsync";
+        public static string DELETE_CARD = "command 3305: Card Delete";
         public static string SCP_STRUCTURE_STATUS = "command 1853: SCP Structure status Read";
         public static string AREA_CONFIG = "command 1121: Configure Access Area";
         public static string C303 = "command 303: Set the transaction Log Index";

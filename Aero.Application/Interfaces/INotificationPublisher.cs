@@ -1,6 +1,7 @@
 using System;
 using Aero.Application.DTOs;
 using Aero.Application.Entities;
+using Aero.Domain.Entities;
 
 namespace Aero.Application.Interfaces;
 
@@ -19,4 +20,14 @@ public interface INotificationPublisher
       Task SioNotifyStatus(SioStatus status);
 
       #endregion
+
+      #region Door
+
+      Task DoorNotifyStatus(DoorStatus status);
+
+      #endregion
+
+      Task CpNotifyStatus(CpStatus status);
+
+      Task CardScanNotifyStatus(CardScanStatus status);
 }

@@ -24,25 +24,32 @@ namespace Aero.Application.Services
             if (await qHolder.IsAnyByUserId(dto.UserId)) return ResponseHelper.Duplicate<bool>();
             List<short> CredentialComponentId = new List<short>();
             List<string> errors = new List<string>();
-            // Send data 
-            var ScpIds = await qHw.GetComponentIdsAsync();
 
             var domain = HolderMapper.ToDomain(dto);
 
-            foreach (var level in domain.AccessLevels)
+
+            foreach (var alvl in domain.AccessLevels)
             {
-                CredentialComponentId.Add(await qCred.GetLowestUnassignedNumberAsync(10));
-                cred.IssueCode = await qCred.GetLowestUnassignedIssueCodeByUserIdAsync(8, dto.UserId);
-
-                foreach (var id in ScpIds)
+                foreach (var cred in domain.Credentials)
                 {
-                    if (!holder.AccessDatabaseCardRecord(id, domain.Flag, cred.CardNo, cred.IssueCode, cred.Pin, domain.AccessLevels.Select(x => x.ComponentId).ToList(), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.ActiveDate), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.DeactiveDate)))
-                    {
-                        errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id), Command.CARD_RECORD));
-                    }
-                }
+                    CredentialComponentId.Add(await qCred.GetLowestUnassignedNumberAsync(10));
+                    cred.IssueCode = await qCred.GetLowestUnassignedIssueCodeByUserIdAsync(8, dto.UserId);
 
+                    foreach (var component in alvl.Components)
+                    {
+
+                        var id = await qHw.GetComponentFromMacAsync(component.Mac);
+                        if (!holder.AccessDatabaseCardRecord(id, domain.Flag, cred.CardNo, cred.IssueCode, cred.Pin,domain.AccessLevels.Where(x => x.Components.Any(x => x.Mac.Equals(x))).Select(x => x.ComponentId).ToList(), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.ActiveDate), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.DeactiveDate)))
+                        {
+                            errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id), Command.CARD_RECORD));
+                        }
+
+                    }
+
+                }
             }
+
+
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, errors);
 
@@ -58,24 +65,28 @@ namespace Aero.Application.Services
             List<string> errors = new List<string>();
             if (!await qHolder.IsAnyByUserId(UserId)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var Macs = await qHw.GetMacsAsync();
-
             var en = await qHolder.GetByUserIdAsync(UserId);
 
             var domain = HolderMapper.ToDomain(en);
 
-            foreach (var mac in Macs)
+            foreach (var alvl in domain.AccessLevels)
             {
-                var ScpId = await qHw.GetComponentFromMacAsync(mac);
                 foreach (var cred in domain.Credentials)
                 {
-                    if (!hol.CardDelete(ScpId, cred.CardNo))
+                    foreach (var component in alvl.Components)
                     {
-                        errors.Add(MessageBuilder.Unsuccess(mac, Command.C3305));
-                    }
-                }
+                        var id = await qHw.GetComponentFromMacAsync(component.Mac);
+                        if (!hol.CardDelete(id, cred.CardNo))
+                        {
+                            errors.Add(MessageBuilder.Unsuccess(component.Mac, Command.DELETE_CARD));
+                        }
 
+                    }
+
+                }
             }
+
+
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, errors);
 
@@ -116,53 +127,59 @@ namespace Aero.Application.Services
             if (!await qHolder.IsAnyByUserId(dto.UserId)) return ResponseHelper.NotFoundBuilder<CardHolderDto>();
             List<short> CredentialComponentId = new List<short>();
 
-            var domain = HolderMapper.ToDomain(dto);
+            var en = await qHolder.GetByUserIdAsync(dto.UserId);
 
+            var domain = HolderMapper.ToDomain(en);
 
-
-            for (int i = 0; i < domain.Credentials.Count(); i++)
+            foreach (var alvl in domain.AccessLevels)
             {
-                CredentialComponentId.Add(await qCred.GetLowestUnassignedNumberAsync(10));
-            }
-
-
-            // DeleteAsync Old
-            var macs = qHolder
-            var macs = entity.credentials.SelectMany(x => x.hardware_credentials.Select(x => x.hardware_mac)).ToList();
-            foreach (var mac in macs)
-            {
-                var ScpId = await helperService.GetIdFromMacAsync(mac);
-                foreach (var cred in entity.credentials)
+                foreach (var cred in domain.Credentials)
                 {
-                    if (!hol.CardDelete(ScpId, cred.card_no))
+                    foreach (var component in alvl.Components)
                     {
-                        errors.Add(MessageBuilder.Unsuccess(mac, Command.C3305));
+                        var id = await qHw.GetComponentFromMacAsync(component.Mac);
+                        if (!hol.CardDelete(id, cred.CardNo))
+                        {
+                            errors.Add(MessageBuilder.Unsuccess(component.Mac, Command.DELETE_CARD));
+                        }
+
                     }
+
                 }
             }
+
+            domain = HolderMapper.ToDomain(dto);
+
 
             var status = await rHolder.DeleteReferenceByUserIdAsync(dto.UserId);
 
             if (status <= 0) return ResponseHelper.UnsuccessBuilder<CardHolderDto>(ResponseMessage.REMOVE_OLD_REF_UNSUCCESS, []);
 
 
-
             // Send data 
-            var ScpIds = await context.hardware.Select(x => new { x.component_id, x.mac }).ToArrayAsync();
-            foreach (var cred in entity.credentials)
+            foreach (var alvl in domain.AccessLevels)
             {
-                foreach (var id in ScpIds)
+                foreach (var cred in domain.Credentials)
                 {
-                    if (!hol.AccessDatabaseCardRecord(id.component_id, dto.Flag, cred.card_no, cred.issue_code, string.IsNullOrEmpty(cred.pin) ? "" : cred.pin, entity.access_levels is null ? new List<AccessLevel>() : entity.access_levels.Select(x => x.access_level).ToList(), (int)helperService.DateTimeToElapeSecond(cred.active_date), (int)helperService.DateTimeToElapeSecond(cred.deactive_date)))
-                    {
-                        errors.Add(MessageBuilder.Unsuccess(id.mac, Command.CARD_RECORD));
-                    }
-                }
+                    CredentialComponentId.Add(await qCred.GetLowestUnassignedNumberAsync(10));
+                    cred.IssueCode = await qCred.GetLowestUnassignedIssueCodeByUserIdAsync(8, dto.UserId);
 
+                    foreach (var component in alvl.Components)
+                    {
+
+                        var id = await qHw.GetComponentFromMacAsync(component.Mac);
+                        if (!holder.AccessDatabaseCardRecord(id, domain.Flag, cred.CardNo, cred.IssueCode, cred.Pin,domain.AccessLevels.Where(x => x.Components.Any(x => x.Mac.Equals(x))).Select(x => x.ComponentId).ToList(), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.ActiveDate), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.DeactiveDate)))
+                        {
+                            errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id), Command.CARD_RECORD));
+                        }
+
+                    }
+
+                }
             }
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<CardHolderDto>(ResponseMessage.COMMAND_UNSUCCESS, errors);
-            var status = await rHolder.UpdateAsync(domain);
+            status = await rHolder.UpdateAsync(domain);
             if (status <= 0) return ResponseHelper.UnsuccessBuilder<CardHolderDto>(ResponseMessage.UPDATE_RECORD_UNSUCCESS, errors);
             return ResponseHelper.SuccessBuilder<CardHolderDto>(dto);
 

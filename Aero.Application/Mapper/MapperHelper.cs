@@ -606,15 +606,6 @@ namespace Aero.Application.Mapper
             };
         }
 
-        public static ModeDto CredentialFlagToDto(CredentialFlag flag)
-        {
-            return new ModeDto
-            {
-                Name = flag.name,
-                Description = flag.description,
-                Value = flag.value,
-            };
-        }
 
 
 

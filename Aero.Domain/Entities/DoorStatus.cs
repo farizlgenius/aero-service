@@ -1,6 +1,6 @@
 using System;
 
-namespace Aero.Application.Entities;
+namespace Aero.Domain.Entities;
 
 public sealed class DoorStatus
 {

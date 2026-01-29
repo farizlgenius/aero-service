@@ -8,6 +8,6 @@ namespace Aero.Application.Interface
     {
         Task<ResponseDto<IEnumerable<FeatureDto>>> GetFeatureListAsync();
         Task<ResponseDto<IEnumerable<FeatureDto>>> GetFeatureByRoleAsync(short RoleId);
-        Task<ResponseDto<FeatureDto>> GetOneFeatureByRoleIdAsync(short RoleId,short FeatureId);
+        Task<ResponseDto<FeatureDto>> GetFeatureByRoleIdAndFeatureIdAsync(short RoleId,short FeatureId);
     }
 }

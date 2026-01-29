@@ -1,12 +1,8 @@
-﻿using AeroService.DTO.Operator;
-using AeroService.DTO;
-using AeroService.Helpers;
-using AeroService.Mapper;
-using AeroService.Data;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Aero.Application.DTOs;
+using Aero.Application.Helpers;
+using Aero.Application.Interface;
 
-namespace AeroService.Service.Impl
+namespace Aero.Application.Services
 {
     public sealed class SettingService(AppDbContext context) : ISettingService
     {

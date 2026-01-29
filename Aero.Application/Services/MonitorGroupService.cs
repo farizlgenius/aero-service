@@ -1,18 +1,6 @@
-﻿using AeroService.Aero.CommandService;
-using AeroService.Aero.CommandService.Impl;
-using AeroService.Constant;
-using AeroService.Constants;
-using AeroService.Data;
-using AeroService.DTO;
-using AeroService.DTO.MonitorGroup;
-using AeroService.Entity;
-using AeroService.Helpers;
-using AeroService.Mapper;
-using AeroService.Model;
-using AeroService.Utility;
-using Microsoft.EntityFrameworkCore;
+﻿
 
-namespace AeroService.Service.Impl
+namespace Aero.Application.Services
 {
     public sealed class MonitorGroupService(AppDbContext context,AeroCommandService command,IHelperService<MonitorGroup> helperService) : IMonitorGroupService
     {

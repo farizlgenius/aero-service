@@ -8,6 +8,7 @@ using Aero.Application.Interfaces;
 using Aero.Application.Mapper;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
+using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Services
 {
@@ -29,7 +30,7 @@ namespace Aero.Application.Services
         IQTrigRepository qTrig,
         IQProcRepository qProc,
         IQActionRepository qAction,
-        IIdReportRepository idr,
+        IQIdReportRepository idr,
         IScpCommand scp,
         ISioCommand sio,
         IMpCommand mp,

@@ -1,5 +1,5 @@
 using System;
 
-namespace Aero.Application.Entities;
+namespace Aero.Domain.Entities;
 
 public sealed record ScpStatus(string Mac,short Status);

@@ -1,16 +1,7 @@
-﻿using AeroService.Constant;
-using AeroService.Data;
-using AeroService.DTO;
-using AeroService.DTO.Operator;
-using AeroService.Entity;
-using AeroService.Helpers;
-using AeroService.Mapper;
-using Microsoft.EntityFrameworkCore;
-using MiNET.Entities;
-using System.Net;
-using System.Security.Cryptography;
+﻿
+using Aero.Application.Interface;
 
-namespace AeroService.Service.Impl
+namespace Aero.Application.Services
 {
     public sealed class OperatorService(AppDbContext context,IHelperService<Operator> helperService) : IOperatorService
     {

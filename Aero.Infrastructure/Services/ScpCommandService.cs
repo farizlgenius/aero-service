@@ -198,6 +198,15 @@ public sealed class ScpCommandService : BaseAeroCommand, IScpCommand
             return SCPDLL.scpCheckOnline(scpID);
         }
 
-      
+      public bool GetIdReport(short ScpId)
+      {
+            CC_IDREQUEST cc_idrequest = new CC_IDREQUEST();
+            cc_idrequest.scp_number = ScpId;
+
+            bool flag = Send((short)enCfgCmnd.enCcIDRequest, cc_idrequest);
+            return flag;
+      }
+
+
 
 }

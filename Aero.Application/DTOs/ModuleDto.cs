@@ -1,7 +1,9 @@
 ﻿
+using Aero.Domain.Entities;
+
 namespace Aero.Application.DTOs
 {
-    public sealed class ModuleDto : BaseDto
+    public sealed class ModuleDto : BaseEntity
     {
         public short Model { get; set; }
         public string ModelDescription { get; set; } = string.Empty;

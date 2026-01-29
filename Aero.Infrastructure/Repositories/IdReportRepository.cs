@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aero.Infrastructure.Repositories;
 
-public class IdReportRepository(AppDbContext context) : IIdReportRepository
+public class IdReportRepository(AppDbContext context) : IQIdReportRepository
 {
 
 
@@ -80,7 +80,7 @@ public class IdReportRepository(AppDbContext context) : IIdReportRepository
                     .ToArrayAsync();
       }
 
-      Task<Domain.Entities.IdReport> IIdReportRepository.GetByMacAndComponentIdAsync(string mac, short component)
+      Task<Domain.Entities.IdReport> IQIdReportRepository.GetByMacAndComponentIdAsync(string mac, short component)
       {
             throw new NotImplementedException();
       }
