@@ -366,7 +366,7 @@ namespace Aero.Application.Services
             {
                 if (!mpg.ConfigureMonitorPointGroup(ScpId, mpGroup.ComponentId, mpGroup.nMpCount, mpGroup.nMpList.ToList()))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C120));
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.CONFIG_MPG));
                 }
             }
 

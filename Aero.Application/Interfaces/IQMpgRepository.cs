@@ -2,10 +2,12 @@ using System;
 using Aero.Application.DTOs;
 using Aero.Domain.Interfaces;
 
-namespace Aero.Application.Interfaces;
+namespace Aero.Domain.Interface;
 
 public interface IQMpgRepository : IBaseQueryRespository<MonitorGroupDto>
 {
-      Task<IEnumerable<MonitorGroupDto>> GetByMacAsync(string mac);
-      Task<int> CountByMacAndUpdateTimeAsync(string mac, DateTime sync);
+      Task<IEnumerable<ModeDto>> GetCommandAsync();
+      Task<IEnumerable<ModeDto>> GetTypeAsync();
+      Task<bool> IsAnyByMacAndComponentIdAsync(string mac,short component);
+
 }

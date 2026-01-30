@@ -1,13 +1,15 @@
 using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
+using Aero.Domain.Interfaces;
 using HID.Aero.ScpdNet.Wrapper;
 
 namespace Aero.Infrastructure.Services;
 
 public sealed class MpgCommandService : BaseAeroCommand,IMpgCommand
 {
-      public bool ConfigureMonitorPointGroup(short ScpId, short ComponentId, short nMonitor, List<MonitorGroupListDto> list)
+      public bool ConfigureMonitorPointGroup(short ScpId, short ComponentId, short nMonitor, List<MonitorGroupList> list)
         {
             CC_MPG c = new CC_MPG();
             c.lastModified = 0;
