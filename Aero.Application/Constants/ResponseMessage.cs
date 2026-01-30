@@ -19,4 +19,6 @@ public static class ResponseMessage
       public static string UPDATE_RECORD_UNSUCCESS = "Update record in database unsuccess.";
       public static string UPDATE_DOOR_MODE_UNSUCCESS = "Update door mode record unsuccess.";
       public static string REMOVE_OLD_REF_UNSUCCESS = "Remove old reference for update unsucccess.";
+      public static string PASSWORD_UNASSIGN = "Password unassigned.";
+      public static string OLD_PASSPORT_INCORRECT = "Old password incorrect.";
 }

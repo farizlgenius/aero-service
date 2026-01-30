@@ -1,10 +1,10 @@
-﻿using Aero.Domain.Entities;
+using System;
 
-namespace Aero.Application.DTOs
+namespace Aero.Domain.Entities;
+
+public sealed class CreateOperator
 {
-    public sealed class CreateOperatorDto 
-    {
-        public short ComponentId { get; set; }
+       public short ComponentId { get; set; }
         public string UserId { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
@@ -17,5 +17,5 @@ namespace Aero.Application.DTOs
         public string ImagePath { get; set; } = string.Empty;
         public short RoleId { get; set; }
         public List<short> LocationIds { get; set; } = new List<short>();
-    }
+
 }

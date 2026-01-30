@@ -1067,15 +1067,6 @@ namespace Aero.Application.Mapper
 
         #region Role
 
-        //public static RoleDto RoleToDto(role en) 
-        //{
-        //    return new RoleDto
-        //    {
-        //        component_id = en.component_id,
-        //        name = en.name,
-        //        feature = en.feature_role is not null && en.feature_role.Count > 0 ? en.feature_role.Select(x => MapperHelper.FeatureToDto(x.feature,x.is_allow,x.is_create,x.is_modify,x.is_delete,x.is_action)).ToList() : new List<FeatureDto>()
-        //    };
-        //}
 
         public static Role DtoToRole(RoleDto dto, short ComponentId, DateTime Create)
         {

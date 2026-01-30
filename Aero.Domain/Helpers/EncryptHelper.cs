@@ -1,9 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using AeroService.Data;
-using Microsoft.Extensions.Options;
 
-namespace AeroService.Helpers
+namespace Aero.Domain.Helpers
 {
     public sealed class EncryptHelper()
     {

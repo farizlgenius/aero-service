@@ -1,24 +1,30 @@
 ﻿
+using System.Net;
 using Aero.Application.Constants;
 using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interface;
+using Aero.Application.Interfaces;
+using Aero.Application.Mapper;
+using Aero.Domain.Helpers;
+using Aero.Domain.Interface;
 
 namespace Aero.Application.Services
 {
-    public sealed class OperatorService() : IOperatorService
+    public sealed class OperatorService(IQOperatorRepository qOper,IOperatorRepository rOper) : IOperatorService
     {
         public async Task<ResponseDto<bool>> CreateAsync(CreateOperatorDto dto)
         {
             if (string.IsNullOrEmpty(dto.Password)) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.PASSWORD_UNASSIGN, []);
-            if (await context.@operator.AnyAsync(d => String.Equals(dto.Username,d.user_name))) return ResponseHelper.Duplicate<bool>();
+            if (await qOper.IsAnyByUsernameAsync(dto.Username)) return ResponseHelper.Duplicate<bool>();
 
-            var ComponentId = await helperService.GetLowestUnassignedNumberNoLimitAsync<Operator>(context);
+            var ComponentId = await qOper.GetLowestUnassignedNumberAsync(10,"");
 
-            var en = MapperHelper.DtoToOperator(dto,ComponentId,DateTime.UtcNow);
+            var domain = OperatorMapper.ToDomain(dto);
+            domain.ComponentId = ComponentId;
 
-            await context.@operator.AddAsync(en);
-            await context.SaveChangesAsync();
+            var status = await rOper.AddAsync(domain);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
 
             return ResponseHelper.SuccessBuilder<bool>(true);
 
@@ -26,21 +32,11 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<bool>> DeleteByIdAsync(short component)
         {
-            var en = await context.@operator
-                .Where(o => o.component_id == component)
-                .FirstOrDefaultAsync();
 
-            if (en is null) return ResponseHelper.NotFoundBuilder<bool>();
+            if (!await qOper.IsAnyByComponentId(component)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            // Delete operator location reference
-            var loc = await context.operator_location
-                .Where(x => x.operator_id == en.component_id)
-                .ToArrayAsync();
-
-            context.operator_location.RemoveRange(loc);
-
-            context.@operator.Remove(en);
-            await context.SaveChangesAsync();
+            var status = await rOper.DeleteByComponentIdAsync(component);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,[]);
 
             return ResponseHelper.SuccessBuilder<bool>(true);
 
@@ -66,85 +62,21 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<IEnumerable<OperatorDto>>> GetAsync()
         {
-            var dto = await context.@operator
-                .AsNoTracking()
-                .Select(x => new OperatorDto
-                {
-                    Uuid = x.uuid,
-                    LocationIds = x.operator_locations.Select(x => x.location.component_id).ToList(),
-                    IsActive = x.is_active,
-
-                    // extend_desc 
-                    ComponentId = x.component_id,
-                    Username = x.user_name,
-                    Email = x.email,
-                    Title = x.title,
-                    FirstName = x.first_name,
-                    MiddleName = x.middle_name,
-                    LastName = x.last_name,
-                    Phone = x.phone,
-                    Image = x.image_path,
-                    RoleId = x.role_id,
-                })
-                .ToArrayAsync();
+           
 
             return ResponseHelper.SuccessBuilder<IEnumerable<OperatorDto>>(dto);
         }
 
         public async Task<ResponseDto<IEnumerable<OperatorDto>>> GetByLocationAsync(short location)
         {
-            var dto = await context.@operator
-                .AsNoTracking()
-                .Where(x => x.operator_locations.Select(x => x.location_id).Contains(location))
-                .Select(x => new OperatorDto
-                {
-                    Uuid = x.uuid,
-                    LocationIds = x.operator_locations.Select(x => x.location.component_id).ToList(),
-                    IsActive = x.is_active,
-
-                    // extend_desc 
-                    ComponentId = x.component_id,
-                    Username = x.user_name,
-                    Email = x.email,
-                    Title = x.title,
-                    FirstName = x.first_name,
-                    MiddleName = x.middle_name,
-                    LastName = x.last_name,
-                    Phone = x.phone,
-                    Image = x.image_path,
-                    RoleId = x.role_id,
-                })
-                .ToArrayAsync();
-
+            var dto = await qOper.GetAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<OperatorDto>>(dto);
         }
 
         public async Task<ResponseDto<OperatorDto>> GetByUsernameAsync(string Username)
         {
-            var dto = await context.@operator
-                .AsNoTracking()
-                .Where(o => String.Equals(Username, o.user_name))
-                .Select(x => new OperatorDto
-                {
-                    Uuid = x.uuid,
-                    LocationIds = x.operator_locations.Select(x => x.location.component_id).ToList(),
-                    IsActive = x.is_active,
-
-                    // extend_desc 
-                    ComponentId = x.component_id,
-                    Username = x.user_name,
-                    Email = x.email,
-                    Title = x.title,
-                    FirstName = x.first_name,
-                    MiddleName = x.middle_name,
-                    LastName = x.last_name,
-                    Phone = x.phone,
-                    Image = x.image_path,
-                    RoleId = x.role_id,
-                })
-                .FirstOrDefaultAsync();
-
-            if(dto is null) return ResponseHelper.NotFoundBuilder<OperatorDto>();
+            
+           var dto = await qOper.GetByUsernameAsync(Username);
                 
             return ResponseHelper.SuccessBuilder<OperatorDto>(dto);
         }
@@ -178,20 +110,17 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<bool>> UpdatePasswordAsync(PasswordDto dto)
         {
-            var en = await context.@operator
-                    .Where(x => x.user_name == dto.Username)
-                    .OrderBy(x => x.id)
-                    .FirstOrDefaultAsync();
 
-            if (en is null) return ResponseHelper.NotFoundBuilder<bool>();
+            if (!await qOper.IsAnyByUsernameAsync(dto.Username)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            if (!EncryptHelper.VerifyPassword(dto.Old,en.password)) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.UNSUCCESS, [ResponseMessage.OLD_PASSPORT_INCORRECT]);
+    
 
-            en.password = EncryptHelper.HashPassword(dto.New);
+            if (!EncryptHelper.VerifyPassword(dto.Old,domain.Old)) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.UNSUCCESS, [ResponseMessage.OLD_PASSPORT_INCORRECT]);
 
-            context.@operator.Update(en);
+            domain.New = EncryptHelper.HashPassword(dto.New);
 
-            await context.SaveChangesAsync();
+            var status = await rOper.UpdateAsync(domain);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.UPDATE_RECORD_UNSUCCESS,[]);
 
             return ResponseHelper.SuccessBuilder<bool>(true);
 

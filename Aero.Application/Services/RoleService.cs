@@ -1,39 +1,39 @@
 ﻿using System.Net;
+using Aero.Application.Constants;
 using Aero.Application.DTOs;
 using Aero.Application.Helpers;
+using Aero.Application.Interfaces;
+using Aero.Application.Mapper;
+using Aero.Domain.Interface;
 
 namespace Aero.Application.Services
 {
-    public sealed class RoleService(AppDbContext context,IHelperService<Role> helperService) : IRoleService
+    public sealed class RoleService(IQRoleRepository qRole,IRoleRepository rRole) : IRoleService
     {
         public async Task<ResponseDto<bool>> CreateAsync(RoleDto dto)
         {
-            if (await context.role.AsNoTracking().AnyAsync(r => r.name == dto.Name)) return ResponseHelper.Duplicate<bool>();
-            var ComponentId = await helperService.GetLowestUnassignedNumberNoLimitAsync<Role>(context);
+            if (await qRole.IsAnyByNameAsync(dto.Name)) return ResponseHelper.Duplicate<bool>();
 
-            var en = MapperHelper.DtoToRole(dto,ComponentId,DateTime.UtcNow);
+            var ComponentId = await qRole.GetLowestUnassignedNumberAsync(10,"");
 
-            await context.role.AddAsync(en);
-            await context.SaveChangesAsync();
+            var domain = RoleMapper.ToDomain(dto);
+            domain.ComponentId = ComponentId;
+
+            var status = await rRole.AddAsync(domain);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
             return ResponseHelper.SuccessBuilder<bool>(true);
         }
 
         public async Task<ResponseDto<bool>> DeleteByComponentIdAsync(short ComponentId)
         {
-            var en = await context.role
-                .Include(x => x.feature_roles)
-                .Where(r => r.component_id == ComponentId)
-                .OrderBy(x => x.component_id)
-                .FirstOrDefaultAsync();
 
-            if (en is null) return ResponseHelper.NotFoundBuilder<bool>();
+            if (!await qRole.IsAnyByComponentId(ComponentId)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            if (await context.role.AnyAsync(x => x.component_id == ComponentId && x.operators.Any())) return ResponseHelper.FoundReferenceBuilder<bool>(["Found operator related"]);
+            if (await qRole.IsAnyReferenceByComponentIdAsync(ComponentId) ) return ResponseHelper.FoundReferenceBuilder<bool>([ResponseMessage.FOUND_REFERENCE]);
 
-            context.feature_role.RemoveRange(en.feature_roles);
 
-            context.role.Remove(en);
-            await context.SaveChangesAsync();
+            var status = await rRole.DeleteByComponentIdAsync(ComponentId);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,[]);
 
             return ResponseHelper.SuccessBuilder<bool>(true);
         }
@@ -58,33 +58,14 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<IEnumerable<RoleDto>>> GetAsync()
         {
-            return ResponseHelper.SuccessBuilder<IEnumerable<RoleDto>>(
-                await context.role
-                .AsNoTracking()
-                .Select(x => new RoleDto
-                {
-                    component_id = x.component_id,
-                    Name = x.name,
-                    Features = x.feature_roles.Count > 0 ? x.feature_roles.Select(a => MapperHelper.FeatureToDto(a.feature, a.is_allow, a.is_create, a.is_modify, a.is_delete, a.is_action)).ToList() : new List<FeatureDto>()
-                })
-                .ToArrayAsync()
-                );
+            var dtos = await qRole.GetAsync();
+            return ResponseHelper.SuccessBuilder<IEnumerable<RoleDto>>(dtos);
+
         }
 
         public async Task<ResponseDto<RoleDto>> GetByComponentIdAsync(short ComponentId)
         {
-            var dto = await context.role
-                .AsNoTracking()
-                .Select(x => new RoleDto
-                {
-                    component_id = x.component_id,
-                    Name = x.name,
-                    Features = x.feature_roles.Count > 0 ? x.feature_roles.Select(a => MapperHelper.FeatureToDto(a.feature, a.is_allow, a.is_create, a.is_modify, a.is_delete, a.is_action)).ToList() : new List<FeatureDto>()
-                })
-                .OrderBy(x => x.component_id)
-                .FirstOrDefaultAsync();
-
-            if (dto is null) return ResponseHelper.NotFoundBuilder<RoleDto>();
+            var dto = await qRole.GetByComponentIdAsync(ComponentId);
 
             return ResponseHelper.SuccessBuilder(dto);
                 
@@ -92,21 +73,12 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<RoleDto>> UpdateAsync(RoleDto dto)
         {
-            var en = await context.role
-                .Include(f => f.feature_roles)
-                .Where(r => r.component_id == dto.component_id)
-                .OrderBy(r => r.component_id)
-                .FirstOrDefaultAsync();
+            if(!await qRole.IsAnyByComponentId(dto.ComponentId)) return ResponseHelper.NotFoundBuilder<RoleDto>();
 
-            if(en is null) return ResponseHelper.NotFoundBuilder<RoleDto>();
+            var domain = RoleMapper.ToDomain(dto);
 
-            // Delete Old feature role
-            context.feature_role.RemoveRange(en.feature_roles);
-
-            MapperHelper.UpdateRole(en, dto);
-
-            context.role.Update(en);
-            await context.SaveChangesAsync();
+            var status = await rRole.UpdateAsync(domain);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<RoleDto>(ResponseMessage.UPDATE_RECORD_UNSUCCESS,[]);
 
             return ResponseHelper.SuccessBuilder(dto);
         }

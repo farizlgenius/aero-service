@@ -1,11 +1,4 @@
-﻿using AeroService.Aero.CommandService;
-using AeroService.Aero.CommandService.Impl;
-using AeroService.Constants;
-using AeroService.Data;
-using AeroService.Entity;
-using AeroService.Helpers;
-
-namespace AeroService.Service.Impl
+﻿namespace Aero.Application.Services
 {
     public class SysService(AppDbContext context, AeroCommandService command)
     {
