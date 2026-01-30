@@ -57,6 +57,12 @@ public class ScpNotificationPublisher(IHubContext<AeroHub> hub) : INotificationP
             // read.isWaitingCardScan = false;
       }
 
+              public async void MpNotifyStatus(MpStatus status)
+        {
+            //GetOnlineStatus()
+            var result = hub.Clients.All.SendAsync("MP.STATUS", status);
+        }
+
      
 
 }

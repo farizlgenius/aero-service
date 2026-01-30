@@ -349,7 +349,7 @@ namespace Aero.Application.Services
 
                 if (!mp.MonitorPointConfiguration(ScpId, monitors.ModuleId, monitors.InputNo, monitors.LogFunction, monitors.MonitorPointMode, monitors.DelayEntry, monitors.DelayExit, monitors.ComponentId))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.C113));
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.MONITOR_CONFIG));
                 }
 
             }

@@ -1,9 +1,12 @@
 ﻿
+using Aero.Application.Constants;
+using Aero.Application.DTOs;
+using Aero.Application.Helpers;
 using Aero.Application.Interface;
 
 namespace Aero.Application.Services
 {
-    public sealed class OperatorService(AppDbContext context,IHelperService<Operator> helperService) : IOperatorService
+    public sealed class OperatorService() : IOperatorService
     {
         public async Task<ResponseDto<bool>> CreateAsync(CreateOperatorDto dto)
         {

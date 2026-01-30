@@ -2,6 +2,7 @@
 {
     public sealed class MonitorPoint : BaseEntity
     {
+        public short mp_id {get; set;}
         public string name { get; set; } = string.Empty;
         public short module_id { get; set; }
         public Module module { get; set; }

@@ -11,11 +11,11 @@
         public static string OUTPUT_SPEC = "command 111: Output Point Specification";
         public static string CONTROL_CONFIG = "command 114: Control Point Configuration";
         public static string CP_STATUS = "command 406: enCcCpSrq";
-        public static string C113 = "command 113: Monitor Point Configuration";
+        public static string MONITOR_CONFIG = "command 113: Monitor Point Configuration";
         public static string INPUT_SPEC = "command 110: Input Point Specification";
-        public static string C405 = "command 405: enCcMpSrq";
+        public static string MP_STATUS = "command 405: enCcMpSrq";
         public static string CP_COMMAND = "command 307: Control Point Command";
-        public static string C306 = "command 306: Monitor Point MaskAsync";
+        public static string SET_MASK = "command 306: Monitor Point MaskAsync";
         public static string MODULE_STATUS = "command 404: Get Module Status";
         public static string MOMENT_UNLOCK = "command 311: Momentary Unlock";
         public static string READER_SPEC = "command 112: Reader Specification";

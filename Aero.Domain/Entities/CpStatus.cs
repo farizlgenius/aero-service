@@ -1,6 +1,6 @@
 using System;
 
-namespace Aero.Application.DTOs;
+namespace Aero.Domain.Entities;
 
 public sealed class CpStatus
 {
