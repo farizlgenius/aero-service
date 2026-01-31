@@ -1,9 +1,12 @@
 ﻿
+using Aero.Domain.Entities;
+
 namespace Aero.Application.DTOs
 {
-    public sealed class ProcedureDto : BaseDto
+    public sealed class ProcedureDto : BaseEntity
     {
+        public short ProcId {get; set;}
         public string Name { get; set; } = string.Empty;
-        public List<ActionDto>? Actions { get; set; }
+        public List<ActionDto> Actions { get; set; } = new List<ActionDto>();
     }
 }

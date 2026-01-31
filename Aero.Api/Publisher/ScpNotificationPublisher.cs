@@ -37,7 +37,7 @@ public class ScpNotificationPublisher(IHubContext<AeroHub> hub) : INotificationP
 
       public async Task SioNotifyStatus(SioStatus status)
       {
-            await hub.Clients.All.SendAsync("SIO.STATUS",status);
+            await hub.Clients.All.SendAsync("SIO.STATUS", status);
       }
 
       public async Task DoorNotifyStatus(DoorStatus status)
@@ -48,21 +48,26 @@ public class ScpNotificationPublisher(IHubContext<AeroHub> hub) : INotificationP
       public async Task CpNotifyStatus(CpStatus status)
       {
             //GetOnlineStatus()
-            await hub.Clients.All.SendAsync("CP.STATUS",status);
+            await hub.Clients.All.SendAsync("CP.STATUS", status);
       }
 
       public async Task CardScanNotifyStatus(CardScanStatus status)
       {
-            await hub.Clients.All.SendAsync("CRED.STATUS",status);
+            await hub.Clients.All.SendAsync("CRED.STATUS", status);
             // read.isWaitingCardScan = false;
       }
 
-              public async void MpNotifyStatus(MpStatus status)
-        {
+      public async void MpNotifyStatus(MpStatus status)
+      {
             //GetOnlineStatus()
             var result = hub.Clients.All.SendAsync("MP.STATUS", status);
-        }
+      }
 
-     
+      public void EventNotifyRecieve()
+      {
+            hub.Clients.All.SendAsync("EVENT.TRIGGER");
+      }
+
+
 
 }

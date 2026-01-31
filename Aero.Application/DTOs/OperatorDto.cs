@@ -6,7 +6,6 @@ namespace Aero.Application.DTOs
 {
     public sealed class OperatorDto 
     {
-        public string Uuid { get; set; } = Guid.NewGuid().ToString();
         public short ComponentId { get; set; }
         public string Username { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;

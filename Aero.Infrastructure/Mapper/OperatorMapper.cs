@@ -1,5 +1,6 @@
 using System;
 using System.Data.Common;
+using Aero.Application.DTOs;
 using Aero.Infrastructure.Data.Entities;
 
 namespace Aero.Infrastructure.Mapper;
@@ -32,6 +33,28 @@ public sealed class OperatorMapper
                   updated_date = DateTime.UtcNow
 
             };
+      }
+
+      public static void Update(CreateOperatorDto from,Aero.Infrastructure.Data.Entities.Operator to)
+      {
+            to.component_id = from.ComponentId;
+            to.user_id = from.UserId;
+            to.user_name = from.Username;
+            to.email = from.Email;
+            to.title = from.Title;
+            to.first_name = from.FirstName;
+            to.middle_name = from.MiddleName;
+            to.last_name = from.LastName;
+            to.phone = from.Phone;
+            to.image_path = from.ImagePath;
+            to.role_id = from.RoleId;
+            to.operator_locations = from.LocationIds.Select(x => new OperatorLocation
+            {
+                  location_id = x,
+                  operator_id = from.ComponentId
+            }).ToList();
+            to.updated_date = DateTime.UtcNow;
+
       }
 
 }

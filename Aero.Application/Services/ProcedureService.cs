@@ -1,13 +1,20 @@
-﻿using Aero.Application.DTOs;
+﻿using System.Data;
+using Aero.Api.Constants;
+using Aero.Application.Constants;
+using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interface;
+using Aero.Application.Interfaces;
+using Aero.Application.Mapper;
+using Aero.Domain.Interface;
 
 namespace Aero.Application.Services{
-    public sealed class ProcedureService(AppDbContext context,AeroCommandService command,IHelperService<Procedure> helperService) : IProcedureService
+    public sealed class ProcedureService(IProcedureRepository rProc,IQProcedureRepository qProc,IQHwRepository qHw,IProcCommand proc) : IProcedureService
     {
         public async Task<ResponseDto<bool>> CreateAsync(ProcedureDto dto)
         {
-            var ComponentId = await helperService.GetLowestUnassignedNumberAsync<Procedure>(context,128);
+            var ComponentId = await qProc.GetLowestUnassignedNumberAsync(10,"");
+            var ProcId = await qProc.GetLowestUnassignedNumberAsync(10,dto.Mac);
 
             foreach(var ac in dto.Actions)
             {
@@ -17,182 +24,84 @@ namespace Aero.Application.Services{
                 }
                 else
                 {
-                    ac.ScpId = await helperService.GetIdFromMacAsync(ac.Mac);
+                    ac.ScpId = await qHw.GetComponentFromMacAsync(ac.Mac);
                 }
                
             }
 
-            var en = MapperHelper.DtoToProcedure(dto, ComponentId, DateTime.UtcNow);
+            dto.ProcId = ProcId;
+            dto.ComponentId = ComponentId;
 
+            var domain = ProcedureMapper.ToDomain(dto);
+            
 
-            var ids = await context.hardware.AsNoTracking().Select(x => x.component_id).ToListAsync();
-            foreach(var ac in en.actions)
+            var ids = await qHw.GetComponentIdsAsync();
+            foreach(var ac in domain.Actions)
             {
-                if (ac.action_type == 9)
+                if (ac.ActionType == 9)
                 {
-                    if (!command.ActionSpecificationAsyncForAllHW(ComponentId, ac, ids))
+                    if (!proc.ActionSpecificationAsyncForAllHW(ComponentId, ac, ids.ToList()))
                     {
-                        return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
+                        return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.ACTION_SPEC));
                     }
                 }
-                else if (ac.delay_time != 0) 
+                else if (ac.DelayTime != 0) 
                 {
-                    if(!command.ActionSpecificationDelayAsync(ComponentId, ac))
+                    if(!proc.ActionSpecificationDelayAsync(ComponentId, ac))
                     {
-                        return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
+                        return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.ACTION_SPEC));
                     }
                 }
             }
 
-            if (!command.ActionSpecificationAsync(ComponentId, en.actions.ToList()))
+            if (!proc.ActionSpecificationAsync(ComponentId, domain.Actions.ToList()))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.ACTION_SPEC));
             }
 
-
-            await context.procedure.AddAsync(en);
-            await context.SaveChangesAsync();
+            var status = await rProc.AddAsync(domain);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
 
             return ResponseHelper.SuccessBuilder<bool>(true);
             
         }
 
-        public async Task<ResponseDto<bool>> DeleteAsync(string Mac,short ComponentId)
+        public async Task<ResponseDto<bool>> DeleteAsync(short ComponentId)
         {
-            var en = await context.procedure
-                .AsNoTracking()
-                .Where(x => x.trigger.hardware_mac == Mac && x.component_id == ComponentId)
-                .FirstOrDefaultAsync();
 
-            if (en is null) return ResponseHelper.NotFoundBuilder<bool>();
+            if (!await qProc.IsAnyByComponentId(ComponentId)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var ac = new Entity.Action
+            var ac = new Aero.Domain.Entities.Action
             {
-                action_type = 0,
+                ActionType = 0,
             };
 
-            if(!command.ActionSpecificationAsync(ComponentId, [ac]))
+            if(!proc.ActionSpecificationAsync(ComponentId, [ac]))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.C118));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.ACTION_SPEC));
             }
 
-            context.procedure.Remove(en);
-            await context.SaveChangesAsync();
+            var status = await rProc.DeleteByComponentIdAsync(ComponentId);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,[]);
 
             return ResponseHelper.SuccessBuilder<bool>(true);
         }
 
         public async Task<ResponseDto<IEnumerable<ModeDto>>> GetActionType()
         {
-            var dtos = await context.action_type
-                .AsNoTracking()
-                .Select(x => new ModeDto 
-                {
-                    Name = x.name,
-                    Value = x.value,
-                    Description = x.description,
-                }).ToArrayAsync();
-
+            var dtos = await qProc.GetActionTypeAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
         public async Task<ResponseDto<IEnumerable<ProcedureDto>>> GetAsync()
         {
-            var dtos = await context.procedure
-                .AsNoTracking()
-                .Include(x => x.actions)
-                .Select(x => new ProcedureDto
-                {
-                    // Base
-                    Uuid = x.uuid,
-                    ComponentId = x.component_id,
-                    Mac = x.trigger.hardware_mac,
-                    HardwareName = x.trigger.hardware.name,
-                    LocationId = x.location_id,
-                    IsActive = x.is_active,
-
-                    // Detail
-                    Name = x.name,
-                    Actions = x.actions
-                .Select(en => new ActionDto
-                {
-                    // Base
-                    Uuid = en.uuid,
-                    ComponentId = en.component_id,
-                    Mac = x.trigger.hardware_mac,
-                    LocationId = en.location_id,
-                    IsActive = en.is_active,
-
-                    // Detail
-                    ScpId = en.hardware_id,
-                    ActionType = en.action_type,
-                    ActionTypeDesc = en.action_type_desc,
-                    Arg1 = en.arg1,
-                    Arg2 = en.arg2,
-                    Arg3 = en.arg3,
-                    Arg4 = en.arg4,
-                    Arg5 = en.arg5,
-                    Arg6 = en.arg6,
-                    Arg7 = en.arg7,
-                    StrArg = en.str_arg,
-                    DelayTime = en.delay_time,
-                })
-                .ToList()
-
-
-                })
-                .ToArrayAsync();
-
+           var dtos = await qProc.GetAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<ProcedureDto>>(dtos);
         }
 
         public async Task<ResponseDto<IEnumerable<ProcedureDto>>> GetByLocationIdAsync(short location)
         {
-            var dtos = await context.procedure
-                .AsNoTracking()
-                .Include(x => x.actions)
-                .Where(x => x.location_id == location)
-                .Select(x => new ProcedureDto
-                {
-                    // Base
-                    Uuid = x.uuid,
-                    ComponentId = x.component_id,
-                    Mac = x.trigger.hardware_mac,
-                    HardwareName = x.trigger.hardware.name,
-                    LocationId = x.location_id,
-                    IsActive = x.is_active,
-
-                    // Detail
-                    Name = x.name,
-                    Actions = x.actions
-                .Select(en => new ActionDto
-                {
-                    // Base
-                    Uuid = en.uuid,
-                    ComponentId = en.component_id,
-                    Mac = x.trigger.hardware_mac,
-                    LocationId = en.location_id,
-                    IsActive = en.is_active,
-
-                    // Detail
-                    ScpId = en.hardware_id,
-                    ActionType = en.action_type,
-                    ActionTypeDesc = en.action_type_desc,
-                    Arg1 = en.arg1,
-                    Arg2 = en.arg2,
-                    Arg3 = en.arg3,
-                    Arg4 = en.arg4,
-                    Arg5 = en.arg5,
-                    Arg6 = en.arg6,
-                    Arg7 = en.arg7,
-                    StrArg = en.str_arg,
-                    DelayTime = en.delay_time,
-                })
-                .ToList()
-
-
-                })
-                .ToArrayAsync();
+            var dtos = await qProc.GetByLocationIdAsync(location);
 
             return ResponseHelper.SuccessBuilder<IEnumerable<ProcedureDto>>(dtos);
         }

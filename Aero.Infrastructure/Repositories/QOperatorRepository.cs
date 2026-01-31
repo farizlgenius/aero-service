@@ -14,7 +14,6 @@ public class QOperatorRepository(AppDbContext context) : IQOperatorRepository
                 .AsNoTracking()
                 .Select(x => new OperatorDto
                 {
-                    Uuid = x.uuid,
                     LocationIds = x.operator_locations.Select(x => x.location.component_id).ToList(),
                     IsActive = x.is_active,
 
@@ -52,7 +51,6 @@ public class QOperatorRepository(AppDbContext context) : IQOperatorRepository
                 .Where(o => o.user_name.Equals(username))
                 .Select(x => new OperatorDto
                 {
-                    Uuid = x.uuid,
                     LocationIds = x.operator_locations.Select(x => x.location.component_id).ToList(),
                     IsActive = x.is_active,
 
@@ -77,6 +75,11 @@ public class QOperatorRepository(AppDbContext context) : IQOperatorRepository
       public Task<short> GetLowestUnassignedNumberAsync(int max, string mac)
       {
             throw new NotImplementedException();
+      }
+
+      public async Task<string> GetPasswordByUsername(string username)
+      {
+            return await context.@operator.AsNoTracking().Where(x => x.user_name.Equals(username)).Select(x => x.password).FirstOrDefaultAsync() ?? "";
       }
 
       public Task<bool> IsAnyByComponentId(short component)

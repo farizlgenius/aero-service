@@ -8,4 +8,5 @@ public interface IQOperatorRepository : IBaseQueryRespository<OperatorDto>
 {
       Task<bool> IsAnyByUsernameAsync(string name);
       Task<OperatorDto> GetByUsernameAsync(string username);
+      Task<string> GetPasswordByUsername(string username);
 }

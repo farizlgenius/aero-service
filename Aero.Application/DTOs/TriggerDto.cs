@@ -1,8 +1,11 @@
 ﻿
+using Aero.Domain.Entities;
+
 namespace Aero.Application.DTOs
 {
-    public class TriggerDto : BaseDto
+    public class TriggerDto : BaseEntity
     {
+        public short TrigId {get; set;}
         public string Name { get; set; } = string.Empty;
         public short Command { get; set; }
         public short ProcedureId { get; set; }

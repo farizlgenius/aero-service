@@ -1587,7 +1587,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         modelBuilder.Entity<Operator>()
             .HasData(
-                new Operator { id = 1, component_id = 1, user_id = "Administrator", user_name = "admin", password = "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY", email = "support@honorsupplying.com", title = "Mr.", first_name = "Administrator", middle_name = "", last_name = "", phone = "", image_path = "", role_id = 1, uuid = SeedDefaults.SystemGuid, created_date = SeedDefaults.SystemDate, updated_date = SeedDefaults.SystemDate, is_active = true }
+                new Operator { id = 1, component_id = 1, user_id = "Administrator", user_name = "admin", password = "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY", email = "support@honorsupplying.com", title = "Mr.", first_name = "Administrator", middle_name = "", last_name = "", phone = "", image_path = "", role_id = 1, created_date = SeedDefaults.SystemDate, updated_date = SeedDefaults.SystemDate, is_active = true }
             );
 
         modelBuilder.Entity<OperatorLocation>()

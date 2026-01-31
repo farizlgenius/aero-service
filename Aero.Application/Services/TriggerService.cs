@@ -1,33 +1,30 @@
-﻿using HID.Aero.ScpdNet.Wrapper;
-using AeroService.Aero.CommandService;
-using AeroService.Aero.CommandService.Impl;
-using AeroService.Constant;
-using AeroService.Constants;
-using AeroService.Data;
-using AeroService.DTO;
-using AeroService.DTO.Trigger;
-using AeroService.Entity;
-using AeroService.Helpers;
-using AeroService.Mapper;
-using AeroService.Utility;
-using Microsoft.EntityFrameworkCore;
+﻿
 
-namespace AeroService.Service.Impl
+using Aero.Api.Constants;
+using Aero.Application.Constants;
+using Aero.Application.DTOs;
+using Aero.Application.Helpers;
+using Aero.Application.Interface;
+using Aero.Application.Interfaces;
+using Aero.Domain.Interface;
+
+namespace Aero.Application.Services
 {
-    public sealed class TriggerService(AppDbContext context,IHelperService<Trigger> helperService,AeroCommandService command) : ITriggerService
+    public sealed class TriggerService(IQTrigRepository qTrig,ITriggerRepository rTrig,IQHwRepository qHw,ITrigCommand trig) : ITriggerService
     {
         public async Task<ResponseDto<bool>> CreateAsync(TriggerDto dto)
         {
-            var ComponentId = await helperService.GetLowestUnassignedNumberAsync<Trigger>(context, 128);
+            var ComponentId = await qTrig.GetLowestUnassignedNumberAsync(128,"");
+            var TrigId = await qTrig.GetLowestUnassignedNumberAsync(128,dto.Mac);
             if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
             var ScpId = await helperService.GetIdFromMacAsync(dto.Mac);
             if (ScpId == 0) return ResponseHelper.NotFoundBuilder<bool>();
 
             var en = MapperHelper.DtoToTrigger(dto, ComponentId, DateTime.UtcNow);
 
-            if(!command.TriggerSpecification(ScpId,en,ComponentId))
+            if(!trig.TriggerSpecification(ScpId,en,ComponentId))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.C117));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.TRIG_SPEC));
             }
 
             await context.trigger.AddAsync(en);
@@ -42,27 +39,13 @@ namespace AeroService.Service.Impl
 
         public async Task<ResponseDto<IEnumerable<TriggerDto>>> GetAsync()
         {
-            var dto = await context.trigger
-                .AsNoTracking()
-                .Include(x => x.procedure)
-                .ThenInclude(x => x.actions)
-                .Include(x => x.code_map)
-                .Select(x => MapperHelper.TriggerToDto(x))
-                .ToArrayAsync();
-
+            var dto = await qTrig.GetAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<TriggerDto>>(dto);
         }
 
         public async Task<ResponseDto<IEnumerable<TriggerDto>>> GetByLocationId(short location)
         {
-            var dto = await context.trigger
-                .AsNoTracking()
-                .Include(x => x.procedure)
-                .ThenInclude(x => x.actions)
-                 .Include(x => x.code_map)
-                .Where(x => x.location_id == location)
-                .Select(x => MapperHelper.TriggerToDto(x))
-                .ToArrayAsync();
+            var dto = await qTrig.GetByLocationIdAsync(location);
 
             return ResponseHelper.SuccessBuilder<IEnumerable<TriggerDto>>(dto);
         }

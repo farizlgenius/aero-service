@@ -27,11 +27,11 @@
         public static string DELETE_CARD = "command 3305: Card Delete";
         public static string SCP_STRUCTURE_STATUS = "command 1853: SCP Structure status Read";
         public static string AREA_CONFIG = "command 1121: Configure Access Area";
-        public static string C303 = "command 303: Set the transaction Log Index";
+        public static string TRAN_INDEX = "command 303: Set the transaction Log Index";
         public static string CONFIG_MPG = "command 120: Configure Monitor Point Group";
         public static string MPG_ARM_DISARM = "command 321: Monitor Point Group Arm/Disarm command";
-        public static string C118 = "command 118: action Specification";
-        public static string C117 = "command 117: trigger Specification";
+        public static string ACTION_SPEC = "command 118: action Specification";
+        public static string TRIG_SPEC = "command 117: trigger Specification";
         public static string C1117 = "command 1117: trigger Specification (Expanded Code Map)";
         public static string SIO_DRIVER = "command 108: Driver Configuration";
         public static string SIO_PANEL_CONFIG = "command 109: SIO Panel Configuration";

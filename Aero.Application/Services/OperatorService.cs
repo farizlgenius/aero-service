@@ -63,13 +63,13 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<IEnumerable<OperatorDto>>> GetAsync()
         {
            
-
+            var dto = await qOper.GetAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<OperatorDto>>(dto);
         }
 
         public async Task<ResponseDto<IEnumerable<OperatorDto>>> GetByLocationAsync(short location)
         {
-            var dto = await qOper.GetAsync();
+            var dto = await qOper.GetByLocationIdAsync(location);
             return ResponseHelper.SuccessBuilder<IEnumerable<OperatorDto>>(dto);
         }
 
@@ -83,29 +83,18 @@ namespace Aero.Application.Services
 
         
 
-        public async Task<ResponseDto<CreateOperatorDto>> UpdateAsync(CreateOperatorDto dto)
+        public async Task<ResponseDto<OperatorDto>> UpdateAsync(CreateOperatorDto dto)
         {
-            var en = await context.@operator
-                .Include(x => x.operator_locations)
-                .ThenInclude(x => x.location)
-                .Where(o => String.Equals(dto.Username, o.user_name))
-                .FirstOrDefaultAsync();
+            if(!await qOper.IsAnyByUsernameAsync(dto.Username)) return ResponseHelper.NotFoundBuilder<OperatorDto>();
 
-            if(en is null) return ResponseHelper.NotFoundBuilder<CreateOperatorDto>();
+            var domain = OperatorMapper.ToDomain(dto);
 
-            // Delete operator location reference
-            var loc = await context.operator_location
-                .Where(x => x.operator_id == dto.ComponentId)
-                .ToArrayAsync();
+            var status = await rOper.UpdateAsync(domain);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<OperatorDto>(ResponseMessage.UPDATE_RECORD_UNSUCCESS,[]);
 
-            context.operator_location.RemoveRange(loc);
+            var res = await qOper.GetByUsernameAsync(dto.Username);
 
-            MapperHelper.UpdateOperator(en,dto);
-
-            context.@operator.Update(en);
-            await context.SaveChangesAsync();
-
-            return ResponseHelper.SuccessBuilder(dto);
+            return ResponseHelper.SuccessBuilder(res);
         }
 
         public async Task<ResponseDto<bool>> UpdatePasswordAsync(PasswordDto dto)
@@ -113,13 +102,13 @@ namespace Aero.Application.Services
 
             if (!await qOper.IsAnyByUsernameAsync(dto.Username)) return ResponseHelper.NotFoundBuilder<bool>();
 
+            var pass = await qOper.GetPasswordByUsername(dto.Username);
     
+            if (!EncryptHelper.VerifyPassword(dto.Old,pass)) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.UNSUCCESS, [ResponseMessage.OLD_PASSPORT_INCORRECT]);
 
-            if (!EncryptHelper.VerifyPassword(dto.Old,domain.Old)) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.UNSUCCESS, [ResponseMessage.OLD_PASSPORT_INCORRECT]);
-
-            domain.New = EncryptHelper.HashPassword(dto.New);
-
-            var status = await rOper.UpdateAsync(domain);
+            var newPass = EncryptHelper.HashPassword(dto.New);
+            
+            var status = await rOper.UpdatePasswordAsync(dto.Username,newPass);
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.UPDATE_RECORD_UNSUCCESS,[]);
 
             return ResponseHelper.SuccessBuilder<bool>(true);

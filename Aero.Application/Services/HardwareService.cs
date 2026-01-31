@@ -769,7 +769,7 @@ namespace Aero.Application.Services
             if (ScpId == 0) return ResponseHelper.NotFoundBuilder<bool>();
             if (!scp.SetTransactionLogIndex(ScpId, IsOn == 1 ? true : false))
             {
-                return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(mac, Command.C303), []);
+                return ResponseHelper.UnsuccessBuilder<bool>(MessageBuilder.Unsuccess(mac, Command.TRAN_INDEX), []);
             }
             return ResponseHelper.SuccessBuilder(true);
         }

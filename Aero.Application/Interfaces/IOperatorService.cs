@@ -9,7 +9,7 @@ namespace Aero.Application.Interface
         Task<ResponseDto<IEnumerable<OperatorDto>>> GetByLocationAsync(short location);
         Task<ResponseDto<bool>> CreateAsync(CreateOperatorDto dto);
         Task<ResponseDto<bool>> DeleteByIdAsync(short component);
-        Task<ResponseDto<CreateOperatorDto>> UpdateAsync(CreateOperatorDto dto);
+        Task<ResponseDto<OperatorDto>> UpdateAsync(CreateOperatorDto dto);
         Task<ResponseDto<OperatorDto>> GetByUsernameAsync(string username);
         Task<ResponseDto<bool>> UpdatePasswordAsync(PasswordDto dto);
         Task<ResponseDto<IEnumerable<ResponseDto<bool>>>> DeleteRangeAsync(List<short> dtos);

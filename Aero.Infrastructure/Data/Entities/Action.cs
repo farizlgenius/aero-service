@@ -2,7 +2,7 @@
 {
     public sealed class Action : BaseEntity
     {
-        public short hardware_id { get; set; }
+        public short scp_id { get; set; }
         public short action_type { get; set; }
         public string action_type_desc { get; set; } = string.Empty;
         public short arg1 { get; set; } 

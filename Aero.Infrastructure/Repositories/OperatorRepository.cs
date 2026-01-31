@@ -38,4 +38,35 @@ public class OperatorRepository(AppDbContext context) : IOperatorRepository
       {
             throw new NotImplementedException();
       }
+
+      public async Task<int> UpdateAsync(CreateOperator data)
+      {
+            var en = await context.@operator
+            .Include(x => x.operator_locations)
+            .Where(x => x.user_name.Equals(data.Username))
+            .OrderBy(x => x.component_id)
+            .FirstOrDefaultAsync();
+
+            if(en is null) return 0;
+
+            context.operator_location.RemoveRange(en.operator_locations);
+
+            context.@operator.Update(en);
+            return await context.SaveChangesAsync();
+
+      }
+
+      public async Task<int> UpdatePasswordAsync(string username, string password)
+      {
+            var en = await context.@operator
+            .Where(x => x.user_name.Equals(username))
+            .FirstOrDefaultAsync();
+
+            if(en is null) return 0;
+
+            en.password = password;
+
+            context.@operator.Update(en);
+            return await context.SaveChangesAsync();
+      }
 }

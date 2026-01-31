@@ -1,8 +1,9 @@
-﻿using AeroService.DTOs;
+﻿using Aero.Domain.Entities;
+using AeroService.DTOs;
 
 namespace Aero.Application.DTOs
 {
-    public sealed class ActionDto : BaseDto
+    public sealed class ActionDto : BaseEntity
     {
         public short ScpId { get; set; }
         public short ActionType { get; set; }

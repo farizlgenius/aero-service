@@ -5,7 +5,6 @@ namespace Aero.Domain.Entities;
 
 public class BaseEntity : ILocation
 {
-      public string Uuid { get; set; } = Guid.NewGuid().ToString();
         public short ComponentId { get; set; }
         public string HardwareName { get; set; } = string.Empty;
         public string Mac { get; set; } = string.Empty;

@@ -2,6 +2,7 @@
 {
     public sealed class Trigger : BaseEntity
     {
+        public short trig_id {get; set;}
         public string name { get; set; } = string.Empty;
         public short command { get; set; }
         public short procedure_id { get; set; }

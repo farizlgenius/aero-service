@@ -1,6 +1,8 @@
-﻿namespace Aero.Application.DTOs
+﻿using Aero.Domain.Entities;
+
+namespace Aero.Application.DTOs
 {
-    public sealed class TransactionDto : BaseDto
+    public sealed class TransactionDto : BaseEntity
     {
         public required string Date { get; set; }
         public required string Time { get; set; }

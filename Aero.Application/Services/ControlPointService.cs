@@ -62,7 +62,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<bool>> CreateAsync(ControlPointDto dto)
         {
-            var componentId = await qCp.GetLowestUnassignedNumberAsync(10);
+            var componentId = await qCp.GetLowestUnassignedNumberAsync(10,dto.Mac);
 
             if (componentId == -1) return ResponseHelper.ExceedLimit<bool>();
 

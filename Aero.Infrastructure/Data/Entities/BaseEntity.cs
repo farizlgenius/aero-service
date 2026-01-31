@@ -10,7 +10,6 @@ namespace Aero.Infrastructure.Data.Entities
     {
         [Key]
         public int id { get; set; }
-        public string uuid { get; set; } = Guid.NewGuid().ToString();
         public short component_id { get; set; }
         public string mac { get; set; } = string.Empty;
         public short location_id { get; set; } = 1;
