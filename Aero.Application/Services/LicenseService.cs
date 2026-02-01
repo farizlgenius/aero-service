@@ -1,21 +1,25 @@
 ﻿using System.Text;
-using System.Text.Json;
+using Aero.Application.Constants;
 using Aero.Application.DTOs;
 using Aero.Application.Helpers;
+using Aero.Application.Interface;
+using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
+using Aero.Domain.Helpers;
+using Aero.Domain.Interface;
 #if WINDOWS
 using System.Management;
 #endif
 
 namespace Aero.Application.Services
 {
-    public sealed class LicenseService(AppDbContext context, IApiService api, IOptions<AppConfigSettings> options, IDatabase redis) : ILicenseService
+    public sealed class LicenseService(IAppSettings settings,IHttpRepository http,IMachineFingerprint machine) : ILicenseService
     {
-        private readonly AppConfigSettings settings = options.Value;
         public async Task<ResponseDto<MachineFingerPrintDto>> GetMachineIdAsync()
         {
             var dto = new MachineFingerPrintDto
             {
-                FingerPrint = MachineFingerprint.Get()
+                FingerPrint = machine.Get()
             };
             return ResponseHelper.SuccessBuilder(dto);
         }
@@ -37,24 +41,24 @@ namespace Aero.Application.Services
             string pubSignFile = Path.Combine(Path.Combine(AppContext.BaseDirectory, "data"), "pub_sign.key");
             if (!File.Exists(pubSignFile))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<HandshakeResult>(ResponseMessage.INTERNAL_ERROR, "Sign public key file not found");
+                return ResponseHelper.UnsuccessBuilderWithString<HandshakeResult>(ResponseMessage.LICENSE_ERR, "Sign public key file not found");
             }
 
             if (new FileInfo(pubSignFile).Length <= 0)
             {
-                return ResponseHelper.UnsuccessBuilderWithString<HandshakeResult>(ResponseMessage.INTERNAL_ERROR, "Sign public key empty");
+                return ResponseHelper.UnsuccessBuilderWithString<HandshakeResult>(ResponseMessage.LICENSE_ERR, "Sign public key empty");
             }
 
             // Step 3 : Get Private Sign from file
             string priSignFile = Path.Combine(Path.Combine(AppContext.BaseDirectory, "data"), "pri_sign.key");
             if (!File.Exists(priSignFile))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<HandshakeResult>(ResponseMessage.INTERNAL_ERROR, "Sign private key file not found");
+                return ResponseHelper.UnsuccessBuilderWithString<HandshakeResult>(ResponseMessage.LICENSE_ERR, "Sign private key file not found");
             }
 
             if (new FileInfo(pubSignFile).Length <= 0)
             {
-                return ResponseHelper.UnsuccessBuilderWithString<HandshakeResult>(ResponseMessage.INTERNAL_ERROR, "Sign private key empty");
+                return ResponseHelper.UnsuccessBuilderWithString<HandshakeResult>(ResponseMessage.LICENSE_ERR, "Sign private key empty");
             }
 
             // Step 4 : Sign ECDH public key with Sign private key
@@ -67,9 +71,9 @@ namespace Aero.Application.Services
 
             var body = new ExchangeRequest(Guid.NewGuid().ToString(), Convert.ToBase64String(appDhPublic), Convert.ToBase64String(appSingPublic), Convert.ToBase64String(signature));
 
-            var response = await api.ExchangeAsync(body);
+            var response = await http.ExchangeAsync(body);
 
-            if (response.payload is null) return ResponseHelper.UnsuccessBuilderWithString<HandshakeResult>(ResponseMessage.INTERNAL_ERROR, response.message);
+            if (response.payload is null) return ResponseHelper.UnsuccessBuilderWithString<HandshakeResult>(ResponseMessage.LICENSE_ERR, response.message);
 
             // Step 6 : Calculate License server response
             var serverDhPublic = Convert.FromBase64String(response.payload.dhPub);
@@ -80,12 +84,12 @@ namespace Aero.Application.Services
             if (!EncryptHelper.VerifyData(licVerifyData, serverSignature, serverSignPublic))
             {
                 // Verify fail
-                return ResponseHelper.UnsuccessBuilderWithString<HandshakeResult>(ResponseMessage.INTERNAL_ERROR, "Exchange key verify data fail");
+                return ResponseHelper.UnsuccessBuilderWithString<HandshakeResult>(ResponseMessage.LICENSE_ERR, "Exchange key verify data fail");
             }
 
             // Step 7 : Derive Shared Key
             var sharedKey = EncryptHelper.DeriveSecretKey(appDh, serverDhPublic);
-            var aesKey = EncryptHelper.DeriveAesKey(sharedKey, options.Value.Secret);
+            var aesKey = EncryptHelper.DeriveAesKey(sharedKey, settings.Secret);
 
             return ResponseHelper.SuccessBuilder(new HandshakeResult(response.payload.sessionId, aesKey));
         }
@@ -121,9 +125,9 @@ namespace Aero.Application.Services
 
             // Step 2 : Send Session Id to license server to generate demo license
             var body = new GenerateDemoRequest(request.company, request.customerSite, request.machineId, handshakeRes.data.sessionId);
-            var response = await api.GenerateDemoLicenseAsync(body);
+            var response = await http.GenerateDemoLicenseAsync(body);
 
-            if (response.payload is null) return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.INTERNAL_ERROR,response.message);
+            if (response.payload is null) return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.LICENSE_ERR,response.message);
 
             // Step 3 : Decrypt License Content
             var decryptedLicense = EncryptHelper.DecryptAes(Convert.FromBase64String(response.payload.Payload), handshakeRes.data.sharedKey);
@@ -134,11 +138,11 @@ namespace Aero.Application.Services
             // Step 5 : Verify License Signature
             if (!EncryptHelper.VerifyData(decryptedLicense, licensePayload.signature, Convert.FromBase64String(response.payload.ServerSignPublic)))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.INTERNAL_ERROR, "License signature verify fail");
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.LICENSE_ERR, "License signature verify fail");
             }
 
             // Step 6 : Encrypt License Data
-            var key = EncryptHelper.Hash(options.Value.Secret);
+            var key = EncryptHelper.Hash(settings.Secret);
             var d = EncryptHelper.EncryptAes(Encoding.UTF8.GetBytes(key),licensePayload.license);
             
             string licenseString = Encoding.UTF8.GetString(licensePayload.license);

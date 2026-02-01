@@ -6,6 +6,7 @@ using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 
 namespace Aero.Application.Services
 {

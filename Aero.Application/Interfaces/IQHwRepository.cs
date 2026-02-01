@@ -15,7 +15,7 @@ public interface IQHwRepository : IBaseQueryRespository<HardwareDto>
       Task<bool> IsAnyModuleReferenceByMacAsync(string mac);
       Task<ScpSetting> GetScpSettingAsync();
       Task<IEnumerable<(short ComponentId, string Mac)>> GetComponentAndMacAsync(); 
-      Task<IEnumerable<DTOs.Mode>> GetHardwareTypeAsync();
+      Task<IEnumerable<Mode>> GetHardwareTypeAsync();
       Task<IEnumerable<short>> GetComponentIdByLocationIdAsync(short location);
       Task<IEnumerable<string>> GetMacsAsync();
       Task<IEnumerable<short>> GetComponentIdsAsync();

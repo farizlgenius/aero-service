@@ -3,6 +3,7 @@ using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interfaces;
 using Aero.Domain.Entities;
+using Aero.Domain.Interfaces;
 using HID.Aero.ScpdNet.Wrapper;
 
 namespace Aero.Infrastructure.Services;

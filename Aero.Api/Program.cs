@@ -1,6 +1,12 @@
 using System.Text;
 using Aero.Api.Exceptions.Middleware;
+using Aero.Application.Interface;
+using Aero.Application.Interfaces;
+using Aero.Application.Services;
+using Aero.Domain.Entities;
 using Aero.Infrastructure.Data;
+using Aero.Infrastructure.Settings;
+using AeroService.Service.Impl;
 using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -42,6 +48,10 @@ namespace AeroService
             builder.Services.Configure<AppSettings>(
                 builder.Configuration.GetSection("AppSettings")
                 );
+
+            builder.Services.Configure<JwtSettings>(
+                builder.Configuration.GetSection("Jwt")
+            );
 
             builder.Services.AddRouting(options =>
             {
@@ -143,6 +153,11 @@ namespace AeroService
             // Replace default logging with Serilog
             builder.Host.UseSerilog();
 
+            // DI for App Setting
+            builder.Services.AddSingleton<IAppSettings,AppSettings>();
+            builder.Services.AddSingleton<IJwtSettings,JwtSettings>();
+            builder.Services.AddSingleton<IRedisSettings,RedisSettings>();
+
 
             // DI for custom service
             builder.Services.AddScoped<IHardwareService,HardwareService>();
@@ -160,14 +175,12 @@ namespace AeroService
             builder.Services.AddScoped<ICredentialService, CredentialService>();
             builder.Services.AddScoped<ICardHolderService, CardHolderService>();
             builder.Services.AddScoped<IControlPointService, ControlPointService>();
-            builder.Services.AddScoped<IHelperService, HelperService>();
             builder.Services.AddScoped<ILicenseService, LicenseService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IOperatorService, OperatorService>();
             builder.Services.AddScoped<ILocationService,LocationService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IFeatureService, FeatureService>();
-            builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
             builder.Services.AddScoped<IRefreshTokenStore, RefreshTokenStore>();
             builder.Services.AddScoped<ITransactionService, TransactionService>();
             builder.Services.AddScoped<IProcedureService, ProcedureService>();
@@ -176,11 +189,6 @@ namespace AeroService
             builder.Services.AddScoped<ICommandService, CommandService>();
             builder.Services.AddScoped<ISettingService, SettingService>();
             builder.Services.AddScoped<IApiService,ApiService>();
-
-            // command Service
-            //builder.Services.AddScoped<IAeroCommandService, BaseCommandService>();
-            builder.Services.AddScoped<ITimeZoneCommandService, TimeZoneCommandService>();
-            builder.Services.AddScoped<IHolidayCommandService, HolidayCommandService>();
 
             builder.Services.AddScoped<MessageHandler>();
 

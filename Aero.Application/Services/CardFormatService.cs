@@ -8,7 +8,7 @@ using Aero.Application.Mapper;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
 
-namespace AeroService.Service.Impl
+namespace Aero.Application.Services
 {
 
     public class CardFormatService(IQCfmtRepository qCfmt,IQHwRepository qHw,ICfmtCommand cfmt,ICfmtRepository rCfmt) : ICardFormatService

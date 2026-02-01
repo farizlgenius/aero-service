@@ -8,8 +8,6 @@
 
 
   <ItemGroup>
-    <PackageReference Include="Mapster" Version="7.4.0" />
-    <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.22" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.22" />
     <PackageReference Include="MiNET" Version="1.0.2304" />
@@ -25,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Helpers\" />
     <Folder Include="logs\" />
     <Folder Include="Worker\" />
   </ItemGroup>

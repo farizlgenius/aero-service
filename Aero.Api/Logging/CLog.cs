@@ -1,10 +1,10 @@
-﻿using AeroService.Constant;
-using AeroService.Constants;
+﻿
+using Aero.Api.Constants;
 using Serilog.Core;
 using Serilog.Events;
 using System.Runtime.CompilerServices;
 
-namespace AeroService.Logging
+namespace Aero.Api.Logging
 {
     public sealed class CLog : ILogEventEnricher
     {

@@ -1,13 +1,10 @@
 ﻿
-using AeroService.DTO;
-using AeroService.DTO.TimeZone;
-using AeroService.Entity;
-using AeroService.Service;
+
+using Aero.Application.DTOs;
+using Aero.Application.Interface;
+using Aero.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel;
-using System.Net;
 
 namespace Aero.Api.Controllers.V1
 {
@@ -33,7 +30,7 @@ namespace Aero.Api.Controllers.V1
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<TimeZoneDto>>> CreateAsync([FromBody] CreateTimeZoneDto dto) 
+        public async Task<ActionResult<ResponseDto<TimeZoneDto>>> CreateAsync([FromBody] TimeZoneDto dto) 
         {
             var res = await service.CreateAsync(dto);
             return Ok(res);
@@ -65,7 +62,7 @@ namespace Aero.Api.Controllers.V1
 
         [HttpGet("mode")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<ModeDto>>> GetModeAsync()
+        public async Task<ActionResult<ResponseDto<Mode>>> GetModeAsync()
         {
             var res = await service.GetModeAsync(0);
             return Ok(res);
@@ -73,7 +70,7 @@ namespace Aero.Api.Controllers.V1
 
         [HttpGet("command")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetCommandAsync()
+        public async Task<ActionResult<ResponseDto<IEnumerable<Mode>>>> GetCommandAsync()
         {
             var res = await service.GetCommandAsync();
             return Ok(res);

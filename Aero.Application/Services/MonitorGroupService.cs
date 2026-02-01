@@ -7,6 +7,7 @@ using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
 using Aero.Application.Mapper;
+using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
 
@@ -17,7 +18,7 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<bool>> CreateAsync(MonitorGroupDto dto)
         {
 
-            var ComponentId = await qMpg.GetLowestUnassignedNumberAsync(10);
+            var ComponentId = await qMpg.GetLowestUnassignedNumberAsync(10,"");
             if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
             var domain = MonitorGroupMapper.ToDomain(dto);

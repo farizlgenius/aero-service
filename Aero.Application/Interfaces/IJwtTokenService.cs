@@ -1,5 +1,7 @@
 ﻿
 
+using Aero.Domain.Entities;
+
 namespace Aero.Application.Interface
 {
     public interface IJwtTokenService

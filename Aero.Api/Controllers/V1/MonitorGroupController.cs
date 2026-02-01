@@ -38,7 +38,7 @@ namespace Aero.Api.Controllers.V1
 
         [HttpGet("type")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetTypeAsync()
+        public async Task<ActionResult<ResponseDto<IEnumerable<Mode>>>> GetTypeAsync()
         {
             var res = await service.GetTypeAsync();
             return Ok(res);

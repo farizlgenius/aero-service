@@ -37,7 +37,7 @@ namespace Aero.Application.Services
 
             if (await qInterval.IsAnyOnEachDays(dto)) return ResponseHelper.Duplicate<bool>();
 
-            var componentId = await qInterval.GetLowestUnassignedNumberAsync(10);
+            var componentId = await qInterval.GetLowestUnassignedNumberAsync(10,"");
 
             var status = await rInterval.AddAsync(IntervalMapper.ToDomain(dto));
 

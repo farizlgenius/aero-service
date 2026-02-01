@@ -1,6 +1,7 @@
 using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
+using Aero.Domain.Interfaces;
 using HID.Aero.ScpdNet.Wrapper;
 
 namespace Aero.Infrastructure.Services;

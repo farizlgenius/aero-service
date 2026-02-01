@@ -1,10 +1,9 @@
-﻿using AeroService.DTO.Operator;
-using AeroService.DTO;
-using AeroService.Service.Impl;
-using Microsoft.AspNetCore.Http;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using AeroService.Service;
 using Microsoft.AspNetCore.Authorization;
+using Aero.Application.Interface;
+using Aero.Application.DTOs;
 
 namespace Aero.Api.Controllers.V1
 {

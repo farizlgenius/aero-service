@@ -6,6 +6,7 @@ using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
 using Aero.Application.Mapper;
+using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
 
@@ -30,7 +31,7 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<bool>> CreateAsync(TimeZoneDto dto)
         {
             List<string> errors = new List<string>();
-            var ComponentId = await qTz.GetLowestUnassignedNumberAsync(10);
+            var ComponentId = await qTz.GetLowestUnassignedNumberAsync(10,"");
             if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
             dto.ComponentId = ComponentId;

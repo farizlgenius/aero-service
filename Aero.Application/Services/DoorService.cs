@@ -5,6 +5,7 @@ using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
 using Aero.Application.Mapper;
+using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
 
@@ -99,7 +100,7 @@ namespace Aero.Application.Services
         {
             if(!await qHw.IsAnyByMac(dto.Mac)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            short DoorId = await qDoor.GetLowestUnassignedNumberAsync(10);
+            short DoorId = await qDoor.GetLowestUnassignedNumberAsync(10,"");
             short AcrId = await qDoor.GetLowestUnassignedNumberByMacAsync(dto.Mac,10);
 
             if (DoorId == -1 || AcrId == -1) return ResponseHelper.ExceedLimit<bool>();

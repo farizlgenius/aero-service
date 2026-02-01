@@ -6,6 +6,7 @@ using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
 using Aero.Application.Mapper;
+using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 
 namespace Aero.Application.Services
@@ -187,6 +188,12 @@ namespace Aero.Application.Services
             {
                 var dtos = await qMp.GetByMacAsync(mac);
                   return ResponseHelper.SuccessBuilder<IEnumerable<MonitorPointDto>>(dtos);
+            }
+
+            public async Task<ResponseDto<MonitorPointDto>> GetByComponentIdAsync(short component)
+            {
+                  var dtos = await qMp.GetByComponentIdAsync(component);
+                  return ResponseHelper.SuccessBuilder<MonitorPointDto>(dtos);
             }
       }
 }

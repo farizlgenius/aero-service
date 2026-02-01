@@ -4,16 +4,17 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using Aero.Application.Interfaces;
 #if WINDOWS
 using System.Management;
 #endif
 
 
-namespace AeroService.Helpers;
+namespace Aero.Infrastructure.Helpers;
 
-public static class MachineFingerprint
+public sealed class MachineFingerprint : IMachineFingerprint
 {
-    public static string Get()
+    public string Get()
     {
         var raw = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
             ? GetWindowsFingerprint()
@@ -25,7 +26,7 @@ public static class MachineFingerprint
 
     // ---------------- Windows ----------------
 
-    private static string GetWindowsFingerprint()
+    private string GetWindowsFingerprint()
     {
         return string.Join("|",
             GetWmi("Win32_Processor", "ProcessorId"),
@@ -34,7 +35,7 @@ public static class MachineFingerprint
     }
 
 #if WINDOWS
-    private static string GetWmi(string table, string field)
+    private string GetWmi(string table, string field)
     {
         try
         {
@@ -46,12 +47,12 @@ public static class MachineFingerprint
         return "UNKNOWN";
     }
 #else
-    private static string GetWmi(string _, string __) => "N/A";
+    private string GetWmi(string _, string __) => "N/A";
 #endif
 
     // ---------------- Linux ----------------
 
-    private static string GetLinuxFingerprint()
+    private string GetLinuxFingerprint()
     {
         return string.Join("|",
             ReadFile("/etc/machine-id"),
@@ -61,7 +62,7 @@ public static class MachineFingerprint
 
     // ---------------- Helpers ----------------
 
-    private static string ReadFile(string path)
+    private string ReadFile(string path)
     {
         try
         {
@@ -70,7 +71,7 @@ public static class MachineFingerprint
         catch { return "UNKNOWN"; }
     }
 
-    private static string Run(string cmd, string args)
+    private string Run(string cmd, string args)
     {
         try
         {

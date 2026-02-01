@@ -1,11 +1,14 @@
 ﻿
 using Aero.Application.DTOs;
+using Aero.Domain.Entities;
 
 namespace Aero.Application.Interface
 {
     public interface IMonitorPointService
     {
         Task<ResponseDto<IEnumerable<MonitorPointDto>>> GetAsync(); 
+
+        Task<ResponseDto<MonitorPointDto>> GetByComponentIdAsync(short component);
             Task<ResponseDto<IEnumerable<MonitorPointDto>>> GetByLocationAsync(short location);
 
         Task<ResponseDto<IEnumerable<MonitorPointDto>>> GetByMacAsync(string mac);

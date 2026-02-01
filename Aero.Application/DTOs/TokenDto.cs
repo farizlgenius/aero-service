@@ -4,7 +4,6 @@
     {
         public DateTime TimeStamp { get; set; }
         public string AccessToken { get; set; } = string.Empty;
-        //public string RefreshToken { get; set; }
-        //public int Expire {  get; set; }
+        public int ExpireInMinute {  get; set; }
     }
 }

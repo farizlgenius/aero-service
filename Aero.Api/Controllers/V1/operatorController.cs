@@ -1,6 +1,6 @@
-﻿using AeroService.DTO;
-using AeroService.DTO.Operator;
-using AeroService.Service;
+﻿
+using Aero.Application.DTOs;
+using Aero.Application.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

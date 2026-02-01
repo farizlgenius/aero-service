@@ -4,8 +4,8 @@ namespace Aero.Domain.Entities;
 
 public sealed class Operator
 {
-       public string Uuid { get; set; } = Guid.NewGuid().ToString();
         public short ComponentId { get; set; }
+        public string UserId {get; set;} =string.Empty;
         public string Username { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;

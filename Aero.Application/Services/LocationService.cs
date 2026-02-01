@@ -17,7 +17,7 @@ namespace Aero.Application.Services
 
             var domain = LocationMapper.ToDomain(dto);
 
-            var LocationId = await qLoc.GetLowestUnassignedNumberAsync(10);
+            var LocationId = await qLoc.GetLowestUnassignedNumberAsync(10,"");
 
             var status = await rLoc.AddAsync(domain);
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);

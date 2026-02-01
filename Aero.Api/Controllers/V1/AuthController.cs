@@ -1,7 +1,9 @@
 ﻿
 
+using System.Text.Json;
 using Aero.Application.DTOs;
 using Aero.Application.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aero.Api.Controllers.V1
@@ -13,26 +15,57 @@ namespace Aero.Api.Controllers.V1
         [HttpPost("login")]
         public async Task<ActionResult<ResponseDto<TokenDto>>> Login([FromBody] LoginDto model)
         {
-            var res = await service.LoginAsync(model,Request,Response);
+            var res = await service.LoginAsync(model, Request.HttpContext.Connection.RemoteIpAddress is null ? "" : Request.HttpContext.Connection.RemoteIpAddress.ToString());
+            // set HttpOnly cookies (path limited to auth endpoint)
+            Response.Cookies.Append("refresh_token", res.data.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Path = "/api/v1/Auth",
+                Expires = DateTimeOffset.UtcNow.Add(TimeSpan.FromMinutes(res.data.ExpireInMinute))
+            });
             return Ok(res);
         }
 
         [HttpPost("refresh")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<TokenDto>>> Refresh()
         {
+            if (!Request.Cookies.TryGetValue("refresh_token", out var oldRaw)) return Unauthorized();
             // HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown"
-            var res = await service.RefreshAsync(Request,Response);
+            var res = await service.RefreshAsync(oldRaw,Request.HttpContext.Connection.RemoteIpAddress is null ? "" : Request.HttpContext.Connection.RemoteIpAddress.ToString());
+             // set HttpOnly cookies (path limited to auth endpoint)
+            Response.Cookies.Append("refresh_token", res.data.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Path = "/api/v1/Auth",
+                Expires = DateTimeOffset.UtcNow.Add(TimeSpan.FromMinutes(res.data.ExpireInMinute))
+            });
             return Ok(res);
 
         }
 
         [HttpPost("logout")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<bool>>> Revoke()
         {
+            if (Request.Cookies.TryGetValue("refresh_token", out var raw))
+            {
+                var res = await service.RevokeAsync(raw);
+                Response.Cookies.Delete("refresh_token", new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Path = "/api/v1/Auth",
+                });
+                return Ok(res);
+            }
 
-            var res = await service.RevokeAsync(Request,Response);
-            return Ok(res);
-
+            return Unauthorized();
         }
 
         [Authorize(AuthenticationSchemes = "Bearer")]
@@ -60,7 +93,7 @@ namespace Aero.Api.Controllers.V1
                 Features = [],
                 RoleName = "",
                 RoleNo = 0
-            } : JsonSerializer.Deserialize<DTO.Token.Role>(roleJson);
+            } : JsonSerializer.Deserialize<Aero.Application.DTOs.Role>(roleJson);
 
             var info = new TokenInfo
             {

@@ -1,13 +1,7 @@
-﻿using AeroService.DTO;
-using AeroService.DTO.Transactions;
-using AeroService.Hubs;
-using AeroService.Service;
-using AeroService.Service.Impl;
-using Microsoft.AspNetCore.Http;
+﻿
+using Aero.Application.DTOs;
+using Aero.Application.Interface;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
-using System.Collections.Generic;
-using System.Net;
 
 namespace Aero.Api.Controllers.V1
 {

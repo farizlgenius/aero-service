@@ -1,7 +1,8 @@
-﻿using AeroService.DTO;
-using AeroService.DTO.Trigger;
-using AeroService.Service;
-using Microsoft.AspNetCore.Http;
+﻿
+
+using Aero.Application.DTOs;
+using Aero.Application.Interface;
+using Aero.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aero.Api.Controllers.V1
@@ -25,35 +26,35 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("command")]
-        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetCommandAsync()
+        public async Task<ActionResult<ResponseDto<IEnumerable<Mode>>>> GetCommandAsync()
         {
             var res = await service.GetCommandAsync();
             return Ok(res);
         }
 
         [HttpGet("source")]
-        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetSourceTypeAsync()
+        public async Task<ActionResult<ResponseDto<IEnumerable<Mode>>>> GetSourceTypeAsync()
         {
             var res = await service.GetSourceTypeAsync();
             return Ok(res);
         }
 
         [HttpGet("tran/{source}")]
-        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetTypeBySourceAsync(short source)
+        public async Task<ActionResult<ResponseDto<IEnumerable<Mode>>>> GetTypeBySourceAsync(short source)
         {
             var res = await service.GetTypeBySourceAsync(source);
             return Ok(res);
         }
 
         [HttpGet("code/{tran}")]
-        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetCodeByTranAsync(short tran)
+        public async Task<ActionResult<ResponseDto<IEnumerable<Mode>>>> GetCodeByTranAsync(short tran)
         {
             var res = await service.GetCodeByTranAsync(tran);
             return Ok(res);
         }
 
         [HttpGet("/api/v1/{location}/[controller]/device/{source}")]
-        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetDeviceBySource(short location, short source)
+        public async Task<ActionResult<ResponseDto<IEnumerable<Mode>>>> GetDeviceBySource(short location, short source)
         {
             var res = await service.GetDeviceBySourceAsync(location,source);
             return Ok(res);

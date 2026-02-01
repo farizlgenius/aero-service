@@ -1,6 +1,7 @@
 using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using Aero.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,7 +26,6 @@ public class QMpRepository(AppDbContext context) : IQMpRepository
             .Select(x => new MonitorPointDto
             {
                   // Base 
-                  Uuid = x.uuid,
                   ComponentId = x.component_id,
                   Mac = x.module.hardware.mac,
                   HardwareName = x.module.hardware.name,
@@ -103,7 +103,6 @@ public class QMpRepository(AppDbContext context) : IQMpRepository
             .Select(x => new MonitorPointDto
             {
                   // Base 
-                  Uuid = x.uuid,
                   ComponentId = x.component_id,
                   Mac = x.module.hardware.mac,
                   HardwareName = x.module.hardware.name,
@@ -142,7 +141,6 @@ public class QMpRepository(AppDbContext context) : IQMpRepository
             .Select(x => new MonitorPointDto
             {
                   // Base 
-                  Uuid = x.uuid,
                   ComponentId = x.component_id,
                   Mac = x.module.hardware.mac,
                   HardwareName = x.module.hardware.name,
@@ -181,7 +179,6 @@ public class QMpRepository(AppDbContext context) : IQMpRepository
             .Select(x => new MonitorPointDto
             {
                   // Base 
-                  Uuid = x.uuid,
                   ComponentId = x.component_id,
                   Mac = x.module.hardware.mac,
                   HardwareName = x.module.hardware.name,

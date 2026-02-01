@@ -1,5 +1,6 @@
 using System;
 using Aero.Application.DTOs;
+using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,6 @@ public class QMpgRepository(AppDbContext context) : IQMpgRepository
             .Select(en => new MonitorGroupDto
             {
                   // Base 
-                  Uuid = en.uuid,
                   ComponentId = en.component_id,
                   Mac = en.hardware_mac,
                   LocationId = en.location_id,
@@ -46,7 +46,6 @@ public class QMpgRepository(AppDbContext context) : IQMpgRepository
             .Select(en => new MonitorGroupDto
             {
                   // Base 
-                  Uuid = en.uuid,
                   ComponentId = en.component_id,
                   Mac = en.hardware_mac,
                   LocationId = en.location_id,
@@ -76,7 +75,6 @@ public class QMpgRepository(AppDbContext context) : IQMpgRepository
             .Select(en => new MonitorGroupDto
             {
                   // Base 
-                  Uuid = en.uuid,
                   ComponentId = en.component_id,
                   Mac = en.hardware_mac,
                   LocationId = en.location_id,
@@ -112,7 +110,7 @@ public class QMpgRepository(AppDbContext context) : IQMpgRepository
             return dtos;
       }
 
-      public async Task<short> GetLowestUnassignedNumberAsync(int max)
+      public async Task<short> GetLowestUnassignedNumberAsync(int max,string mac)
       {
             if (max <= 0) return -1;
 

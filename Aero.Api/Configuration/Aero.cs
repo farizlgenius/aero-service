@@ -1,5 +1,4 @@
 ﻿using AeroService.Aero.CommandService;
-using AeroService.Aero.CommandService.Impl;
 using AeroService.AeroLibrary;
 
 namespace Aero.Api.Configuration

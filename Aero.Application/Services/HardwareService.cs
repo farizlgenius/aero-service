@@ -788,10 +788,10 @@ namespace Aero.Application.Services
         }
 
 
-        public async Task<ResponseDto<IEnumerable<DTOs.Mode>>> GetHardwareTypeAsync()
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetHardwareTypeAsync()
         {
             var dtos = await qHw.GetHardwareTypeAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<DTOs.Mode>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
 

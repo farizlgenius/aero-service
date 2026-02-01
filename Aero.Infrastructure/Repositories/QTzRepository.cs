@@ -1,6 +1,7 @@
 using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using Aero.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -164,7 +165,7 @@ public class QTzRepository(AppDbContext context) : IQTzRepository
     return res;
   }
 
-  public async Task<short> GetLowestUnassignedNumberAsync(int max)
+  public async Task<short> GetLowestUnassignedNumberAsync(int max,string mac)
   {
     if (max <= 0) return -1;
 

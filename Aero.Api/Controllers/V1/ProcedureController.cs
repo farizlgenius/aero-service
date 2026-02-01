@@ -1,7 +1,7 @@
-﻿using AeroService.DTO;
-using AeroService.DTO.Procedure;
-using AeroService.Service;
-using Microsoft.AspNetCore.Http;
+﻿
+using Aero.Application.DTOs;
+using Aero.Application.Interface;
+using Aero.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aero.Api.Controllers.V1
@@ -25,7 +25,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("type")]
-        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetActionType()
+        public async Task<ActionResult<ResponseDto<IEnumerable<Mode>>>> GetActionType()
         {
             var res = await service.GetActionType();
             return Ok(res);
@@ -45,10 +45,10 @@ namespace Aero.Api.Controllers.V1
             return Ok(res);
         }
 
-        [HttpDelete("{mac}/{componentId}")]
-        public async Task<ActionResult<ResponseDto<bool>>> DeleteAsync(string mac,short componentId)
+        [HttpDelete("{componentId}")]
+        public async Task<ActionResult<ResponseDto<bool>>> DeleteAsync(short componentId)
         {
-            var res = await service.DeleteAsync(mac,componentId);
+            var res = await service.DeleteAsync(componentId);
             return Ok(res);
         }
 

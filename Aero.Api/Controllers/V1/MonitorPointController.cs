@@ -1,13 +1,11 @@
 ﻿
-using AeroService.DTO;
-using AeroService.DTO.MonitorPoint;
-using AeroService.Entity;
-using AeroService.Service;
-using AeroService.Service.Impl;
+
+
+using Aero.Application.DTOs;
+using Aero.Application.Interface;
+using Aero.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel;
 
 namespace Aero.Api.Controllers.V1
 {
@@ -32,19 +30,19 @@ namespace Aero.Api.Controllers.V1
             return Ok(res);
         }
 
-        [HttpGet("{mac}/{component}")]
+        [HttpGet("component/{component}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<MonitorPointDto>>> GetByComponentAsync(string mac, short component)
+        public async Task<ActionResult<ResponseDto<MonitorPointDto>>> GetByComponentAsync(short component)
         {
-            var res = await service.GetByIdAndMacAsync(mac,component);
+            var res = await service.GetByComponentIdAsync(component);
             return Ok(res);
         }
 
-        [HttpGet("{mac}")]
+        [HttpGet("mac/{mac}")]
         [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<MonitorPointDto>>>> GetByMacAsync(string mac)
         {
-            var res = await service.GetByIdAndMacAsync(mac);
+            var res = await service.GetByMacAsync(mac);
             return Ok(res);
         }
 
@@ -90,17 +88,17 @@ namespace Aero.Api.Controllers.V1
             return Ok(res);
         }
 
-        [HttpGet("status/{mac}/{component}")]
+        [HttpGet("status/{component}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<bool>>> GetStatusAsync(string mac,short component)
+        public async Task<ActionResult<ResponseDto<bool>>> GetStatusAsync(short component)
         {
-            var res = await service.GetStatusAsync(mac,component);
+            var res = await service.GetStatusByComponentIdAsync(component);
             return Ok(res);
         }
 
         [HttpGet("lf")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetLogFunctionAsync()
+        public async Task<ActionResult<ResponseDto<IEnumerable<Mode>>>> GetLogFunctionAsync()
         {
             var res = await service.GetLogFunctionAsync();
             return Ok(res);

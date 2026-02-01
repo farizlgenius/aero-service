@@ -21,4 +21,5 @@ public static class ResponseMessage
       public static string REMOVE_OLD_REF_UNSUCCESS = "Remove old reference for update unsucccess.";
       public static string PASSWORD_UNASSIGN = "Password unassigned.";
       public static string OLD_PASSPORT_INCORRECT = "Old password incorrect.";
+      public static string LICENSE_ERR = "License error.";
 }

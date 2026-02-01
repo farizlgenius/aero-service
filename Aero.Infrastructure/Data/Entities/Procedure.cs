@@ -16,6 +16,7 @@ namespace Aero.Infrastructure.Data.Entities
         public DateTime updated_date { get; set; }
         public short location_id { get; set; } = 1;
         public Location location { get; set; }
+        public bool is_active {get; set;}
 
 
     }

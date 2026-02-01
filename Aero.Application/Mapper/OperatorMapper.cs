@@ -11,6 +11,7 @@ public sealed class OperatorMapper
             return new CreateOperator
             {
                   ComponentId = dto.ComponentId,
+                  UserId = dto.UserId,
                   Username = dto.Username,
                   Password = dto.Password,
                   Email = dto.Email,

@@ -1,10 +1,9 @@
-﻿using AeroService.DTO;
-using AeroService.DTO.Role;
-using AeroService.Service;
+﻿
+
+using Aero.Application.DTOs;
+using Aero.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Crypto;
 
 namespace Aero.Api.Controllers.V1
 {

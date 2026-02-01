@@ -1,6 +1,7 @@
 using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using Aero.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -100,7 +101,7 @@ public class QProcedureRepository(AppDbContext context) : IQProcedureRepository
                     IsActive = en.is_active,
 
                     // Detail
-                    ScpId = en.hardware_id,
+                    ScpId = en.scp_id,
                     ActionType = en.action_type,
                     ActionTypeDesc = en.action_type_desc,
                     Arg1 = en.arg1,
