@@ -116,6 +116,37 @@ public class QTrigRepository(AppDbContext context) : IQTrigRepository
             return dtos;
       }
 
+      public async Task<IEnumerable<Mode>> GetCodeByTranAsync(short tran)
+      {
+            var dtos = await context.transaction_code
+                .AsNoTracking()
+                .Where(x => x.transaction_type_value == tran)
+                .Select(x => new Mode
+                {
+                    Name = x.name,
+                    Description = x.description,
+                    Value = x.value,
+                })
+                .ToArrayAsync();
+
+                return dtos;
+      }
+
+      public async Task<IEnumerable<Mode>> GetCommandAsync()
+      {
+            var dtos = await context.trigger_command
+                .AsNoTracking()
+                .Select(x => new Mode 
+                {
+                    Name = x.name,
+                    Description = x.description,
+                    Value = x.value,
+                })
+                .ToArrayAsync();
+
+            return dtos;
+      }
+
 
       public async Task<short> GetLowestUnassignedNumberAsync(int max,string mac)
       {
@@ -176,6 +207,40 @@ public class QTrigRepository(AppDbContext context) : IQTrigRepository
                   if (expected > max) return -1;
                   return expected;
             }
+      }
+
+      public async Task<IEnumerable<Mode>> GetSourceTypeAsync()
+      {
+            var dtos = await context.transaction_source
+                .AsNoTracking()
+                .Select(x => new Mode
+                {
+                    Name = x.name,
+                    Description = x.source,
+                    Value = x.value,
+                })
+                .ToArrayAsync();
+
+                return dtos;
+      }
+
+      public async Task<IEnumerable<Mode>> GetTypeBySourceAsync(short source)
+      {
+            var dtos = await context.transaction_type
+                .AsNoTracking()
+                .Where(x => 
+                    x.transaction_source_types.All(x => x.transction_source_value == source) &&
+                    x.transaction_source_types.Any()
+                )
+                .Select(x => new Mode
+                {
+                    Name = x.name,
+                    Description = "",
+                    Value = x.value,
+                })
+                .ToArrayAsync();
+
+            return dtos;
       }
 
       public Task<bool> IsAnyByComponentId(short component)

@@ -97,11 +97,11 @@ public class QMpgRepository(AppDbContext context) : IQMpgRepository
             return res;
       }
 
-      public async Task<IEnumerable<ModeDto>> GetCommandAsync()
+      public async Task<IEnumerable<Mode>> GetCommandAsync()
       {
             var dtos = await context.monitor_group_command
                  .AsNoTracking()
-                 .Select(x => new ModeDto 
+                 .Select(x => new Mode 
                  {
                      Name = x.name,
                      Value = x.value,
@@ -141,11 +141,11 @@ public class QMpgRepository(AppDbContext context) : IQMpgRepository
             return expected;
       }
 
-      public async Task<IEnumerable<ModeDto>> GetTypeAsync()
+      public async Task<IEnumerable<Mode>> GetTypeAsync()
       {
             var dtos = await context.monitor_group_type
                  .AsNoTracking()
-                 .Select(x => new ModeDto 
+                 .Select(x => new Mode 
                  {
                      Name = x.name,
                      Value = x.value,

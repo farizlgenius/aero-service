@@ -1,11 +1,6 @@
-﻿using AeroService.Constants;
-using Microsoft.AspNetCore.Http;
+﻿using Aero.Application.DTOs;
+using Aero.Application.Interface;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using AeroService.Entity;
-using AeroService.Service;
-using AeroService.DTO;
-using AeroService.DTO.CardFormat;
 
 namespace Aero.Api.Controllers.V1
 {

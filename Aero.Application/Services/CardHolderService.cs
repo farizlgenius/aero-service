@@ -32,13 +32,13 @@ namespace Aero.Application.Services
             {
                 foreach (var cred in domain.Credentials)
                 {
-                    CredentialComponentId.Add(await qCred.GetLowestUnassignedNumberAsync(10));
+                    CredentialComponentId.Add(await qCred.GetLowestUnassignedNumberAsync(10,""));
                     cred.IssueCode = await qCred.GetLowestUnassignedIssueCodeByUserIdAsync(8, dto.UserId);
 
                     foreach (var component in alvl.Components)
                     {
 
-                        var id = await qHw.GetComponentFromMacAsync(component.Mac);
+                        var id = await qHw.GetComponentIdFromMacAsync(component.Mac);
                         if (!holder.AccessDatabaseCardRecord(id, domain.Flag, cred.CardNo, cred.IssueCode, cred.Pin,domain.AccessLevels.Where(x => x.Components.Any(x => x.Mac.Equals(x))).Select(x => x.ComponentId).ToList(), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.ActiveDate), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.DeactiveDate)))
                         {
                             errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id), Command.CARD_RECORD));
@@ -75,7 +75,7 @@ namespace Aero.Application.Services
                 {
                     foreach (var component in alvl.Components)
                     {
-                        var id = await qHw.GetComponentFromMacAsync(component.Mac);
+                        var id = await qHw.GetComponentIdFromMacAsync(component.Mac);
                         if (!hol.CardDelete(id, cred.CardNo))
                         {
                             errors.Add(MessageBuilder.Unsuccess(component.Mac, Command.DELETE_CARD));
@@ -137,7 +137,7 @@ namespace Aero.Application.Services
                 {
                     foreach (var component in alvl.Components)
                     {
-                        var id = await qHw.GetComponentFromMacAsync(component.Mac);
+                        var id = await qHw.GetComponentIdFromMacAsync(component.Mac);
                         if (!hol.CardDelete(id, cred.CardNo))
                         {
                             errors.Add(MessageBuilder.Unsuccess(component.Mac, Command.DELETE_CARD));
@@ -161,13 +161,13 @@ namespace Aero.Application.Services
             {
                 foreach (var cred in domain.Credentials)
                 {
-                    CredentialComponentId.Add(await qCred.GetLowestUnassignedNumberAsync(10));
+                    CredentialComponentId.Add(await qCred.GetLowestUnassignedNumberAsync(10,""));
                     cred.IssueCode = await qCred.GetLowestUnassignedIssueCodeByUserIdAsync(8, dto.UserId);
 
                     foreach (var component in alvl.Components)
                     {
 
-                        var id = await qHw.GetComponentFromMacAsync(component.Mac);
+                        var id = await qHw.GetComponentIdFromMacAsync(component.Mac);
                         if (!holder.AccessDatabaseCardRecord(id, domain.Flag, cred.CardNo, cred.IssueCode, cred.Pin,domain.AccessLevels.Where(x => x.Components.Any(x => x.Mac.Equals(x))).Select(x => x.ComponentId).ToList(), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.ActiveDate), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.DeactiveDate)))
                         {
                             errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id), Command.CARD_RECORD));

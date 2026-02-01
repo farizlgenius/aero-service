@@ -6,5 +6,5 @@ namespace Aero.Application.Interfaces;
 
 public interface IQProcedureRepository : IBaseQueryRespository<ProcedureDto>
 {
-      Task<IEnumerable<ModeDto>> GetActionTypeAsync();
+      Task<IEnumerable<Mode>> GetActionTypeAsync();
 }

@@ -9,19 +9,19 @@ public interface IQDoorRepository : IBaseQueryRespository<DoorDto>
       Task<IEnumerable<DoorDto>> GetByMacAsync(string mac);
       Task<short> GetLowestUnassignedRexNumberAsync();
       Task<int> CountByMacAndUpdateTimeAsync(string mac ,DateTime sync);
-      Task<IEnumerable<ModeDto>> GetReaderModeAsync();
-      Task<IEnumerable<ModeDto>> GetStrikeModeAsync();
-      Task<IEnumerable<ModeDto>> GetDoorModeAsync();
-      Task<IEnumerable<ModeDto>> GetApbModeAsync();
+      Task<IEnumerable<Mode>> GetReaderModeAsync();
+      Task<IEnumerable<Mode>> GetStrikeModeAsync();
+      Task<IEnumerable<Mode>> GetDoorModeAsync();
+      Task<IEnumerable<Mode>> GetApbModeAsync();
       Task<IEnumerable<short>> GetAvailableReaderFromMacAndComponentIdAsync(string mac,short component);
-      Task<IEnumerable<ModeDto>> GetReaderOutModeAsync();
+      Task<IEnumerable<Mode>> GetReaderOutModeAsync();
       Task<short> GetLowestUnassignedNumberByMacAsync(string mac,int max);
       Task<short> GetLowestUnassignedReaderNumberNoLimitAsync();
       Task<short> GetLowestUnassignedSensorNumberNoLimitAsync();
       Task<short> GetLowestUnassignedStrikeNumberNoLimitAsync();
-      Task<IEnumerable<ModeDto>> GetDoorAccessControlFlagAsync();
-      Task<IEnumerable<ModeDto>> GetDoorSpareFlagAsync();
-      Task<IEnumerable<ModeDto>> GetOsdpBaudrateAsync();
-      Task<IEnumerable<ModeDto>> GetOsdpAddressAsync();
+      Task<IEnumerable<Mode>> GetDoorAccessControlFlagAsync();
+      Task<IEnumerable<Mode>> GetDoorSpareFlagAsync();
+      Task<IEnumerable<Mode>> GetOsdpBaudrateAsync();
+      Task<IEnumerable<Mode>> GetOsdpAddressAsync();
 
 }

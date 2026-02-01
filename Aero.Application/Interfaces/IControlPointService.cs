@@ -1,6 +1,7 @@
 ﻿
 
 using Aero.Application.DTOs;
+using Aero.Domain.Entities;
 
 namespace Aero.Application.Interface
 {
@@ -13,7 +14,7 @@ namespace Aero.Application.Interface
         Task<ResponseDto<bool>> DeleteAsync(short component);
         Task<ResponseDto<ControlPointDto>> UpdateAsync(ControlPointDto dto);
         Task<ResponseDto<bool>> GetStatusAsync(string mac, short component);
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param);
+        Task<ResponseDto<IEnumerable<Mode>>> GetModeAsync(int param);
         Task<ResponseDto<ControlPointDto>> GetByMacAndIdAsync(string mac, short component);
         Task<ResponseDto<bool>> ToggleAsync(ToggleControlPointDto cpTriggerDto);
         Task<ResponseDto<IEnumerable<short>>> GetAvailableOpAsync(string mac, short component);

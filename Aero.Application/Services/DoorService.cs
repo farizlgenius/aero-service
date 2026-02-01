@@ -31,7 +31,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<bool>> UnlockAsync(string mac, short component)
         {
-            short id = await qHw.GetComponentFromMacAsync(mac);
+            short id = await qHw.GetComponentIdFromMacAsync(mac);
             if(!door.MomentaryUnlock(id,component))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.MOMENT_UNLOCK));
@@ -39,35 +39,35 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder(true);
         }
 
-        private async Task<ResponseDto<IEnumerable<ModeDto>>> ReaderModeAsync()
+        private async Task<ResponseDto<IEnumerable<Mode>>> ReaderModeAsync()
         {
             var dtos = await qDoor.GetReaderModeAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
-        private async Task<ResponseDto<IEnumerable<ModeDto>>> StrikeModeAsync()
+        private async Task<ResponseDto<IEnumerable<Mode>>> StrikeModeAsync()
         {
             var dtos = await qDoor.GetStrikeModeAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
-        private async Task<ResponseDto<IEnumerable<ModeDto>>> AcrModeAsync()
+        private async Task<ResponseDto<IEnumerable<Mode>>> AcrModeAsync()
         {
             var dtos = await qDoor.GetDoorModeAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> ApbModeAsync()
+        public async Task<ResponseDto<IEnumerable<Mode>>> ApbModeAsync()
         {
             var dtos = await qDoor.GetApbModeAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> ReaderOutConfigurationAsync()
+        public async Task<ResponseDto<IEnumerable<Mode>>> ReaderOutConfigurationAsync()
         {
             var dtos = await qDoor.GetReaderOutModeAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
         public async Task<ResponseDto<IEnumerable<short>>> AvailableReaderAsync(string mac, short component)
@@ -81,7 +81,7 @@ namespace Aero.Application.Services
         {
             if (!await qDoor.IsAnyByComponentId(dto.ComponentId)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var ScpId = await qHw.GetComponentFromMacAsync(dto.Mac);
+            var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
             if (!door.AcrMode(ScpId, dto.ComponentId, dto.Mode))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(dto.Mac,Command.ACR_MODE));
@@ -106,7 +106,7 @@ namespace Aero.Application.Services
 
             var domain = DoorMapper.ToDomain(dto);
 
-            short ScpId = await qHw.GetComponentFromMacAsync(dto.Mac);
+            short ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
 
 
             foreach (var reader in domain.Readers)
@@ -131,7 +131,7 @@ namespace Aero.Application.Services
 
                 // Reader In Config
 
-                var ReaderInId = await qHw.GetComponentFromMacAsync(reader.Mac);
+                var ReaderInId = await qHw.GetComponentIdFromMacAsync(reader.Mac);
                 var ReaderComponentId = await qDoor.GetLowestUnassignedReaderNumberNoLimitAsync();
                 reader.ComponentId = ReaderComponentId;
                 if (!door.ReaderSpecification(ReaderInId, reader.ModuleId, reader.ReaderNo, reader.DataFormat, reader.KeypadMode, readerLedDriveMode, readerInOsdpFlag))
@@ -145,14 +145,14 @@ namespace Aero.Application.Services
             // Strike Strike Config
             var StrikeComponentId = await qDoor.GetLowestUnassignedStrikeNumberNoLimitAsync();
             domain.Strk.ComponentId = StrikeComponentId;
-            var StrikeId = await qHw.GetComponentFromMacAsync(domain.Strk.Mac);
+            var StrikeId = await qHw.GetComponentIdFromMacAsync(domain.Strk.Mac);
             if (!cp.OutputPointSpecification(StrikeId, domain.Strk.ModuleId, domain.Strk.OutputNo, domain.Strk.RelayMode))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.OUTPUT_SPEC));
             }
 
             // door sensor Config
-            var SensorId = await qHw.GetComponentFromMacAsync(domain.Sensor.Mac);
+            var SensorId = await qHw.GetComponentIdFromMacAsync(domain.Sensor.Mac);
             var SensorComponentId = await qDoor.GetLowestUnassignedSensorNumberNoLimitAsync();
             domain.Sensor.ComponentId = SensorComponentId;
             if (!mp.InputPointSpecification(SensorId, domain.Sensor.ModuleId, domain.Sensor.InputNo, domain.Sensor.InputMode, domain.Sensor.Debounce, domain.Sensor.HoldTime))
@@ -163,7 +163,7 @@ namespace Aero.Application.Services
             foreach (var rex in domain.RequestExits)
             {
                 if (string.IsNullOrEmpty(rex.Mac)) continue;
-                var Rex0Id = await qHw.GetComponentFromMacAsync(rex.Mac);
+                var Rex0Id = await qHw.GetComponentIdFromMacAsync(rex.Mac);
                 var rexComponentId = await qDoor.GetLowestUnassignedRexNumberAsync();
                 rex.ComponentId = rexComponentId;
                 if (!mp.InputPointSpecification(Rex0Id, rex.ModuleId, rex.InputNo, rex.InputMode, rex.Debounce, rex.HoldTime))
@@ -247,7 +247,7 @@ namespace Aero.Application.Services
                 }
             }
 
-            if (!door.AccessControlReaderConfiguration(await qHw.GetComponentFromMacAsync(domain.Mac), dto.AcrId, domain))
+            if (!door.AccessControlReaderConfiguration(await qHw.GetComponentIdFromMacAsync(domain.Mac), dto.AcrId, domain))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.ACR_MODE));
             }
@@ -261,7 +261,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<bool>> GetStatusAsync(string mac, short component)
         {
-            short id = await qHw.GetComponentFromMacAsync(mac);
+            short id = await qHw.GetComponentIdFromMacAsync(mac);
             if (!door.GetAcrStatus(id, component, 1))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.C407));
@@ -269,7 +269,7 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder(true);
         }
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param)
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetModeAsync(int param)
         {
             switch ((Aero.Domain.Enums.DoorServiceMode)param)
             {
@@ -288,37 +288,37 @@ namespace Aero.Application.Services
                 case Aero.Domain.Enums.DoorServiceMode.AccessControlFlag:
                     return await GetAccessControlFlagAsync();
                 default:
-                    return ResponseHelper.UnsuccessBuilderWithString<IEnumerable<ModeDto>>(ResponseMessage.NOT_FOUND,ResponseMessage.NOT_FOUND);
+                    return ResponseHelper.UnsuccessBuilderWithString<IEnumerable<Mode>>(ResponseMessage.NOT_FOUND,ResponseMessage.NOT_FOUND);
             }
 
         }
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetSpareFlagAsync()
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetSpareFlagAsync()
         {
             var dtos = await qDoor.GetDoorSpareFlagAsync();    
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetAccessControlFlagAsync()
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetAccessControlFlagAsync()
         {
             var dtos = await qDoor.GetDoorAccessControlFlagAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetOsdpBaudRate()
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetOsdpBaudRate()
         {
             var dtos = await qDoor.GetOsdpBaudrateAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetOsdpAddress()
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetOsdpAddress()
         {
              var dtos = await qDoor.GetOsdpAddressAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetAvailableOsdpAddress(string mac,short component)
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetAvailableOsdpAddress(string mac,short component)
         {
             throw new NotImplementedException();
         }

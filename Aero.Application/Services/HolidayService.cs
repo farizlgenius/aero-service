@@ -53,7 +53,7 @@ namespace AeroService.Service.Impl
 
             if (!await qHol.IsAnyWithSameDataAsync(dto.Day,dto.Month,dto.Year)) return ResponseHelper.Duplicate<bool>();
 
-            var ComponentId = await qHol.GetLowestUnassignedNumberAsync(10);
+            var ComponentId = await qHol.GetLowestUnassignedNumberAsync(10,"");
             if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
             dto.ComponentId = ComponentId;

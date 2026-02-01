@@ -6,6 +6,7 @@ using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
 using Aero.Application.Mapper;
+using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 
 namespace Aero.Application.Services
@@ -25,24 +26,24 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder<IEnumerable<ControlPointDto>>(dtos);
         }
 
-        private async Task<ResponseDto<IEnumerable<ModeDto>>> GetOfflineModeAsync()
+        private async Task<ResponseDto<IEnumerable<Mode>>> GetOfflineModeAsync()
         {
             var dtos = await qCp.GetOfflineModeAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
 
-        private async Task<ResponseDto<IEnumerable<ModeDto>>> GetRelayModeAsync()
+        private async Task<ResponseDto<IEnumerable<Mode>>> GetRelayModeAsync()
         {
             var dtos = await qCp.GetRelayModeAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
 
         public async Task<ResponseDto<bool>> ToggleAsync(ToggleControlPointDto dto)
         {
             List<string> errors = new List<string>();
-            var id = await qHw.GetComponentFromMacAsync(dto.Mac);
+            var id = await qHw.GetComponentIdFromMacAsync(dto.Mac);
             if(id == 0) return ResponseHelper.NotFoundBuilder<bool>();
             if (!cp.ControlPointCommand(id, dto.ComponentId, dto.Command))
             {
@@ -68,7 +69,7 @@ namespace Aero.Application.Services
 
             short modeNo = await qCp.GetModeNoByOfflineAndRelayModeAsync(dto.OfflineMode,dto.RelayMode);
             
-            var ScpId = await qHw.GetComponentFromMacAsync(dto.Mac);
+            var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
 
             var domain = ControlPointMapper.ToDomain(dto);
 
@@ -98,7 +99,7 @@ namespace Aero.Application.Services
 
             var dto = await qCp.GetByComponentIdAsync(component);
 
-            var scpId = await qHw.GetComponentFromMacAsync(dto.Mac);
+            var scpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
 
             if (!cp.ControlPointConfiguration(scpId, -1, (short)dto.ComponentId, dto.OutputNo, dto.DefaultPulse))
             {
@@ -118,7 +119,7 @@ namespace Aero.Application.Services
             if (!await qCp.IsAnyByComponentId(dto.ComponentId)) return ResponseHelper.NotFoundBuilder<ControlPointDto>();
 
             var domain = ControlPointMapper.ToDomain(dto);
-            var scpId = await qHw.GetComponentFromMacAsync(domain.Mac);
+            var scpId = await qHw.GetComponentIdFromMacAsync(domain.Mac);
             short modeNo = await qCp.GetModeNoByOfflineAndRelayModeAsync(domain.OfflineMode,domain.RelayMode);
             if (!cp.OutputPointSpecification(scpId, domain.ModuleId, domain.OutputNo, modeNo))
             {
@@ -140,7 +141,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<bool>> GetStatusAsync(string mac, short component)
         {
-            var id = await qHw.GetComponentFromMacAsync(mac);
+            var id = await qHw.GetComponentIdFromMacAsync(mac);
             if (!cp.GetCpStatus(id, component, 1))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.CP_STATUS));
@@ -148,7 +149,7 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder(true);
         }
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param)
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetModeAsync(int param)
         {
             switch (param)
             {
@@ -157,7 +158,7 @@ namespace Aero.Application.Services
                 case 1:
                     return await GetRelayModeAsync();
                 default:
-                    return ResponseHelper.NotFoundBuilder<IEnumerable<ModeDto>>();
+                    return ResponseHelper.NotFoundBuilder<IEnumerable<Mode>>();
             }
         }
 

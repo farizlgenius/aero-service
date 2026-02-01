@@ -9,7 +9,7 @@ namespace Aero.Application.Interface
     {
 
         Task<ResponseDto<IEnumerable<HardwareDto>>> GetAsync();
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetHardwareTypeAsync();
+        Task<ResponseDto<IEnumerable<DTOs.Mode>>> GetHardwareTypeAsync();
         Task<ResponseDto<IEnumerable<HardwareDto>>> GetByLocationAsync(short location);
         Task<ResponseDto<bool>> CreateAsync(CreateHardwareDto dto);
         Task<ResponseDto<bool>> DeleteAsync(string mac);

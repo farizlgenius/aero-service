@@ -30,7 +30,7 @@ namespace AeroService.Service.Impl
         public async Task<ResponseDto<bool>> CreateAsync(CardFormatDto dto)
         {
             List<string> errors = new List<string>();
-            var ComponentId = await qCfmt.GetLowestUnassignedNumberAsync(10);
+            var ComponentId = await qCfmt.GetLowestUnassignedNumberAsync(10,"");
             if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
             var domain = CardFormatMapper.ToDomain(dto); 
@@ -38,7 +38,7 @@ namespace AeroService.Service.Impl
             var macs = await qHw.GetMacsAsync();
             foreach (var mac in macs)
             {
-                var id = await qHw.GetComponentFromMacAsync(mac);
+                var id = await qHw.GetComponentIdFromMacAsync(mac);
                 if (!cfmt.CardFormatterConfiguration(id, domain, 1))
                 {
                     errors.Add(MessageBuilder.Unsuccess(mac, Command.CARDFORMAT_CONFIG));
@@ -63,7 +63,7 @@ namespace AeroService.Service.Impl
             var macs = await qHw.GetMacsAsync();
             foreach (var mac in macs)
             {
-                var ScpId = await qHw.GetComponentFromMacAsync(mac);
+                var ScpId = await qHw.GetComponentIdFromMacAsync(mac);
                  if (!cfmt.CardFormatterConfiguration(ScpId, domain, 0))
                 {
                     errors.Add(MessageBuilder.Unsuccess(mac, Command.CARDFORMAT_CONFIG));
@@ -85,7 +85,7 @@ namespace AeroService.Service.Impl
             var domain = CardFormatMapper.ToDomain(dto);
             foreach (var mac in macs)
             {
-                var id = await qHw.GetComponentFromMacAsync(mac);
+                var id = await qHw.GetComponentIdFromMacAsync(mac);
                 if (!cfmt.CardFormatterConfiguration(id, domain, 1))
                 {
                     errors.Add(MessageBuilder.Unsuccess(mac,Command.CARDFORMAT_CONFIG));

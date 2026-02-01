@@ -1,5 +1,6 @@
 ﻿
 using Aero.Application.DTOs;
+using Aero.Domain.Entities;
 
 namespace Aero.Application.Interface
 {
@@ -12,11 +13,11 @@ namespace Aero.Application.Interface
         Task<ResponseDto<ModuleDto>> CreateAsync(ModuleDto dto);
         Task<ResponseDto<ModuleDto>> DeleteAsync(string mac, short component);
         Task<ResponseDto<ModuleDto>> UpdateAsync(ModuleDto dto);
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param);
+        Task<ResponseDto<IEnumerable<Mode>>> GetModeAsync(int param);
         Task<ResponseDto<ModuleDto>> GetByComponentAsync(string mac, short component);
         Task<ResponseDto<IEnumerable<ModuleDto>>> GetByMacAsync(string mac);
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetBaudrateAsync();
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetProtocolAsync();
+        Task<ResponseDto<IEnumerable<Mode>>> GetBaudrateAsync();
+        Task<ResponseDto<IEnumerable<Mode>>> GetProtocolAsync();
 
     }
 }

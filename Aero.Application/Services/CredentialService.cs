@@ -73,7 +73,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<bool>> DeleteCardAsync(DeleteCardDto dto)
         {
-            var ScpId = await qHw.GetComponentFromMacAsync(dto.Mac);
+            var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
             if(!holder.CardDelete(ScpId,dto.CardNo))
             {
                 ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, Command.DELETE_CARD);
@@ -81,11 +81,11 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder<bool>(true);
         }
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetCredentialFlagAsync()
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetCredentialFlagAsync()
         {
             var dtos = await qCred.GetCredentialFlagAsync();
 
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
     }
 }

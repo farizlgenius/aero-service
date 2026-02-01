@@ -1,8 +1,7 @@
-﻿using AeroService.Data;
-using AeroService.DTO;
-using AeroService.DTO.License;
-using AeroService.Service;
-using Microsoft.AspNetCore.Http;
+﻿using Aero.Api.Configuration;
+using Aero.Application.DTOs;
+using Aero.Application.Interface;
+using Aero.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 

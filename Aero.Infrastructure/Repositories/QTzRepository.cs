@@ -193,9 +193,9 @@ public class QTzRepository(AppDbContext context) : IQTzRepository
     return expected;
   }
 
-  public async Task<IEnumerable<ModeDto>> GetCommandAsync()
+  public async Task<IEnumerable<Mode>> GetCommandAsync()
   {
-    var dtos = await context.timezone_command.AsNoTracking().Select(s => new ModeDto
+    var dtos = await context.timezone_command.AsNoTracking().Select(s => new Mode
     {
       Name = s.name,
       Value = s.value,
@@ -211,9 +211,9 @@ public class QTzRepository(AppDbContext context) : IQTzRepository
     return await context.hardware.AnyAsync(x => x.component_id == component);
   }
 
-  public async Task<IEnumerable<ModeDto>> GetModeAsync()
+  public async Task<IEnumerable<Mode>> GetModeAsync()
   {
-    var dtos = await context.timezone_mode.AsNoTracking().Select(s => new ModeDto
+    var dtos = await context.timezone_mode.AsNoTracking().Select(s => new Mode
     {
       Name = s.name,
       Value = s.value,

@@ -1,14 +1,8 @@
 ﻿
-using AeroService.DTO;
-using AeroService.DTO.Interval;
-using AeroService.Entity;
-using AeroService.Service;
-using AeroService.Service.Impl;
+using Aero.Application.DTOs;
+using Aero.Application.Interface;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections;
-using System.Net;
 
 namespace Aero.Api.Controllers.V1
 {
@@ -35,7 +29,7 @@ namespace Aero.Api.Controllers.V1
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IntervalDto>>> CreateAsync([FromBody] CreateIntervalDto dto)
+        public async Task<ActionResult<ResponseDto<IntervalDto>>> CreateAsync([FromBody] IntervalDto dto)
         {
             var res = await service.CreateAsync(dto);
             return Ok(res);

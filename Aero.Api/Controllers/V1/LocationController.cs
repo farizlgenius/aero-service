@@ -1,11 +1,9 @@
-﻿using AeroService.DTO;
-using AeroService.DTO.Location;
-using AeroService.Entity.Interface;
-using AeroService.Service;
+﻿
+
+using Aero.Application.DTOs;
+using Aero.Application.Interface;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SixLabors.ImageSharp;
 
 namespace Aero.Api.Controllers.V1
 {
@@ -41,7 +39,7 @@ namespace Aero.Api.Controllers.V1
         [Authorize]
         public async Task<ActionResult<ResponseDto<bool>>> DeleteByIdAsync(short component)
         {
-            var res = await locationService.DeleteByIdAsync(component);
+            var res = await locationService.DeleteByComponentIdAsync(component);
             return Ok(res);
         }
 

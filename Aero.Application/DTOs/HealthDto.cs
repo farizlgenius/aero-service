@@ -1,4 +1,4 @@
-﻿namespace AeroService.DTOs
+﻿namespace Aero.Application.DTOs
 {
     public sealed class HealthDto
     {

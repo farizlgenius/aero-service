@@ -8,11 +8,11 @@ namespace Aero.Infrastructure.Repositories;
 
 public class QProcedureRepository(AppDbContext context) : IQProcedureRepository
 {
-      public async Task<IEnumerable<ModeDto>> GetActionTypeAsync()
+      public async Task<IEnumerable<Mode>> GetActionTypeAsync()
       {
             var dtos = await context.action_type
                 .AsNoTracking()
-                .Select(x => new ModeDto 
+                .Select(x => new Mode 
                 {
                     Name = x.name,
                     Value = x.value,

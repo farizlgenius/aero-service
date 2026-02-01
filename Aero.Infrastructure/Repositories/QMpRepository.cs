@@ -212,9 +212,9 @@ public class QMpRepository(AppDbContext context) : IQMpRepository
       }
 
 
-      public async Task<IEnumerable<ModeDto>> GetInputModeAsync()
+      public async Task<IEnumerable<Mode>> GetInputModeAsync()
       {
-            var res = await context.input_mode.AsNoTracking().Select(x => new ModeDto
+            var res = await context.input_mode.AsNoTracking().Select(x => new Mode
             {
                   Name = x.name,
                   Value = x.value,
@@ -224,11 +224,11 @@ public class QMpRepository(AppDbContext context) : IQMpRepository
             return res;
       }
 
-      public async Task<IEnumerable<ModeDto>> GetLogFunctionAsync()
+      public async Task<IEnumerable<Mode>> GetLogFunctionAsync()
       {
             var dtos = await context.monitor_point_log_function
                 .AsNoTracking()
-                .Select(x => new ModeDto 
+                .Select(x => new Mode 
                 {
                     Name = x.name,
                     Value = x.value,
@@ -310,9 +310,9 @@ public class QMpRepository(AppDbContext context) : IQMpRepository
             .FirstOrDefaultAsync() ?? "";
       }
 
-      public async Task<IEnumerable<ModeDto>> GetMonitorPointModeAsync()
+      public async Task<IEnumerable<Mode>> GetMonitorPointModeAsync()
       {
-            var res = await context.monitor_point_mode.AsNoTracking().Select(x => new ModeDto
+            var res = await context.monitor_point_mode.AsNoTracking().Select(x => new Mode
             {
                   Name = x.name,
                   Value = x.value,

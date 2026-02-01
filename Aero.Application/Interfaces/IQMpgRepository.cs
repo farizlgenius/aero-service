@@ -6,8 +6,8 @@ namespace Aero.Domain.Interface;
 
 public interface IQMpgRepository : IBaseQueryRespository<MonitorGroupDto>
 {
-      Task<IEnumerable<ModeDto>> GetCommandAsync();
-      Task<IEnumerable<ModeDto>> GetTypeAsync();
+      Task<IEnumerable<Mode>> GetCommandAsync();
+      Task<IEnumerable<Mode>> GetTypeAsync();
       Task<bool> IsAnyByMacAndComponentIdAsync(string mac,short component);
 
 }

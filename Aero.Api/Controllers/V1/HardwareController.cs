@@ -146,7 +146,7 @@ namespace Aero.Api.Controllers.V1
 
         [HttpGet("type")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetHardwareTypeAsync()
+        public async Task<ActionResult<ResponseDto<IEnumerable<Mode>>>> GetHardwareTypeAsync()
         {
             var res = await service.GetHardwareTypeAsync();
             return Ok(res);

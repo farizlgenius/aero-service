@@ -356,7 +356,7 @@ public sealed class QHwRepository(AppDbContext context) : IQHwRepository
         return dto;
     }
 
-    public async Task<short> GetComponentFromMacAsync(string mac)
+    public async Task<short> GetComponentIdFromMacAsync(string mac)
     {
         var res = await context.hardware
         .AsNoTracking()
@@ -448,11 +448,11 @@ public sealed class QHwRepository(AppDbContext context) : IQHwRepository
             return await context.hardware.AnyAsync(x => x.mac.Equals(mac) && x.component_id == component);
       }
 
-      public async Task<IEnumerable<ModeDto>> GetHardwareTypeAsync()
+      public async Task<IEnumerable<Application.DTOs.Mode>> GetHardwareTypeAsync()
     {
         var res = await context.hardware_type
         .AsNoTracking()
-        .Select(x => new ModeDto
+        .Select(x => new Mode
         {
             Name = x.name,
             Description = x.description,

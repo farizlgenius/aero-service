@@ -112,16 +112,16 @@ namespace Aero.Application.Services
         }
 
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param)
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetModeAsync(int param)
         {
             var dtos = await qTz.GetModeAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetCommandAsync()
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetCommandAsync()
         {
             var dtos = await qTz.GetCommandAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
         public async Task<ResponseDto<IEnumerable<TimeZoneDto>>> GetByLocationAsync(short location)

@@ -29,7 +29,7 @@ namespace Aero.Application.Services
         {
 
             if (!await qModule.IsAnyByComponentAndMacAsnyc(mac,Id)) return ResponseHelper.NotFoundBuilder<bool>();
-            int ScpId = await qhw.GetComponentFromMacAsync(mac);
+            int ScpId = await qhw.GetComponentIdFromMacAsync(mac);
             if (!sio.GetSioStatus((short)ScpId, Id))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.MODULE_STATUS));
@@ -60,7 +60,7 @@ namespace Aero.Application.Services
         }
 
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param)
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetModeAsync(int param)
         {
             throw new NotImplementedException();
         }
@@ -77,17 +77,17 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder<IEnumerable<ModuleDto>>(dtos);
         }
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetBaudrateAsync()
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetBaudrateAsync()
         {
             var dtos = await qModule.GetBaudrateAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetProtocolAsync()
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetProtocolAsync()
         {
             var dtos = await qModule.GetProtocolAsync();
 
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
         

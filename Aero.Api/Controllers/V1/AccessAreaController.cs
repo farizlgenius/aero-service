@@ -1,6 +1,8 @@
 ﻿
 
 using Aero.Application.DTOs;
+using Aero.Application.Interface;
+using Aero.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aero.Api.Controllers.V1
@@ -45,14 +47,14 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("command")]
-        public async Task<ActionResult<ResponseDto<ModeDto>>> GetCommandAsync()
+        public async Task<ActionResult<ResponseDto<Mode>>> GetCommandAsync()
         {
             var res = await accessareaService.GetCommandAsync();
             return Ok(res);
         }
 
         [HttpGet("access")]
-        public async Task<ActionResult<ResponseDto<ModeDto>>> GetAccessControlOptionAsync()
+        public async Task<ActionResult<ResponseDto<Mode>>> GetAccessControlOptionAsync()
         {
             var res = await accessareaService.GetAccessControlOptionAsync();
             return Ok(res);
@@ -60,14 +62,14 @@ namespace Aero.Api.Controllers.V1
 
 
         [HttpGet("occcontrol")]
-        public async Task<ActionResult<ResponseDto<ModeDto>>> GetOccupancyControlOptionAsync()
+        public async Task<ActionResult<ResponseDto<Mode>>> GetOccupancyControlOptionAsync()
         {
             var res = await accessareaService.GetOccupancyControlOptionAsync();
             return Ok(res);
         }
 
         [HttpGet("areaflag")]
-        public async Task<ActionResult<ResponseDto<ModeDto>>> GetAreaFlagOptionAsync()
+        public async Task<ActionResult<ResponseDto<Mode>>> GetAreaFlagOptionAsync()
         {
             var res = await accessareaService.GetAreaFlagOptionAsync();
             return Ok(res);
@@ -75,7 +77,7 @@ namespace Aero.Api.Controllers.V1
 
 
         [HttpGet("multiocc")]
-        public async Task<ActionResult<ResponseDto<ModeDto>>> GetMultiOccupancyOptionAsync()
+        public async Task<ActionResult<ResponseDto<Mode>>> GetMultiOccupancyOptionAsync()
         {
             var res = await accessareaService.GetMultiOccupancyOptionAsync();
             return Ok(res);

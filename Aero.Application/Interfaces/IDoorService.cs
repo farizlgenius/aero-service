@@ -1,6 +1,7 @@
 ﻿
 
 using Aero.Application.DTOs;
+using Aero.Domain.Entities;
 
 namespace Aero.Application.Interface
 {
@@ -14,13 +15,13 @@ namespace Aero.Application.Interface
         Task<ResponseDto<bool>> GetStatusAsync(string mac, short component);
         Task<ResponseDto<IEnumerable<DoorDto>>> GetByMacAsync(string mac);
         Task<ResponseDto<DoorDto>> GetByComponentAsync( short component);
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param);
+        Task<ResponseDto<IEnumerable<Mode>>> GetModeAsync(int param);
         Task<ResponseDto<bool>> UnlockAsync(string mac, short component);
         Task<ResponseDto<IEnumerable<short>>> AvailableReaderAsync(string mac, short component);
         Task<ResponseDto<bool>> ChangeModeAsync(ChangeDoorModeDto dto);
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetOsdpBaudRate();
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetOsdpAddress();
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetAvailableOsdpAddress(string mac,short component);
+        Task<ResponseDto<IEnumerable<Mode>>> GetOsdpBaudRate();
+        Task<ResponseDto<IEnumerable<Mode>>> GetOsdpAddress();
+        Task<ResponseDto<IEnumerable<Mode>>> GetAvailableOsdpAddress(string mac,short component);
 
     }
 }

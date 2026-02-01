@@ -11,6 +11,6 @@ namespace Aero.Application.Interface
         Task<ResponseDto<bool>> CreateAsync(ProcedureDto dto);
         Task<ResponseDto<bool>> DeleteAsync(short ComponentId);
         Task<ResponseDto<ProcedureDto>> UpdateAsync(ProcedureDto dto);
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetActionType();
+        Task<ResponseDto<IEnumerable<Mode>>> GetActionType();
     }
 }

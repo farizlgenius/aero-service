@@ -1,9 +1,7 @@
-﻿using AeroService.Constants;
-using AeroService.DTO;
-using AeroService.DTO.Door;
-using AeroService.Entity;
-using AeroService.Service;
-using Microsoft.AspNetCore.Http;
+﻿using Aero.Application.DTOs;
+using Aero.Application.Interface;
+using Aero.Domain.Entities;
+using Aero.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aero.Api.Controllers.V1
@@ -28,7 +26,7 @@ namespace Aero.Api.Controllers.V1
             return Ok(res);
         }
 
-        [HttpGet("{mac}")]
+        [HttpGet("mac/{mac}")]
         public async Task<ActionResult<ResponseDto<DoorDto>>> GetByMacAsync(string mac)
         {
             var res = await doorService.GetByMacAsync(mac);
@@ -36,10 +34,10 @@ namespace Aero.Api.Controllers.V1
 
         }
 
-        [HttpGet("{mac}/{component}")]
-        public async Task<ActionResult<ResponseDto<DoorDto>>> GetByComponentAsync(string mac,short component)
+        [HttpGet("component/{component}")]
+        public async Task<ActionResult<ResponseDto<DoorDto>>> GetByComponentAsync(short component)
         {
-            var res = await doorService.GetByComponentAsync(mac, component);
+            var res = await doorService.GetByComponentAsync(component);
             return Ok(res);
 
         }
@@ -51,10 +49,10 @@ namespace Aero.Api.Controllers.V1
             return Ok(res);
         }
 
-        [HttpDelete("{mac}/{component}")]
-        public async Task<ActionResult<ResponseDto<DoorDto>>> DeleteAsync(string mac,short component)
+        [HttpDelete("{component}")]
+        public async Task<ActionResult<ResponseDto<DoorDto>>> DeleteAsync(short component)
         {
-            var res = await doorService.DeleteAsync(mac,component);
+            var res = await doorService.DeleteAsync(component);
             return Ok(res);
         }
 
@@ -74,54 +72,54 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("reader/mode")]
-        public async Task<ActionResult<ResponseDto<ModeDto>>> ReaderModeAsync()
+        public async Task<ActionResult<ResponseDto<Mode>>> ReaderModeAsync()
         {
-            var res = await doorService.GetModeAsync((int)ComponentEnum.AcrServiceMode.ReaderMode);
+            var res = await doorService.GetModeAsync((int)DoorServiceMode.ReaderMode);
             return Ok(res);
         }
 
         [HttpGet("strike/mode")]
-        public async Task<ActionResult<ResponseDto<ModeDto>>> StrikeModeAsync()
+        public async Task<ActionResult<ResponseDto<Mode>>> StrikeModeAsync()
         {
-            var res = await doorService.GetModeAsync((int)ComponentEnum.AcrServiceMode.StrikeMode);
+            var res = await doorService.GetModeAsync((int)DoorServiceMode.StrikeMode);
             return Ok(res);
         }
 
         [HttpGet("spareflag")]
-        public async Task<ActionResult<ResponseDto<ModeDto>>> SpareFlagAsync()
+        public async Task<ActionResult<ResponseDto<Mode>>> SpareFlagAsync()
         {
-            var res = await doorService.GetModeAsync((int)ComponentEnum.AcrServiceMode.SpareFlag);
+            var res = await doorService.GetModeAsync((int)DoorServiceMode.SpareFlag);
             return Ok(res);
         }
 
 
         [HttpGet("accesscontrolflag")]
-        public async Task<ActionResult<ResponseDto<ModeDto>>> AccessControlFlagAsync()
+        public async Task<ActionResult<ResponseDto<Mode>>> AccessControlFlagAsync()
         {
-            var res = await doorService.GetModeAsync((int)ComponentEnum.AcrServiceMode.AccessControlFlag);
+            var res = await doorService.GetModeAsync((int)DoorServiceMode.AccessControlFlag);
             return Ok(res);
         }
 
 
 
         [HttpGet("mode")]
-        public async Task<ActionResult<ResponseDto<ModeDto>>> AcrModeAsync()
+        public async Task<ActionResult<ResponseDto<Mode>>> AcrModeAsync()
         {
-            var res = await doorService.GetModeAsync((int)ComponentEnum.AcrServiceMode.AcrMode);
+            var res = await doorService.GetModeAsync((int)DoorServiceMode.AcrMode);
             return Ok(res);
         }
 
         [HttpGet("apb/mode")]
-        public async Task<ActionResult<ResponseDto<ModeDto>>> ApbModeAsync()
+        public async Task<ActionResult<ResponseDto<Mode>>> ApbModeAsync()
         {
-            var res = await doorService.GetModeAsync((int)ComponentEnum.AcrServiceMode.ApbMode);
+            var res = await doorService.GetModeAsync((int)DoorServiceMode.ApbMode);
             return Ok(res);
         }
 
         [HttpGet("readerout/mode")]
-        public async Task<ActionResult<ResponseDto<ModeDto>>> ReaderOutConfigurationAsync()
+        public async Task<ActionResult<ResponseDto<Mode>>> ReaderOutConfigurationAsync()
         {
-            var res = await doorService.GetModeAsync((int)ComponentEnum.AcrServiceMode.ReaderOut);
+            var res = await doorService.GetModeAsync((int)DoorServiceMode.ReaderOut);
             return Ok(res);
         }
 
@@ -149,21 +147,21 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("osdp/baudrate")]
-        public async Task<ActionResult<ResponseDto<ModeDto>>> GetOsdpBaudRate()
+        public async Task<ActionResult<ResponseDto<Mode>>> GetOsdpBaudRate()
         {
             var res = await doorService.GetOsdpBaudRate();
             return Ok(res);
         }
 
         [HttpGet("osdp/address")]
-        public async Task<ActionResult<ResponseDto<ModeDto>>> GetOsdpAddress()
+        public async Task<ActionResult<ResponseDto<Mode>>> GetOsdpAddress()
         {
             var res = await doorService.GetOsdpAddress();
             return Ok(res); 
         }
 
         [HttpGet("osdp/address/{mac}/{component}")]
-        public async Task<ActionResult<ResponseDto<ModeDto>>> GetAvailableOsdpAddress(string mac,short component)
+        public async Task<ActionResult<ResponseDto<Mode>>> GetAvailableOsdpAddress(string mac,short component)
         {
             var res = await doorService.GetAvailableOsdpAddress(mac,component);
             return Ok(res);

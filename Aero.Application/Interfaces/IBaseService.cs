@@ -12,6 +12,6 @@ namespace Aero.Application.Interface
         Task<ResponseDto<TDto>> UpdateAsync(TAdd dto);
         Task<ResponseDto<TDto>> GetByComponentAsync(string mac, short component);
         Task<ResponseDto<bool>> GetStatusAsync(string mac, short component);
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param);
+        Task<ResponseDto<IEnumerable<Mode>>> GetModeAsync(int param);
     }
 }

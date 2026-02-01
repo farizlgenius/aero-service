@@ -1,12 +1,7 @@
-﻿using AeroService.DTO;
-using AeroService.DTO.Holiday;
-using AeroService.Entity;
-using AeroService.Service;
+﻿using Aero.Application.DTOs;
+using Aero.Application.Interface;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel;
-using System.Net;
 
 namespace Aero.Api.Controllers.V1
 {
@@ -50,7 +45,7 @@ namespace Aero.Api.Controllers.V1
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<HolidayDto>>> CreateAsync([FromBody] CreateHolidayDto dto)
+        public async Task<ActionResult<ResponseDto<HolidayDto>>> CreateAsync([FromBody] HolidayDto dto)
         {
             var res = await service.CreateAsync(dto);
             return Ok(res);

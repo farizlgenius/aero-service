@@ -14,10 +14,10 @@ namespace Aero.Application.Interface
         Task<ResponseDto<IEnumerable<ResponseDto<bool>>>> DeleteRangeAsync(List<short> components);
         Task<ResponseDto<MonitorPointDto>> UpdateAsync(MonitorPointDto dto);
         Task<ResponseDto<bool>> GetStatusByComponentIdAsync(short component);
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param);
+        Task<ResponseDto<IEnumerable<Mode>>> GetModeAsync(int param);
         Task<ResponseDto<IEnumerable<short>>> GetAvailableIp(string mac, short sio);
         Task<ResponseDto<bool>> MaskAsync(MonitorPointDto dto, bool IsMask);
 
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetLogFunctionAsync();
+        Task<ResponseDto<IEnumerable<Mode>>> GetLogFunctionAsync();
     }
 }

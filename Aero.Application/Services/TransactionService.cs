@@ -18,7 +18,7 @@ namespace Aero.Application.Services
        
         public async Task<ResponseDto<bool>> SetTranIndexAsync(string mac)
         {
-            var id = await qHw.GetComponentFromMacAsync(mac);
+            var id = await qHw.GetComponentIdFromMacAsync(mac);
             if (id == 0) return ResponseHelper.NotFoundBuilder<bool>();
             if (!scp.SetTransactionLogIndex(id,true))
             {

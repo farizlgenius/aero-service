@@ -14,6 +14,8 @@ namespace Aero.Infrastructure.Data.Entities
         public ICollection<Action> actions { get; set; }
         public DateTime created_date { get; set; }
         public DateTime updated_date { get; set; }
+        public short location_id { get; set; } = 1;
+        public Location location { get; set; }
 
 
     }

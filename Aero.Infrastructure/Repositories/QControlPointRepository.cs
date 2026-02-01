@@ -253,9 +253,9 @@ public class QControlPointRepository(AppDbContext context) : IQCpRepository
             return res;
       }
 
-      public async Task<IEnumerable<ModeDto>> GetOfflineModeAsync()
+      public async Task<IEnumerable<Mode>> GetOfflineModeAsync()
       {
-            var dtos = await context.relay_offline_mode.AsNoTracking().Select(x => new ModeDto 
+            var dtos = await context.relay_offline_mode.AsNoTracking().Select(x => new Mode 
             {
                 Name = x.name,
                 Value = x.value,
@@ -265,9 +265,9 @@ public class QControlPointRepository(AppDbContext context) : IQCpRepository
             return dtos;
       }
 
-      public async Task<IEnumerable<ModeDto>> GetRelayModeAsync()
+      public async Task<IEnumerable<Mode>> GetRelayModeAsync()
       {
-             var dtos = await context.relay_mode.AsNoTracking().Select(x => new ModeDto 
+             var dtos = await context.relay_mode.AsNoTracking().Select(x => new Mode 
             {
                 Name = x.name,
                 Value = x.value,

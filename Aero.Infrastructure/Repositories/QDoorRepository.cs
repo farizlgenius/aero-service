@@ -18,9 +18,9 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
             return res;
       }
 
-      public async Task<IEnumerable<ModeDto>> GetApbModeAsync()
+      public async Task<IEnumerable<Mode>> GetApbModeAsync()
       {
-            var dtos = await context.antipassback_mode.Select(x => new ModeDto 
+            var dtos = await context.antipassback_mode.Select(x => new Mode 
             {
                 Name = x.name,
                 Value = x.value,
@@ -653,9 +653,9 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
             return res;
       }
 
-      public async Task<IEnumerable<ModeDto>> GetDoorModeAsync()
+      public async Task<IEnumerable<Mode>> GetDoorModeAsync()
       {
-            var dtos = await context.door_mode.Select(x => new ModeDto 
+            var dtos = await context.door_mode.Select(x => new Mode 
             {
                 Name = x.name,
                 Value = x.value,
@@ -829,9 +829,9 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
             return expected;
       }
 
-      public async Task<IEnumerable<ModeDto>> GetReaderModeAsync()
+      public async Task<IEnumerable<Mode>> GetReaderModeAsync()
       {
-             var dtos = await context.reader_configuration_mode.Select(x => new ModeDto 
+             var dtos = await context.reader_configuration_mode.Select(x => new Mode 
             {
                 Name = x.name,
                 Value = x.value,
@@ -842,10 +842,10 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
             return dtos;
       }
 
-      public async Task<IEnumerable<ModeDto>> GetReaderOutModeAsync()
+      public async Task<IEnumerable<Mode>> GetReaderOutModeAsync()
       {
             var res = await context.reader_out_configuration
-                .Select(x => new ModeDto
+                .Select(x => new Mode
                 {
                     Name = x.name,
                     Value = x.value,
@@ -856,9 +856,9 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
             return res;
       }
 
-      public async Task<IEnumerable<ModeDto>> GetStrikeModeAsync()
+      public async Task<IEnumerable<Mode>> GetStrikeModeAsync()
       {
-             var dtos = await context.strike_mode.Select(x => new ModeDto 
+             var dtos = await context.strike_mode.Select(x => new Mode 
             {
                 Name = x.name,
                 Value = x.value,
@@ -874,10 +874,10 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
             throw new NotImplementedException();
       }
 
-      public async Task<IEnumerable<ModeDto>> GetDoorAccessControlFlagAsync()
+      public async Task<IEnumerable<Mode>> GetDoorAccessControlFlagAsync()
       {
             var dtos = await context.door_access_control_flag
-                .Select(x => new ModeDto 
+                .Select(x => new Mode 
                 {
                     Name = x.name,
                     Value = x.value,
@@ -888,10 +888,10 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
             return dtos;
       }
 
-      public async Task<IEnumerable<ModeDto>> GetDoorSpareFlagAsync()
+      public async Task<IEnumerable<Mode>> GetDoorSpareFlagAsync()
       {
              var dtos = await context.door_spare_flag
-                .Select(x => new ModeDto 
+                .Select(x => new Mode 
                 {
                     Name = x.name,
                     Value = x.value,
@@ -902,9 +902,9 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
             return dtos;
       }
 
-      public async Task<IEnumerable<ModeDto>> GetOsdpBaudrateAsync()
+      public async Task<IEnumerable<Mode>> GetOsdpBaudrateAsync()
       {
-             var dtos = await context.osdp_baudrate.Select(x => new ModeDto
+             var dtos = await context.osdp_baudrate.Select(x => new Mode
             {
                 Name = x.name,
                 Value = x.value,
@@ -914,9 +914,9 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
             return dtos;
       }
 
-      public async Task<IEnumerable<ModeDto>> GetOsdpAddressAsync()
+      public async Task<IEnumerable<Mode>> GetOsdpAddressAsync()
       {
-             var dtos = await context.osdp_address.Select(x => new ModeDto
+             var dtos = await context.osdp_address.Select(x => new Mode
             {
                 Name = x.name,
                 Value = x.value,

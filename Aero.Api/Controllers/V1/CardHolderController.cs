@@ -1,8 +1,5 @@
-﻿using AeroService.DTO;
-using AeroService.DTO.CardHolder;
-using AeroService.Entity;
-using AeroService.Service;
-using Microsoft.AspNetCore.Http;
+﻿using Aero.Application.DTOs;
+using Aero.Application.Interface;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aero.Api.Controllers.V1

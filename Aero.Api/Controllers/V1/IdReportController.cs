@@ -1,8 +1,7 @@
 ﻿
-using AeroService.DTO;
-using AeroService.DTO.IdReport;
-using AeroService.Service.Impl;
-using Microsoft.AspNetCore.Http;
+
+using Aero.Application.DTOs;
+using Aero.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aero.Api.Controllers.V1

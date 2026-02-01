@@ -1,6 +1,7 @@
 ﻿
 
 using Aero.Application.DTOs;
+using Aero.Domain.Entities;
 
 namespace Aero.Application.Interface
 {
@@ -14,10 +15,10 @@ namespace Aero.Application.Interface
 
         // 
 
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetCommandAsync();
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetCodeByTranAsync(short tran);
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetTypeBySourceAsync(short source);
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetSourceTypeAsync();
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetDeviceBySourceAsync(short location, short source);
+        Task<ResponseDto<IEnumerable<Mode>>> GetCommandAsync();
+        Task<ResponseDto<IEnumerable<Mode>>> GetCodeByTranAsync(short tran);
+        Task<ResponseDto<IEnumerable<Mode>>> GetTypeBySourceAsync(short source);
+        Task<ResponseDto<IEnumerable<Mode>>> GetSourceTypeAsync();
+        Task<ResponseDto<IEnumerable<Mode>>> GetDeviceBySourceAsync(short location, short source);
     }
 }

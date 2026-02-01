@@ -124,10 +124,10 @@ public sealed class QCredRepository(AppDbContext context) : IQCredRepository
 
       }
 
-    public async Task<IEnumerable<ModeDto>> GetCredentialFlagAsync()
+    public async Task<IEnumerable<Application.DTOs.Mode>> GetCredentialFlagAsync()
     {
         var dtos = await context.credential_flag
-            .Select(flag => new ModeDto
+            .Select(flag => new Mode
             {
                 Name = flag.name,
                 Description = flag.description,

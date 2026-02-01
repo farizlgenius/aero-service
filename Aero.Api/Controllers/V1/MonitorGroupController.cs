@@ -1,8 +1,9 @@
-﻿using AeroService.DTO;
-using AeroService.DTO.MonitorGroup;
-using AeroService.Service;
+﻿
+
+using Aero.Application.DTOs;
+using Aero.Application.Interface;
+using Aero.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aero.Api.Controllers.V1
@@ -29,7 +30,7 @@ namespace Aero.Api.Controllers.V1
 
         [HttpGet("command")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<ModeDto>>> GetCommandAsync()
+        public async Task<ActionResult<ResponseDto<Mode>>> CommandAsync()
         {
             var res = await service.GetCommandAsync();
             return Ok(res);

@@ -1,12 +1,9 @@
-﻿using AeroService.Data;
-using Microsoft.AspNetCore.Http;
+﻿
+
+using Aero.Application.DTOs;
+using Aero.Application.Interface;
+using Aero.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using HID.Aero.ScpdNet.Wrapper;
-using AeroService.Entity;
-using AeroService.Service;
-using AeroService.DTO;
-using AeroService.DTO.Output;
-using AeroService.DTO.ControlPoint;
 
 namespace Aero.Api.Controllers.V1
 {
@@ -69,14 +66,14 @@ namespace Aero.Api.Controllers.V1
 
 
         [HttpGet("mode/offline")]
-        public async Task<ActionResult<ResponseDto<List<ModeDto>>>> GetOfflineModeAsync()
+        public async Task<ActionResult<ResponseDto<List<Mode>>>> GetOfflineModeAsync()
         {
             var res = await service.GetModeAsync(0);
             return StatusCode((int)res.code, res);
         }
 
         [HttpGet("mode/relay")]
-        public async Task<ActionResult<ResponseDto<List<ModeDto>>>> GetRelayModeAsync()
+        public async Task<ActionResult<ResponseDto<List<Mode>>>> GetRelayModeAsync()
         {
             var res = await service.GetModeAsync(1);
             return StatusCode((int)res.code, res);

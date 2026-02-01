@@ -9,5 +9,5 @@ public interface IQCredRepository : IBaseQueryRespository<CredentialDto>
       Task<short> GetLowestUnassignedIssueCodeByUserIdAsync(int max,string UserId);
       Task<bool> IsAnyWithCardNumberAsync(long cardno);
       Task<IEnumerable<CredentialDto>> GetByUserIdAsync(string UserId);
-      Task<IEnumerable<ModeDto>> GetCredentialFlagAsync();
+      Task<IEnumerable<Mode>> GetCredentialFlagAsync();
 }

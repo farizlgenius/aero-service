@@ -7,6 +7,6 @@ namespace Aero.Application.Interfaces;
 public interface IQTzRepository : IBaseQueryRespository<TimeZoneDto>
 {
       Task<int> CountByLocationIdAndUpdateTimeAsync(short locationId,DateTime sync);
-      Task<IEnumerable<ModeDto>> GetCommandAsync();
-      Task<IEnumerable<ModeDto>> GetModeAsync();
+      Task<IEnumerable<Mode>> GetCommandAsync();
+      Task<IEnumerable<Mode>> GetModeAsync();
 }

@@ -1,5 +1,6 @@
 ﻿
 using Aero.Application.DTOs;
+using Aero.Domain.Entities;
 
 namespace Aero.Application.Interface
 {
@@ -10,10 +11,10 @@ namespace Aero.Application.Interface
         Task<ResponseDto<bool>> CreateAsync(AccessAreaDto dto);
         Task<ResponseDto<bool>> DeleteAsync(short component);
         Task<ResponseDto<AccessAreaDto>> UpdateAsync(AccessAreaDto dto);
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetCommandAsync();
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetAccessControlOptionAsync();
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetOccupancyControlOptionAsync();
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetAreaFlagOptionAsync();
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetMultiOccupancyOptionAsync();
+        Task<ResponseDto<IEnumerable<Mode>>> GetCommandAsync();
+        Task<ResponseDto<IEnumerable<Mode>>> GetAccessControlOptionAsync();
+        Task<ResponseDto<IEnumerable<Mode>>> GetOccupancyControlOptionAsync();
+        Task<ResponseDto<IEnumerable<Mode>>> GetAreaFlagOptionAsync();
+        Task<ResponseDto<IEnumerable<Mode>>> GetMultiOccupancyOptionAsync();
     }
 }

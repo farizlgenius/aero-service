@@ -62,7 +62,7 @@ namespace Aero.Application.Services
         {
             List<string> errors = new List<string>();
             if (!await qHw.IsAnyByMac(mac)) return ResponseHelper.NotFoundBuilder<bool>();
-            var id = await qHw.GetComponentFromMacAsync(mac);
+            var id = await qHw.GetComponentIdFromMacAsync(mac);
             // CP
 
             // MP
@@ -94,7 +94,7 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<bool>> ResetByMacAsync(string mac)
         {
             if (!await qHw.IsAnyByMac(mac)) return ResponseHelper.NotFoundBuilder<bool>();
-            var id = await qHw.GetComponentFromMacAsync(mac);
+            var id = await qHw.GetComponentIdFromMacAsync(mac);
             if (id == 0) return ResponseHelper.NotFoundBuilder<bool>();
             if (!scp.ResetScp(id))
             {
@@ -141,7 +141,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<bool>> VerifyMemoryAllocateAsyncWithResponse(string Mac)
         {
-            var ScpId = await qHw.GetComponentFromMacAsync(Mac);
+            var ScpId = await qHw.GetComponentIdFromMacAsync(Mac);
             if (ScpId == 0) return ResponseHelper.NotFoundBuilder<bool>();
             if (!scp.ReadStructureStatus(ScpId))
             {
@@ -152,7 +152,7 @@ namespace Aero.Application.Services
 
         public async Task<bool> VerifyMemoryAllocateAsync(string Mac)
         {
-            var ScpId = await qHw.GetComponentFromMacAsync(Mac);
+            var ScpId = await qHw.GetComponentIdFromMacAsync(Mac);
             if (ScpId == 0) return false;
             if (!scp.ReadStructureStatus(ScpId))
             {
@@ -168,7 +168,7 @@ namespace Aero.Application.Services
 
             if (!await qHw.IsAnyByMac(mac)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var ScpId = await qHw.GetComponentFromMacAsync(mac);
+            var ScpId = await qHw.GetComponentIdFromMacAsync(mac);
 
 
             #region Module Upload
@@ -404,7 +404,7 @@ namespace Aero.Application.Services
 
                     // Reader In Config
 
-                    var ReaderInId = await qHw.GetComponentFromMacAsync(reader.Mac);
+                    var ReaderInId = await qHw.GetComponentIdFromMacAsync(reader.Mac);
                     if (!d.ReaderSpecification(ReaderInId, reader.ModuleId, reader.ReaderNo, reader.DataFormat, reader.KeypadMode, readerLedDriveMode, readerInOsdpFlag))
                     {
                         errors.Add(MessageBuilder.Unsuccess(mac, Command.READER_SPEC));
@@ -414,7 +414,7 @@ namespace Aero.Application.Services
 
 
                 // Strike Strike Config
-                var StrikeId = await qHw.GetComponentFromMacAsync(door.Strk.Mac);
+                var StrikeId = await qHw.GetComponentIdFromMacAsync(door.Strk.Mac);
                 if (!cp.OutputPointSpecification(StrikeId, door.Strk.ModuleId, door.Strk.OutputNo, door.Strk.RelayMode))
                 {
                     errors.Add(MessageBuilder.Unsuccess(mac, Command.OUTPUT_SPEC));
@@ -422,7 +422,7 @@ namespace Aero.Application.Services
                 ;
 
                 // door sensor Config
-                var SensorId = await qHw.GetComponentFromMacAsync(door.Sensor.Mac);
+                var SensorId = await qHw.GetComponentIdFromMacAsync(door.Sensor.Mac);
                 if (!mp.InputPointSpecification(SensorId, door.Sensor.ModuleId, door.Sensor.InputNo, door.Sensor.InputMode, door.Sensor.Debounce, door.Sensor.HoldTime))
                 {
                     errors.Add(MessageBuilder.Unsuccess(mac, Command.INPUT_SPEC));
@@ -431,7 +431,7 @@ namespace Aero.Application.Services
                 foreach (var rex in door.RequestExits)
                 {
                     if (string.IsNullOrEmpty(rex.Mac)) continue;
-                    var Rex0Id = await qHw.GetComponentFromMacAsync(rex.Mac);
+                    var Rex0Id = await qHw.GetComponentIdFromMacAsync(rex.Mac);
                     var rexComponentId = await qDoor.GetLowestUnassignedRexNumberAsync();
                     rex.ComponentId = rexComponentId;
                     if (!mp.InputPointSpecification(Rex0Id, rex.ModuleId, rex.InputNo, rex.InputMode, rex.Debounce, rex.HoldTime))
@@ -747,7 +747,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<HardwareStatus>> GetStatusAsync(string mac)
         {
-            var ScpId = await qHw.GetComponentFromMacAsync(mac);
+            var ScpId = await qHw.GetComponentIdFromMacAsync(mac);
             if (ScpId == 0) return ResponseHelper.NotFoundBuilder<HardwareStatus>();
             if (!await qHw.IsAnyByMacAndComponent(mac, ScpId)) return ResponseHelper.NotFoundBuilder<HardwareStatus>();
             short status = scp.CheckSCPStatus(ScpId);
@@ -765,7 +765,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<bool>> SetTransactionAsync(string mac, short IsOn)
         {
-            var ScpId = await qHw.GetComponentFromMacAsync(mac);
+            var ScpId = await qHw.GetComponentIdFromMacAsync(mac);
             if (ScpId == 0) return ResponseHelper.NotFoundBuilder<bool>();
             if (!scp.SetTransactionLogIndex(ScpId, IsOn == 1 ? true : false))
             {
@@ -776,7 +776,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<bool>> GetTransactionLogStatusAsync(string mac)
         {
-            var id = await qHw.GetComponentFromMacAsync(mac);
+            var id = await qHw.GetComponentIdFromMacAsync(mac);
             if (id == 0) return ResponseHelper.NotFoundBuilder<bool>();
 
             if (!scp.GetTransactionLogStatus(id))
@@ -788,10 +788,10 @@ namespace Aero.Application.Services
         }
 
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetHardwareTypeAsync()
+        public async Task<ResponseDto<IEnumerable<DTOs.Mode>>> GetHardwareTypeAsync()
         {
             var dtos = await qHw.GetHardwareTypeAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<DTOs.Mode>>(dtos);
         }
 
 

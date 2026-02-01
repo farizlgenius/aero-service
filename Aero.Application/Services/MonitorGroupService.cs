@@ -22,7 +22,7 @@ namespace Aero.Application.Services
 
             var domain = MonitorGroupMapper.ToDomain(dto);
 
-            var ScpId = await qHw.GetComponentFromMacAsync(dto.Mac);
+            var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
 
             if (!mpg.ConfigureMonitorPointGroup(ScpId, ComponentId, dto.nMpCount, domain.nMpList.ToList()))
             {
@@ -40,7 +40,7 @@ namespace Aero.Application.Services
         {
             if (!await qMpg.IsAnyByMacAndComponentIdAsync(mac,Component)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var ScpId = await qHw.GetComponentFromMacAsync(mac);
+            var ScpId = await qHw.GetComponentIdFromMacAsync(mac);
 
             if (!mpg.ConfigureMonitorPointGroup(ScpId, Component, 0, []))
             {
@@ -68,27 +68,27 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder<IEnumerable<MonitorGroupDto>>(dto);
         }
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetCommandAsync()
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetCommandAsync()
         {
             var dtos = await qMpg.GetCommandAsync();
 
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
 
         }
 
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetTypeAsync()
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetTypeAsync()
         {
             var dtos = await qMpg.GetTypeAsync();
 
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
         public async Task<ResponseDto<bool>> MonitorGroupCommandAsync(MonitorGroupCommandDto dto)
         {
             if (!await qMpg.IsAnyByMacAndComponentIdAsync(dto.Mac,dto.ComponentId)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var ScpId = await qHw.GetComponentFromMacAsync(dto.Mac);
+            var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
 
             if (!mpg.MonitorPointGroupArmDisarm(ScpId, dto.ComponentId, dto.Command, dto.Arg))
             {
@@ -103,7 +103,7 @@ namespace Aero.Application.Services
 
             if (!await qMpg.IsAnyByMacAndComponentIdAsync(dto.Mac,dto.ComponentId)) return ResponseHelper.NotFoundBuilder<MonitorGroupDto>();
 
-            var ScpId = await qHw.GetComponentFromMacAsync(dto.Mac);
+            var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
 
             // Delete relate table first 
             var status = await rMpg.DeleteReferenceByMacAnsComponentIdAsync(dto.Mac,dto.ComponentId);

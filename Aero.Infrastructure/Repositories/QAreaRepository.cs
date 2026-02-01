@@ -18,10 +18,10 @@ public class QAreaRepository(AppDbContext context) : IQAreaRepository
             return res;
       }
 
-      public async Task<IEnumerable<ModeDto>> GetAccessControlOptionAsync()
+      public async Task<IEnumerable<Mode>> GetAccessControlOptionAsync()
       {
             var dto = await context.area_access_control
-                .Select(x => new ModeDto
+                .Select(x => new Mode
                 {
                     Name = x.name,
                     Value = x.value,
@@ -32,10 +32,10 @@ public class QAreaRepository(AppDbContext context) : IQAreaRepository
             return dto;
       }
 
-      public async Task<IEnumerable<ModeDto>> GetAreaFlagOptionAsync()
+      public async Task<IEnumerable<Mode>> GetAreaFlagOptionAsync()
       {
               var dto = await context.area_flag
-                .Select(x => new ModeDto
+                .Select(x => new Mode
                 {
                     Name = x.name,
                     Value = x.value,
@@ -134,10 +134,10 @@ public class QAreaRepository(AppDbContext context) : IQAreaRepository
             return res;
       }
 
-      public async Task<IEnumerable<ModeDto>> GetCommandAsync()
+      public async Task<IEnumerable<Mode>> GetCommandAsync()
       {
             var dto = await context.access_area_command
-                .Select(x => new ModeDto 
+                .Select(x => new Mode 
                 {
                     Name = x.name,
                     Value = x.value,
@@ -177,10 +177,10 @@ public class QAreaRepository(AppDbContext context) : IQAreaRepository
             return expected;
       }
 
-      public async Task<IEnumerable<ModeDto>> GetMultiOccupancyOptionAsync()
+      public async Task<IEnumerable<Mode>> GetMultiOccupancyOptionAsync()
       {
              var dto = await context.multi_occupancy
-                .Select(x => new ModeDto
+                .Select(x => new Mode
                 {
                     Name = x.name,
                     Value = x.value,
@@ -191,10 +191,10 @@ public class QAreaRepository(AppDbContext context) : IQAreaRepository
                 return dto;
       }
 
-      public async Task<IEnumerable<ModeDto>> GetOccupancyControlOptionAsync()
+      public async Task<IEnumerable<Mode>> GetOccupancyControlOptionAsync()
       {
              var dto = await context.occupancy_control
-                .Select(x => new ModeDto
+                .Select(x => new Mode
                 {
                     Name = x.name,
                     Value = x.value,

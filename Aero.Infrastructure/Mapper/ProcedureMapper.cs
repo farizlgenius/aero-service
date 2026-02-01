@@ -12,6 +12,7 @@ public sealed class ProcedureMapper
                   proc_id = data.ProcId,
                   component_id = data.ComponentId,
                   name = data.Name,
+                  location_id = data.LocationId,
                   actions = data.Actions.Select(x => new Aero.Infrastructure.Data.Entities.Action
                   {
                         // Base 
@@ -44,6 +45,7 @@ public sealed class ProcedureMapper
       public static void Update(Aero.Domain.Entities.Procedure from,Aero.Infrastructure.Data.Entities.Procedure to)
       {
             to.name = from.Name;
+            to.location_id = from.LocationId;
             to.actions = from.Actions.Select(x => new Aero.Infrastructure.Data.Entities.Action
                   {
                         // Base 

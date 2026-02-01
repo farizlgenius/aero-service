@@ -189,11 +189,11 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
             return res;
       }
 
-      public async Task<IEnumerable<ModeDto>> GetBaudrateAsync()
+      public async Task<IEnumerable<Mode>> GetBaudrateAsync()
       {
             var res = await context.module_baudrate
                 .AsNoTracking()
-                .Select(x => new ModeDto 
+                .Select(x => new Mode 
                 {
                     Value = x.value,
                     Name = x.name,
@@ -560,11 +560,11 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
             throw new NotImplementedException();
       }
 
-      public async Task<IEnumerable<ModeDto>> GetProtocolAsync()
+      public async Task<IEnumerable<Mode>> GetProtocolAsync()
       {
             var res = await context.module_protocol
                 .AsNoTracking()
-                .Select(x => new ModeDto
+                .Select(x => new Mode
                 {
                     Value = x.value,
                     Name = x.name,

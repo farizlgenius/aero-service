@@ -6,6 +6,7 @@ using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
 using Aero.Application.Mapper;
+using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 
 namespace AeroService.Service.Impl
@@ -28,7 +29,7 @@ namespace AeroService.Service.Impl
         public async Task<ResponseDto<bool>> CreateAsync(AccessAreaDto dto)
         {
 
-            var ComponentId = await qArea.GetLowestUnassignedNumberAsync(10);
+            var ComponentId = await qArea.GetLowestUnassignedNumberAsync(10,"");
             if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
             var domain = AreaMapper.ToDomain(dto);
@@ -37,7 +38,7 @@ namespace AeroService.Service.Impl
 
             foreach(var mac in macs)
             {
-               var ScpId = await qHw.GetComponentFromMacAsync(mac);
+               var ScpId = await qHw.GetComponentIdFromMacAsync(mac);
                if (!area.ConfigureAccessArea(ScpId, ComponentId, domain.MultiOccupancy, domain.AccessControl, domain.OccControl, domain.OccSet, domain.OccMax, domain.OccUp, domain.OccDown, domain.AreaFlag))
                {
                    return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.AREA_CONFIG));
@@ -63,7 +64,7 @@ namespace AeroService.Service.Impl
 
             foreach (var mac in macs)
             {
-                var ScpId = await qHw.GetComponentFromMacAsync(mac);
+                var ScpId = await qHw.GetComponentIdFromMacAsync(mac);
                 if (!area.ConfigureAccessArea(ScpId, dto.component_id, dto.MultiOccupancy, dto.AccessControl, dto.OccControl, dto.OccSet, dto.OccMax, dto.OccUp, dto.OccDown, dto.AreaFlag))
                 {
                     return ResponseHelper.UnsuccessBuilderWithString<AccessAreaDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.AREA_CONFIG));
@@ -84,39 +85,39 @@ namespace AeroService.Service.Impl
             return ResponseHelper.SuccessBuilder(true);
         }
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetCommandAsync()
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetCommandAsync()
         {
             var dto = await qArea.GetCommandAsync();
 
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dto);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dto);
         }
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetAccessControlOptionAsync()
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetAccessControlOptionAsync()
         {
             var dto = await qArea.GetAccessControlOptionAsync();
 
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dto);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dto);
         }
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetOccupancyControlOptionAsync()
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetOccupancyControlOptionAsync()
         {
             var dto = await qArea.GetOccupancyControlOptionAsync();
 
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dto);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dto);
         }
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetAreaFlagOptionAsync()
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetAreaFlagOptionAsync()
         {
             var dto = await qArea.GetAreaFlagOptionAsync();
 
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dto);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dto);
         }
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetMultiOccupancyOptionAsync()
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetMultiOccupancyOptionAsync()
         {
             var dto = await qArea.GetMultiOccupancyOptionAsync();
 
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dto);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dto);
         }
     }
 }

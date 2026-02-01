@@ -31,7 +31,7 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<bool>> CreateAsync(CreateUpdateAccessLevelDto dto)
         {
             List<string> errors = new List<string>();
-            var ComponentId = await qAlvl.GetLowestUnassignedNumberAsync(10);
+            var ComponentId = await qAlvl.GetLowestUnassignedNumberAsync(10,"");
             if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
             
@@ -39,7 +39,7 @@ namespace Aero.Application.Services
 
             foreach(var component in domain.Components)
             {
-                if (!alvl.AccessLevelConfigurationExtendedCreate(await qHw.GetComponentFromMacAsync(component.Mac), ComponentId,component.DoorComponents))
+                if (!alvl.AccessLevelConfigurationExtendedCreate(await qHw.GetComponentIdFromMacAsync(component.Mac), ComponentId,component.DoorComponents))
                 {
                    errors.Add(MessageBuilder.Unsuccess(component.Mac, Command.ALVL_CONFIG));
 
@@ -63,7 +63,7 @@ namespace Aero.Application.Services
 
             foreach (var component in domain.Components)
             {
-                var ScpId = await qHw.GetComponentFromMacAsync(component.Mac);
+                var ScpId = await qHw.GetComponentIdFromMacAsync(component.Mac);
                 if (!alvl.AccessLevelConfigurationExtended(ScpId,ComponentId, 0))
                 {
                     errors.Add(MessageBuilder.Unsuccess(component.Mac, Command.ALVL_CONFIG));
@@ -87,7 +87,7 @@ namespace Aero.Application.Services
 
             foreach (var component in domain.Components)
             {
-                var ScpId = await qHw.GetComponentFromMacAsync(component.Mac);
+                var ScpId = await qHw.GetComponentIdFromMacAsync(component.Mac);
                 if (ScpId == 0)
                 {
                     errors.Add(MessageBuilder.Notfound());

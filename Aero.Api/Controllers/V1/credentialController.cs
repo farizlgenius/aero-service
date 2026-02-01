@@ -1,8 +1,6 @@
-﻿using AeroService.DTO;
-using AeroService.DTO.Credential;
-using AeroService.DTO.Token;
-using AeroService.Entity;
-using AeroService.Service;
+﻿using Aero.Application.DTOs;
+using Aero.Application.Interface;
+using Aero.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aero.Api.Controllers.V1
@@ -33,26 +31,26 @@ namespace Aero.Api.Controllers.V1
             return Ok(res);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<ResponseDto<CredentialDto>>> CreateAsync([FromBody] CredentialDto dto)
-        {
-            var res = await credentialService.CreateAsync(dto);
-            return Ok(res);
-        }
+        // [HttpPost]
+        // public async Task<ActionResult<ResponseDto<CredentialDto>>> CreateAsync([FromBody] CredentialDto dto)
+        // {
+        //     var res = await credentialService.CreateAsync(dto);
+        //     return Ok(res);
+        // }
 
-        [HttpPut]
-        public async Task<ActionResult<ResponseDto<CredentialDto>>> UpdateAsync([FromBody] CredentialDto dto)
-        {
-            var res = await credentialService.UpdateAsync(dto);
-            return Ok(res);
-        }
+        // [HttpPut]
+        // public async Task<ActionResult<ResponseDto<CredentialDto>>> UpdateAsync([FromBody] CredentialDto dto)
+        // {
+        //     var res = await credentialService.UpdateAsync(dto);
+        //     return Ok(res);
+        // }
 
-        [HttpDelete]
-        public async Task<ActionResult<ResponseDto<CredentialDto>>> DeleteAsync([FromBody] CredentialDto dto)
-        {
-            var res = await credentialService.DeleteAsync(dto);
-            return Ok(res);
-        }
+        // [HttpDelete]
+        // public async Task<ActionResult<ResponseDto<CredentialDto>>> DeleteAsync([FromBody] CredentialDto dto)
+        // {
+        //     var res = await credentialService.DeleteAsync(dto);
+        //     return Ok(res);
+        // }
 
 
         [HttpDelete("card")]
@@ -63,7 +61,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("flag")]
-        public async Task<ActionResult<ResponseDto<ModeDto>>> GetCredentialFlagAsync()
+        public async Task<ActionResult<ResponseDto<Mode>>> GetCredentialFlagAsync()
         {
             var res = await credentialService.GetCredentialFlagAsync();
             return Ok(res);

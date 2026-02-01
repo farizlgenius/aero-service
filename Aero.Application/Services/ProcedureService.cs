@@ -24,7 +24,7 @@ namespace Aero.Application.Services{
                 }
                 else
                 {
-                    ac.ScpId = await qHw.GetComponentFromMacAsync(ac.Mac);
+                    ac.ScpId = await qHw.GetComponentIdFromMacAsync(ac.Mac);
                 }
                
             }
@@ -87,10 +87,10 @@ namespace Aero.Application.Services{
             return ResponseHelper.SuccessBuilder<bool>(true);
         }
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetActionType()
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetActionType()
         {
             var dtos = await qProc.GetActionTypeAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
         public async Task<ResponseDto<IEnumerable<ProcedureDto>>> GetAsync()

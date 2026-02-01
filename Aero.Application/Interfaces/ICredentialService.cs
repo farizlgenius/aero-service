@@ -1,6 +1,7 @@
 ﻿
 
 using Aero.Application.DTOs;
+using Aero.Domain.Entities;
 
 namespace Aero.Application.Interface
 {
@@ -11,6 +12,6 @@ namespace Aero.Application.Interface
         Task<bool> ScanCardTrigger(ScanCardDto dto);
 
         Task<ResponseDto<bool>> DeleteCardAsync(DeleteCardDto dto);
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetCredentialFlagAsync();
+        Task<ResponseDto<IEnumerable<Mode>>> GetCredentialFlagAsync();
     }
 }

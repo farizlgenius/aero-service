@@ -41,7 +41,7 @@ namespace Aero.Application.Services
 
             if (!await qMp.IsAnyByComponentId(dto.ComponentId)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var ScpId = await qHw.GetComponentFromMacAsync(dto.Mac);
+            var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
 
             if (!mp.MonitorPointMask(ScpId,dto.ComponentId, IsMask ? 1 : 0))
             {
@@ -63,7 +63,7 @@ namespace Aero.Application.Services
 
             var mpid = await qMp.GetLowestUnassignedNumberAsync(10,dto.Mac);
 
-            var ScpId = await qHw.GetComponentFromMacAsync(dto.Mac);
+            var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
 
             var domain = MonitorPointMapper.ToDomain(dto);
             domain.MpId = mpid;
@@ -91,7 +91,7 @@ namespace Aero.Application.Services
             if (!await qMp.IsAnyByComponentId(ComponentId)) return ResponseHelper.NotFoundBuilder<bool>();
 
             var data = await qMp.GetByComponentIdAsync(ComponentId);
-            var ScpId = await qHw.GetComponentFromMacAsync(data.Mac);
+            var ScpId = await qHw.GetComponentIdFromMacAsync(data.Mac);
 
             if (!mp.MonitorPointConfiguration(ScpId,-1, data.InputNo, data.LogFunction, data.MonitorPointMode, data.DelayEntry, data.DelayExit, ComponentId))
             {
@@ -109,7 +109,7 @@ namespace Aero.Application.Services
 
             if (!await qMp.IsAnyByComponentId(dto.ComponentId)) return ResponseHelper.NotFoundBuilder<MonitorPointDto>();
 
-            var ScpId = await qHw.GetComponentFromMacAsync(dto.Mac);
+            var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
 
             var domain = MonitorPointMapper.ToDomain(dto);
 
@@ -130,7 +130,7 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<bool>> GetStatusByComponentIdAsync(short component)
         {
             var mac = await qMp.GetMacFromComponentIdAsync(component);
-            var ScpId = await qHw.GetComponentFromMacAsync(mac);
+            var ScpId = await qHw.GetComponentIdFromMacAsync(mac);
             if(ScpId == 0) return ResponseHelper.NotFoundBuilder<bool>();
             if (!mp.GetMpStatus(ScpId, component, 1))
             {
@@ -139,18 +139,18 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder<bool>(true);
         }
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param)
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetModeAsync(int param)
         {
             switch (param)
             {
                 case 0:
                     var dtos = await qMp.GetInputModeAsync();
-                    return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+                    return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
                 case 1:
                     var d = await qMp.GetMonitorPointModeAsync();
-                    return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(d);
+                    return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(d);
                 default:
-                    return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>([]);
+                    return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>([]);
 
             }
 
@@ -176,11 +176,11 @@ namespace Aero.Application.Services
             return res;
         }
 
-        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetLogFunctionAsync()
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetLogFunctionAsync()
         {
             
             var dtos = await qMp.GetLogFunctionAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
             public async Task<ResponseDto<IEnumerable<MonitorPointDto>>> GetByMacAsync(string mac)

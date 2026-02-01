@@ -1,4 +1,5 @@
-﻿using AeroService.DTO;
+﻿
+using Aero.Application.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -17,7 +18,7 @@ namespace Aero.Api.Controllers.V1
                 code = HttpStatusCode.OK,
                 message = "Success",
                 timestamp = DateTime.UtcNow,
-                data = new HealthDto { ServerStatus = "UP" }
+                data = new HealthDto { Status = "UP" }
             };
             return Ok(dto);
         }

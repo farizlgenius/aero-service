@@ -1,11 +1,10 @@
-﻿using AeroService.DTO;
-using AeroService.DTO.Module;
-using AeroService.Entity;
-using AeroService.Service;
+﻿
+
+using Aero.Application.DTOs;
+using Aero.Application.Interface;
+using Aero.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 
 namespace Aero.Api.Controllers.V1
 {
@@ -82,7 +81,7 @@ namespace Aero.Api.Controllers.V1
 
         [HttpGet("baudrate")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetBaudrateAsync()
+        public async Task<ActionResult<ResponseDto<IEnumerable<Mode>>>> GetBaudrateAsync()
         {
             var res = await service.GetBaudrateAsync();
             return Ok(res);
@@ -90,7 +89,7 @@ namespace Aero.Api.Controllers.V1
 
         [HttpGet("protocol")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetProtocolAsync()
+        public async Task<ActionResult<ResponseDto<IEnumerable<Mode>>>> GetProtocolAsync()
         {
             var res = await service.GetProtocolAsync();
             return Ok(res);

@@ -12,7 +12,7 @@ namespace Aero.Application.Interface
         Task<ResponseDto<bool>> CreateAsync(TimeZoneDto dto);
         Task<ResponseDto<bool>> DeleteAsync(short component);
         Task<ResponseDto<TimeZoneDto>> UpdateAsync(TimeZoneDto dto);
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param);
-        Task<ResponseDto<IEnumerable<ModeDto>>> GetCommandAsync();
+        Task<ResponseDto<IEnumerable<Mode>>> GetModeAsync(int param);
+        Task<ResponseDto<IEnumerable<Mode>>> GetCommandAsync();
     }
 }

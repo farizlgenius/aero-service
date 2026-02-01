@@ -10,12 +10,12 @@ public interface IQHwRepository : IBaseQueryRespository<HardwareDto>
       Task<HardwareDto> GetByMacAsync(string mac);
       Task<bool> IsAnyByMac(string mac);
       Task<bool> IsAnyByMacAndComponent(string mac,short component);
-      Task<short> GetComponentFromMacAsync(string mac);
+      Task<short> GetComponentIdFromMacAsync(string mac);
       Task<string> GetMacFromComponentAsync(short component);
       Task<bool> IsAnyModuleReferenceByMacAsync(string mac);
       Task<ScpSetting> GetScpSettingAsync();
       Task<IEnumerable<(short ComponentId, string Mac)>> GetComponentAndMacAsync(); 
-      Task<IEnumerable<ModeDto>> GetHardwareTypeAsync();
+      Task<IEnumerable<DTOs.Mode>> GetHardwareTypeAsync();
       Task<IEnumerable<short>> GetComponentIdByLocationIdAsync(short location);
       Task<IEnumerable<string>> GetMacsAsync();
       Task<IEnumerable<short>> GetComponentIdsAsync();
