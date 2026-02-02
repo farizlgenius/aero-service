@@ -1,46 +1,52 @@
 ﻿
 
+using System.Threading.Channels;
 using Aero.Application.Helpers;
-using AeroService.AeroLibrary;
+using Aero.Application.Interface;
+using Aero.Application.Interfaces;
+using Aero.Domain.Interfaces;
+using Aero.Infrastructure.Adapter;
 using HID.Aero.ScpdNet.Wrapper;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Aero.Infrastructure.Helpers
 {
-    public sealed class MessageHandlerHelper(ITransactionService transactionService ,IModuleService moduleService,IControlPointService cpService, IMonitorPointService mpService, IDoorService doorService, ICredentialService credentialService, CommandService cmndService, IHelperService<CommandLog> helperService, IAccessLevelService accessLevelService, SysService sysService)
+    public sealed class MessageHandlerHelper()
     {
 
-        public static void SCPReplyNAKHandler(SCPReplyMessage message)
+        public static void SCPReplyNakHandler(SCPReplyMessage message,ILogger logger)
         {
             switch (message.nak.reason)
             {
                 case 0:
-                    Console.WriteLine($"reason: Invalid Packet Header, data: {message.nak.data}, command: {UtilitiesHelper.ByteToHexStr(message.nak.command)}, description_code: {message.nak.description_code}");
+                    logger.LogError($"{DateTime.UtcNow.ToLocalTime()} [Nak] reason: Invalid Packet Header, data: {message.nak.data}, command: {UtilitiesHelper.ByteToHexStr(message.nak.command)}, description_code: {message.nak.description_code}");
                     break;
                 case 1:
                 case 2: 
                 case 3:
-                    Console.WriteLine($"reason: Invalid command type (firmware revision mismatch), data: {message.nak.data}, command: {UtilitiesHelper.ByteToHexStr(message.nak.command)}, description_code: {message.nak.description_code}");
+                     logger.LogError($"{DateTime.UtcNow.ToLocalTime()} [Nak] reason: Invalid command type (firmware revision mismatch), data: {message.nak.data}, command: {UtilitiesHelper.ByteToHexStr(message.nak.command)}, description_code: {message.nak.description_code}");
                     break;
                 case 4:
-                    Console.WriteLine($"reason: command content error, data: {message.nak.data}, command: {UtilitiesHelper.ByteToHexStr(message.nak.command)}, description_code: {message.nak.description_code}");
+                    logger.LogError($"{DateTime.UtcNow.ToLocalTime()} [Nak] reason: command content error, data: {message.nak.data}, command: {UtilitiesHelper.ByteToHexStr(message.nak.command)}, description_code: {message.nak.description_code}");
                     break;
                 case 5:
-                    Console.WriteLine($"reason: Cannot execute - requires password logon, data: {message.nak.data}, command: {UtilitiesHelper.ByteToHexStr(message.nak.command)}, description_code: {message.nak.description_code}");
+                    logger.LogError($"{DateTime.UtcNow.ToLocalTime()} [Nak] reason: Cannot execute - requires password logon, data: {message.nak.data}, command: {UtilitiesHelper.ByteToHexStr(message.nak.command)}, description_code: {message.nak.description_code}");
                     break;
                 case 6:
-                    Console.WriteLine($"reason: This port is in standby mode and cannot execute this command, data: {message.nak.data}, command: {UtilitiesHelper.ByteToHexStr(message.nak.command)}, description_code: {message.nak.description_code}");
+                    logger.LogError($"{DateTime.UtcNow.ToLocalTime()} [Nak] reason: This port is in standby mode and cannot execute this command, data: {message.nak.data}, command: {UtilitiesHelper.ByteToHexStr(message.nak.command)}, description_code: {message.nak.description_code}");
                     break;
                 case 7:
-                    Console.WriteLine($"reason: Failed logon - password and/or encryption key, data: {message.nak.data}, command: {UtilitiesHelper.ByteToHexStr(message.nak.command)}, description_code: {message.nak.description_code}");
+                    logger.LogError($"{DateTime.UtcNow.ToLocalTime()} [Nak] reason: Failed logon - password and/or encryption key, data: {message.nak.data}, command: {UtilitiesHelper.ByteToHexStr(message.nak.command)}, description_code: {message.nak.description_code}");
                     break;
                 case 8:
-                    Console.WriteLine($"reason: command not accepted, controller is running in degraded mode and only a limited number of commands are accepted, data: {message.nak.data}, command: {UtilitiesHelper.ByteToHexStr(message.nak.command)}, description_code: {message.nak.description_code}");
+                    logger.LogError($"{DateTime.UtcNow.ToLocalTime()} [Nak] reason: command not accepted, controller is running in degraded mode and only a limited number of commands are accepted, data: {message.nak.data}, command: {UtilitiesHelper.ByteToHexStr(message.nak.command)}, description_code: {message.nak.description_code}");
                     break;
             }
 
         }
 
-        public static void SCPReplyTransactionHandler(SCPReplyMessage message,bool isWaitingCardScan,short ScanScpId,short ScanAcrNo)
+        public static void SCPReplyTransactionHandler(SCPReplyMessage message,bool isWaitingCardScan,short ScanScpId,short ScanAcrNo,Channel<IScpReply> queue,ILogger logger,IServiceScopeFactory scopeFactory)
         {
 
             switch (message.tran.tran_type)
@@ -49,9 +55,13 @@ namespace Aero.Infrastructure.Helpers
                     ProcessAeroTransactionHelper.ProcessTypeSys(message);
                     break;
                 case (short)tranType.tranTypeSioComm:
-                    moduleService.GetSioStatus(message.SCPId, message.tran.source_number);
-                    ProcessAeroTransactionHelper.ProcessTypeSioComm(message);
-                    break;
+                    {
+                        using var scope = scopeFactory.CreateScope();
+                        var moduleService = scope.ServiceProvider.GetRequiredService<IModuleService>();
+                        moduleService.GetSioStatus(message.SCPId, message.tran.source_number);
+                        ProcessAeroTransactionHelper.ProcessTypeSioComm(message);
+                        break;
+                    }
                 case (short)tranType.tranTypeCardBin:
                     ProcessAeroTransactionHelper.ProcessTypeCardBin(message);
                     break;
@@ -62,6 +72,7 @@ namespace Aero.Infrastructure.Helpers
                     if (isWaitingCardScan && ScanScpId == message.SCPId && ScanAcrNo == message.tran.source_number)
                     {
                         credentialService.TriggerCardScan(message.SCPId,message.tran.c_full.format_number,message.tran.c_full.facility_code,message.tran.c_full.cardholder_id,message.tran.c_full.issue_code,message.tran.c_full.floor_number);
+                        queue.Writer.TryWrite(new ScpReplyAdapter(message));
                         isWaitingCardScan = false;
                         ScanAcrNo = -1;
                         ScanScpId = -1;
@@ -186,8 +197,9 @@ namespace Aero.Infrastructure.Helpers
 
         }
 
-        public static void SCPReplyCommStatus(SCPReplyMessage message)
+        public static void SCPReplyCommStatus(SCPReplyMessage message,ILogger logger)
         {
+            logger.LogInformation($"{DateTime.UtcNow.ToLocalTime()} [CommStatus] status: {message.comm.status}, status_desc: {DescriptionHelper.GetReplyStatusDesc(message.comm.status)} error_code: {message.comm.error_code} error_code_desc: {DescriptionHelper.GetErrorCodeDesc((int)message.comm.error_code)} n_channel_id: : {message.comm.nChannelId}");
             Console.WriteLine("###### SCPReplyCommStatus extend_desc ######");
             Console.WriteLine($"status: {message.comm.status}");
             Console.WriteLine($"status_desc: {DescriptionHelper.GetReplyStatusDesc(message.comm.status)}");
@@ -539,7 +551,7 @@ namespace Aero.Infrastructure.Helpers
             Console.WriteLine("###### SCPReplyStrStatus extend_desc End ######");
         }
 
-        public static void SCPReplyCmndStatus(SCPReplyMessage message,AeroCommandService write)
+        public static void SCPReplyCmndStatus(SCPReplyMessage message)
         {
             
             Console.WriteLine("###### SCPReplyCmndStatus extend_desc ######");

@@ -14,7 +14,7 @@ namespace Aero.Infrastructure.Data.Entities
         public int serial_number { get; set; }
         public int ram_size { get; set; }
         public int ram_free { get; set; }
-        public DateTimeOffset e_sec { get; set; }
+        public int e_sec { get; set; }
         public int db_max { get; set; }
         public int db_active { get; set; }
         public byte dip_switch_powerup { get; set; }

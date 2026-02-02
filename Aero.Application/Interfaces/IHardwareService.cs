@@ -1,15 +1,18 @@
 ﻿
 
 using Aero.Application.DTOs;
+using Aero.Application.Interfaces;
 using Aero.Domain.Entities;
+using Aero.Domain.Interface;
+using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Interface
 {
     public interface IHardwareService
     {
-
+        Task HandleFoundHardware(IScpReply message);
         Task<ResponseDto<IEnumerable<HardwareDto>>> GetAsync();
-        Task<ResponseDto<IEnumerable<DTOs.Mode>>> GetHardwareTypeAsync();
+        Task<ResponseDto<IEnumerable<Mode>>> GetHardwareTypeAsync();
         Task<ResponseDto<IEnumerable<HardwareDto>>> GetByLocationAsync(short location);
         Task<ResponseDto<bool>> CreateAsync(CreateHardwareDto dto);
         Task<ResponseDto<bool>> DeleteAsync(string mac);
@@ -29,6 +32,9 @@ namespace Aero.Application.Interface
         Task<bool> MappingHardwareAndAllocateMemory(short ScpId);
         Task<List<VerifyHardwareDeviceConfigDto>> VerifyDeviceConfigurationAsync(Hardware hw);
         Task<bool> VerifyHardwareConnection(short ScpId);
+        Task VerifyAllocateHardwareMemoryAsync(IScpReply message);
+        Task AssignPortAsync(IScpReply message);
+        Task AssignIpAddressAsync(IScpReply message);
 
     }
 }

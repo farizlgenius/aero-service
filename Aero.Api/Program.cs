@@ -1,10 +1,20 @@
 using System.Text;
+using System.Threading.Channels;
+using Aero.Api.Constants;
 using Aero.Api.Exceptions.Middleware;
+using Aero.Api.Hubs;
+using Aero.Api.Logging;
+using Aero.Api.Worker;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
 using Aero.Application.Services;
 using Aero.Domain.Entities;
+using Aero.Domain.Interface;
+using Aero.Domain.Interfaces;
 using Aero.Infrastructure.Data;
+using Aero.Infrastructure.Listenser;
+using Aero.Infrastructure.Mapper;
+using Aero.Infrastructure.Services;
 using Aero.Infrastructure.Settings;
 using AeroService.Service.Impl;
 using Mapster;
@@ -146,7 +156,7 @@ namespace AeroService
             // SeriLog
             // Read Serilog config from appsettings.json
             Serilog.Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration)
-                .Enrich.With<Logging.CLog>()
+                .Enrich.With<CLog>()
                 .Enrich.FromLogContext()        // important
                 .CreateLogger();
 
@@ -158,8 +168,12 @@ namespace AeroService
             builder.Services.AddSingleton<IJwtSettings,JwtSettings>();
             builder.Services.AddSingleton<IRedisSettings,RedisSettings>();
 
+            // DI for Command
 
-            // DI for custom service
+            // DI for Repository
+
+
+            // DI for Service
             builder.Services.AddScoped<IHardwareService,HardwareService>();
             builder.Services.AddScoped<ITimeZoneService,TimeZoneService>();
             builder.Services.AddScoped<IAccessLevelService, AccessLevelService>();
@@ -181,22 +195,13 @@ namespace AeroService
             builder.Services.AddScoped<ILocationService,LocationService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IFeatureService, FeatureService>();
-            builder.Services.AddScoped<IRefreshTokenStore, RefreshTokenStore>();
             builder.Services.AddScoped<ITransactionService, TransactionService>();
             builder.Services.AddScoped<IProcedureService, ProcedureService>();
             builder.Services.AddScoped<ITriggerService, TriggerService>();
             builder.Services.AddScoped<IMonitorGroupService, MonitorGroupService>();
             builder.Services.AddScoped<ICommandService, CommandService>();
             builder.Services.AddScoped<ISettingService, SettingService>();
-            builder.Services.AddScoped<IApiService,ApiService>();
-
-            builder.Services.AddScoped<MessageHandler>();
-
-            
-            builder.Services.AddScoped<SysService>();
-            builder.Services.AddScoped(typeof(IHelperService<>), typeof(HelperService<>));
-
-            
+      
             builder.Services.AddScoped<CommandService>();
             builder.Services.AddSignalR();
             builder.Services.AddScoped<IdReportService>();
@@ -206,11 +211,11 @@ namespace AeroService
 
 
             // Register AeroDriver
-            builder.Services.AddSingleton<AeroCommandService>();
-            builder.Services.AddSingleton<AeroMessage>();
+            builder.Services.AddSingleton<AeroMessageListener>();
+
 
             builder.Services.AddSingleton(
-                Channel.CreateBounded<SCPReplyMessage>(
+                Channel.CreateBounded<IScpReply>(
                  new BoundedChannelOptions(10_000)
                     {
                         FullMode = BoundedChannelFullMode.DropOldest,
@@ -250,8 +255,8 @@ namespace AeroService
 
             var app = builder.Build();
             // Resolve driver from DI
-            var writeDriver = app.Services.GetRequiredService<AeroCommandService>();
-            var readDriver = app.Services.GetRequiredService<AeroMessage>();
+            var writeDriver = app.Services.GetRequiredService<BaseAeroCommand>();
+            var readDriver = app.Services.GetRequiredService<AeroMessageListener>();
 
             // CLog
             var logger = app.Services.GetRequiredService<ILogger<Program>>();
@@ -264,10 +269,17 @@ namespace AeroService
             using (var scope = app.Services.CreateScope())
             {
                 var scopedServices = scope.ServiceProvider;
-                var sys = scopedServices.GetRequiredService<SysService>();
+                var sys = scopedServices.GetRequiredService<IAeroDriverCommand>();
 
                 // Now you can safely use sys here
-                if(!sys.ConfigureDriver())
+                if(!sys.SystemLevelSpecification())
+                {
+                    logger.LogError("Initial driver failed. Shutting down app...");
+                    app.Lifetime.StopApplication(); // graceful shutdown
+                }
+
+                // Now you can safely use sys here
+                if(!sys.CreateChannel())
                 {
                     logger.LogError("Initial driver failed. Shutting down app...");
                     app.Lifetime.StopApplication(); // graceful shutdown

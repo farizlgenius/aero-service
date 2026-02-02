@@ -4,10 +4,11 @@ using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
+using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Services
 {
-    public sealed class TransactionService(IQTransactionRepository qTran,IScpCommand scp,IQHwRepository qHw) : ITransactionService
+    public sealed class TransactionService(IQTransactionRepository qTran, IScpCommand scp, IQHwRepository qHw) : ITransactionService
     {
         public async Task<ResponseDto<PaginationDto>> GetPageTransactionWithCountAsync(PaginationParams param)
         {
@@ -15,19 +16,47 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder<PaginationDto>(dto);
         }
 
-       
+
         public async Task<ResponseDto<bool>> SetTranIndexAsync(string mac)
         {
             var id = await qHw.GetComponentIdFromMacAsync(mac);
             if (id == 0) return ResponseHelper.NotFoundBuilder<bool>();
-            if (!scp.SetTransactionLogIndex(id,true))
+            if (!scp.SetTransactionLogIndex(id, true))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.TRAN_INDEX));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.TRAN_INDEX));
             }
 
             return ResponseHelper.SuccessBuilder(true);
         }
 
+         public async Task SaveToDatabaseAsync(IScpReply message)
+        {
+            try
+            {
+                if (!await qHw.IsAnyByComponentId((short)message.ScpId)) return;
+                AeroService.Entity.Transaction tran = new AeroService.Entity.Transaction();
+                
+
+                if (string.IsNullOrEmpty(tran.date) && string.IsNullOrEmpty(tran.time)) return;
+
+                await context.transaction.AddAsync(tran);
+                context.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+            }
+
+
+        }
+
+        
+
         
     }
+
+   
+
 }
+

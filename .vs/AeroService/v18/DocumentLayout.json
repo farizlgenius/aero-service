@@ -1,12 +1,207 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "D:\\Aero\\AeroService\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\adapter\\transactionadaptor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\adapter\\transactionadaptor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\adapter\\typesyscommadapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\adapter\\typesyscommadapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\adapter\\typesysadapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\adapter\\typesysadapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\adapter\\typesiocommadapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\adapter\\typesiocommadapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\adapter\\strstatusadapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\adapter\\strstatusadapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\adapter\\strspecadapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\adapter\\strspecadapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\adapter\\srsioadapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\adapter\\srsioadapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\adapter\\srmpadapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\adapter\\srmpadapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\adapter\\srcpadapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\adapter\\srcpadapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\adapter\\sracradapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\adapter\\sracradapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\adapter\\scpreplyadapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\adapter\\scpreplyadapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "TypeSysCommAdapter.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\TypeSysCommAdapter.cs",
+              "RelativeDocumentMoniker": "Aero.Infrastructure\\Adapter\\TypeSysCommAdapter.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\TypeSysCommAdapter.cs",
+              "RelativeToolTip": "Aero.Infrastructure\\Adapter\\TypeSysCommAdapter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-02T14:08:38.694Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "TypeSysAdapter.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\TypeSysAdapter.cs",
+              "RelativeDocumentMoniker": "Aero.Infrastructure\\Adapter\\TypeSysAdapter.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\TypeSysAdapter.cs",
+              "RelativeToolTip": "Aero.Infrastructure\\Adapter\\TypeSysAdapter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-02T14:08:33.278Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "TypeSioCommAdapter.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\TypeSioCommAdapter.cs",
+              "RelativeDocumentMoniker": "Aero.Infrastructure\\Adapter\\TypeSioCommAdapter.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\TypeSioCommAdapter.cs",
+              "RelativeToolTip": "Aero.Infrastructure\\Adapter\\TypeSioCommAdapter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-02T14:08:28.161Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "TransactionAdaptor.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\TransactionAdaptor.cs",
+              "RelativeDocumentMoniker": "Aero.Infrastructure\\Adapter\\TransactionAdaptor.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\TransactionAdaptor.cs",
+              "RelativeToolTip": "Aero.Infrastructure\\Adapter\\TransactionAdaptor.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAowAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-02T14:08:16.694Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "StrStatusAdapter.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\StrStatusAdapter.cs",
+              "RelativeDocumentMoniker": "Aero.Infrastructure\\Adapter\\StrStatusAdapter.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\StrStatusAdapter.cs",
+              "RelativeToolTip": "Aero.Infrastructure\\Adapter\\StrStatusAdapter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-02T14:08:12.209Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "StrSpecAdapter.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\StrSpecAdapter.cs",
+              "RelativeDocumentMoniker": "Aero.Infrastructure\\Adapter\\StrSpecAdapter.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\StrSpecAdapter.cs",
+              "RelativeToolTip": "Aero.Infrastructure\\Adapter\\StrSpecAdapter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-02T14:08:06.866Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "SrSioAdapter.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\SrSioAdapter.cs",
+              "RelativeDocumentMoniker": "Aero.Infrastructure\\Adapter\\SrSioAdapter.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\SrSioAdapter.cs",
+              "RelativeToolTip": "Aero.Infrastructure\\Adapter\\SrSioAdapter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-02T14:08:02.103Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "SrMpAdapter.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\SrMpAdapter.cs",
+              "RelativeDocumentMoniker": "Aero.Infrastructure\\Adapter\\SrMpAdapter.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\SrMpAdapter.cs",
+              "RelativeToolTip": "Aero.Infrastructure\\Adapter\\SrMpAdapter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-02T14:07:55.34Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "SrCpAdapter.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\SrCpAdapter.cs",
+              "RelativeDocumentMoniker": "Aero.Infrastructure\\Adapter\\SrCpAdapter.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\SrCpAdapter.cs",
+              "RelativeToolTip": "Aero.Infrastructure\\Adapter\\SrCpAdapter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAABFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-02T14:07:48.785Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "SrAcrAdapter.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\SrAcrAdapter.cs",
+              "RelativeDocumentMoniker": "Aero.Infrastructure\\Adapter\\SrAcrAdapter.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\SrAcrAdapter.cs",
+              "RelativeToolTip": "Aero.Infrastructure\\Adapter\\SrAcrAdapter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-02T14:07:44.002Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "ScpReplyAdapter.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\ScpReplyAdapter.cs",
+              "RelativeDocumentMoniker": "Aero.Infrastructure\\Adapter\\ScpReplyAdapter.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\ScpReplyAdapter.cs",
+              "RelativeToolTip": "Aero.Infrastructure\\Adapter\\ScpReplyAdapter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-02T14:07:42.1Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }

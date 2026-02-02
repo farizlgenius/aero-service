@@ -1,9 +1,8 @@
-using System;
-using Aero.Data;
-using AeroService.Data;
-using AeroService.Helpers;
 
-namespace AeroService.Worker;
+using Aero.Domain.Helpers;
+using Aero.Infrastructure.Data;
+
+namespace Aero.Api.Worker;
 
 public class StartupTask : IHostedService
 {

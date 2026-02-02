@@ -42,8 +42,8 @@ public sealed class HolderMapper
             }).ToList();
             res.cardholder_access_levels = data.AccessLevels is null || data.AccessLevels.Count > 0 ? new List<CardHolderAccessLevel>() :  data.AccessLevels.Select(x => new CardHolderAccessLevel
             {
-                  cardholder_id = data.UserId,
-                  access_level_id = x.ComponentId
+                  holder_id = data.UserId,
+                  accesslevel_id = x.ComponentId
             }).ToList();
 
             return res;
@@ -85,8 +85,8 @@ public sealed class HolderMapper
             }).ToList();
             res.cardholder_access_levels = data.AccessLevels is null || data.AccessLevels.Count > 0 ? new List<CardHolderAccessLevel>() :  data.AccessLevels.Select(x => new CardHolderAccessLevel
             {
-                  cardholder_id = data.UserId,
-                  access_level_id = x.ComponentId
+                  holder_id = data.UserId,
+                  accesslevel_id = x.ComponentId
             }).ToList();
 
       }

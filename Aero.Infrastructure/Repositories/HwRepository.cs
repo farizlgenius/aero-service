@@ -53,7 +53,6 @@ public sealed class HwRepository(AppDbContext context, IScpCommand scp, INotific
             .Select(hardware => new Hardware
             {
                   // Base 
-                  Uuid = hardware.uuid,
                   ComponentId = hardware.component_id,
                   Mac = hardware.mac,
                   LocationId = hardware.location_id,
@@ -72,7 +71,6 @@ public sealed class HwRepository(AppDbContext context, IScpCommand scp, INotific
                   Modules = hardware.modules.Select(d => new Module
                   {
                         // Base 
-                        Uuid = d.uuid,
                         ComponentId = d.component_id,
                         HardwareName = hardware.name,
                         Mac = hardware.mac,
@@ -171,137 +169,7 @@ public sealed class HwRepository(AppDbContext context, IScpCommand scp, INotific
             return await context.SaveChangesAsync();
       }
 
-      public async Task AssignIpAddressAsync(SCPReplyMessage message)
-      {
-            if (!await context.hardware.AnyAsync(x => x.component_id == (short)message.SCPId))
-            {
-                  var hw = context.hardware
-                      .Where(x => x.component_id == message.SCPId)
-                      .OrderBy(x => x.component_id)
-                      .FirstOrDefault();
-
-                  if (hw is null) return;
-
-
-                  if (message.web_network is not null) hw.ip = UtilitiesHelper.IntegerToIp(message.web_network.cIpAddr);
-
-                  context.hardware.Update(hw);
-                  await context.SaveChangesAsync();
-
-                  scp.GetWebConfigRead((short)message.SCPId, 3);
-
-            }
-            else
-            {
-                  var report = await context.id_report
-                      .Where(x => x.scp_id == message.SCPId)
-                      .OrderBy(x => x.id)
-                      .FirstOrDefaultAsync();
-
-                  if (report is null) return;
-
-                  if (message.web_network is not null) report.ip = UtilitiesHelper.IntegerToIp(message.web_network.cIpAddr);
-
-                  context.id_report.Update(report);
-                  await context.SaveChangesAsync();
-
-                  scp.GetWebConfigRead((short)message.SCPId, 3);
-            }
-
-
-      }
-
-      public async Task AssignPort(SCPReplyMessage message)
-      {
-            if (!await context.hardware.AnyAsync(x => x.component_id == (short)message.SCPId))
-            {
-                  var hw = context.hardware
-                      .Where(x => x.component_id == message.SCPId)
-                      .OrderBy(x => x.component_id)
-                      .FirstOrDefault();
-
-                  if (hw is null) return;
-
-                  if (message.web_host_comm_prim is not null)
-                  {
-                        if (message.web_host_comm_prim.ipclient is not null)
-                        {
-                              hw.port = message.web_host_comm_prim.ipclient.nPort.ToString();
-                        }
-                        else if (message.web_host_comm_prim.ipserver is not null)
-                        {
-                              hw.port = message.web_host_comm_prim.ipserver.nPort.ToString();
-                        }
-                  }
-                ;
-
-                  context.hardware.Update(hw);
-                  await context.SaveChangesAsync();
-
-                  var dto = await context.id_report
-                      .AsNoTracking()
-                      .Select(en => new IdReportDto()
-                      {
-                            ComponentId = en.scp_id,
-                            SerialNumber = en.serial_number,
-                            MacAddress = en.mac,
-                            Ip = en.ip,
-                            Port = en.port,
-                            Firmware = en.firmware,
-                            HardwareTypeDescription = "HID Aero",
-                            HardwareType = 1,
-                      })
-                      .ToListAsync();
-
-                  await publisher.IdReportNotifyAsync(dto);
-
-
-            }
-            else
-            {
-                  var report = await context.id_report
-                      .Where(x => x.scp_id == message.SCPId)
-                      .OrderBy(x => x.id)
-                      .FirstOrDefaultAsync();
-
-                  if (report is null) return;
-
-                  if (message.web_host_comm_prim is not null)
-                  {
-                        if (message.web_host_comm_prim.ipclient is not null)
-                        {
-                              report.port = message.web_host_comm_prim.ipclient.nPort.ToString();
-                        }
-                        else if (message.web_host_comm_prim.ipserver is not null)
-                        {
-                              report.port = message.web_host_comm_prim.ipserver.nPort.ToString();
-                        }
-                  }
-                ;
-
-                  context.id_report.Update(report);
-                  await context.SaveChangesAsync();
-
-                  var dto = await context.id_report
-                      .AsNoTracking()
-                      .Select(en => new IdReportDto()
-                      {
-                            ComponentId = en.scp_id,
-                            SerialNumber = en.serial_number,
-                            MacAddress = en.mac,
-                            Ip = en.ip,
-                            Port = en.port,
-                            Firmware = en.firmware,
-                            HardwareTypeDescription = "HID Aero",
-                            HardwareType = 1,
-                      })
-                      .ToListAsync();
-
-                  await publisher.IdReportNotifyAsync(dto);
-            }
-
-
-      }
+     
 
       
 
@@ -323,5 +191,33 @@ public sealed class HwRepository(AppDbContext context, IScpCommand scp, INotific
 
             context.hardware.Update(en);
             return await context.SaveChangesAsync();
+      }
+
+      public async Task UpdateIpAddressAsync(int ScpId, string ip)
+      {
+            var hw = await context.hardware
+            .Where(x => x.component_id == (short)ScpId)
+            .FirstOrDefaultAsync();
+
+            if (hw is null) return;
+
+            hw.ip = ip;
+
+            context.hardware.Update(hw);
+            await context.SaveChangesAsync();
+      }
+
+      public async Task UpdatePortAddressAsync(int ScpId, short port)
+      {
+            var hw = await context.hardware
+            .Where(x => x.component_id == (short)ScpId)
+            .FirstOrDefaultAsync();
+
+            if (hw is null) return;
+
+            hw.port = ip;
+
+            context.hardware.Update(hw);
+            await context.SaveChangesAsync();
       }
 }

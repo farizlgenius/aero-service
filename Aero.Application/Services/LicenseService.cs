@@ -89,7 +89,7 @@ namespace Aero.Application.Services
 
             // Step 7 : Derive Shared Key
             var sharedKey = EncryptHelper.DeriveSecretKey(appDh, serverDhPublic);
-            var aesKey = EncryptHelper.DeriveAesKey(sharedKey, settings.Secret);
+            var aesKey = EncryptHelper.DeriveAesKey(sharedKey, settings.LicenseSettings.Secret);
 
             return ResponseHelper.SuccessBuilder(new HandshakeResult(response.payload.sessionId, aesKey));
         }
@@ -142,7 +142,7 @@ namespace Aero.Application.Services
             }
 
             // Step 6 : Encrypt License Data
-            var key = EncryptHelper.Hash(settings.Secret);
+            var key = EncryptHelper.Hash(settings.LicenseSettings.Secret);
             var d = EncryptHelper.EncryptAes(Encoding.UTF8.GetBytes(key),licensePayload.license);
             
             string licenseString = Encoding.UTF8.GetString(licensePayload.license);

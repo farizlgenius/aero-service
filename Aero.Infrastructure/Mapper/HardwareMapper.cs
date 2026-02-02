@@ -75,7 +75,6 @@ public static class HardwareMapper
             return new Aero.Domain.Entities.Hardware
             {
                   // Base 
-                  Uuid = ef.uuid,
                   ComponentId = ef.component_id,
                   Mac = ef.mac,
                   LocationId = ef.location_id,
@@ -94,7 +93,6 @@ public static class HardwareMapper
                   Modules = ef.modules.Select(d => new Aero.Domain.Entities.Module
                   {
                         // Base 
-                        Uuid = d.uuid,
                         ComponentId = d.component_id,
                         HardwareName = ef.name,
                         Mac = ef.mac,

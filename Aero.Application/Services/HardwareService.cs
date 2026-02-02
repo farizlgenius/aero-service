@@ -30,7 +30,7 @@ namespace Aero.Application.Services
         IQTrigRepository qTrig,
         IQProcRepository qProc,
         IQActionRepository qAction,
-        IQIdReportRepository idr,
+        IQIdReportRepository qId,
         IScpCommand scp,
         ISioCommand sio,
         IMpCommand mp,
@@ -40,7 +40,8 @@ namespace Aero.Application.Services
         ICpCommand cp,
         IMpgCommand mpg,
         IDoorCommand d,
-        IHolderCommand holder
+        IHolderCommand holder,
+        INotificationPublisher publisher
         ) : IHardwareService
     {
 
@@ -641,10 +642,6 @@ namespace Aero.Application.Services
         }
 
 
-
-
-
-
         public async Task<ResponseDto<bool>> CreateAsync(CreateHardwareDto dto)
         {
             var hardware = HardwareMapper.ToHardware(dto);
@@ -711,7 +708,7 @@ namespace Aero.Application.Services
                 }
             }
 
-            var report = await idr.GetByMacAndComponentIdAsync(dto.Mac, dto.ComponentId);
+            var report = await qId.GetByMacAndComponentIdAsync(dto.Mac, dto.ComponentId);
 
             if (report is null) return ResponseHelper.NotFoundBuilder<bool>();
 
@@ -719,7 +716,7 @@ namespace Aero.Application.Services
 
             if (status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS, []);
 
-            status = await idr.DeleteByMacAndComponentIdAsync(report.Mac, report.ScpId);
+            status = await qId.DeleteByMacAndComponentIdAsync(report.Mac, report.ScpId);
 
             if (status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS, []);
 
@@ -820,6 +817,186 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder<HardwareDto>(res);
         }
 
-       
+        public async Task HandleFoundHardware(IScpReply message)
+        {
+            if (await qHw.IsAnyByMac(UtilitiesHelper.ByteToHexStr(message.id.mac_addr)))
+            {
+                var hardware = await rHw.GetByMacAsync(UtilitiesHelper.ByteToHexStr(message.id.mac_addr));
+
+                if (hardware is null) return;
+
+                if (!await MappingHardwareAndAllocateMemory(message.id.scp_id))
+                {
+                    hardware.IsReset = true;
+                }
+                else
+                {
+                    hardware.IsReset = false;
+                }
+
+                if (!await VerifyMemoryAllocateAsync(hardware.Mac))
+                {
+                    hardware.IsReset = true;
+                }
+                else
+                {
+                    hardware.IsReset = false;
+                }
+
+                hardware.Firmware = UtilitiesHelper.ParseFirmware(message.id.sft_rev_major, message.id.sft_rev_minor);
+
+                var component = await VerifyDeviceConfigurationAsync(hardware);
+
+                hardware.IsUpload = component.Any(s => s.IsUpload == true);
+
+                var status = await rHw.UpdateAsync(hardware);
+
+                if (status <= 0) return;
+
+                // Call Get ip
+                scp.GetWebConfigRead(message.id.scp_id, 2);
+
+
+            }
+            else
+            {
+                if (!await VerifyHardwareConnection(message.id.scp_id)) return;
+
+
+                if (await qHw.IsAnyByMacAndComponent(UtilitiesHelper.ByteToHexStr(message.id.mac_addr), message.id.scp_id))
+                {
+
+                    if (await qId.IsAnyByMacAndScpIdAsync(UtilitiesHelper.ByteToHexStr(message.id.mac_addr), message.id.scp_id))
+                    {
+                        // Delete id report
+                        var status = await qId.DeleteByMacAndScpIdAsync(UtilitiesHelper.ByteToHexStr(message.id.mac_addr), message.id.scp_id);
+                        if (status <= 0) throw new Exception("Delete Id report from database unsuccess.");
+                    }
+                    return;
+                }
+                else
+                {
+                    if (await qId.IsAnyByMacAndScpIdAsync(UtilitiesHelper.ByteToHexStr(message.id.mac_addr), message.id.scp_id))
+                    {
+                        // Update
+                        var status = await qId.UpdateAsync(message);
+                    }
+                    else
+                    {
+                        // Create 
+                        var status = await qId.AddAsync(message);
+                    }
+                }
+
+                scp.GetWebConfigRead(message.id.scp_id, 2);
+
+
+            }
+
+        }
+
+        public async Task VerifyAllocateHardwareMemoryAsync(IScpReply message)
+        {
+
+            var scp = await qHw.GetByComponentIdAsync((short)message.ScpId);
+
+            if (scp is null) return;
+
+
+            var mems = await qHw.CheckAllocateMemoryAsync(message);
+
+            var res = await rHw.UpdateVerifyMemoryAllocateByComponentIdAsync((short)message.ScpId, mems.Any(x => x.IsSync == false));
+            if (res <= 0) return;
+
+
+            // Check mismatch device configuration
+            //await VerifyDeviceConfigurationAsync(hw.mac,hw.location_id);
+            var data = new MemoryAllocateDto
+            {
+                Mac = await qHw.GetMacFromComponentAsync((short)message.ScpId),
+                Memories = mems,
+            };
+            await publisher.ScpNotifyMemoryAllocate(data);
+        }
+
+        public async Task AssignIpAddressAsync(IScpReply message)
+        {
+            if(!await qHw.IsAnyByComponentId((short)message.ScpId))
+            {
+
+
+                if (message.web_network is not null) await rHw.UpdateIpAddressAsync(message.ScpId,UtilitiesHelper.IntegerToIp(message.web_network.cIpAddr));
+
+                scp.GetWebConfigRead((short)message.ScpId, 3);
+
+            }
+            else
+            {
+
+                if(message.web_network is not null) await qId.UpdateIpAddressAsync(message.ScpId,UtilitiesHelper.IntegerToIp(message.web_network.cIpAddr));
+
+                scp.GetWebConfigRead((short)message.ScpId, 3);
+            }
+
+
+        }
+
+        public async Task AssignPortAsync(IScpReply message)
+        {
+            if (await qHw.IsAnyByComponentId((short)message.ScpId))
+            {
+                string port = "";
+
+                if (message.web_host_comm_prim is not null)
+                {
+                    if (message.web_host_comm_prim.ipclient is not null)
+                    {
+                        port = message.web_host_comm_prim.ipclient.nPort.ToString();
+                    }
+                    else if (message.web_host_comm_prim.ipserver is not null)
+                    {
+                        port = message.web_host_comm_prim.ipserver.nPort.ToString();
+                    }
+                };
+
+
+                await rHw.UpdatePortAddressAsync((short)message.ScpId,port);
+
+                var dto = await qId.GetAsync();
+
+                await publisher.IdReportNotifyAsync(dto.ToList());
+
+
+            }
+            else
+            {
+                string port = "";
+
+                if (message.web_host_comm_prim is not null)
+                {
+                    if (message.web_host_comm_prim.ipclient is not null)
+                    {
+                        port = message.web_host_comm_prim.ipclient.nPort.ToString();
+                    }
+                    else if (message.web_host_comm_prim.ipserver is not null)
+                    {
+                        port = message.web_host_comm_prim.ipserver.nPort.ToString();
+                    }
+                }
+                ;
+
+                await qId.UpdatePortAddressAsync((short)message.ScpId,port);
+
+                var dto = await qId.GetAsync();
+
+                await publisher.IdReportNotifyAsync(dto.ToList());
+            }
+
+
+        }
+
+
+
+
     }
 }

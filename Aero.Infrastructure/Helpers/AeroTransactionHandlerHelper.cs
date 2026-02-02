@@ -1,9 +1,10 @@
 ﻿
 using Aero.Application.Helpers;
-using Aero.Infrastructure.Data.Entities;
+using Aero.Domain.Entities;
 using HID.Aero.ScpdNet.Wrapper;
+using static HID.Aero.ScpdNet.Wrapper.SCPReplyMessage;
 
-namespace Aero.Infrastructure.Helpers
+Namespace Aero.Infrastructure.Helpers
 {
     public static class AeroTransactionHandlerHelper
     {
@@ -431,27 +432,27 @@ namespace Aero.Infrastructure.Helpers
         #region TypeSys
 
 
-        public static string TypeSysCommToText(TypeSysComm v)
-        {
-            return v switch
-            {
-                TypeSysComm.Offline => "Offline",
-                TypeSysComm.Online => "Online",
-                TypeSysComm.Standby => "Standby",
-                _ => ""
+        // public static string TypeSysCommToText(TypeSysComm v)
+        // {
+        //     return v switch
+        //     {
+        //         0 => "Offline",
+        //         1 => "Online",
+        //         2 => "Standby",
+        //         _ => ""
 
-            };
-        }
+        //     };
+        // }
 
         public static List<TransactionFlag> TypeSysErrorFlag(short error_code)
         {
             var flag = new List<TransactionFlag>();
-            if (UtilitiesHelper.IsBitSet(error_code, 2)) flag.Add(new TransactionFlag { topic="Error flag", name = "External Reset", description = "The reset button was pressed" });
-            if (UtilitiesHelper.IsBitSet(error_code, 3)) flag.Add(new TransactionFlag { topic = "Error flag", name = "Power on Reset", description = "A reset that occurs during power up." });
-            if (UtilitiesHelper.IsBitSet(error_code, 4)) flag.Add(new TransactionFlag { topic = "Error flag", name = "Watchdog Timer", description = "A watchdog reset occurs when the CPU detects that a task is hogging the CPU for an extended period, so it performs a reboot to correct the issue." });
-            if (UtilitiesHelper.IsBitSet(error_code, 5)) flag.Add(new TransactionFlag { topic = "Error flag", name = "Software", description = "Software caused the reset to occur. This can be through a valid means where the board needed to be rebooted, for example during a firmware download or applying settings on the web page, or could occur due to a software crash" });
-            if (UtilitiesHelper.IsBitSet(error_code, 6)) flag.Add(new TransactionFlag { topic = "Error flag", name = "Low Voltage", description = "The reset was caused by a low voltage detection" });
-            if (UtilitiesHelper.IsBitSet(error_code, 7)) flag.Add(new TransactionFlag { topic = "Error flag", name = "Fault", description = "A software fault/crash caused the reset" });
+            if (UtilitiesHelper.IsBitSet(error_code, 2)) flag.Add(new TransactionFlag { Topic="Error flag", Name = "External Reset", Description = "The reset button was pressed" });
+            if (UtilitiesHelper.IsBitSet(error_code, 3)) flag.Add(new TransactionFlag { Topic = "Error flag", Name = "Power on Reset", Description = "A reset that occurs during power up." });
+            if (UtilitiesHelper.IsBitSet(error_code, 4)) flag.Add(new TransactionFlag { Topic = "Error flag", Name = "Watchdog Timer", Description = "A watchdog reset occurs when the CPU detects that a task is hogging the CPU for an extended period, so it performs a reboot to correct the issue." });
+            if (UtilitiesHelper.IsBitSet(error_code, 5)) flag.Add(new TransactionFlag { Topic = "Error flag", Name = "Software", Description = "Software caused the reset to occur. This can be through a valid means where the board needed to be rebooted, for example during a firmware download or applying settings on the web page, or could occur due to a software crash" });
+            if (UtilitiesHelper.IsBitSet(error_code, 6)) flag.Add(new TransactionFlag { Topic = "Error flag", Name = "Low Voltage", Description = "The reset was caused by a low voltage detection" });
+            if (UtilitiesHelper.IsBitSet(error_code, 7)) flag.Add(new TransactionFlag { Topic = "Error flag", Name = "Fault", Description = "A software fault/crash caused the reset" });
             return flag;
         }
 
@@ -527,12 +528,12 @@ namespace Aero.Infrastructure.Helpers
         public static List<TransactionFlag> TypeCosStatus(short status,short Source, tranSrc src)
         {
             var flag = new List<TransactionFlag>();
-            flag.Add(new TransactionFlag { name = TypeCoseStatusFirstThree(status, Source,src), description = TypeCoseStatusFirstThree(status, Source,src) });
-            if (UtilitiesHelper.IsBitSet(status, 0x08)) flag.Add(new TransactionFlag { topic="status", name = "Offline", description = "Communication to the input point is not valid" });
-            if (UtilitiesHelper.IsBitSet(status, 0x10)) flag.Add(new TransactionFlag { topic = "status", name = "Mask flag", description = "Set if the monitor point is MASKed" });
-            if (UtilitiesHelper.IsBitSet(status, 0x20)) flag.Add(new TransactionFlag { topic = "status", name = "Local mask flag", description = "Entry or exit delay in progress" });
-            if (UtilitiesHelper.IsBitSet(status, 0x40)) flag.Add(new TransactionFlag { topic = "status", name = "Entry delay in progress", description = "Entry delay in progress" });
-            if (UtilitiesHelper.IsBitSet(status, 0x80)) flag.Add(new TransactionFlag { topic = "status", name = "Not attached ", description = "he monitor point is not linked to an Input" });
+            flag.Add(new TransactionFlag { Name = TypeCoseStatusFirstThree(status, Source,src), Description = TypeCoseStatusFirstThree(status, Source,src) });
+            if (UtilitiesHelper.IsBitSet(status, 0x08)) flag.Add(new TransactionFlag { Topic="status", Name = "Offline", Description = "Communication to the input point is not valid" });
+            if (UtilitiesHelper.IsBitSet(status, 0x10)) flag.Add(new TransactionFlag { Topic = "status", Name = "Mask flag", Description = "Set if the monitor point is MASKed" });
+            if (UtilitiesHelper.IsBitSet(status, 0x20)) flag.Add(new TransactionFlag { Topic = "status", Name = "Local mask flag", Description = "Entry or exit delay in progress" });
+            if (UtilitiesHelper.IsBitSet(status, 0x40)) flag.Add(new TransactionFlag { Topic = "status", Name = "Entry delay in progress", Description = "Entry delay in progress" });
+            if (UtilitiesHelper.IsBitSet(status, 0x80)) flag.Add(new TransactionFlag { Topic = "status", Name = "Not attached ", Description = "he monitor point is not linked to an Input" });
 
             return flag;
         }
@@ -631,8 +632,8 @@ namespace Aero.Infrastructure.Helpers
             var low = i & 0x0F;
             var high = (i >> 4) & 0x0F;
             var flag = new List<TransactionFlag>();
-            flag.Add(new TransactionFlag { topic="hardware HardwareComponent", name = "HARDWARE_COMP_CRYPTO", description = TypeSioCommCrypto(low) });
-            flag.Add(new TransactionFlag { topic = "hardware HardwareComponent", name = "HARDWARE_COMP_PHY", description = TypeSioCommPhy(high) });
+            flag.Add(new TransactionFlag { Topic="hardware HardwareComponent", Name = "HARDWARE_COMP_CRYPTO", Description = TypeSioCommCrypto(low) });
+            flag.Add(new TransactionFlag { Topic = "hardware HardwareComponent", Name = "HARDWARE_COMP_PHY", Description = TypeSioCommPhy(high) });
             return flag;
             
             
@@ -668,14 +669,14 @@ namespace Aero.Infrastructure.Helpers
         public static List<TransactionFlag> TypeCardIDCardTypeFlag(short i)
         {
             var flag = new List<TransactionFlag>();
-            if (UtilitiesHelper.IsBitSet(i, 0)) flag.Add(new TransactionFlag { name = "Escort", description = "Escort" });
-            if (UtilitiesHelper.IsBitSet(i, 1)) flag.Add(new TransactionFlag { name = "Requires Escort", description = "Requires Escort" });
+            if (UtilitiesHelper.IsBitSet(i, 0)) flag.Add(new TransactionFlag { Name = "Escort", Description = "Escort" });
+            if (UtilitiesHelper.IsBitSet(i, 1)) flag.Add(new TransactionFlag { Name = "Requires Escort", Description = "Requires Escort" });
             return flag;
         }
 
         public static string ContructFullName(CardHolder card)
         {
-            return $"{card.title} {card.first_name} {card.middle_name} {card.last_name}";
+            return $"{card.Title} {card.FirstName} {card.MiddleName} {card.LastName}";
         }
 
         #endregion
@@ -687,40 +688,40 @@ namespace Aero.Infrastructure.Helpers
             var flags = new List<TransactionFlag>();
 
             if ((s & 0x0001) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_F_DCR", description = "Decrement use limits on access" });
+                flags.Add(new TransactionFlag { Name = "ACR_F_DCR", Description = "Decrement use limits on access" });
 
             if ((s & 0x0002) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_F_CUL", description = "Require use limit to be non-zero" });
+                flags.Add(new TransactionFlag { Name = "ACR_F_CUL", Description = "Require use limit to be non-zero" });
 
             if ((s & 0x0004) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_F_DRSS", description = "Deny duress request instead of granting" });
+                flags.Add(new TransactionFlag { Name = "ACR_F_DRSS", Description = "Deny duress request instead of granting" });
 
             if ((s & 0x0008) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_F_ALLUSED", description = "Log access as used immediately" });
+                flags.Add(new TransactionFlag { Name = "ACR_F_ALLUSED", Description = "Log access as used immediately" });
 
             if ((s & 0x0010) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_F_QEXIT", description = "Do not pulse door strike on REX (quiet exit)" });
+                flags.Add(new TransactionFlag { Name = "ACR_F_QEXIT", Description = "Do not pulse door strike on REX (quiet exit)" });
 
             if ((s & 0x0020) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_F_FILTER", description = "Filter change-of-state door transactions" });
+                flags.Add(new TransactionFlag { Name = "ACR_F_FILTER", Description = "Filter change-of-state door transactions" });
 
             if ((s & 0x0040) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_F_2CARD", description = "Require two-card control at this reader" });
+                flags.Add(new TransactionFlag { Name = "ACR_F_2CARD", Description = "Require two-card control at this reader" });
 
             if ((s & 0x0400) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_F_HOST_CBG", description = "Check with HOST before granting access (online)" });
+                flags.Add(new TransactionFlag { Name = "ACR_F_HOST_CBG", Description = "Check with HOST before granting access (online)" });
 
             if ((s & 0x0800) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_F_HOST_SFT", description = "If HOST is offline/timeouts, still grant access" });
+                flags.Add(new TransactionFlag { Name = "ACR_F_HOST_SFT", Description = "If HOST is offline/timeouts, still grant access" });
 
             if ((s & 0x1000) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_F_CIPHER", description = "Enable cipher keypad mode for card entry" });
+                flags.Add(new TransactionFlag { Name = "ACR_F_CIPHER", Description = "Enable cipher keypad mode for card entry" });
 
             if ((s & 0x4000) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_F_LOG_EARLY", description = "Log access grant immediately, then used/not-used" });
+                flags.Add(new TransactionFlag { Name = "ACR_F_LOG_EARLY", Description = "Log access grant immediately, then used/not-used" });
 
             if ((s & 0x8000) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_F_CNIF_WAIT", description = "Show 'wait' pattern for card-not-in-file" });
+                flags.Add(new TransactionFlag { Name = "ACR_F_CNIF_WAIT", Description = "Show 'wait' pattern for card-not-in-file" });
 
             return flags;
         }
@@ -730,49 +731,49 @@ namespace Aero.Infrastructure.Helpers
             var flags = new List<TransactionFlag>();
 
             if ((s & 0x0001) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_FE_NOEXTEND", description = "Do not resume the extended door held open timer on new access grant" });
+                flags.Add(new TransactionFlag { Name = "ACR_FE_NOEXTEND", Description = "Do not resume the extended door held open timer on new access grant" });
 
             if ((s & 0x0002) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_FE_NOPINCARD", description = "Card+PIN mode: Do not accept PIN followed by card (card must be first)" });
+                flags.Add(new TransactionFlag { Name = "ACR_FE_NOPINCARD", Description = "Card+PIN mode: Do not accept PIN followed by card (card must be first)" });
 
             if ((s & 0x0008) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_FE_DFO_FLTR", description = "Enable door Forced Open Filter (door opens within 3 seconds of closing won't count)" });
+                flags.Add(new TransactionFlag { Name = "ACR_FE_DFO_FLTR", Description = "Enable door Forced Open Filter (door opens within 3 seconds of closing won't count)" });
 
             if ((s & 0x0010) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_FE_NO_ARQ", description = "Do not process access requests; all requests reported as ‘Access Denied, door Locked’" });
+                flags.Add(new TransactionFlag { Name = "ACR_FE_NO_ARQ", Description = "Do not process access requests; all requests reported as ‘Access Denied, door Locked’" });
 
             if ((s & 0x0020) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_FE_SHNTRLY", description = "Enable shunt relay behavior linked to door unlock and close timing" });
+                flags.Add(new TransactionFlag { Name = "ACR_FE_SHNTRLY", Description = "Enable shunt relay behavior linked to door unlock and close timing" });
 
             if ((s & 0x0040) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_FE_FLOOR_PIN", description = "Enable floor/output selection via PIN when in elevator hardware_type 1 + Card+PIN mode" });
+                flags.Add(new TransactionFlag { Name = "ACR_FE_FLOOR_PIN", Description = "Enable floor/output selection via PIN when in elevator hardware_type 1 + Card+PIN mode" });
 
             if ((s & 0x0080) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_FE_LINK_MODE", description = "ACR is in linking mode (acr_mode 29 starts, 30 aborts)" });
+                flags.Add(new TransactionFlag { Name = "ACR_FE_LINK_MODE", Description = "ACR is in linking mode (acr_mode 29 starts, 30 aborts)" });
 
             if ((s & 0x0100) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_FE_DCARD", description = "Enable double card function (two valid reads within 5 seconds)" });
+                flags.Add(new TransactionFlag { Name = "ACR_FE_DCARD", Description = "Enable double card function (two valid reads within 5 seconds)" });
 
             if ((s & 0x0200) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_FE_OVERRIDE", description = "ACR is in a temporary mode override" });
+                flags.Add(new TransactionFlag { Name = "ACR_FE_OVERRIDE", Description = "ACR is in a temporary mode override" });
 
             if ((s & 0x0400) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_FE_CRD_OVR_EN", description = "Allow override credential to gain access even when locked" });
+                flags.Add(new TransactionFlag { Name = "ACR_FE_CRD_OVR_EN", Description = "Allow override credential to gain access even when locked" });
 
             if ((s & 0x0800) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_FE_ELV_DISABLE", description = "ACR supports disabling elevator floors via offline_mode (hardware_type 1 & 2 only)" });
+                flags.Add(new TransactionFlag { Name = "ACR_FE_ELV_DISABLE", Description = "ACR supports disabling elevator floors via offline_mode (hardware_type 1 & 2 only)" });
 
             if ((s & 0x1000) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_FE_LINK_MODE_ALT", description = "ACR is in alternate reader linking mode (acr_mode 32/33)" });
+                flags.Add(new TransactionFlag { Name = "ACR_FE_LINK_MODE_ALT", Description = "ACR is in alternate reader linking mode (acr_mode 32/33)" });
 
             if ((s & 0x2000) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_FE_REX_HOLD", description = "extend REX grant time while REX input is active" });
+                flags.Add(new TransactionFlag { Name = "ACR_FE_REX_HOLD", Description = "extend REX grant time while REX input is active" });
 
             if ((s & 0x4000) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_FE_HOST_BYPASS", description = "Bypass local DB and use HOST for grant decisions (requires ACR_F_HOST_CBG)" });
+                flags.Add(new TransactionFlag { Name = "ACR_FE_HOST_BYPASS", Description = "Bypass local DB and use HOST for grant decisions (requires ACR_F_HOST_CBG)" });
 
             if ((s & 0x4000) != 0)
-                flags.Add(new TransactionFlag { name = "ACR_FE_REX_EARLYTXN", description = "flag to enable generating a transaction at the start of the REX cycle." });
+                flags.Add(new TransactionFlag { Name = "ACR_FE_REX_EARLYTXN", Description = "flag to enable generating a transaction at the start of the REX cycle." });
 
             return flags;
         }
@@ -831,14 +832,14 @@ namespace Aero.Infrastructure.Helpers
         public static List<TransactionFlag> TypeCosDoorAccessPointStatus(short s)
         {
             var flags = new List<TransactionFlag>();
-            if ((s & 0x01) != 0) flags.Add(new TransactionFlag { name = "Ap", description = "unlocked" });
-            if ((s & 0x02) != 0) flags.Add(new TransactionFlag { name = "Ap", description = "access (exit) cycle in progress" });
-            if ((s & 0x04) != 0) flags.Add(new TransactionFlag { name = "Ap", description = "forced open" });
-            if ((s & 0x08) != 0) flags.Add(new TransactionFlag { name = "Ap", description = "forced open mask" });
-            if ((s & 0x10) != 0) flags.Add(new TransactionFlag { name = "Ap", description = "held open" });
-            if ((s & 0x20) != 0) flags.Add(new TransactionFlag { name = "Ap", description = "held open mask" });
-            if ((s & 0x40) != 0) flags.Add(new TransactionFlag { name = "Ap", description = "held open pre-alarm status" });
-            if ((s & 0x80) != 0) flags.Add(new TransactionFlag { name = "Ap", description = "door is in \"extended held open\" mode" });
+            if ((s & 0x01) != 0) flags.Add(new TransactionFlag { Name = "Ap", Description = "unlocked" });
+            if ((s & 0x02) != 0) flags.Add(new TransactionFlag { Name = "Ap", Description = "access (exit) cycle in progress" });
+            if ((s & 0x04) != 0) flags.Add(new TransactionFlag { Name = "Ap", Description = "forced open" });
+            if ((s & 0x08) != 0) flags.Add(new TransactionFlag { Name = "Ap", Description = "forced open mask" });
+            if ((s & 0x10) != 0) flags.Add(new TransactionFlag { Name = "Ap", Description = "held open" });
+            if ((s & 0x20) != 0) flags.Add(new TransactionFlag { Name = "Ap", Description = "held open mask" });
+            if ((s & 0x40) != 0) flags.Add(new TransactionFlag { Name = "Ap", Description = "held open pre-alarm status" });
+            if ((s & 0x80) != 0) flags.Add(new TransactionFlag { Name = "Ap", Description = "door is in \"extended held open\" mode" });
             return flags;
         }
 

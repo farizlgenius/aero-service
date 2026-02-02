@@ -1,41 +1,21 @@
-﻿using HID.Aero.ScpdNet.Wrapper;
-using AeroService.Service;
-using AeroService.Service.Impl;
-using AeroService.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Aero.Application.Helpers;
+using HID.Aero.ScpdNet.Wrapper;
+using Microsoft.Extensions.Logging;
 
-namespace AeroService.AeroLibrary
+namespace Aero.Infrastructure.Helpers
 {
-    public sealed class ProcessAeroTransactionHelper
+    public sealed class ProcessAeroTransactionHelper()
     {
-
-        
-        public ProcessAeroTransactionHelper() 
-        {
-            
-        }
-        /*
-         * ser_num
-         * time
-         * source_type
-         * source_number
-         * tran_type
-         * tran_code
-         */
         private static void BaseTransactionProcess(SCPReplyMessage message,string tranCodeDesc)
         {
-            string typeDesc = Description.GetTypeDesc(message.tran.tran_type);
-            string sourceDesc = Description.GetSourceDesc(message.tran.source_type);
+            string typeDesc = DescriptionHelper.GetTypeDesc(message.tran.tran_type);
+            string sourceDesc = DescriptionHelper.GetSourceDesc(message.tran.source_type);
             Console.WriteLine($"ser_num: {message.tran.ser_num}, {DateTimeOffset.FromUnixTimeMilliseconds(message.tran.time).UtcDateTime}, source_desc: {sourceDesc}, source_number: {message.tran.source_number}, tran_type_desc: {typeDesc}, tran_code_desc: {message.tran.tran_code} {tranCodeDesc}");
         }
 
         public static void ProcessTypeSys(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeSysDesc(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeSysDesc(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             Console.WriteLine("###### transaction extend_desc ######");
             Console.WriteLine($"error_code: {message.tran.sys_comm.error_code}");
@@ -48,7 +28,7 @@ namespace AeroService.AeroLibrary
         public static void ProcessTypeSioComm(SCPReplyMessage message) 
         {
 
-            string codeDesc = Description.GetTranCodeTypeSioCommDesc(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeSioCommDesc(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             Console.WriteLine("###### transaction extend_desc ######");
             Console.WriteLine($"error_code (ref from tran_code): {message.tran.tran_code}");
@@ -57,7 +37,7 @@ namespace AeroService.AeroLibrary
             Console.WriteLine($"revision: {message.tran.s_comm.revision}");
             Console.WriteLine($"ser_num: {message.tran.s_comm.ser_num}");
             Console.WriteLine($"nExtendedInfoValid: {message.tran.s_comm.nExtendedInfoValid}");
-            Console.WriteLine($"n_hardware_id: {Description.GetNHardwareIdDesc(message.tran.s_comm.nHardwareId)}");
+            Console.WriteLine($"n_hardware_id: {DescriptionHelper.GetNHardwareIdDesc(message.tran.s_comm.nHardwareId)}");
             Console.WriteLine($"n_hardware_rev: {message.tran.s_comm.nHardwareRev}");
             Console.WriteLine($"n_product_id: {message.tran.s_comm.nProductId}");
             Console.WriteLine($"n_product_ver: {message.tran.s_comm.nProductVer}");
@@ -72,28 +52,28 @@ namespace AeroService.AeroLibrary
 
         public static void ProcessTypeCardBin(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeCardBinDesc(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeCardBinDesc(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
-            string additional = String.Format("bit: {0},data: {1}", message.tran.c_bin.bit_count, UtilityHelper.ByteToHex(message.tran.c_bin.bit_array));
+            string additional = String.Format("bit: {0},data: {1}", message.tran.c_bin.bit_count, UtilitiesHelper.ByteToHex(message.tran.c_bin.bit_array));
             Console.WriteLine("###### transaction extend_desc ######");
             Console.WriteLine($"bit_count: {message.tran.c_bin.bit_count}");
-            Console.WriteLine($"bit_array: {UtilityHelper.ByteToHex(message.tran.c_bin.bit_array)}");
+            Console.WriteLine($"bit_array: {UtilitiesHelper.ByteToHex(message.tran.c_bin.bit_array)}");
             Console.WriteLine("###### transaction extend_desc End ######");
         }
 
         public static void ProcessTypeCardBcd(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeCardBcdDesc(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeCardBcdDesc(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             Console.WriteLine("###### transaction extend_desc ######");
             Console.WriteLine($"digit_count: {message.tran.c_bcd.digit_count}");
-            Console.WriteLine($"bcd_array: {UtilityHelper.ByteToHexStr(message.tran.c_bcd.bcd_array)}");
+            Console.WriteLine($"bcd_array: {UtilitiesHelper.ByteToHexStr(message.tran.c_bcd.bcd_array)}");
             Console.WriteLine("###### transaction extend_desc End ######");
         }
 
         public static void ProcessTypeCardFull(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeCardFullDesc(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeCardFullDesc(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             Console.WriteLine("###### transaction extend_desc ######");
             Console.WriteLine($"format_number: {message.tran.c_full.format_number}");
@@ -101,13 +81,13 @@ namespace AeroService.AeroLibrary
             Console.WriteLine($"cardholder_id: {message.tran.c_full.cardholder_id}");
             Console.WriteLine($"issue_code: {message.tran.c_full.issue_code}");
             Console.WriteLine($"floor_number: {message.tran.c_full.floor_number}");
-            Console.WriteLine($"encoded_card: {UtilityHelper.ByteToHexStr(message.tran.c_full.encoded_card)}");
+            Console.WriteLine($"encoded_card: {UtilitiesHelper.ByteToHexStr(message.tran.c_full.encoded_card)}");
             Console.WriteLine("###### transaction extend_desc End ######");
         }
 
         public static void ProcessTypeDblCardFull(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeCardFullDesc(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeCardFullDesc(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
@@ -116,13 +96,13 @@ namespace AeroService.AeroLibrary
             Console.WriteLine($"cardholder_id: {message.tran.c_fulldbl.cardholder_id}");
             Console.WriteLine($"issue_code: {message.tran.c_fulldbl.issue_code}");
             Console.WriteLine($"floor_number: {message.tran.c_fulldbl.floor_number}");
-            Console.WriteLine($"encoded_card: {UtilityHelper.ByteToHexStr(message.tran.c_fulldbl.encoded_card)}");
+            Console.WriteLine($"encoded_card: {UtilitiesHelper.ByteToHexStr(message.tran.c_fulldbl.encoded_card)}");
             Console.WriteLine("###### transaction extend_desc End ######");
         }
 
         public static void ProcessTypei64CardFull(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeCardFullDesc(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeCardFullDesc(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             Console.WriteLine("###### transaction extend_desc ######");
             Console.WriteLine($"format_number: {message.tran.c_fulli64.format_number}");
@@ -130,13 +110,13 @@ namespace AeroService.AeroLibrary
             Console.WriteLine($"cardholder_id: {message.tran.c_fulli64.cardholder_id}");
             Console.WriteLine($"issue_code: {message.tran.c_fulli64.issue_code}");
             Console.WriteLine($"floor_number: {message.tran.c_fulli64.floor_number}");
-            Console.WriteLine($"encoded_card: {UtilityHelper.ByteToHexStr(message.tran.c_fulli64.encoded_card)}");
+            Console.WriteLine($"encoded_card: {UtilitiesHelper.ByteToHexStr(message.tran.c_fulli64.encoded_card)}");
             Console.WriteLine("###### transaction extend_desc End ######");
         }
 
         public static void ProcessTypei64CardFullc32(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeCardFullDesc(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeCardFullDesc(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
@@ -145,13 +125,13 @@ namespace AeroService.AeroLibrary
             Console.WriteLine($"cardholder_id: {message.tran.c_fulli64i32.cardholder_id}");
             Console.WriteLine($"issue_code: {message.tran.c_fulli64i32.issue_code}");
             Console.WriteLine($"floor_number: {message.tran.c_fulli64i32.floor_number}");
-            Console.WriteLine($"encoded_card: {UtilityHelper.ByteToHexStr(message.tran.c_fulli64i32.encoded_card)}");
+            Console.WriteLine($"encoded_card: {UtilitiesHelper.ByteToHexStr(message.tran.c_fulli64i32.encoded_card)}");
             Console.WriteLine("###### transaction extend_desc End ######");
         }
 
         public static void ProcessTypeCardID(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeCardIDDesc(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeCardIDDesc(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
@@ -164,7 +144,7 @@ namespace AeroService.AeroLibrary
 
         public static void ProcessTypeDblCardID(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeCardIDDesc(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeCardIDDesc(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
@@ -177,7 +157,7 @@ namespace AeroService.AeroLibrary
 
         public static void tranTypei64CardID(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeCardIDDesc(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeCardIDDesc(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
@@ -190,12 +170,12 @@ namespace AeroService.AeroLibrary
 
         public static void tranTypeCos(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeCosDesc(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeCosDesc(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
             Console.WriteLine($"status: {message.tran.cos.status}");
-            Console.WriteLine($"status_desc: {Description.DecodeStatusTypeCoS(message.tran.cos.status,message.tran.source_type)}");
+            Console.WriteLine($"status_desc: {DescriptionHelper.DecodeStatusTypeCoS(message.tran.cos.status,message.tran.source_type)}");
             Console.WriteLine($"old_sts: {message.tran.cos.old_sts}");
             Console.WriteLine("###### transaction extend_desc End ######");
 
@@ -203,7 +183,7 @@ namespace AeroService.AeroLibrary
 
         public static void tranTypeRex(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeREXDesc(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeREXDesc(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
@@ -213,22 +193,22 @@ namespace AeroService.AeroLibrary
 
         public static void tranTypeCosDoor(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeCosDoorDesc(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeCosDoorDesc(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
             Console.WriteLine($"door_status: {message.tran.door.door_status}");
-            Console.WriteLine($"door_status_desc: {Description.GetStatusTypeCosDoorDesc(message.tran.door.door_status)}");
+            Console.WriteLine($"door_status_desc: {DescriptionHelper.GetStatusTypeCosDoorDesc(message.tran.door.door_status)}");
             Console.WriteLine($"ap_prior: {message.tran.door.ap_prior}");
-            Console.WriteLine($"ap_prior_desc: {Description.GetStatusTypeCosDoorDesc(message.tran.door.ap_prior)}");
+            Console.WriteLine($"ap_prior_desc: {DescriptionHelper.GetStatusTypeCosDoorDesc(message.tran.door.ap_prior)}");
             Console.WriteLine($"door_prior: {message.tran.door.door_prior}");
-            Console.WriteLine($"door_prior_desc: {Description.GetStatusTypeCosDoorDesc(message.tran.door.door_prior)}");
+            Console.WriteLine($"door_prior_desc: {DescriptionHelper.GetStatusTypeCosDoorDesc(message.tran.door.door_prior)}");
             Console.WriteLine("###### transaction extend_desc End ######");
         }
 
         public static void tranTypeProcedure(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeProcedureDesc(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeProcedureDesc(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
@@ -238,7 +218,7 @@ namespace AeroService.AeroLibrary
 
         public static void tranTypeUserCmnd(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeUserCmnd(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeUserCmnd(message.tran.tran_code);
             BaseTransactionProcess(message, "command entered by the user");
             
             Console.WriteLine("###### transaction extend_desc ######");
@@ -249,7 +229,7 @@ namespace AeroService.AeroLibrary
 
         public static void tranTypeActivate(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeActivate(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeActivate(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
@@ -259,19 +239,19 @@ namespace AeroService.AeroLibrary
 
         public static void tranTypeAcr(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeAcr(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeAcr(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
             Console.WriteLine($"actl_flags: {message.tran.acr.actl_flags}");
-            Console.WriteLine($"actl_flags_desc: {Description.GetAccessControlFlagDesc(message.tran.acr.actl_flags)}");
+            Console.WriteLine($"actl_flags_desc: {DescriptionHelper.GetAccessControlFlagDesc(message.tran.acr.actl_flags)}");
             Console.WriteLine($"prior_flags: {message.tran.acr.prior_flags}");
-            Console.WriteLine($"prior_flags_desc: {Description.GetAccessControlFlagDesc(message.tran.acr.prior_flags)}");
+            Console.WriteLine($"prior_flags_desc: {DescriptionHelper.GetAccessControlFlagDesc(message.tran.acr.prior_flags)}");
             Console.WriteLine($"prior_mode: {message.tran.acr.prior_mode}");
             Console.WriteLine($"actl_flags_e: {message.tran.acr.actl_flags_e}");
-            Console.WriteLine($"actl_flags_e_desc: {Description.GetAccessControlFlagDesc(message.tran.acr.actl_flags_e)}");
+            Console.WriteLine($"actl_flags_e_desc: {DescriptionHelper.GetAccessControlFlagDesc(message.tran.acr.actl_flags_e)}");
             Console.WriteLine($"prior_flags_e: {message.tran.acr.prior_flags_e}");
-            Console.WriteLine($"prior_flags_e_desc: {Description.GetAccessControlFlagDesc(message.tran.acr.prior_flags_e)}");
+            Console.WriteLine($"prior_flags_e_desc: {DescriptionHelper.GetAccessControlFlagDesc(message.tran.acr.prior_flags_e)}");
             Console.WriteLine($"auth_mod_flags: {message.tran.acr.auth_mod_flags}");
             Console.WriteLine($"prior_auth_mod_flags: {message.tran.acr.prior_auth_mod_flags}");
             Console.WriteLine("###### transaction extend_desc End ######"); 
@@ -279,7 +259,7 @@ namespace AeroService.AeroLibrary
 
         public static void tranTypeMpg(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeMpg(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeMpg(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
@@ -296,19 +276,19 @@ namespace AeroService.AeroLibrary
 
         public static void tranTypeArea(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeArea(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeArea(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
             Console.WriteLine($"status: {message.tran.area.status}");
-            Console.WriteLine($"status_desc: {Description.GetTypeAreaStatusDesc(message.tran.area.status)}");
+            Console.WriteLine($"status_desc: {DescriptionHelper.GetTypeAreaStatusDesc(message.tran.area.status)}");
             Console.WriteLine($"occupancy: {message.tran.area.occupancy}");
             Console.WriteLine("###### transaction extend_desc End ######");
         }
 
         public static void tranTypeUseLimit(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeUseLimit(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeUseLimit(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
@@ -319,7 +299,7 @@ namespace AeroService.AeroLibrary
 
         public static void tranTypeWebActivity(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeWebActivity(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeWebActivity(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
@@ -333,29 +313,29 @@ namespace AeroService.AeroLibrary
 
         public static void tranTypeOperatingMode(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeOperatingMode(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeOperatingMode(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
             Console.WriteLine($"prev_oper: {message.tran.oper_mode.prev_oper}");
-            Console.WriteLine($"prev_oper_desc: {Description.GetTranCodeTypeOperatingMode(message.tran.oper_mode.prev_oper)}");
+            Console.WriteLine($"prev_oper_desc: {DescriptionHelper.GetTranCodeTypeOperatingMode(message.tran.oper_mode.prev_oper)}");
             Console.WriteLine("###### transaction extend_desc End ######");
         }
 
         public static void tranTypeCoSElevator(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeCosElevator(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeCosElevator(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
-            Console.WriteLine($"prevFloorStatus: {Description.GetTranCodeTypeOperatingMode(message.tran.floor.prevFloorStatus)}");
+            Console.WriteLine($"prevFloorStatus: {DescriptionHelper.GetTranCodeTypeOperatingMode(message.tran.floor.prevFloorStatus)}");
             Console.WriteLine($"floorNumber: {message.tran.floor.floorNumber}");
             Console.WriteLine("###### transaction extend_desc End ######");
         }
 
         public static void tranTypeFileDownloadStatus(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeFileDownloadStatus(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeFileDownloadStatus(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
@@ -366,32 +346,32 @@ namespace AeroService.AeroLibrary
 
         public static void tranTypeCoSElevatorAccess(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeCoSElevatorAccess(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeCoSElevatorAccess(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
             Console.WriteLine($"cardholder_id: {message.tran.elev_access.cardholder_id}");
-            Console.WriteLine($"floor: {UtilityHelper.ByteToHexStr(message.tran.elev_access.floors)}");
+            Console.WriteLine($"floor: {UtilitiesHelper.ByteToHexStr(message.tran.elev_access.floors)}");
             Console.WriteLine($"nCardFormat: {message.tran.elev_access.nCardFormat}");
             Console.WriteLine("###### transaction extend_desc End ######");
         }
 
         public static void tranTypeAcrExtFeatureStls(SCPReplyMessage message)
         {
-            string codeDesc = Description.GetTranCodeTypeAcrExtFeatureStls(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeAcrExtFeatureStls(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
             Console.WriteLine($"n_ext_feature_type: {message.tran.extfeat_stls.nExtFeatureType}");
             Console.WriteLine($"nHardwareType: {message.tran.extfeat_stls.nHardwareType}");
-            Console.WriteLine($"nExtFeatureData: {UtilityHelper.ByteToHexStr(message.tran.extfeat_stls.nExtFeatureData)}");
-            Console.WriteLine($"nExtFeatureStatus: {UtilityHelper.ByteToHexStr(message.tran.extfeat_stls.nExtFeatureStatus)}");
+            Console.WriteLine($"nExtFeatureData: {UtilitiesHelper.ByteToHexStr(message.tran.extfeat_stls.nExtFeatureData)}");
+            Console.WriteLine($"nExtFeatureStatus: {UtilitiesHelper.ByteToHexStr(message.tran.extfeat_stls.nExtFeatureStatus)}");
             Console.WriteLine("###### transaction extend_desc End ######");
         }
 
         public static void tranTypeAcrExtFeatureCoS(SCPReplyMessage message) 
         {
-            string codeDesc = Description.GetTranCodeTypeAcrExtFeatureCoS(message.tran.tran_code);
+            string codeDesc = DescriptionHelper.GetTranCodeTypeAcrExtFeatureCoS(message.tran.tran_code);
             BaseTransactionProcess(message, codeDesc);
             
             Console.WriteLine("###### transaction extend_desc ######");
@@ -399,18 +379,18 @@ namespace AeroService.AeroLibrary
             Console.WriteLine($"nHardwareType: {message.tran.extfeat_cos.nHardwareType}");
             Console.WriteLine($"nExtFeaturePoint: {message.tran.extfeat_cos.nExtFeaturePoint}");
             Console.WriteLine($"nStatus: {message.tran.extfeat_cos.nStatus}");
-            Console.WriteLine($"nStatus_desc: {Description.DecodeStatusTypeCoS(message.tran.extfeat_cos.nStatus,message.tran.source_type)}");
+            Console.WriteLine($"nStatus_desc: {DescriptionHelper.DecodeStatusTypeCoS(message.tran.extfeat_cos.nStatus,message.tran.source_type)}");
             Console.WriteLine($"nStatusPrior: {message.tran.extfeat_cos.nStatusPrior}");
-            Console.WriteLine($"nStatusPrior_desc: {Description.DecodeStatusTypeCoS(message.tran.extfeat_cos.nStatusPrior,message.tran.source_type)}");
-            Console.WriteLine($"nExtFeatureData: {UtilityHelper.ByteToHexStr(message.tran.extfeat_stls.nExtFeatureData)}");
-            Console.WriteLine($"nExtFeatureStatus: {UtilityHelper.ByteToHexStr(message.tran.extfeat_stls.nExtFeatureStatus)}");
+            Console.WriteLine($"nStatusPrior_desc: {DescriptionHelper.DecodeStatusTypeCoS(message.tran.extfeat_cos.nStatusPrior,message.tran.source_type)}");
+            Console.WriteLine($"nExtFeatureData: {UtilitiesHelper.ByteToHexStr(message.tran.extfeat_stls.nExtFeatureData)}");
+            Console.WriteLine($"nExtFeatureStatus: {UtilitiesHelper.ByteToHexStr(message.tran.extfeat_stls.nExtFeatureStatus)}");
             Console.WriteLine("###### transaction extend_desc End ######");
         }
 
         public static void tranTypeAsci(SCPReplyMessage message)
         {
             Console.WriteLine("###### transaction extend_desc ######");
-            Console.WriteLine($"bfr: {UtilityHelper.CharToString(message.tran.t_diag.bfr)}");
+            Console.WriteLine($"bfr: {UtilitiesHelper.CharToString(message.tran.t_diag.bfr)}");
             Console.WriteLine("###### transaction extend_desc End ######");
             
         }
@@ -419,7 +399,7 @@ namespace AeroService.AeroLibrary
         {
             Console.WriteLine("###### transaction extend_desc ######");
             Console.WriteLine($"length: {message.tran.s_diag.length}");
-            Console.WriteLine($"bfr: {UtilityHelper.ByteToHexStr(message.tran.s_diag.bfr)}");
+            Console.WriteLine($"bfr: {UtilitiesHelper.ByteToHexStr(message.tran.s_diag.bfr)}");
             Console.WriteLine("###### transaction extend_desc End ######");
         }
 

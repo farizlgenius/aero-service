@@ -12,4 +12,8 @@ public interface IHwRepository : IBaseRepository<Hardware>
       Task<int> UpdateSyncStatusByMacAsync(string mac);
       Task<int> UpdateVerifyMemoryAllocateByComponentIdAsync(short component,bool isSync);
       Task<int> UpdateVerifyHardwareCofigurationMyMacAsync(string mac,bool status);
+      Task UpdateIpAddressAsync(int ScpId,string ip);
+      Task UpdatePortAddressAsync(int ScpId,string port);
+      
+      
 }

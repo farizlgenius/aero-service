@@ -19,6 +19,9 @@ public interface IQHwRepository : IBaseQueryRespository<HardwareDto>
       Task<IEnumerable<short>> GetComponentIdByLocationIdAsync(short location);
       Task<IEnumerable<string>> GetMacsAsync();
       Task<IEnumerable<short>> GetComponentIdsAsync();
+      Task<List<MemoryDto>> CheckAllocateMemoryAsync(IScpReply message);
+      Task AssignPortAsync(IScpReply message);
+      Task AssignIpAddressAsync(IScpReply message);
       
 
 }

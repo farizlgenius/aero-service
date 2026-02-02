@@ -1,6 +1,7 @@
 ﻿
 
 using Aero.Application.DTOs;
+using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Interface
 {
@@ -9,6 +10,7 @@ namespace Aero.Application.Interface
         Task<ResponseDto<PaginationDto>> GetPageTransactionWithCountAsync(PaginationParams param);
 
         Task<ResponseDto<bool>> SetTranIndexAsync(string mac);
+        Task SaveToDatabaseAsync(IScpReply message);
 
     }
 }

@@ -30,4 +30,7 @@ public interface INotificationPublisher
       Task CpNotifyStatus(CpStatus status);
 
       Task CardScanNotifyStatus(CardScanStatus status);
+      Task MpNotifyStatus(MpStatus status);
+      Task EventNotifyRecieve();
+      Task AcrNotifyStatus(AcrStatus status);
 }

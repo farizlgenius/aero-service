@@ -1,11 +1,11 @@
-﻿using AeroService.Aero.CommandService;
-using AeroService.AeroLibrary;
+﻿using Aero.Infrastructure.Services;
+using AeroService.Aero.CommandService;
 
 namespace Aero.Api.Configuration
 {
     public sealed class Aero 
     {
-        public AeroMessage read { get; set; }
+        public AeroMessageListener read { get; set; } 
         public AeroCommandService write { get; set; }
     }
 }

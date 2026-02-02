@@ -57,15 +57,19 @@ public class ScpNotificationPublisher(IHubContext<AeroHub> hub) : INotificationP
             // read.isWaitingCardScan = false;
       }
 
-      public async void MpNotifyStatus(MpStatus status)
+      public async Task MpNotifyStatus(MpStatus status)
       {
             //GetOnlineStatus()
-            var result = hub.Clients.All.SendAsync("MP.STATUS", status);
+            await hub.Clients.All.SendAsync("MP.STATUS", status);
       }
 
-      public void EventNotifyRecieve()
+      public async Task EventNotifyRecieve()
       {
-            hub.Clients.All.SendAsync("EVENT.TRIGGER");
+            await hub.Clients.All.SendAsync("EVENT.TRIGGER");
+      }
+      public async Task AcrNotifyStatus(AcrStatus status)
+      {
+            await hub.Clients.All.SendAsync("ACR.EVENT");
       }
 
 
