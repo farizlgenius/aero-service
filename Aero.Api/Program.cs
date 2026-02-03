@@ -62,9 +62,11 @@ namespace AeroService
                 .Bind(builder.Configuration.GetSection("AppSettings"))
                 .ValidateOnStart();
 
-            builder.Services.Configure<JwtSettings>(
-                builder.Configuration.GetSection("Jwt")
-            );
+            builder.Services
+               .AddOptions<JwtSettings>()
+               .Bind(builder.Configuration.GetSection("Jwt"))
+               .ValidateOnStart();
+
 
             builder.Services.AddRouting(options =>
             {

@@ -4,7 +4,7 @@ using Aero.Domain.Interface;
 
 namespace Aero.Infrastructure.Data.Entities
 {
-    public class CardFormat : NoMacBaseEntity,IComponentId,IDatetime
+    public class CardFormat : NoMacBaseEntity
     {
         public string name { get; set; } = string.Empty;
         public short facility { get; set; }

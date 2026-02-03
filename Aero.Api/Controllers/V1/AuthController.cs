@@ -12,6 +12,8 @@ namespace Aero.Api.Controllers.V1
     [ApiController]
     public class AuthController(IAuthService service) : ControllerBase
     {
+        private readonly TimeSpan _cookieExpiry = TimeSpan.FromHours(3);
+
         [HttpPost("login")]
         public async Task<ActionResult<ResponseDto<TokenDto>>> Login([FromBody] LoginDto model)
         {
@@ -23,7 +25,7 @@ namespace Aero.Api.Controllers.V1
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
                 Path = "/api/v1/Auth",
-                Expires = DateTimeOffset.UtcNow.Add(TimeSpan.FromMinutes(res.data.ExpireInMinute))
+                Expires = DateTimeOffset.UtcNow.Add(_cookieExpiry)
             });
             return Ok(res);
         }
@@ -42,7 +44,7 @@ namespace Aero.Api.Controllers.V1
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
                 Path = "/api/v1/Auth",
-                Expires = DateTimeOffset.UtcNow.Add(TimeSpan.FromMinutes(res.data.ExpireInMinute))
+                Expires = DateTimeOffset.UtcNow.Add(_cookieExpiry)
             });
             return Ok(res);
 

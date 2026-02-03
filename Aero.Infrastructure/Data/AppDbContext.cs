@@ -17,7 +17,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<ControlPoint> control_point { get; set; }
     public DbSet<Strike> strike { get; set; }
     public DbSet<Reader> reader { get; set; }
-    public DbSet<AccessLevel> access_level {get; set;}
+    public DbSet<AccessLevel> access_level { get; set; }
     public DbSet<ScpSetting> scp_setting { get; set; }
     public DbSet<HardwareComponent> hardware_component { get; set; }
     public DbSet<CardFormat> card_format { get; set; }
@@ -73,7 +73,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<Aero.Infrastructure.Data.Entities.Action> action { get; set; }
     public DbSet<Trigger> trigger { get; set; }
     public DbSet<CardHolderAdditional> cardholder_additional { get; set; }
-    public DbSet<CardHolderAccessLevel> cardholder_access_level {get; set;}
+    public DbSet<CardHolderAccessLevel> cardholder_access_level { get; set; }
 
     public DbSet<ActionType> action_type { get; set; }
     public DbSet<TimeZoneCommand> timezone_command { get; set; }
@@ -97,11 +97,11 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-          #region Location
+        #region Location
 
         modelBuilder.Entity<Location>()
             .HasData(
-            new Location { id = 1, component_id = 1, location_name = "Main", description = "Main location", created_date = SeedDefaults.SystemDate, updated_date = SeedDefaults.SystemDate,  is_active = true }
+            new Location { id = 1, component_id = 1, location_name = "Main", description = "Main location", created_date = SeedDefaults.SystemDate, updated_date = SeedDefaults.SystemDate, is_active = true }
             );
 
         modelBuilder.Entity<Location>()
@@ -259,9 +259,16 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .HasPrincipalKey(p => p.component_id)
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<Location>()
+    .HasMany(l => l.card_formats)
+    .WithOne(c => c.location)
+    .HasForeignKey(f => f.location_id)
+    .HasPrincipalKey(p => p.component_id)
+    .OnDelete(DeleteBehavior.Restrict);
+
 
         #endregion
-        
+
 
         #region Hardware 
 
@@ -467,9 +474,9 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
 
 
-        var NoAccess = new AccessLevel { id = 1,  name = "No Access", component_id = 1, location_id = 1, is_active = true };
+        var NoAccess = new AccessLevel { id = 1, name = "No Access", component_id = 1, location_id = 1, is_active = true };
 
-        var FullAccess = new AccessLevel { id = 2,  name = "Full Access", component_id = 2, location_id = 1, is_active = true };
+        var FullAccess = new AccessLevel { id = 2, name = "Full Access", component_id = 2, location_id = 1, is_active = true };
 
 
         modelBuilder.Entity<AccessLevel>().HasData(
@@ -516,7 +523,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
 
         modelBuilder.Entity<Aero.Infrastructure.Data.Entities.TimeZone>().HasData(
-            new Aero.Infrastructure.Data.Entities.TimeZone { id = 1,  name = "Always", component_id = 1, mode = 1, active_time = "", deactive_time = "", is_active = true, location_id = 1 }
+            new Aero.Infrastructure.Data.Entities.TimeZone { id = 1, name = "Always", component_id = 1, mode = 1, active_time = "", deactive_time = "", is_active = true, location_id = 1 }
            );
 
         modelBuilder.Entity<TimeZoneMode>().HasData(
@@ -704,13 +711,13 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .OnDelete(DeleteBehavior.Cascade);
 
 
-        
+
         modelBuilder.Entity<CardHolder>()
             .HasMany(e => e.additionals)
             .WithOne(e => e.card_holder)
             .HasForeignKey(e => e.holder_id)
             .HasPrincipalKey(e => e.user_id)
-            .OnDelete(DeleteBehavior.Cascade); 
+            .OnDelete(DeleteBehavior.Cascade);
 
 
         modelBuilder.Entity<CredentialFlag>()
@@ -761,7 +768,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         #endregion
 
-      
+
 
         #region Transaction
 
@@ -1392,7 +1399,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         modelBuilder.Entity<AccessArea>()
             .HasData(
-                new AccessArea { id = 1, component_id = -1, multi_occ = 0, access_control = 0, occ_control = 0, occ_set = 0, occ_max = 0, occ_up = 0, occ_down = 0, area_flag = 0,  location_id = 1, is_active = true, created_date = SeedDefaults.SystemDate, updated_date = SeedDefaults.SystemDate, name = "Any Area", }
+                new AccessArea { id = 1, component_id = -1, multi_occ = 0, access_control = 0, occ_control = 0, occ_set = 0, occ_max = 0, occ_up = 0, occ_down = 0, area_flag = 0, location_id = 1, is_active = true, created_date = SeedDefaults.SystemDate, updated_date = SeedDefaults.SystemDate, name = "Any Area", }
             );
 
         modelBuilder.Entity<AccessAreaCommand>()

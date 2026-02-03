@@ -23,10 +23,6 @@ public class StartupTask : IHostedService
       private async Task RunOnStartupAsync(CancellationToken cancellationToken)
       {
             Console.WriteLine("Startup function executed...");
-
-            using var scope = _scopeFactory.CreateScope();
-
-            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             // Check for key in specific table
             string folderPath = Path.Combine(AppContext.BaseDirectory, "data");
             if (!Directory.Exists(folderPath))

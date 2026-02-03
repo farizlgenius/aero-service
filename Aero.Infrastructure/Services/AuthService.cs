@@ -10,19 +10,21 @@ using Aero.Application.Interfaces;
 using Aero.Domain.Entities;
 using Aero.Domain.Helpers;
 using Aero.Domain.Interface;
+using Aero.Infrastructure.Settings;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Aero.Application.Services
 {
-    public class AuthService(IJwtSettings settings, IQOperatorRepository qOper,IQRoleRepository qRole,IAuthRepository auth) : IAuthService
+    public class AuthService(IOptions<JwtSettings> settings, IQOperatorRepository qOper,IQRoleRepository qRole,IAuthRepository auth) : IAuthService
     {
-        private readonly string _secret = settings.Secret;
-        private readonly string _issuer = settings.Issuer;
-        private readonly string _audience = settings.Audience;
-        private readonly int _minutes = settings.AccessTokenMinute;
+        private readonly string _secret = settings.Value.Secret;
+        private readonly string _issuer = settings.Value.Issuer;
+        private readonly string _audience = settings.Value.Audience;
+        private readonly int _minutes = settings.Value.AccessTokenMinute;
         private readonly TimeSpan _refreshTtl = TimeSpan.FromHours(3);
-        private readonly TimeSpan _cookieExpiry = TimeSpan.FromHours(3);
+        
 
         private readonly JsonSerializerOptions jopts = new()
         {
@@ -59,7 +61,7 @@ namespace Aero.Application.Services
                 TimeStamp = DateTime.UtcNow,
                 AccessToken = accessToken,
                 RefreshToken = rawRefresh,
-                ExpireInMinute = _cookieExpiry.Minutes
+                ExpireInMinute = (int)_refreshTtl.TotalMinutes
             };
 
             return ResponseHelper.SuccessBuilder<TokenDtoWithRefresh>(dto);
@@ -109,7 +111,7 @@ namespace Aero.Application.Services
                 AccessToken = accessToken,
                 TimeStamp = DateTime.UtcNow,
                 RefreshToken = newRaw,
-                ExpireInMinute = _cookieExpiry.Minutes
+                ExpireInMinute = (int)_refreshTtl.TotalMinutes
             };
             return ResponseHelper.SuccessBuilder<TokenDtoWithRefresh>(dto);
 
