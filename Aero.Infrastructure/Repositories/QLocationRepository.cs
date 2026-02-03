@@ -180,7 +180,7 @@ public class QLocationRepository(AppDbContext context) : IQLocationRespository
             .AsNoTracking()
             .Select(x => new LocationDto
             {
-                  Uuid = x.uuid,
+
                   ComponentId = x.component_id,
                   LocationName = x.location_name,
                   Description = x.description,
@@ -198,7 +198,6 @@ public class QLocationRepository(AppDbContext context) : IQLocationRespository
            .Where(x => x.component_id == componentId)
            .Select(x => new LocationDto
            {
-                 Uuid = x.uuid,
                  ComponentId = x.component_id,
                  LocationName = x.location_name,
                  Description = x.description,
@@ -221,7 +220,6 @@ public class QLocationRepository(AppDbContext context) : IQLocationRespository
                 .Where(x => dto.locationIds.Contains(x.component_id))
                 .Select(x => new LocationDto
                 {
-                      Uuid = x.uuid,
                       ComponentId = x.component_id,
                       LocationName = x.location_name,
                       Description = x.description,
@@ -231,7 +229,7 @@ public class QLocationRepository(AppDbContext context) : IQLocationRespository
             return dtos;
       }
 
-      public async Task<short> GetLowestUnassignedNumberAsync(int max)
+      public async Task<short> GetLowestUnassignedNumberAsync(int max,string mac)
       {
             if (max <= 0) return -1;
 

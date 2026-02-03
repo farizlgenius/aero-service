@@ -1,6 +1,7 @@
 using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using Aero.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,7 +26,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                 .Select(d => new ModuleDto
                 {
                       // Base 
-                      Uuid = d.uuid,
+
                       ComponentId = d.component_id,
                       Mac = d.hardware_mac,
                       HardwareName = d.hardware.name,
@@ -49,7 +50,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                       Readers = d.readers == null ? null : d.readers.Select(x => new ReaderDto
                       {
                             // Base
-                            Uuid = x.uuid,
+                            
                             ComponentId = x.component_id,
                             Mac = x.module.hardware_mac,
                             HardwareName = x.module.hardware.name,
@@ -73,7 +74,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                       {
 
                             // Base 
-                            Uuid = x.uuid,
+                            
                             ComponentId = x.component_id,
                             Mac = x.module.hardware_mac,
                             HardwareName = x.module.hardware.name,
@@ -92,7 +93,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                       Strikes = d.strikes == null ? null : d.strikes.Select(x => new StrikeDto
                       {
                             // Base 
-                            Uuid = x.uuid,
+                            
                             ComponentId = x.component_id,
                             Mac = x.module.hardware_mac,
                             HardwareName = x.module.hardware.name,
@@ -111,7 +112,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                       RequestExits = d.request_exits == null ? null : d.request_exits.Select(x => new RequestExitDto
                       {
                             // Base
-                            Uuid = x.uuid,
+                            
                             ComponentId = x.component_id,
                             Mac = x.module.hardware_mac,
                             HardwareName = x.module.hardware.name,
@@ -129,7 +130,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                       MonitorPoints = d.monitor_points == null ? null : d.monitor_points.Select(x => new MonitorPointDto
                       {
                             // Base 
-                            Uuid = x.uuid,
+                            
                             ComponentId = x.component_id,
                             Mac = x.module.hardware_mac,
                             HardwareName = x.module.hardware.name,
@@ -156,7 +157,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                       ControlPoints = d.control_points == null ? null : d.control_points.Select(x => new ControlPointDto
                       {
                             // Base
-                            Uuid = x.uuid,
+                            
                             ComponentId = x.component_id,
                             Mac = x.module.hardware_mac,
                             HardwareName = x.module.hardware.name,
@@ -217,7 +218,6 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                 .Select(d => new ModuleDto
                 {
                     // Base 
-                    Uuid = d.uuid,
                     ComponentId = d.component_id,
                     Mac = d.hardware_mac,
                     HardwareName = d.hardware.name,
@@ -241,7 +241,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                     Readers = d.readers == null ? null : d.readers.Select(x => new ReaderDto
                     {
                         // Base
-                        Uuid = x.uuid,
+                        
                         ComponentId = x.component_id,
                         Mac = x.module.hardware_mac,
                         HardwareName = x.module.hardware.name,
@@ -265,7 +265,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                     {
 
                         // Base 
-                        Uuid = x.uuid,
+                        
                         ComponentId = x.component_id,
                         Mac = x.module.hardware_mac,
                         HardwareName = x.module.hardware.name,
@@ -284,7 +284,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                     Strikes = d.strikes == null ? null : d.strikes.Select(x => new StrikeDto
                     {
                         // Base 
-                        Uuid = x.uuid,
+                        
                         ComponentId = x.component_id,
                         Mac = x.module.hardware_mac,
                         HardwareName = x.module.hardware.name,
@@ -303,7 +303,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                     RequestExits = d.request_exits == null ? null : d.request_exits.Select(x => new RequestExitDto
                     {
                         // Base
-                        Uuid = x.uuid,
+                        
                         ComponentId = x.component_id,
                         Mac = x.module.hardware_mac,
                         HardwareName = x.module.hardware.name,
@@ -321,7 +321,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                     MonitorPoints = d.monitor_points == null ? null : d.monitor_points.Select(x => new MonitorPointDto
                     {
                         // Base 
-                        Uuid = x.uuid,
+                        
                         ComponentId = x.component_id,
                         Mac = x.module.hardware_mac,
                         HardwareName = x.module.hardware.name,
@@ -348,7 +348,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                     ControlPoints = d.control_points == null ? null : d.control_points.Select(x => new ControlPointDto
                     {
                         // Base
-                        Uuid = x.uuid,
+                        
                         ComponentId = x.component_id,
                         Mac = x.module.hardware_mac,
                         HardwareName = x.module.hardware.name,
@@ -390,7 +390,6 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
             .Select(d => new ModuleDto
             {
                   // Base 
-                  Uuid = d.uuid,
                   ComponentId = d.component_id,
                   Mac = d.hardware_mac,
                   HardwareName = d.hardware.name,
@@ -414,7 +413,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                   Readers = d.readers == null ? null : d.readers.Select(x => new ReaderDto
                   {
                         // Base
-                        Uuid = x.uuid,
+                        
                         ComponentId = x.component_id,
                         Mac = x.module.hardware_mac,
                         HardwareName = x.module.hardware.name,
@@ -438,7 +437,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                   {
 
                         // Base 
-                        Uuid = x.uuid,
+                        
                         ComponentId = x.component_id,
                         Mac = x.module.hardware_mac,
                         HardwareName = x.module.hardware.name,
@@ -457,7 +456,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                   Strikes = d.strikes == null ? null : d.strikes.Select(x => new StrikeDto
                   {
                         // Base 
-                        Uuid = x.uuid,
+                        
                         ComponentId = x.component_id,
                         Mac = x.module.hardware_mac,
                         HardwareName = x.module.hardware.name,
@@ -476,7 +475,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                   RequestExits = d.request_exits == null ? null : d.request_exits.Select(x => new RequestExitDto
                   {
                         // Base
-                        Uuid = x.uuid,
+                        
                         ComponentId = x.component_id,
                         Mac = x.module.hardware_mac,
                         HardwareName = x.module.hardware.name,
@@ -494,7 +493,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                   MonitorPoints = d.monitor_points == null ? null : d.monitor_points.Select(x => new MonitorPointDto
                   {
                         // Base 
-                        Uuid = x.uuid,
+                        
                         ComponentId = x.component_id,
                         Mac = x.module.hardware_mac,
                         HardwareName = x.module.hardware.name,
@@ -521,7 +520,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                   ControlPoints = d.control_points == null ? null : d.control_points.Select(x => new ControlPointDto
                   {
                         // Base
-                        Uuid = x.uuid,
+                        
                         ComponentId = x.component_id,
                         Mac = x.module.hardware_mac,
                         HardwareName = x.module.hardware.name,
@@ -555,7 +554,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
             return res;
       }
 
-      public Task<short> GetLowestUnassignedNumberAsync(int max)
+      public Task<short> GetLowestUnassignedNumberAsync(int max,string mac)
       {
             throw new NotImplementedException();
       }

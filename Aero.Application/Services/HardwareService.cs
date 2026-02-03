@@ -241,13 +241,17 @@ namespace Aero.Application.Services
 
             var timezones = await qTz.GetAsync();
 
+            var timezonesdomain = timezones.Select(x => TimezoneMapper.ToDomain(x)).ToList();
+
             var intervals = timezones
                 .SelectMany(x => x.Intervals)
                 .ToList();
 
-            foreach (var t in timezones)
+            var intervalsdomain = intervals.Select(x => IntervalMapper.ToDomain(x)).ToList();
+
+            foreach (var t in timezonesdomain)
             {
-                if (!tz.ExtendedTimeZoneActSpecification(ScpId, t, intervals, !string.IsNullOrEmpty(t.ActiveTime) ? (int)UtilitiesHelper.DateTimeToElapeSecond(t.ActiveTime) : 0, !string.IsNullOrEmpty(t.DeactiveTime) ? (int)UtilitiesHelper.DateTimeToElapeSecond(t.DeactiveTime) : 0))
+                if (!tz.ExtendedTimeZoneActSpecification(ScpId, t, intervalsdomain, !string.IsNullOrEmpty(t.ActiveTime) ? (int)UtilitiesHelper.DateTimeToElapeSecond(t.ActiveTime) : 0, !string.IsNullOrEmpty(t.DeactiveTime) ? (int)UtilitiesHelper.DateTimeToElapeSecond(t.DeactiveTime) : 0))
                 {
                     errors.Add(MessageBuilder.Unsuccess(mac, Command.TIMEZONE_SPEC));
                 }
@@ -262,17 +266,12 @@ namespace Aero.Application.Services
 
             var accessLevels = await qAlvl.GetAsync();
 
-            var tzs = accessLevels.SelectMany(x => x.AccessLevelDoorTimeZoneDto).Select(x => new CreateUpdateAccessLevelDoorTimeZoneDto
-            {
-                TimeZoneId = x.TimeZone.ComponentId,
-                DoorId = x.Door.ComponentId,
-            }).ToList();
 
             foreach (var a in accessLevels)
             {
-                if (a.component_id == 1 || a.component_id == 2)
+                if (a.ComponentId == 1 || a.ComponentId == 2)
                 {
-                    if (!alvl.AccessLevelConfigurationExtended(ScpId, a.component_id, a.component_id == 1 ? (short)0 : (short)1))
+                    if (!alvl.AccessLevelConfigurationExtended(ScpId, a.ComponentId, a.ComponentId == 1 ? (short)0 : (short)1))
                     {
                         errors.Add(MessageBuilder.Unsuccess(mac, Command.ALVL_CONFIG));
                     }
@@ -280,7 +279,13 @@ namespace Aero.Application.Services
                 }
                 else
                 {
-                    if (!alvl.AccessLevelConfigurationExtendedCreate(ScpId, a.component_id, tzs))
+                    var accss = a.Components.Where(x => x.Mac.Equals(mac)).SelectMany(x => x.DoorComponent.Select(x => new CreateUpdateAccessLevelDoorComponent
+                    {
+                        AcrId = x.AcrId,
+                        TimezoneId = x.TimezoneId
+                    })).ToList();
+
+                    if (!alvl.AccessLevelConfigurationExtendedCreate(ScpId, a.ComponentId, accss))
                     {
                         errors.Add(MessageBuilder.Unsuccess(mac, Command.ALVL_CONFIG));
                     }
@@ -363,7 +368,9 @@ namespace Aero.Application.Services
             // Monitor Group
             var mpgs = await qMpg.GetByMacAsync(mac);
 
-            foreach (var mpGroup in mpgs)
+            var mpgsdomain = mpgs.Select(x => MonitorGroupMapper.ToDomain(x)).ToList();
+
+            foreach (var mpGroup in mpgsdomain)
             {
                 if (!mpg.ConfigureMonitorPointGroup(ScpId, mpGroup.ComponentId, mpGroup.nMpCount, mpGroup.nMpList.ToList()))
                 {
@@ -377,7 +384,8 @@ namespace Aero.Application.Services
             #region Doors
 
             // door
-            var doors = await qDoor.GetByMacAsync(mac);
+            var doorss = await qDoor.GetByMacAsync(mac);
+            var doors = doorss.Select(x => DoorMapper.ToDomain(x)).ToList();
 
             foreach (var door in doors)
             {
@@ -454,7 +462,9 @@ namespace Aero.Application.Services
 
             var cards = await qHolder.GetAsync();
 
-            foreach (var card in cards)
+            var cdomain = cards.Select(x => HolderMapper.ToDomain(x)).ToList(); 
+
+            foreach (var card in cdomain)
             {
                 //var ScpIds = await context.hardware.Select(x => new { x.component_id, x.mac }).ToArrayAsync();
                 var ScpIds = await qHw.GetAsync();
@@ -462,7 +472,7 @@ namespace Aero.Application.Services
                 {
                     foreach (var i in ScpIds)
                     {
-                        if (!holder.AccessDatabaseCardRecord(i.ComponentId, card.Flag, cred.CardNo, cred.IssueCode, cred.Pin, card.AccessLevels.ToList(), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.ActiveDate), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.DeactiveDate)))
+                        if (!holder.AccessDatabaseCardRecord(i.ComponentId, card.Flag, cred.CardNo, cred.IssueCode, cred.Pin, card.AccessLevels.Select(x => x.ComponentId).ToList(), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.ActiveDate), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.DeactiveDate)))
                         {
                             errors.Add(MessageBuilder.Unsuccess(i.Mac, Command.CARD_RECORD));
                         }
@@ -708,7 +718,7 @@ namespace Aero.Application.Services
                 }
             }
 
-            var report = await qId.GetByMacAndComponentIdAsync(dto.Mac, dto.ComponentId);
+            var report = await qId.GetByMacAndScpIdAsync(dto.Mac, dto.ComponentId);
 
             if (report is null) return ResponseHelper.NotFoundBuilder<bool>();
 
@@ -716,7 +726,7 @@ namespace Aero.Application.Services
 
             if (status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS, []);
 
-            status = await qId.DeleteByMacAndComponentIdAsync(report.Mac, report.ScpId);
+            status = await qId.DeleteByMacAndScpIdAsync(report.MacAddress, report.ComponentId);
 
             if (status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS, []);
 

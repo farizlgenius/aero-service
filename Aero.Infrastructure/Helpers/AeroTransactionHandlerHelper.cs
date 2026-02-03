@@ -4,7 +4,7 @@ using Aero.Domain.Entities;
 using HID.Aero.ScpdNet.Wrapper;
 using static HID.Aero.ScpdNet.Wrapper.SCPReplyMessage;
 
-Namespace Aero.Infrastructure.Helpers
+namespace Aero.Infrastructure.Helpers
 {
     public static class AeroTransactionHandlerHelper
     {
@@ -674,10 +674,6 @@ Namespace Aero.Infrastructure.Helpers
             return flag;
         }
 
-        public static string ContructFullName(CardHolder card)
-        {
-            return $"{card.Title} {card.FirstName} {card.MiddleName} {card.LastName}";
-        }
 
         #endregion
 

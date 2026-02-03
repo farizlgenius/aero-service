@@ -1,6 +1,7 @@
 using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using Aero.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,7 +40,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
             .Select(x => new DoorDto
             {
                   // Base 
-                  Uuid = x.uuid,
+                  
                   ComponentId = x.component_id,
                   Mac = x.hardware_mac,
                   LocationId = x.location_id,
@@ -55,7 +56,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
                     .Select(x => new ReaderDto
                     {
                           // Base
-                          Uuid = x.uuid,
+                          
                           ComponentId = x.component_id,
                           Mac = x.module.hardware_mac,
                           HardwareName = x.module.hardware.name,
@@ -83,7 +84,6 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
                   Strk = x.strike == null ? null : new StrikeDto
                   {
                         // Base 
-                        Uuid = x.strike.uuid,
                         ComponentId = x.strike.component_id,
                         Mac = x.strike.module.hardware_mac,
                         HardwareName = x.strike.module.hardware.name,
@@ -106,7 +106,6 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
                   {
 
                         // Base 
-                        Uuid = x.sensor.uuid,
                         ComponentId = x.sensor.component_id,
                         Mac = x.sensor.module.hardware_mac,
                         HardwareName = x.sensor.module.hardware.name,
@@ -128,7 +127,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
                     .Select(x => new RequestExitDto
                     {
                           // Base
-                          Uuid = x.uuid,
+                          
                           ComponentId = x.component_id,
                           Mac = x.module.hardware_mac,
                           HardwareName = x.module.hardware.name,
@@ -209,7 +208,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
             .Select(x => new DoorDto
             {
                   // Base 
-                  Uuid = x.uuid,
+                  
                   ComponentId = x.component_id,
                   Mac = x.hardware_mac,
                   LocationId = x.location_id,
@@ -225,7 +224,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
                     .Select(x => new ReaderDto
                     {
                           // Base
-                          Uuid = x.uuid,
+                          
                           ComponentId = x.component_id,
                           Mac = x.module.hardware_mac,
                           HardwareName = x.module.hardware.name,
@@ -253,7 +252,6 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
                   Strk = x.strike == null ? null : new StrikeDto
                   {
                         // Base 
-                        Uuid = x.strike.uuid,
                         ComponentId = x.strike.component_id,
                         Mac = x.strike.module.hardware_mac,
                         HardwareName = x.strike.module.hardware.name,
@@ -276,7 +274,6 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
                   {
 
                         // Base 
-                        Uuid = x.sensor.uuid,
                         ComponentId = x.sensor.component_id,
                         Mac = x.sensor.module.hardware_mac,
                         HardwareName = x.sensor.module.hardware.name,
@@ -298,7 +295,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
                     .Select(x => new RequestExitDto
                     {
                           // Base
-                          Uuid = x.uuid,
+                          
                           ComponentId = x.component_id,
                           Mac = x.module.hardware_mac,
                           HardwareName = x.module.hardware.name,
@@ -360,7 +357,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
 .Select(x => new DoorDto
 {
       // Base 
-      Uuid = x.uuid,
+      
       ComponentId = x.component_id,
       Mac = x.hardware_mac,
       LocationId = x.location_id,
@@ -376,7 +373,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
         .Select(x => new ReaderDto
         {
               // Base
-              Uuid = x.uuid,
+              
               ComponentId = x.component_id,
               Mac = x.module.hardware_mac,
               HardwareName = x.module.hardware.name,
@@ -404,7 +401,6 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
       Strk = x.strike == null ? null : new StrikeDto
       {
             // Base 
-            Uuid = x.strike.uuid,
             ComponentId = x.strike.component_id,
             Mac = x.strike.module.hardware_mac,
             HardwareName = x.strike.module.hardware.name,
@@ -427,7 +423,6 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
       {
 
             // Base 
-            Uuid = x.sensor.uuid,
             ComponentId = x.sensor.component_id,
             Mac = x.sensor.module.hardware_mac,
             HardwareName = x.sensor.module.hardware.name,
@@ -449,7 +444,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
         .Select(x => new RequestExitDto
         {
               // Base
-              Uuid = x.uuid,
+              
               ComponentId = x.component_id,
               Mac = x.module.hardware_mac,
               HardwareName = x.module.hardware.name,
@@ -511,7 +506,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
             .Select(x => new DoorDto
             {
                   // Base 
-                  Uuid = x.uuid,
+                  
                   ComponentId = x.component_id,
                   Mac = x.hardware_mac,
                   LocationId = x.location_id,
@@ -527,7 +522,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
                     .Select(x => new ReaderDto
                     {
                           // Base
-                          Uuid = x.uuid,
+                          
                           ComponentId = x.component_id,
                           Mac = x.module.hardware_mac,
                           HardwareName = x.module.hardware.name,
@@ -555,7 +550,6 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
                   Strk = x.strike == null ? null : new StrikeDto
                   {
                         // Base 
-                        Uuid = x.strike.uuid,
                         ComponentId = x.strike.component_id,
                         Mac = x.strike.module.hardware_mac,
                         HardwareName = x.strike.module.hardware.name,
@@ -578,7 +572,6 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
                   {
 
                         // Base 
-                        Uuid = x.sensor.uuid,
                         ComponentId = x.sensor.component_id,
                         Mac = x.sensor.module.hardware_mac,
                         HardwareName = x.sensor.module.hardware.name,
@@ -600,7 +593,6 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
                     .Select(x => new RequestExitDto
                     {
                           // Base
-                          Uuid = x.uuid,
                           ComponentId = x.component_id,
                           Mac = x.module.hardware_mac,
                           HardwareName = x.module.hardware.name,
@@ -666,7 +658,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
             return dtos;
       }
 
-      public async Task<short> GetLowestUnassignedNumberAsync(int max)
+      public async Task<short> GetLowestUnassignedNumberAsync(int max,string mac)
       {
             if (max <= 0) return -1;
 

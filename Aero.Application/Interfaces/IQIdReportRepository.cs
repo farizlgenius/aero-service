@@ -6,6 +6,7 @@ namespace Aero.Application.Interfaces;
 
 public interface IQIdReportRepository : IBaseQueryRespository<IdReportDto>
 {
+      Task<IdReportDto> GetByMacAndScpIdAsync(string mac,short scpid);
       Task<int> GetCountAsync();
       Task<bool> IsAnyByMacAndScpIdAsync(string mac,int scpid);
       Task<int> UpdateAsync(IScpReply message);

@@ -2,6 +2,7 @@ using System;
 using System.IO.Compression;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using Aero.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,7 +39,7 @@ public class QAlvlRepository(AppDbContext context) : IQAlvlRepository
             .Select(x => new AccessLevelDto
             {
                   // Base
-                  Uuid = x.uuid,
+
                   LocationId = x.location_id,
                   IsActive = x.is_active,
 
@@ -154,7 +155,7 @@ public class QAlvlRepository(AppDbContext context) : IQAlvlRepository
             .Select(x => new AccessLevelDto
             {
                   // Base
-                  Uuid = x.uuid,
+
                   LocationId = x.location_id,
                   IsActive = x.is_active,
 
@@ -185,7 +186,7 @@ public class QAlvlRepository(AppDbContext context) : IQAlvlRepository
             .Select(x => new AccessLevelDto
             {
                   // Base
-                  Uuid = x.uuid,
+
                   LocationId = x.location_id,
                   IsActive = x.is_active,
 
@@ -207,33 +208,49 @@ public class QAlvlRepository(AppDbContext context) : IQAlvlRepository
             return res;
       }
 
-      public async Task<short> GetLowestUnassignedNumberAsync(int max)
+      public async Task<IEnumerable<CreateUpdateAccessLevelDoorComponent>> GetDoorComponentFromMacAsync(string mac)
+      {
+            var res = await context.access_level
+            .AsNoTracking()
+            .OrderBy(x => x.component_id)
+            .Where(x => x.component.Any(x => x.mac.Equals(mac)))
+            .SelectMany(x => x.component.SelectMany(x => x.door_component.Select(x => new CreateUpdateAccessLevelDoorComponent
+            {
+                  AcrId = x.acr_id,
+                  TimezoneId = x.timezone_id
+            })
+            )).ToArrayAsync();
+
+            return res;
+      }
+
+      public async Task<short> GetLowestUnassignedNumberAsync(int max,string mac)
       {
             if (max <= 0) return -1;
 
-            var query = context.access_level
-                .AsNoTracking()
-                .Select(x => x.component_id);
+                  var query = context.access_level
+                      .AsNoTracking()
+                      .Select(x => x.component_id);
 
-            // Handle empty table case quickly
-            var hasAny = await query.AnyAsync();
-            if (!hasAny)
-                return 1; // start at 1 if table is empty
+                  // Handle empty table case quickly
+                  var hasAny = await query.AnyAsync();
+                  if (!hasAny)
+                        return 1; // start at 1 if table is empty
 
-            // Load all numbers into memory (only the column, so it's lightweight)
-            var numbers = await query.Distinct().OrderBy(x => x).ToListAsync();
+                  // Load all numbers into memory (only the column, so it's lightweight)
+                  var numbers = await query.Distinct().OrderBy(x => x).ToListAsync();
 
-            short expected = 1;
-            foreach (var num in numbers)
-            {
-                if (num != expected)
-                    return expected; // found the lowest missing number
-                expected++;
-            }
+                  short expected = 1;
+                  foreach (var num in numbers)
+                  {
+                        if (num != expected)
+                              return expected; // found the lowest missing number
+                        expected++;
+                  }
 
-            // If none missing in sequence, return next number
-            if (expected > max) return -1;
-            return expected;
+                  // If none missing in sequence, return next number
+                  if (expected > max) return -1;
+                  return expected;
       }
 
       public async Task<string> GetTimezoneNameByComponentIdAsync(short component)

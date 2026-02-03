@@ -16,6 +16,11 @@ public class TzRepository(AppDbContext context) : ITzRepository
             return await context.SaveChangesAsync();
       }
 
+      public Task<int> AddAsync(Timezone data)
+      {
+            throw new NotImplementedException();
+      }
+
       public async Task<int> DeleteByComponentIdAsync(short component)
       {
             var en = await context.timezone

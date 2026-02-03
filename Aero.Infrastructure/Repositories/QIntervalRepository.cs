@@ -15,7 +15,6 @@ public sealed class QIntervalRepository(AppDbContext context) : IQIntervalReposi
             .Select(x => new IntervalDto
             {
                 // Base
-                Uuid = x.uuid,
                 IsActive = x.is_active,
                 LocationId = x.location_id,
 
@@ -49,7 +48,6 @@ public sealed class QIntervalRepository(AppDbContext context) : IQIntervalReposi
             .Select(x => new IntervalDto
             {
                 // Base
-                Uuid = x.uuid,
                 IsActive = x.is_active,
                 LocationId = x.location_id,
 
@@ -83,7 +81,6 @@ public sealed class QIntervalRepository(AppDbContext context) : IQIntervalReposi
             .Select(x => new IntervalDto
             {
                 // Base
-                Uuid = x.uuid,
                 IsActive = x.is_active,
                 LocationId = x.location_id,
 
@@ -116,7 +113,6 @@ public sealed class QIntervalRepository(AppDbContext context) : IQIntervalReposi
             .Select(x => new IntervalDto
             {
                 // Base
-                Uuid = x.uuid,
                 IsActive = x.is_active,
                 LocationId = x.location_id,
 
@@ -139,7 +135,7 @@ public sealed class QIntervalRepository(AppDbContext context) : IQIntervalReposi
             .ToArrayAsync();
       }
 
-      public async Task<short> GetLowestUnassignedNumberAsync(int max)
+      public async Task<short> GetLowestUnassignedNumberAsync(int max,string mac)
       {
             if (max <= 0) return -1;
 

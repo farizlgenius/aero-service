@@ -12,7 +12,6 @@ namespace Aero.Infrastructure.Data.Entities
         public string active_time { get; set; } = string.Empty;
         public string deactive_time { get; set; } = string.Empty;
         public ICollection<TimeZoneInterval> timezone_intervals { get; set; }
-        public ICollection<AccessLevelDoorTimeZone> accesslevel_door_timezones { get; set; }
 
 
     }

@@ -9,6 +9,16 @@ namespace Aero.Infrastructure.Repositories;
 
 public class QMpgRepository(AppDbContext context) : IQMpgRepository
 {
+      public async Task<int> CountByMacAndUpdateTimeAsync(string mac, DateTime sync)
+      {
+            var res = await context.monitor_group
+            .AsNoTracking()
+            .Where(x => x.hardware_mac.Equals(mac) && x.updated_date > sync)
+            .CountAsync();
+
+            return res;
+      }
+
       public async Task<IEnumerable<MonitorGroupDto>> GetAsync()
       {
             var res = await context.monitor_group
@@ -72,6 +82,35 @@ public class QMpgRepository(AppDbContext context) : IQMpgRepository
             .AsNoTracking()
             .OrderBy(x => x.component_id)
             .Where(x => x.location_id == locationId)
+            .Select(en => new MonitorGroupDto
+            {
+                  // Base 
+                  ComponentId = en.component_id,
+                  Mac = en.hardware_mac,
+                  LocationId = en.location_id,
+                  IsActive = en.is_active,
+
+                  // Detail
+                  Name = en.name,
+                  nMpCount = en.n_mp_count,
+                  nMpList = en.n_mp_list.Select(x => new MonitorGroupListDto
+                  {
+                        PointType = x.point_type,
+                        PointNumber = x.point_number,
+                        PointTypeDesc = x.point_type_desc,
+                  }).ToList(),
+            })
+                .ToArrayAsync();
+
+            return res;
+      }
+
+      public async Task<IEnumerable<MonitorGroupDto>> GetByMacAsync(string mac)
+      {
+             var res = await context.monitor_group
+            .AsNoTracking()
+            .OrderBy(x => x.component_id)
+            .Where(x => x.mac.Equals(mac))
             .Select(en => new MonitorGroupDto
             {
                   // Base 

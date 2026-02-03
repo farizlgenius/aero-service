@@ -1,4 +1,5 @@
 using System;
+using Aero.Domain.Interface;
 
 namespace Aero.Domain.Interfaces;
 
@@ -18,6 +19,8 @@ public interface IScpReply
       ICcWebConfigNetwork web_network {get;}
       ICcWebConfigHostCommPrim web_host_comm_prim {get;}
       ITransaction tran {get;}
+
+      ITranStatus tran_sts {get;}
 
 }
 

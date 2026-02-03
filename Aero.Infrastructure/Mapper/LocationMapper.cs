@@ -9,7 +9,6 @@ public sealed class LocationMapper
       {
             return new Location
             {
-                  uuid = data.Uuid,
                   component_id = data.ComponentId,
                   location_name = data.LocationName,
                   description = data.Description,

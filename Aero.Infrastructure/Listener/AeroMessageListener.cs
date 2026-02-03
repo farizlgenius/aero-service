@@ -72,8 +72,7 @@ public sealed class AeroMessageListener(ILogger<AeroMessageListener> logger,Chan
                 queue.Writer.TryWrite(new ScpReplyAdapter(message));
                 break;
             case (int)enSCPReplyType.enSCPReplyTranStatus:
-                queue.Writer.TryWrite(message);
-                hardwareService.TriggerTranStatus(message);
+                queue.Writer.TryWrite(new ScpReplyAdapter(message));
                 MessageHandlerHelper.SCPReplyTranStatus(message);
                 break;
             case (int)enSCPReplyType.enSCPReplySrMsp1Drvr:
@@ -116,8 +115,8 @@ public sealed class AeroMessageListener(ILogger<AeroMessageListener> logger,Chan
                 break;
             case (int)enSCPReplyType.enSCPReplyCmndStatus:
                 // Save to DB if fail
-                commandService.HandleSaveFailCommand(command, message);
-                MessageHandlerHelper.SCPReplyCmndStatus(message, command);
+                // commandService.HandleSaveFailCommand(command, message);
+                MessageHandlerHelper.SCPReplyCmndStatus(message);
                 //command.CompleteCommand($"{message.SCPId}/{message.cmnd_sts.sequence_number}",message.cmnd_sts.status == 1);
                 break;
             case (int)enSCPReplyType.enSCPReplyWebConfigNetwork:

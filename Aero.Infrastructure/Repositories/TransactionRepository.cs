@@ -6,16 +6,19 @@ using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
 using Aero.Infrastructure.Data;
 using Aero.Infrastructure.Helpers;
+using Aero.Infrastructure.Mapper;
 using HID.Aero.ScpdNet.Wrapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aero.Infrastructure.Repositories;
 
-public class TransactionRepository(AppDbContext context,IQHwRepository qHw) : ITransactionRepository
+public class TransactionRepository(AppDbContext context,IQHwRepository qHw,IQCredRepository qCred) : ITransactionRepository
 {
       public async Task<int> AddAsync(Transaction data)
       {
-            throw new NotImplementedException();
+            var en = TransactionMapper.ToEf(data);
+            await context.transaction.AddAsync(en);
+            return await context.SaveChangesAsync();
       }
 
       public async Task<int> DeleteByComponentIdAsync(short component)
@@ -136,29 +139,29 @@ public class TransactionRepository(AppDbContext context,IQHwRepository qHw) : IT
                                     break;
                               case (short)tranType.tranTypeCardFull:
                                     tran = await TransactionBuilder(message);
-                                    var holder = await context.credential.AsNoTracking().Include(x => x.cardholder).OrderBy(x => x.component_id).Where(x => x.card_no.Equals(message.tran.c_full.cardholder_id)).Select(x => x.cardholder).FirstOrDefaultAsync();
-                                    if (holder is not null) tran.Actor = AeroTransactionHandlerHelper.ContructFullName(holder);
+                                    var holder = await qCred.GetCardHolderFullnameByCardNoAsync(message.tran.c_full.cardholder_id);
+                                    tran.Actor = holder;
                                     tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
                                     tran.Remark = $"FAC: {message.tran.c_full.facility_code}   Card: {message.tran.c_full.cardholder_id}";
                                     break;
                               case (short)tranType.tranTypeDblCardFull:
                                     tran = await TransactionBuilder(message);
-                                    holder = await context.credential.AsNoTracking().Include(x => x.cardholder).OrderBy(x => x.component_id).Where(x => x.card_no.Equals(message.tran.c_fulldbl.cardholder_id)).Select(x => x.cardholder).FirstOrDefaultAsync();
-                                    if (holder is not null) tran.Actor = AeroTransactionHandlerHelper.ContructFullName(holder);
+                                    holder = await qCred.GetCardHolderFullnameByCardNoAsync(message.tran.c_full.cardholder_id);
+                                    tran.Actor = holder;
                                     tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
                                     tran.Remark = $"FAC: {message.tran.c_fulldbl.facility_code}   Card: {message.tran.c_fulldbl.cardholder_id}";
                                     break;
                               case (short)tranType.tranTypeI64CardFull:
                                     tran = await TransactionBuilder(message);
-                                    holder = await context.credential.AsNoTracking().Include(x => x.cardholder).OrderBy(x => x.component_id).Where(x => x.card_no.Equals(message.tran.c_fulli64.cardholder_id)).Select(x => x.cardholder).FirstOrDefaultAsync();
-                                    if (holder is not null) tran.Actor = AeroTransactionHandlerHelper.ContructFullName(holder);
+                                    holder = await qCred.GetCardHolderFullnameByCardNoAsync(message.tran.c_full.cardholder_id);
+                                    tran.Actor = holder;
                                     tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
                                     tran.Remark = $"FAC: {message.tran.c_fulli64.facility_code}   Card: {message.tran.c_fulli64.cardholder_id}";
                                     break;
                               case (short)tranType.tranTypeI64CardFullIc32:
                                     tran = await TransactionBuilder(message);
-                                    holder = await context.credential.AsNoTracking().Include(x => x.cardholder).OrderBy(x => x.component_id).Where(x => x.card_no.Equals(message.tran.c_fulli64i32.cardholder_id)).Select(x => x.cardholder).FirstOrDefaultAsync();
-                                    if (holder is not null) tran.Actor = AeroTransactionHandlerHelper.ContructFullName(holder);
+                                    holder = await qCred.GetCardHolderFullnameByCardNoAsync(message.tran.c_full.cardholder_id);
+                                    tran.Actor = holder;
                                     tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
                                     tran.Remark = $"FAC: {message.tran.c_fulli64i32.facility_code}   Card: {message.tran.c_fulli64i32.cardholder_id}";
                                     //tran.TypeCardFull.formatNumber = message.tran.c_full.format_number;
@@ -177,8 +180,8 @@ public class TransactionRepository(AppDbContext context,IQHwRepository qHw) : IT
                                     //tran.TypeCardID.floorNumber = message.tran.c_id.floor_number;
                                     //tran.TypeCardID.cardTypeFlag = message.tran.c_id.card_type_flags;
                                     //tran.TypeCardID.transaction_flag = AeroTransactionHandlerHelper.TypeCardIDCardTypeFlag(message.tran.c_id.card_type_flags);
-                                    holder = await context.credential.AsNoTracking().Include(x => x.cardholder).OrderBy(x => x.component_id).Where(x => x.card_no.Equals(message.tran.c_id.cardholder_id)).Select(x => x.cardholder).FirstOrDefaultAsync();
-                                    if (holder is not null) tran.Actor = AeroTransactionHandlerHelper.ContructFullName(holder);
+                                    holder = await qCred.GetCardHolderFullnameByCardNoAsync(message.tran.c_full.cardholder_id);
+                                    tran.Actor = holder;
                                     tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
                                     break;
                               case (short)tranType.tranTypeREX:
@@ -201,8 +204,8 @@ public class TransactionRepository(AppDbContext context,IQHwRepository qHw) : IT
                               case (short)tranType.tranTypeUseLimit:
                                     tran = await TransactionBuilder(message);
                                     tran.Remark = $"Use count: {message.tran.c_uselimit.use_count}";
-                                    holder = await context.credential.AsNoTracking().Include(x => x.cardholder).OrderBy(x => x.component_id).Where(x => x.card_no.Equals(message.tran.c_uselimit.cardholder_id)).Select(x => x.cardholder).FirstOrDefaultAsync();
-                                    if (holder is not null) tran.Actor = AeroTransactionHandlerHelper.ContructFullName(holder);
+                                    holder = await qCred.GetCardHolderFullnameByCardNoAsync(message.tran.c_full.cardholder_id);
+                                    tran.Actor = holder;
                                     tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
                                     break;
                               case (short)tranType.tranTypeCoSElevator:
@@ -212,8 +215,8 @@ public class TransactionRepository(AppDbContext context,IQHwRepository qHw) : IT
                                     break;
                               case (short)tranType.tranTypeCoSElevatorAccess:
                                     tran = await TransactionBuilder(message);
-                                    holder = await context.credential.AsNoTracking().Include(x => x.cardholder).OrderBy(x => x.component_id).Where(x => x.card_no.Equals(message.tran.elev_access.cardholder_id)).Select(x => x.cardholder).FirstOrDefaultAsync();
-                                    if (holder is not null) tran.Actor = AeroTransactionHandlerHelper.ContructFullName(holder);
+                                    holder = await qCred.GetCardHolderFullnameByCardNoAsync(message.tran.c_full.cardholder_id);
+                                    tran.Actor = holder;
                                     tran.Remark = string.Join(" ", message.tran.elev_access.floors.Select(b => Convert.ToString(b, 2).PadLeft(8, '0')));
                                     tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
                                     break;
@@ -286,39 +289,41 @@ public class TransactionRepository(AppDbContext context,IQHwRepository qHw) : IT
                   default:
                         break;
             }
+
+            return tran;
       }
 
       private async Task<Transaction> TransactionBuilder(IScpReply message)
         {
             var trand = AeroTransactionHandlerHelper.TranCodeDesc((tranType)message.tran.tran_type, message.tran.tran_code);
-            var tran = new AeroService.Entity.Transaction()
+            var tran = new Aero.Domain.Entities.Transaction
             {
                 // Base 
-                component_id = (short)message.ScpId,
-                hardware_mac = await qHw.GetMacFromComponentAsync((short)message.ScpId),
-                hardware_name = await helperService.GetHardwareNameById((short)message.ScpId),
-                location_id = await context.hardware
+                ComponentId = (short)message.ScpId,
+                Mac = await qHw.GetMacFromComponentAsync((short)message.ScpId),
+                HardwareName = await qHw.GetNameByComponentIdAsync((short)message.ScpId),
+                LocationId = await context.hardware
                   .AsNoTracking()
                   .OrderBy(h => h.component_id)
                   .Where(h => h.component_id == (short)message.ScpId)
                   .Select(h => h.location_id)
                   .FirstOrDefaultAsync(),
-                created_date = DateTime.UtcNow,
-                updated_date = DateTime.UtcNow,
+            //     created_date = DateTime.UtcNow,
+            //     updated_date = DateTime.UtcNow,
 
                 // extend_desc
-                date = UtilitiesHelper.UnixToDateTimeParts(message.tran.time)[0],
-                time = UtilitiesHelper.UnixToDateTimeParts(message.tran.time)[1],
-                serial_number = message.tran.ser_num,
-                source = message.tran.source_number,
-                source_module = AeroTransactionHandlerHelper.Source((tranSrc)message.tran.source_type),
-                source_desc = AeroTransactionHandlerHelper.SourceDesc((tranSrc)message.tran.source_type),
-                type = message.tran.tran_type,
-                type_desc = AeroTransactionHandlerHelper.TypeDesc((tranType)message.tran.tran_type),
-                tran_code = message.tran.tran_code,
-                tran_code_desc = trand[0],
-                extend_desc = trand[1],
-                transaction_flag = new List<TransactionFlag>()
+                Date = UtilitiesHelper.UnixToDateTimeParts(message.tran.time)[0],
+                Time = UtilitiesHelper.UnixToDateTimeParts(message.tran.time)[1],
+                SerialNumber = message.tran.ser_num,
+                Source = message.tran.source_number,
+                SourceModule = AeroTransactionHandlerHelper.Source((tranSrc)message.tran.source_type),
+                SourceDesc = AeroTransactionHandlerHelper.SourceDesc((tranSrc)message.tran.source_type),
+                Type = message.tran.tran_type,
+                TypeDesc = AeroTransactionHandlerHelper.TypeDesc((tranType)message.tran.tran_type),
+                TranCode = message.tran.tran_code,
+                TranCodeDesc = trand[0],
+                ExtendDesc = trand[1],
+                TransactionFlags = new List<TransactionFlag>()
             };
 
             return tran;

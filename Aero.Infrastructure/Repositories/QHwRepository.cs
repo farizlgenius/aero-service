@@ -4,6 +4,7 @@ using Aero.Application.Helpers;
 using Aero.Application.Interfaces;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
+using Aero.Domain.Interfaces;
 using Aero.Infrastructure.Data;
 using Aero.Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
@@ -13,34 +14,7 @@ namespace Aero.Infrastructure.Repositories;
 
 public sealed class QHwRepository(AppDbContext context) : IQHwRepository
 {
-    public async Task<short> GetLowestUnassignedNumberAsync(int max)
-    {
-        if (max <= 0) return -1;
-
-        var query = context.hardware
-            .AsNoTracking()
-            .Select(x => x.component_id);
-
-        // Handle empty table case quickly
-        var hasAny = await query.AnyAsync();
-        if (!hasAny)
-            return 1; // start at 1 if table is empty
-
-        // Load all numbers into memory (only the column, so it's lightweight)
-        var numbers = await query.Distinct().OrderBy(x => x).ToListAsync();
-
-        short expected = 1;
-        foreach (var num in numbers)
-        {
-            if (num != expected)
-                return expected; // found the lowest missing number
-            expected++;
-        }
-
-        // If none missing in sequence, return next number
-        if (expected > max) return -1;
-        return expected;
-    }
+    
     public async Task<IEnumerable<HardwareDto>> GetAsync()
     {
         var dtos = await context.hardware
@@ -864,10 +838,53 @@ public sealed class QHwRepository(AppDbContext context) : IQHwRepository
         return mems;
     }
 
-    public Task<short> GetLowestUnassignedNumberAsync(int max, string mac)
+    public async Task<short> GetLowestUnassignedNumberAsync(int max, string mac)
+    {
+        if (max <= 0) return -1;
+
+        var query = context.hardware
+            .AsNoTracking()
+            .Select(x => x.component_id);
+
+        // Handle empty table case quickly
+        var hasAny = await query.AnyAsync();
+        if (!hasAny)
+            return 1; // start at 1 if table is empty
+
+        // Load all numbers into memory (only the column, so it's lightweight)
+        var numbers = await query.Distinct().OrderBy(x => x).ToListAsync();
+
+        short expected = 1;
+        foreach (var num in numbers)
+        {
+            if (num != expected)
+                return expected; // found the lowest missing number
+            expected++;
+        }
+
+        // If none missing in sequence, return next number
+        if (expected > max) return -1;
+        return expected;
+    }
+
+    public Task AssignPortAsync(IScpReply message)
     {
         throw new NotImplementedException();
     }
 
-    
+    public Task AssignIpAddressAsync(IScpReply message)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<string> GetNameByComponentIdAsync(short component)
+    {
+        var res = await context.hardware.AsNoTracking()
+        .Where(x => x.component_id == component)
+        .OrderBy(x => x.component_id)
+        .Select(x => x.name)
+        .FirstOrDefaultAsync() ?? "";
+
+        return res;
+    }
 }

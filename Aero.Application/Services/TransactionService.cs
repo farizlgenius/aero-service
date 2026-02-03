@@ -4,11 +4,12 @@ using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
+using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Services
 {
-    public sealed class TransactionService(IQTransactionRepository qTran, IScpCommand scp, IQHwRepository qHw) : ITransactionService
+    public sealed class TransactionService(IQTransactionRepository qTran,ITransactionRepository rTran, IScpCommand scp, IQHwRepository qHw) : ITransactionService
     {
         public async Task<ResponseDto<PaginationDto>> GetPageTransactionWithCountAsync(PaginationParams param)
         {
@@ -34,18 +35,18 @@ namespace Aero.Application.Services
             try
             {
                 if (!await qHw.IsAnyByComponentId((short)message.ScpId)) return;
-                AeroService.Entity.Transaction tran = new AeroService.Entity.Transaction();
+                var tran = await rTran.HandleTransactionAsync(message);
                 
 
-                if (string.IsNullOrEmpty(tran.date) && string.IsNullOrEmpty(tran.time)) return;
+                if (string.IsNullOrEmpty(tran.Date) && string.IsNullOrEmpty(tran.Time)) return;
 
-                await context.transaction.AddAsync(tran);
-                context.SaveChanges();
+                await rTran.AddAsync(tran);
+            
 
             }
             catch (Exception ex)
             {
-                logger.LogError(ex.Message);
+                
             }
 
 

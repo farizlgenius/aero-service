@@ -1,7 +1,8 @@
-﻿using Aero.Api.Configuration;
-using Aero.Application.DTOs;
+﻿using Aero.Application.DTOs;
 using Aero.Application.Interface;
 using Aero.Domain.Entities;
+using Aero.Domain.Interfaces;
+using Aero.Infrastructure.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -9,9 +10,8 @@ namespace Aero.Api.Controllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class LicenseController(ILicenseService service,IOptions<AppSettings> options) : ControllerBase
+    public class LicenseController(ILicenseService service) : ControllerBase
     {
-        private readonly AppSettings settings = options.Value;
 
         [HttpGet]
         public async Task<ActionResult<ResponseDto<bool>>> CheckLicenseAsync()

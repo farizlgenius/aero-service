@@ -11,4 +11,5 @@ public interface IQCredRepository : IBaseQueryRespository<CredentialDto>
       Task<bool> IsAnyWithCardNumberAsync(long cardno);
       Task<IEnumerable<CredentialDto>> GetByUserIdAsync(string UserId);
       Task<IEnumerable<Mode>> GetCredentialFlagAsync();
+      Task<string> GetCardHolderFullnameByCardNoAsync(long cardno);
 }

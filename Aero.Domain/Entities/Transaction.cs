@@ -2,7 +2,7 @@ using System;
 
 namespace Aero.Domain.Entities;
 
-public sealed class Transaction
+public sealed class Transaction : BaseEntity
 {
       
         public string Date { get; set; } = string.Empty;

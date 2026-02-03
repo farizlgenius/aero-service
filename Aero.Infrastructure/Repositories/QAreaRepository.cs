@@ -1,6 +1,7 @@
 using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using Aero.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -53,7 +54,6 @@ public class QAreaRepository(AppDbContext context) : IQAreaRepository
             .Select(entity => new AccessAreaDto
             {
                   // Base
-                  Uuid = entity.uuid,
                   LocationId = entity.location_id,
                   IsActive = entity.is_active,
                   component_id = entity.component_id,
@@ -83,7 +83,6 @@ public class QAreaRepository(AppDbContext context) : IQAreaRepository
             .Select(entity => new AccessAreaDto
             {
                   // Base
-                  Uuid = entity.uuid,
                   LocationId = entity.location_id,
                   IsActive = entity.is_active,
                   component_id = entity.component_id,
@@ -113,7 +112,6 @@ public class QAreaRepository(AppDbContext context) : IQAreaRepository
             .Select(entity => new AccessAreaDto
             {
                   // Base
-                  Uuid = entity.uuid,
                   LocationId = entity.location_id,
                   IsActive = entity.is_active,
                   component_id = entity.component_id,
@@ -148,7 +146,7 @@ public class QAreaRepository(AppDbContext context) : IQAreaRepository
             return dto;
       }
 
-      public async Task<short> GetLowestUnassignedNumberAsync(int max)
+      public async Task<short> GetLowestUnassignedNumberAsync(int max,string mac)
       {
             if (max <= 0) return -1;
 

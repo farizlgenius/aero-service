@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Aero.Application.Interface;
 using Aero.Application.DTOs;
+using Aero.Domain.Entities;
 
 namespace Aero.Api.Controllers.V1
 {

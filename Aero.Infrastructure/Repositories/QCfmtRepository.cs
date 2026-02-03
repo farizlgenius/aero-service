@@ -26,7 +26,6 @@ public class QCfmtRepository(AppDbContext context) : IQCfmtRepository
             .Select(x => new CardFormatDto
             {
                 // Baes 
-                Uuid = x.uuid,
                 IsActive = x.is_active,
 
                 // extend_desc
@@ -60,7 +59,6 @@ public class QCfmtRepository(AppDbContext context) : IQCfmtRepository
             .Select(x => new CardFormatDto
             {
                 // Baes 
-                Uuid = x.uuid,
                 IsActive = x.is_active,
 
                 // extend_desc
@@ -94,7 +92,6 @@ public class QCfmtRepository(AppDbContext context) : IQCfmtRepository
             .Select(x => new CardFormatDto
             {
                 // Baes 
-                Uuid = x.uuid,
                 IsActive = x.is_active,
 
                 // extend_desc
@@ -119,7 +116,7 @@ public class QCfmtRepository(AppDbContext context) : IQCfmtRepository
             return res;
       }
 
-      public async Task<short> GetLowestUnassignedNumberAsync(int max)
+      public async Task<short> GetLowestUnassignedNumberAsync(int max,string mac)
       {
             if (max <= 0) return -1;
 

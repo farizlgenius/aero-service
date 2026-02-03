@@ -1,6 +1,7 @@
 using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using Aero.Domain.Interfaces;
 using HID.Aero.ScpdNet.Wrapper;
 
@@ -32,7 +33,9 @@ public sealed class CfmtCommandService : BaseAeroCommand,ICfmtCommand
             return flag;
       }
 
-      public bool CardFormatterConfiguration(short ScpId, CardFormatDto dto, short funtionId)
+
+
+      public bool CardFormatterConfiguration(short ScpId, CardFormat dto, short funtionId)
       {
             CC_SCP_CFMT cc = new CC_SCP_CFMT();
             cc.lastModified = 0;

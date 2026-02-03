@@ -4,6 +4,7 @@ namespace Aero.Application.DTOs
 {
     public class ControlPointDto : BaseEntity
     {
+        public short CpId {get; set;}
         public string Name { get; set; } = string.Empty;
         public short ModuleId { get; set; }
         public string ModuleDescription { get; set; } = string.Empty;

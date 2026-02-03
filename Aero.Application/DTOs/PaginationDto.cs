@@ -1,5 +1,4 @@
-﻿using AeroService.DTOs.Transactions;
-
+﻿
 namespace Aero.Application.DTOs
 {
     public class PaginationDto

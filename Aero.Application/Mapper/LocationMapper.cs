@@ -14,7 +14,6 @@ public sealed class LocationMapper
                   Description = dto.Description,
                   IsActive = dto.IsActive,
                   ComponentId = dto.ComponentId,
-                  Uuid = dto.Uuid
             };
       }
 

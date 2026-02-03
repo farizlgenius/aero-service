@@ -8,7 +8,6 @@ namespace Aero.Infrastructure.Data.Entities
     {
         [Key]
         public int id { get; set; }
-        public string uuid { get; set; } = Guid.NewGuid().ToString();
         public int tag_no { get; set; }
         public int hardware_id { get; set; }
         public string? hardware_mac { get; set; } = string.Empty;

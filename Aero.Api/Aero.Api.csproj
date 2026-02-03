@@ -6,10 +6,25 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
+  <None Include="..\Aero.Infrastructure\Libs\Windows\**\*">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <TargetPath>%(Filename)%(Extension)</TargetPath>
+  </None>
+</ItemGroup>
+
+<ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-arm64'">
+  <None Include="..\Aero.Infrastructure\Libs\Linux\**\*">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <TargetPath>%(Filename)%(Extension)</TargetPath>
+  </None>
+</ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.22" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.22" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.23" />
     <PackageReference Include="MiNET" Version="1.0.2304" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />

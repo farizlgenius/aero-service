@@ -7,6 +7,7 @@ using Aero.Application.Interfaces;
 using Aero.Domain.Entities;
 using Aero.Domain.Helpers;
 using Aero.Domain.Interface;
+using Aero.Domain.Interfaces;
 #if WINDOWS
 using System.Management;
 #endif

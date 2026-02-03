@@ -35,7 +35,6 @@ public class HolRepository(AppDbContext context) : IHolRepository
             .Select(p => new Holiday 
             {
                 // Base
-                Uuid = p.uuid,
                 LocationId = p.location_id,
                 IsActive = p.is_active,
 

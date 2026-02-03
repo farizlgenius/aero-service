@@ -1,6 +1,5 @@
-﻿using AeroService.Data;
-using AeroService.DTO;
-using AeroService.DTO.Feature;
+﻿using Aero.Application.DTOs;
+using Aero.Application.Interface;
 using AeroService.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -32,7 +31,7 @@ namespace Aero.Api.Controllers.V1
         [Authorize]
         public async Task<ActionResult<ResponseDto<FeatureDto>>> GetOneFeatureByRoleIdAsync(short roleid, short featureid)
         {
-            var res = await service.GetOneFeatureByRoleIdAsync(roleid, featureid);
+            var res = await service.GetFeatureByRoleIdAndFeatureIdAsync(roleid, featureid);
             return Ok(res);
         }
     }

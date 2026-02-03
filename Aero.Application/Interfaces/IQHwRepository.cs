@@ -22,6 +22,7 @@ public interface IQHwRepository : IBaseQueryRespository<HardwareDto>
       Task<List<MemoryDto>> CheckAllocateMemoryAsync(IScpReply message);
       Task AssignPortAsync(IScpReply message);
       Task AssignIpAddressAsync(IScpReply message);
+      Task<string> GetNameByComponentIdAsync(short component);
       
 
 }

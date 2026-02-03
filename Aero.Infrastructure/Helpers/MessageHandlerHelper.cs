@@ -71,7 +71,6 @@ namespace Aero.Infrastructure.Helpers
                 case (short)tranType.tranTypeCardFull:
                     if (isWaitingCardScan && ScanScpId == message.SCPId && ScanAcrNo == message.tran.source_number)
                     {
-                        credentialService.TriggerCardScan(message.SCPId,message.tran.c_full.format_number,message.tran.c_full.facility_code,message.tran.c_full.cardholder_id,message.tran.c_full.issue_code,message.tran.c_full.floor_number);
                         queue.Writer.TryWrite(new ScpReplyAdapter(message));
                         isWaitingCardScan = false;
                         ScanAcrNo = -1;
@@ -82,7 +81,7 @@ namespace Aero.Infrastructure.Helpers
                 case (short)tranType.tranTypeDblCardFull:
                     if (isWaitingCardScan && ScanScpId == message.SCPId && ScanAcrNo == message.tran.source_number)
                     {
-                        credentialService.TriggerCardScan(message.SCPId, message.tran.c_fulldbl.format_number, message.tran.c_fulldbl.facility_code, message.tran.c_fulldbl.cardholder_id, message.tran.c_fulldbl.issue_code, message.tran.c_fulldbl.floor_number);
+                        queue.Writer.TryWrite(new ScpReplyAdapter(message));
                         isWaitingCardScan = false;
                         ScanAcrNo = -1;
                         ScanScpId = -1;
@@ -92,7 +91,7 @@ namespace Aero.Infrastructure.Helpers
                 case (short)tranType.tranTypeI64CardFull:
                     if (isWaitingCardScan && ScanScpId == message.SCPId && ScanAcrNo == message.tran.source_number)
                     {
-                        credentialService.TriggerCardScan(message.SCPId, message.tran.c_fulli64.format_number, message.tran.c_fulli64.facility_code, message.tran.c_fulli64.cardholder_id, message.tran.c_fulli64.issue_code, message.tran.c_fulli64.floor_number);
+                        queue.Writer.TryWrite(new ScpReplyAdapter(message));
                         isWaitingCardScan = false;
                         ScanAcrNo = -1;
                         ScanScpId = -1;
@@ -102,7 +101,7 @@ namespace Aero.Infrastructure.Helpers
                 case (short)tranType.tranTypeI64CardFullIc32:
                     if (isWaitingCardScan && ScanScpId == message.SCPId && ScanAcrNo == message.tran.source_number)
                     {
-                        credentialService.TriggerCardScan(message.SCPId, message.tran.c_fulli64i32.format_number, message.tran.c_fulli64i32.facility_code, message.tran.c_fulli64i32.cardholder_id, message.tran.c_fulli64i32.issue_code, message.tran.c_fulli64i32.floor_number);
+                         queue.Writer.TryWrite(new ScpReplyAdapter(message));
                         isWaitingCardScan = false;
                         ScanAcrNo = -1;
                         ScanScpId = -1;
@@ -122,13 +121,13 @@ namespace Aero.Infrastructure.Helpers
                     switch (message.tran.source_type)
                     {
                         case (short)tranSrc.tranSrcSioCom:
-                            moduleService.TriggerDeviceStatus(message.SCPId,message.tran.source_number,DecodeHelper.TypeSioCommStatusDecode(message.tran.cos.status),null,null,null);
+                            queue.Writer.TryWrite(new ScpReplyAdapter(message));
                             break;
                         case (short)tranSrc.tranSrcMP:
-                            mpService.TriggerDeviceStatus(message.SCPId, message.tran.source_number, DecodeHelper.TypeCosStatusDecode(message.tran.cos.status));
+                            queue.Writer.TryWrite(new ScpReplyAdapter(message));
                             break;
                         case (short)tranSrc.tranSrcCP:
-                            cpService.TriggerDeviceStatus(helperService.GetMacFromId((short)message.SCPId), message.tran.source_number, DecodeHelper.TypeCosStatusDecode(message.tran.cos.status));
+                            queue.Writer.TryWrite(new ScpReplyAdapter(message));
                             break;
                         default:
                             break;
@@ -139,7 +138,7 @@ namespace Aero.Infrastructure.Helpers
                     ProcessAeroTransactionHelper.tranTypeRex(message);
                     break;
                 case (short)tranType.tranTypeCoSDoor:
-                    doorService.TriggerDeviceStatusAsync(message.SCPId,message.tran.source_number,"",DescriptionHelper.GetAccessPointStatusFlagResult(message.tran.door.ap_status));
+                    queue.Writer.TryWrite(new ScpReplyAdapter(message));
                     ProcessAeroTransactionHelper.tranTypeCosDoor(message);
                     break;
                 case (short)tranType.tranTypeProcedure:
@@ -152,7 +151,7 @@ namespace Aero.Infrastructure.Helpers
                     ProcessAeroTransactionHelper.tranTypeActivate(message);
                     break;
                 case (short)tranType.tranTypeAcr:
-                    doorService.TriggerDeviceStatusAsync(message.SCPId, message.tran.source_number, DescriptionHelper.GetACRModeForStatus(message.tran.tran_code), "");
+                    queue.Writer.TryWrite(new ScpReplyAdapter(message));
                     ProcessAeroTransactionHelper.tranTypeAcr(message);
                     break;
                 case (short)tranType.tranTypeMpg:

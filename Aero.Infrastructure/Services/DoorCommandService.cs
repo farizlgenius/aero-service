@@ -1,6 +1,7 @@
 using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using Aero.Domain.Interfaces;
 using HID.Aero.ScpdNet.Wrapper;
 
@@ -25,7 +26,7 @@ public class DoorCommandService : BaseAeroCommand, IDoorCommand
             return flag;
       }
 
-      public bool AccessControlReaderConfiguration(short ScpId, short AcrNo, DoorDto dto)
+      public bool AccessControlReaderConfiguration(short ScpId, short AcrNo, Door dto)
       {
             CC_ACR cc_acr = new CC_ACR();
             cc_acr.lastModified = 0;

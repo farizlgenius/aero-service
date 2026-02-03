@@ -7,5 +7,5 @@ public interface IAppSettings
       IAeroDrivers AeroDrivers {get;}
       ILicenseSettings LicenseSettings {get;}
       IApiEndpoints ApiEndpoints {get;}
-      IPorts Ports {get; }
+      IPorts Ports {get;}
 }

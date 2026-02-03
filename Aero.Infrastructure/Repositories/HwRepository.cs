@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aero.Infrastructure.Repositories;
 
-public sealed class HwRepository(AppDbContext context, IScpCommand scp, INotificationPublisher publisher) : IHwRepository
+public sealed class HwRepository(AppDbContext context) : IHwRepository
 {
       public async Task<int> AddAsync(Hardware entity)
       {
@@ -207,7 +207,7 @@ public sealed class HwRepository(AppDbContext context, IScpCommand scp, INotific
             await context.SaveChangesAsync();
       }
 
-      public async Task UpdatePortAddressAsync(int ScpId, short port)
+      public async Task UpdatePortAddressAsync(int ScpId, string port)
       {
             var hw = await context.hardware
             .Where(x => x.component_id == (short)ScpId)
@@ -215,7 +215,7 @@ public sealed class HwRepository(AppDbContext context, IScpCommand scp, INotific
 
             if (hw is null) return;
 
-            hw.port = ip;
+            hw.port = port;
 
             context.hardware.Update(hw);
             await context.SaveChangesAsync();

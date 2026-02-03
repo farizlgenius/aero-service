@@ -63,7 +63,8 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<bool>> CreateAsync(ControlPointDto dto)
         {
-            var componentId = await qCp.GetLowestUnassignedNumberAsync(10,dto.Mac);
+            var componentId = await qCp.GetLowestUnassignedNumberAsync(10,"");
+            var cpId = await qCp.GetLowestUnassignedNumberAsync(10,dto.Mac);
 
             if (componentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
@@ -72,6 +73,8 @@ namespace Aero.Application.Services
             var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
 
             var domain = ControlPointMapper.ToDomain(dto);
+            domain.ComponentId = componentId;
+            domain.CpId = cpId;
 
             if (!cp.OutputPointSpecification(ScpId, domain.ModuleId, domain.OutputNo, modeNo))
             {
@@ -79,7 +82,7 @@ namespace Aero.Application.Services
             }
             
 
-            if (!cp.ControlPointConfiguration(ScpId, domain.ModuleId, (short)componentId, domain.OutputNo, domain.DefaultPulse))
+            if (!cp.ControlPointConfiguration(ScpId, domain.ModuleId,cpId, domain.OutputNo, domain.DefaultPulse))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.CONTROL_CONFIG));
 
@@ -101,7 +104,7 @@ namespace Aero.Application.Services
 
             var scpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
 
-            if (!cp.ControlPointConfiguration(scpId, -1, (short)dto.ComponentId, dto.OutputNo, dto.DefaultPulse))
+            if (!cp.ControlPointConfiguration(scpId, -1, dto.CpId, dto.OutputNo, dto.DefaultPulse))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(dto.Mac,Command.CONTROL_CONFIG));
             }
@@ -126,7 +129,7 @@ namespace Aero.Application.Services
                 return ResponseHelper.UnsuccessBuilderWithString<ControlPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.OUTPUT_SPEC));
             }
 
-            if (!cp.ControlPointConfiguration(scpId, domain.ModuleId, (short)domain.ComponentId, domain.OutputNo, domain.DefaultPulse))
+            if (!cp.ControlPointConfiguration(scpId, domain.ModuleId, domain.CpId, domain.OutputNo, domain.DefaultPulse))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<ControlPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.CONTROL_CONFIG));
             }

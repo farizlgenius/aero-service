@@ -10,6 +10,6 @@ public interface IQIntervalRepository : IBaseQueryRespository<IntervalDto>
       Task<bool> IsAnyReferenceByComponentAsync(short component);
       Task<IEnumerable<short>> GetTimezoneIntervalIdByIntervalComponentIdAsync(short component);
       Task<IEnumerable<IntervalDto>> GetIntervalFromTimezoneComponentIdAsync(short component); 
-      Task<int> CountByLocationIdAndUpdateTimeAsync(short locationId, DateTime sync)
+      Task<int> CountByLocationIdAndUpdateTimeAsync(short locationId, DateTime sync);
 
 }

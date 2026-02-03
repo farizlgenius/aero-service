@@ -1,4 +1,5 @@
 using System;
+using Aero.Domain.Entities;
 
 namespace Aero.Application.Entities;
 

@@ -1,4 +1,5 @@
 using System;
+using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
 using HID.Aero.ScpdNet.Wrapper;
 
@@ -21,4 +22,6 @@ public class ScpReplyAdapter(SCPReplyMessage message) : IScpReply
       public ICcWebConfigHostCommPrim web_host_comm_prim => message.web_host_comm_prim is null ? null : new CcWebConfigHostCommPrim(message.web_host_comm_prim);
 
       public ITransaction tran => message.tran is null ? null : new TransactionAdaptor(message.tran);
+
+      public ITranStatus tran_sts => message.tran_sts is null ? null : new TranStatusAdapter(message.tran_sts);
 }

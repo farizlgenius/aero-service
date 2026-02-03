@@ -1,5 +1,3 @@
-using System;
-using Aero.Application.Interfaces;
 using Aero.Domain.Interfaces;
 
 namespace Aero.Infrastructure.Settings;
@@ -7,10 +5,18 @@ namespace Aero.Infrastructure.Settings;
 public sealed class AppSettings : IAppSettings
 {
 
-      public IApiEndpoints ApiEndpoints { get; set; }
-      public IPorts Ports {get; set;}
+      public ApiEndpoints ApiEndpoints { get; set; }
+      public Ports Ports {get; set;}
 
-      public IAeroDrivers AeroDrivers {get; set;}
+      public AeroDrivers AeroDrivers {get; set;}
 
-      public ILicenseSettings LicenseSettings {get; set;}
+      public LicenseSettings LicenseSettings {get; set;}
+
+      IAeroDrivers IAppSettings.AeroDrivers => AeroDrivers;
+
+      ILicenseSettings IAppSettings.LicenseSettings => LicenseSettings;
+
+      IApiEndpoints IAppSettings.ApiEndpoints => ApiEndpoints;
+
+      IPorts IAppSettings.Ports => Ports;
 }

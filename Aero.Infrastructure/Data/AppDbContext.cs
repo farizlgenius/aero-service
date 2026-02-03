@@ -97,6 +97,171 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+          #region Location
+
+        modelBuilder.Entity<Location>()
+            .HasData(
+            new Location { id = 1, component_id = 1, location_name = "Main", description = "Main location", created_date = SeedDefaults.SystemDate, updated_date = SeedDefaults.SystemDate,  is_active = true }
+            );
+
+        modelBuilder.Entity<Location>()
+            .HasMany(l => l.hardwares)
+            .WithOne(h => h.location)
+            .HasForeignKey(f => f.location_id)
+            .HasPrincipalKey(p => p.component_id)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+            .HasMany(l => l.modules)
+            .WithOne(h => h.location)
+            .HasForeignKey(f => f.location_id)
+            .HasPrincipalKey(p => p.component_id)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+            .HasMany(l => l.control_points)
+            .WithOne(h => h.location)
+            .HasForeignKey(f => f.location_id)
+            .HasPrincipalKey(p => p.component_id)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+           .HasMany(l => l.monitor_points)
+           .WithOne(h => h.location)
+           .HasForeignKey(f => f.location_id)
+           .HasPrincipalKey(p => p.component_id)
+           .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+           .HasMany(l => l.accesslevels)
+           .WithOne(h => h.location)
+           .HasForeignKey(f => f.location_id)
+           .HasPrincipalKey(p => p.component_id)
+           .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+           .HasMany(l => l.areas)
+           .WithOne(h => h.location)
+           .HasForeignKey(f => f.location_id)
+           .HasPrincipalKey(p => p.component_id)
+           .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+           .HasMany(l => l.cardholders)
+           .WithOne(h => h.location)
+           .HasForeignKey(f => f.location_id)
+           .HasPrincipalKey(p => p.component_id)
+           .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+           .HasMany(l => l.doors)
+           .WithOne(h => h.location)
+           .HasForeignKey(f => f.location_id)
+           .HasPrincipalKey(p => p.component_id)
+           .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+           .HasMany(l => l.monitor_groups)
+           .WithOne(h => h.location)
+           .HasForeignKey(f => f.location_id)
+           .HasPrincipalKey(p => p.component_id)
+           .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+            .HasMany(l => l.transactions)
+            .WithOne(c => c.location)
+             .HasForeignKey(f => f.location_id)
+           .HasPrincipalKey(p => p.component_id)
+           .OnDelete(DeleteBehavior.SetNull);
+
+
+        modelBuilder.Entity<Location>()
+          .HasMany(l => l.credentials)
+          .WithOne(c => c.location)
+          .HasForeignKey(f => f.location_id)
+          .HasPrincipalKey(p => p.component_id)
+          .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+          .HasMany(l => l.credentials)
+          .WithOne(c => c.location)
+          .HasForeignKey(f => f.location_id)
+          .HasPrincipalKey(p => p.component_id)
+          .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+          .HasMany(l => l.holidays)
+          .WithOne(c => c.location)
+          .HasForeignKey(f => f.location_id)
+          .HasPrincipalKey(p => p.component_id)
+          .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+          .HasMany(l => l.readers)
+          .WithOne(c => c.location)
+          .HasForeignKey(f => f.location_id)
+          .HasPrincipalKey(p => p.component_id)
+          .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+          .HasMany(l => l.request_exits)
+          .WithOne(c => c.location)
+          .HasForeignKey(f => f.location_id)
+          .HasPrincipalKey(p => p.component_id)
+          .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+          .HasMany(l => l.sensors)
+          .WithOne(c => c.location)
+          .HasForeignKey(f => f.location_id)
+          .HasPrincipalKey(p => p.component_id)
+          .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+          .HasMany(l => l.strikes)
+          .WithOne(c => c.location)
+          .HasForeignKey(f => f.location_id)
+          .HasPrincipalKey(p => p.component_id)
+          .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+            .HasMany(l => l.triggers)
+            .WithOne(c => c.location)
+            .HasForeignKey(f => f.location_id)
+            .HasPrincipalKey(p => p.component_id)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+            .HasMany(l => l.procedures)
+            .WithOne(c => c.location)
+            .HasForeignKey(f => f.location_id)
+            .HasPrincipalKey(p => p.component_id)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+            .HasMany(l => l.actions)
+            .WithOne(c => c.location)
+            .HasForeignKey(f => f.location_id)
+            .HasPrincipalKey(p => p.component_id)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+            .HasMany(l => l.intervals)
+            .WithOne(c => c.location)
+            .HasForeignKey(f => f.location_id)
+            .HasPrincipalKey(p => p.component_id)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+            .HasMany(l => l.timezones)
+            .WithOne(c => c.location)
+            .HasForeignKey(f => f.location_id)
+            .HasPrincipalKey(p => p.component_id)
+            .OnDelete(DeleteBehavior.Restrict);
+
+
+        #endregion
+        
 
         #region Hardware 
 
@@ -302,9 +467,9 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
 
 
-        var NoAccess = new AccessLevel { id = 1, uuid = SeedDefaults.SystemGuid, name = "No Access", component_id = 1, location_id = 1, is_active = true };
+        var NoAccess = new AccessLevel { id = 1,  name = "No Access", component_id = 1, location_id = 1, is_active = true };
 
-        var FullAccess = new AccessLevel { id = 2, uuid = SeedDefaults.SystemGuid, name = "Full Access", component_id = 2, location_id = 1, is_active = true };
+        var FullAccess = new AccessLevel { id = 2,  name = "Full Access", component_id = 2, location_id = 1, is_active = true };
 
 
         modelBuilder.Entity<AccessLevel>().HasData(
@@ -351,7 +516,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
 
         modelBuilder.Entity<Aero.Infrastructure.Data.Entities.TimeZone>().HasData(
-            new Aero.Infrastructure.Data.Entities.TimeZone { id = 1, uuid = SeedDefaults.SystemGuid, name = "Always", component_id = 1, mode = 1, active_time = "", deactive_time = "", is_active = true, location_id = 1 }
+            new Aero.Infrastructure.Data.Entities.TimeZone { id = 1,  name = "Always", component_id = 1, mode = 1, active_time = "", deactive_time = "", is_active = true, location_id = 1 }
            );
 
         modelBuilder.Entity<TimeZoneMode>().HasData(
@@ -571,7 +736,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             new CardFormat
             {
                 id = 1,
-                uuid = SeedDefaults.SystemGuid,
                 is_active = true,
                 name = "26 bits (No Fac)",
                 facility = -1,
@@ -589,6 +753,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
                 ch_loc = 9,
                 ic_ln = 0,
                 ic_loc = 0,
+                location_id = 1,
                 created_date = SeedDefaults.SystemDate,
                 updated_date = SeedDefaults.SystemDate,
             }
@@ -596,170 +761,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         #endregion
 
-        #region Location
-
-        modelBuilder.Entity<Location>()
-            .HasData(
-            new Location { id = 1, component_id = 1, location_name = "Main", description = "Main location", created_date = SeedDefaults.SystemDate, updated_date = SeedDefaults.SystemDate, uuid = SeedDefaults.SystemGuid, is_active = true }
-            );
-
-        modelBuilder.Entity<Location>()
-            .HasMany(l => l.hardwares)
-            .WithOne(h => h.location)
-            .HasForeignKey(f => f.location_id)
-            .HasPrincipalKey(p => p.component_id)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Location>()
-            .HasMany(l => l.modules)
-            .WithOne(h => h.location)
-            .HasForeignKey(f => f.location_id)
-            .HasPrincipalKey(p => p.component_id)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Location>()
-            .HasMany(l => l.control_points)
-            .WithOne(h => h.location)
-            .HasForeignKey(f => f.location_id)
-            .HasPrincipalKey(p => p.component_id)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Location>()
-           .HasMany(l => l.monitor_points)
-           .WithOne(h => h.location)
-           .HasForeignKey(f => f.location_id)
-           .HasPrincipalKey(p => p.component_id)
-           .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Location>()
-           .HasMany(l => l.accesslevels)
-           .WithOne(h => h.location)
-           .HasForeignKey(f => f.location_id)
-           .HasPrincipalKey(p => p.component_id)
-           .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Location>()
-           .HasMany(l => l.areas)
-           .WithOne(h => h.location)
-           .HasForeignKey(f => f.location_id)
-           .HasPrincipalKey(p => p.component_id)
-           .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Location>()
-           .HasMany(l => l.cardholders)
-           .WithOne(h => h.location)
-           .HasForeignKey(f => f.location_id)
-           .HasPrincipalKey(p => p.component_id)
-           .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Location>()
-           .HasMany(l => l.doors)
-           .WithOne(h => h.location)
-           .HasForeignKey(f => f.location_id)
-           .HasPrincipalKey(p => p.component_id)
-           .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Location>()
-           .HasMany(l => l.monitor_groups)
-           .WithOne(h => h.location)
-           .HasForeignKey(f => f.location_id)
-           .HasPrincipalKey(p => p.component_id)
-           .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Location>()
-            .HasMany(l => l.transactions)
-            .WithOne(c => c.location)
-             .HasForeignKey(f => f.location_id)
-           .HasPrincipalKey(p => p.component_id)
-           .OnDelete(DeleteBehavior.SetNull);
-
-
-        modelBuilder.Entity<Location>()
-          .HasMany(l => l.credentials)
-          .WithOne(c => c.location)
-          .HasForeignKey(f => f.location_id)
-          .HasPrincipalKey(p => p.component_id)
-          .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Location>()
-          .HasMany(l => l.credentials)
-          .WithOne(c => c.location)
-          .HasForeignKey(f => f.location_id)
-          .HasPrincipalKey(p => p.component_id)
-          .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Location>()
-          .HasMany(l => l.holidays)
-          .WithOne(c => c.location)
-          .HasForeignKey(f => f.location_id)
-          .HasPrincipalKey(p => p.component_id)
-          .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Location>()
-          .HasMany(l => l.readers)
-          .WithOne(c => c.location)
-          .HasForeignKey(f => f.location_id)
-          .HasPrincipalKey(p => p.component_id)
-          .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Location>()
-          .HasMany(l => l.request_exits)
-          .WithOne(c => c.location)
-          .HasForeignKey(f => f.location_id)
-          .HasPrincipalKey(p => p.component_id)
-          .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Location>()
-          .HasMany(l => l.sensors)
-          .WithOne(c => c.location)
-          .HasForeignKey(f => f.location_id)
-          .HasPrincipalKey(p => p.component_id)
-          .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Location>()
-          .HasMany(l => l.strikes)
-          .WithOne(c => c.location)
-          .HasForeignKey(f => f.location_id)
-          .HasPrincipalKey(p => p.component_id)
-          .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Location>()
-            .HasMany(l => l.triggers)
-            .WithOne(c => c.location)
-            .HasForeignKey(f => f.location_id)
-            .HasPrincipalKey(p => p.component_id)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Location>()
-            .HasMany(l => l.procedures)
-            .WithOne(c => c.location)
-            .HasForeignKey(f => f.location_id)
-            .HasPrincipalKey(p => p.component_id)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Location>()
-            .HasMany(l => l.actions)
-            .WithOne(c => c.location)
-            .HasForeignKey(f => f.location_id)
-            .HasPrincipalKey(p => p.component_id)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Location>()
-            .HasMany(l => l.intervals)
-            .WithOne(c => c.location)
-            .HasForeignKey(f => f.location_id)
-            .HasPrincipalKey(p => p.component_id)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Location>()
-            .HasMany(l => l.timezones)
-            .WithOne(c => c.location)
-            .HasForeignKey(f => f.location_id)
-            .HasPrincipalKey(p => p.component_id)
-            .OnDelete(DeleteBehavior.Restrict);
-
-
-        #endregion
+      
 
         #region Transaction
 
@@ -1390,7 +1392,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         modelBuilder.Entity<AccessArea>()
             .HasData(
-                new AccessArea { id = 1, component_id = -1, multi_occ = 0, access_control = 0, occ_control = 0, occ_set = 0, occ_max = 0, occ_up = 0, occ_down = 0, area_flag = 0, uuid = SeedDefaults.SystemGuid, location_id = 1, is_active = true, created_date = SeedDefaults.SystemDate, updated_date = SeedDefaults.SystemDate, name = "Any Area", }
+                new AccessArea { id = 1, component_id = -1, multi_occ = 0, access_control = 0, occ_control = 0, occ_set = 0, occ_max = 0, occ_up = 0, occ_down = 0, area_flag = 0,  location_id = 1, is_active = true, created_date = SeedDefaults.SystemDate, updated_date = SeedDefaults.SystemDate, name = "Any Area", }
             );
 
         modelBuilder.Entity<AccessAreaCommand>()

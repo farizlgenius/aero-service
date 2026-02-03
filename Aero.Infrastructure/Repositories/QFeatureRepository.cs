@@ -117,7 +117,7 @@ public class QFeatureRepository(AppDbContext context) : IQFeatureRepository
             return dtos;
       }
 
-      public Task<short> GetLowestUnassignedNumberAsync(int max)
+      public Task<short> GetLowestUnassignedNumberAsync(int max,string mac)
       {
             throw new NotImplementedException();
       }

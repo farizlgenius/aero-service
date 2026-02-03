@@ -4,6 +4,7 @@ using Aero.Api.Constants;
 using Aero.Api.Exceptions.Middleware;
 using Aero.Api.Hubs;
 using Aero.Api.Logging;
+using Aero.Api.Publisher;
 using Aero.Api.Worker;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
@@ -12,15 +13,16 @@ using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
 using Aero.Infrastructure.Data;
+using Aero.Infrastructure.Helpers;
 using Aero.Infrastructure.Listenser;
 using Aero.Infrastructure.Mapper;
+using Aero.Infrastructure.Repositories;
 using Aero.Infrastructure.Services;
 using Aero.Infrastructure.Settings;
 using AeroService.Service.Impl;
-using Mapster;
-using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using StackExchange.Redis;
@@ -55,9 +57,10 @@ namespace AeroService
 
             // Bind AppSettings section
             // Bind AppSettings section to AppSettings class
-            builder.Services.Configure<AppSettings>(
-                builder.Configuration.GetSection("AppSettings")
-                );
+            builder.Services
+                .AddOptions<AppSettings>()
+                .Bind(builder.Configuration.GetSection("AppSettings"))
+                .ValidateOnStart();
 
             builder.Services.Configure<JwtSettings>(
                 builder.Configuration.GetSection("Jwt")
@@ -105,10 +108,6 @@ namespace AeroService
                 };
             });
 
-            // Mapper Service
-            // Register Mapster DI
-            builder.Services.AddMapster();
-            builder.Services.AddScoped<IMapper, ServiceMapper>();
 
             // Http Service
             
@@ -169,8 +168,73 @@ namespace AeroService
             builder.Services.AddSingleton<IRedisSettings,RedisSettings>();
 
             // DI for Command
+            builder.Services.AddScoped<IAeroDriverCommand,AeroDriverCommandService>();
+            builder.Services.AddScoped<IAlvlCommand,AlvlCommandService>();
+            builder.Services.AddScoped<IAreaCommand,AreaCommandService>();
+            builder.Services.AddScoped<IAuthService,AuthService>();
+            builder.Services.AddSingleton<BaseAeroCommand>();
+            builder.Services.AddScoped<ICfmtCommand,CfmtCommandService>();
+            builder.Services.AddScoped<ICpCommand,CpCommandService>();
+            builder.Services.AddScoped<IDoorCommand,DoorCommandService>();
+            builder.Services.AddScoped<IHolCommand,HolCommandService>();
+            builder.Services.AddScoped<IHolderCommand,HolderCommandService>();
+            builder.Services.AddScoped<IMpCommand,MpCommandService>();
+            builder.Services.AddScoped<IMpgCommand,MpgCommandService>();
+            builder.Services.AddScoped<IProcCommand,ProcCommandService>();
+            builder.Services.AddScoped<IScpCommand,ScpCommandService>();
+            builder.Services.AddScoped<ISioCommand,SioCommandService>();
+            builder.Services.AddScoped<ITrigCommand,TriggerCommandService>();
+            builder.Services.AddScoped<ITzCommand,TzCommandService>();
+            
 
             // DI for Repository
+            builder.Services.AddScoped<IAlvlRepository,AlvlRepository>();
+            builder.Services.AddScoped<IQAlvlRepository,QAlvlRepository>();
+            builder.Services.AddScoped<IAreaRepository,AreaRepository>();
+            builder.Services.AddScoped<IQAreaRepository,QAreaRepository>();
+            builder.Services.AddScoped<IAuthRepository,AuthRepository>();
+            builder.Services.AddScoped<ICfmtRepository,CfmtRepository>();
+            builder.Services.AddScoped<IQCfmtRepository,QCfmtRepository>();
+            builder.Services.AddScoped<ICpRepository,CpRepository>();
+            builder.Services.AddScoped<IQCpRepository,QControlPointRepository>();
+            builder.Services.AddScoped<ICredRepository,CredRepository>();
+            builder.Services.AddScoped<IQCredRepository,QCredRepository>();
+            builder.Services.AddScoped<IDoorRepository,DoorRepository>();
+            builder.Services.AddScoped<IQDoorRepository,QDoorRepository>();
+            builder.Services.AddScoped<IHolderRepository,HolderRepository>();
+            builder.Services.AddScoped<IQHolderRepository,QHolderRepository>();
+            builder.Services.AddScoped<IHttpRepository,HttpRepository>();
+            builder.Services.AddScoped<IHwRepository,HwRepository>();
+            builder.Services.AddScoped<IQHwRepository,QHwRepository>();
+            builder.Services.AddScoped<IIntervalRepository,IntervalRepository>();
+            builder.Services.AddScoped<IQIntervalRepository,QIntervalRepository>();
+            builder.Services.AddScoped<ILocationRepository,LocationRepository>();
+            builder.Services.AddScoped<IQLocationRespository,QLocationRepository>();
+            builder.Services.AddScoped<IQModuleRepository,QModuleRepository>();
+            builder.Services.AddScoped<IMpgRepository,MpgRepository>();
+            builder.Services.AddScoped<IQMpgRepository,QMpgRepository>();
+            builder.Services.AddScoped<IMpRepository,MpRepository>();
+            builder.Services.AddScoped<IQMpRepository,QMpRepository>();
+            builder.Services.AddScoped<IOperatorRepository,OperatorRepository>();
+            builder.Services.AddScoped<IQOperatorRepository,QOperatorRepository>();
+            builder.Services.AddScoped<IProcedureRepository,ProcedureRepository>();
+            builder.Services.AddScoped<IQProcRepository,QProcRepository>();
+            builder.Services.AddScoped<ITriggerRepository,TriggerRepository>();
+            builder.Services.AddScoped<IQTrigRepository,QTrigRepository>();
+            builder.Services.AddScoped<IRedisRepository,RedisRepository>();
+            builder.Services.AddScoped<IRoleRepository,RoleRepository>();
+            builder.Services.AddScoped<IQRoleRepository,QRoleRepository>();
+            builder.Services.AddScoped<ISettingRepository,SettingRepository>();
+            builder.Services.AddScoped<IQSettingRepository,QSettingRepository>();
+            builder.Services.AddScoped<ITransactionRepository,TransactionRepository>();
+            builder.Services.AddScoped<IQTransactionRepository,QTransactionRepository>();
+            builder.Services.AddScoped<ITzRepository,TzRepository>();
+            builder.Services.AddScoped<IQTzRepository,QTzRepository>();
+            builder.Services.AddScoped<IQFeatureRepository, QFeatureRepository>();
+            builder.Services.AddScoped<IQHolRepository, QHolRepository>();
+            builder.Services.AddScoped<IHolRepository, HolRepository>();
+            builder.Services.AddScoped<IQIdReportRepository, QIdReportRepository>();
+            builder.Services.AddScoped<IQActionRepository, QActionRepository>();
 
 
             // DI for Service
@@ -185,7 +249,7 @@ namespace AeroService
             builder.Services.AddScoped<IIntervalService, IntervalService>();
             builder.Services.AddScoped<IMonitorPointService, MonitorPointService>();
             builder.Services.AddScoped<IModuleService, ModuleService>();
-            builder.Services.AddScoped<ICommandService, CommandService>();
+            builder.Services.AddScoped<IAeroCommandService, AeroCommandService>();
             builder.Services.AddScoped<ICredentialService, CredentialService>();
             builder.Services.AddScoped<ICardHolderService, CardHolderService>();
             builder.Services.AddScoped<IControlPointService, ControlPointService>();
@@ -199,10 +263,14 @@ namespace AeroService
             builder.Services.AddScoped<IProcedureService, ProcedureService>();
             builder.Services.AddScoped<ITriggerService, TriggerService>();
             builder.Services.AddScoped<IMonitorGroupService, MonitorGroupService>();
-            builder.Services.AddScoped<ICommandService, CommandService>();
+            builder.Services.AddScoped<IAeroCommandService, AeroCommandService>();
             builder.Services.AddScoped<ISettingService, SettingService>();
-      
-            builder.Services.AddScoped<CommandService>();
+            builder.Services.AddScoped<IFeatureService, FeatureService>();
+            builder.Services.AddScoped<ILicenseService,LicenseService>();
+            builder.Services.AddScoped<IMachineFingerprint,MachineFingerprint>();
+            builder.Services.AddScoped<INotificationPublisher, ScpNotificationPublisher>();
+
+            builder.Services.AddScoped<IAeroCommandService,AeroCommandService>();
             builder.Services.AddSignalR();
             builder.Services.AddScoped<IdReportService>();
             builder.Services.AddTransient<ExceptionHandlingMiddleware>();

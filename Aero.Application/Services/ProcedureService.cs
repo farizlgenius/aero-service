@@ -10,7 +10,7 @@ using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 
 namespace Aero.Application.Services{
-    public sealed class ProcedureService(IProcedureRepository rProc,IQProcedureRepository qProc,IQHwRepository qHw,IProcCommand proc) : IProcedureService
+    public sealed class ProcedureService(IProcedureRepository rProc,IQProcRepository qProc,IQHwRepository qHw,IProcCommand proc) : IProcedureService
     {
         public async Task<ResponseDto<bool>> CreateAsync(ProcedureDto dto)
         {

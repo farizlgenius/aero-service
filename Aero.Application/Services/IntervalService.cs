@@ -82,11 +82,13 @@ namespace Aero.Application.Services
                 {
 
                     var t = await qTz.GetByComponentIdAsync(tzs);
+                    var tdomain = TimezoneMapper.ToDomain(t);
                     var a = await qInterval.GetIntervalFromTimezoneComponentIdAsync(tzs);
+                    var adomain = a.Select(x => IntervalMapper.ToDomain(x) ).ToList();
 
                     long active = UtilitiesHelper.DateTimeToElapeSecond(t.ActiveTime);
                     long deactive = UtilitiesHelper.DateTimeToElapeSecond(t.DeactiveTime);
-                    if (!tz.ExtendedTimeZoneActSpecification(id,t,a.ToList(),(int)active,(int)deactive))
+                    if (!tz.ExtendedTimeZoneActSpecification(id,tdomain,adomain,(int)active,(int)deactive))
                     {
                         errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id),Command.TIMEZONE_SPEC));
                     }

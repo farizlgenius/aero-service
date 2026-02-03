@@ -2,6 +2,7 @@ using System;
 using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interfaces;
+using Aero.Domain.Interfaces;
 using Aero.Infrastructure.Data;
 using Aero.Infrastructure.Mapper;
 using Microsoft.EntityFrameworkCore;
@@ -72,6 +73,28 @@ public class QIdReportRepository(AppDbContext context) : IQIdReportRepository
       public Task<IEnumerable<IdReportDto>> GetByLocationIdAsync(short locationId)
       {
             throw new NotImplementedException();
+      }
+
+      public async Task<IdReportDto> GetByMacAndScpIdAsync(string mac, short scpid)
+      {
+             var dtos = await context.id_report
+               .AsNoTracking()
+               .Where(x => x.mac.Equals(mac) && x.scp_id == scpid)
+               .Select(x => new IdReportDto
+               {
+                     ComponentId = 0,
+                     SerialNumber = x.serial_number,
+                     MacAddress = x.mac,
+                     Ip = x.ip,
+                     Port = x.port,
+                     Firmware = x.firmware,
+                     HardwareType = x.device_id,
+                     HardwareTypeDescription = ""
+               })
+               .OrderBy(x => x.ComponentId)
+               .FirstOrDefaultAsync();
+
+            return dtos;
       }
 
       public async Task<int> GetCountAsync()

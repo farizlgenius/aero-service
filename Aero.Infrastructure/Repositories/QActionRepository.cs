@@ -33,7 +33,7 @@ public sealed class QActionRepository(AppDbContext context) : IQActionRepository
             throw new NotImplementedException();
       }
 
-      public Task<short> GetLowestUnassignedNumberAsync(int max)
+      public Task<short> GetLowestUnassignedNumberAsync(int max,string mac)
       {
             throw new NotImplementedException();
       }

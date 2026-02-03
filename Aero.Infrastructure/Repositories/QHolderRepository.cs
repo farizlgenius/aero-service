@@ -16,7 +16,6 @@ public class QHolderRepository(AppDbContext context) : IQHolderRepository
             .Select(c => new CardHolderDto
             {
                   // Base
-                  Uuid = c.uuid,
                   LocationId = c.location_id,
                   IsActive = c.is_active,
 
@@ -41,7 +40,6 @@ public class QHolderRepository(AppDbContext context) : IQHolderRepository
                 .Select(c => new CredentialDto
                 {
                       // Base
-                      Uuid = c.uuid,
                       LocationId = c.location_id,
                       IsActive = c.is_active,
 
@@ -73,7 +71,6 @@ public class QHolderRepository(AppDbContext context) : IQHolderRepository
             .Select(c => new CardHolderDto
             {
                   // Base
-                  Uuid = c.uuid,
                   LocationId = c.location_id,
                   IsActive = c.is_active,
 
@@ -98,7 +95,6 @@ public class QHolderRepository(AppDbContext context) : IQHolderRepository
                 .Select(c => new CredentialDto
                 {
                       // Base
-                      Uuid = c.uuid,
                       LocationId = c.location_id,
                       IsActive = c.is_active,
 
@@ -130,7 +126,6 @@ public class QHolderRepository(AppDbContext context) : IQHolderRepository
             .Select(c => new CardHolderDto
             {
                   // Base
-                  Uuid = c.uuid,
                   LocationId = c.location_id,
                   IsActive = c.is_active,
 
@@ -155,7 +150,6 @@ public class QHolderRepository(AppDbContext context) : IQHolderRepository
                 .Select(c => new CredentialDto
                 {
                       // Base
-                      Uuid = c.uuid,
                       LocationId = c.location_id,
                       IsActive = c.is_active,
 
@@ -187,7 +181,6 @@ public class QHolderRepository(AppDbContext context) : IQHolderRepository
             .Select(c => new CardHolderDto
             {
                   // Base
-                  Uuid = c.uuid,
                   LocationId = c.location_id,
                   IsActive = c.is_active,
 
@@ -212,7 +205,6 @@ public class QHolderRepository(AppDbContext context) : IQHolderRepository
                 .Select(c => new CredentialDto
                 {
                       // Base
-                      Uuid = c.uuid,
                       LocationId = c.location_id,
                       IsActive = c.is_active,
 
@@ -235,7 +227,7 @@ public class QHolderRepository(AppDbContext context) : IQHolderRepository
             return res;
       }
 
-      public async Task<short> GetLowestUnassignedNumberAsync(int max)
+      public async Task<short> GetLowestUnassignedNumberAsync(int max,string mac)
       {
             if (max <= 0) return -1;
 
@@ -266,8 +258,9 @@ public class QHolderRepository(AppDbContext context) : IQHolderRepository
 
       public async Task<IEnumerable<string>> GetMacsRelateCredentialByUserIdAsync(string UserId)
       {
-            var m = await context.credential
-            .Where(x => x.cardholder_id.Equals(UserId)).Select(x => x.)
+            // var m = await context.credential
+            // .Where(x => x.cardholder_id.Equals(UserId)).Select(x => x.)
+            throw new NotImplementedException();
       }
 
       public Task<bool> IsAnyByComponentId(short component)

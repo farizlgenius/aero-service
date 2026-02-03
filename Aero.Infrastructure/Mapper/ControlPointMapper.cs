@@ -11,6 +11,7 @@ public sealed class ControlPointMapper
             // Base 
             MacBaseMapper.ToEf(data,res);
             res.name = data.Name;
+            res.cp_id = data.CpId;
             res.module_id = data.ModuleId;
             res.module_desc = data.ModuleDescription;
             res.output_no = data.OutputNo;
@@ -26,6 +27,7 @@ public sealed class ControlPointMapper
       public static void Update(Aero.Infrastructure.Data.Entities.ControlPoint res, ControlPoint data){
             MacBaseMapper.Update(data,res);
             res.name = data.Name;
+            res.cp_id = data.CpId;
             res.module_id = data.ModuleId;
             res.module_desc = data.ModuleDescription;
             res.output_no = data.OutputNo;

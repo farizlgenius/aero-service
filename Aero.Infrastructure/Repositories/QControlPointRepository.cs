@@ -1,6 +1,7 @@
 using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using Aero.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,7 +27,6 @@ public class QControlPointRepository(AppDbContext context) : IQCpRepository
             .Select(x => new ControlPointDto
             {
                   // Base
-                  Uuid = x.uuid,
                   ComponentId = x.component_id,
                   HardwareName = x.module.hardware.name,
                   Mac = x.module.hardware_mac,
@@ -89,7 +89,6 @@ public class QControlPointRepository(AppDbContext context) : IQCpRepository
             .Select(x => new ControlPointDto
             {
                   // Base
-                  Uuid = x.uuid,
                   ComponentId = x.component_id,
                   HardwareName = x.module.hardware.name,
                   Mac = x.module.hardware_mac,
@@ -122,7 +121,6 @@ public class QControlPointRepository(AppDbContext context) : IQCpRepository
             .Select(x => new ControlPointDto
             {
                   // Base
-                  Uuid = x.uuid,
                   ComponentId = x.component_id,
                   HardwareName = x.module.hardware.name,
                   Mac = x.module.hardware_mac,
@@ -153,7 +151,6 @@ public class QControlPointRepository(AppDbContext context) : IQCpRepository
                .Select(x => new ControlPointDto
                {
                    // Base
-                   Uuid = x.uuid,
                    ComponentId = x.component_id,
                    HardwareName = x.module.hardware.name,
                    Mac = x.module.hardware_mac,
@@ -188,7 +185,6 @@ public class QControlPointRepository(AppDbContext context) : IQCpRepository
             .Select(x => new ControlPointDto
             {
                   // Base
-                  Uuid = x.uuid,
                   ComponentId = x.component_id,
                   HardwareName = x.module.hardware.name,
                   Mac = x.module.hardware_mac,
@@ -212,33 +208,65 @@ public class QControlPointRepository(AppDbContext context) : IQCpRepository
             return res;
       }
 
-      public async Task<short> GetLowestUnassignedNumberAsync(int max)
+      public async Task<short> GetLowestUnassignedNumberAsync(int max,string mac)
       {
-            if (max <= 0) return -1;
-
-            var query = context.control_point
-                .AsNoTracking()
-                .Select(x => x.component_id);
-
-            // Handle empty table case quickly
-            var hasAny = await query.AnyAsync();
-            if (!hasAny)
-                return 1; // start at 1 if table is empty
-
-            // Load all numbers into memory (only the column, so it's lightweight)
-            var numbers = await query.Distinct().OrderBy(x => x).ToListAsync();
-
-            short expected = 1;
-            foreach (var num in numbers)
+            if (string.IsNullOrEmpty(mac))
             {
-                if (num != expected)
-                    return expected; // found the lowest missing number
-                expected++;
-            }
+                  if (max <= 0) return -1;
 
-            // If none missing in sequence, return next number
-            if (expected > max) return -1;
-            return expected;
+                  var query = context.control_point
+                      .AsNoTracking()
+                      .Select(x => x.component_id);
+
+                  // Handle empty table case quickly
+                  var hasAny = await query.AnyAsync();
+                  if (!hasAny)
+                        return 1; // start at 1 if table is empty
+
+                  // Load all numbers into memory (only the column, so it's lightweight)
+                  var numbers = await query.Distinct().OrderBy(x => x).ToListAsync();
+
+                  short expected = 1;
+                  foreach (var num in numbers)
+                  {
+                        if (num != expected)
+                              return expected; // found the lowest missing number
+                        expected++;
+                  }
+
+                  // If none missing in sequence, return next number
+                  if (expected > max) return -1;
+                  return expected;
+            }
+            else
+            {
+                   if (max <= 0) return -1;
+
+                  var query = context.control_point
+                      .AsNoTracking()
+                      .Where(x => x.mac == mac)
+                      .Select(x => x.cp_id);
+
+                  // Handle empty table case quickly
+                  var hasAny = await query.AnyAsync();
+                  if (!hasAny)
+                        return 1; // start at 1 if table is empty
+
+                  // Load all numbers into memory (only the column, so it's lightweight)
+                  var numbers = await query.Distinct().OrderBy(x => x).ToListAsync();
+
+                  short expected = 1;
+                  foreach (var num in numbers)
+                  {
+                        if (num != expected)
+                              return expected; // found the lowest missing number
+                        expected++;
+                  }
+
+                  // If none missing in sequence, return next number
+                  if (expected > max) return -1;
+                  return expected;
+            }
       }
 
       public async Task<short> GetModeNoByOfflineAndRelayModeAsync(short offlineMode, short relayMode)

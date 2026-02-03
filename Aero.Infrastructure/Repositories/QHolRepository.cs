@@ -25,7 +25,6 @@ public sealed class QHolRepository(AppDbContext context) : IQHolRepository
             .Select(p => new HolidayDto 
             {
                 // Base
-                Uuid = p.uuid,
                 LocationId = p.location_id,
                 IsActive = p.is_active,
 
@@ -48,7 +47,6 @@ public sealed class QHolRepository(AppDbContext context) : IQHolRepository
             .Where(p => p.component_id == component).Select(p => new HolidayDto 
             {
                 // Base
-                Uuid = p.uuid,
                 LocationId = p.location_id,
                 IsActive = p.is_active,
 
@@ -71,7 +69,6 @@ public sealed class QHolRepository(AppDbContext context) : IQHolRepository
             .Where(p => p.location_id == locationId).Select(p => new HolidayDto 
             {
                 // Base
-                Uuid = p.uuid,
                 LocationId = p.location_id,
                 IsActive = p.is_active,
 
@@ -87,7 +84,7 @@ public sealed class QHolRepository(AppDbContext context) : IQHolRepository
             return res;
       }
 
-      public async Task<short> GetLowestUnassignedNumberAsync(int max)
+      public async Task<short> GetLowestUnassignedNumberAsync(int max,string mac)
       {
             if (max <= 0) return -1;
 
@@ -116,6 +113,8 @@ public sealed class QHolRepository(AppDbContext context) : IQHolRepository
             return expected;
       }
 
+
+
       public async Task<bool> IsAnyByComponentId(short component)
       {
             return await context.holiday.AnyAsync(x => x.component_id == component);
@@ -123,6 +122,6 @@ public sealed class QHolRepository(AppDbContext context) : IQHolRepository
 
       public async Task<bool> IsAnyWithSameDataAsync(short day, short month, short year)
       {
-            return await context.holiday.AnyAsync(u => u.day == day && u.month == month && u.year == year)
+            return await context.holiday.AnyAsync(u => u.day == day && u.month == month && u.year == year);
       }
 }

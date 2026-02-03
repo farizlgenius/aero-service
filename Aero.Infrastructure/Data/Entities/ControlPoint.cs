@@ -2,6 +2,7 @@
 {
     public sealed class ControlPoint : BaseEntity
     {
+        public short cp_id {get; set;}
         public string name { get; set; } = string.Empty;
         public Module module { get; set; }
         public short module_id { get; set; }
