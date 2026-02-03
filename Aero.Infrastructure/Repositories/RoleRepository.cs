@@ -35,6 +35,7 @@ public class RoleRepository(AppDbContext context) : IRoleRepository
       public async Task<int> UpdateAsync(Role newData)
       {
             var en = await context.role
+            .Include(x => x.feature_roles)
             .OrderBy(x => x.component_id)
             .Where(x => x.component_id == newData.ComponentId)
             .FirstOrDefaultAsync();

@@ -99,16 +99,16 @@ namespace Aero.Application.Services
         {
             // Step 1 : License File Exist
             string folderPath = Path.Combine(AppContext.BaseDirectory, "data/license.lic");
-            if (!File.Exists(folderPath) && new FileInfo(folderPath).Length > 0)
+            if (!File.Exists(folderPath) || new FileInfo(folderPath).Length > 0)
             {
-                return ResponseHelper.NotFoundBuilder<bool>(["License not found"]);
+                return ResponseHelper.NotFoundBuilder<bool>("License not found");
             }
 
             // Step 2 : Check Secret Key Exist
             string secFile = Path.Combine(AppContext.BaseDirectory, "encrypt_data/secret");
-            if (!File.Exists(secFile) && new FileInfo(secFile).Length > 0)
+            if (!File.Exists(secFile) || new FileInfo(secFile).Length > 0)
             {
-                return ResponseHelper.NotFoundBuilder<bool>(["Secret key not found"]);
+                return ResponseHelper.NotFoundBuilder<bool>("Secret key not found");
             }
 
             // Step 3 : Validate License Content

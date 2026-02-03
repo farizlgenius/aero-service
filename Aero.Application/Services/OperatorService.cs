@@ -19,9 +19,11 @@ namespace Aero.Application.Services
             if (await qOper.IsAnyByUsernameAsync(dto.Username)) return ResponseHelper.Duplicate<bool>();
 
             var ComponentId = await qOper.GetLowestUnassignedNumberAsync(10,"");
+            if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
             var domain = OperatorMapper.ToDomain(dto);
             domain.ComponentId = ComponentId;
+            domain.Password = EncryptHelper.HashPassword(dto.Password);
 
             var status = await rOper.AddAsync(domain);
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);

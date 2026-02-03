@@ -3,32 +3,16 @@
   "WorkspaceRootPath": "D:\\Aero\\AeroService\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\repositories\\rolerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\repositories\\rolerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BBAB8C3E-7E35-74F0-F26A-508867E9F60F}|Aero.Api\\Aero.Api.csproj|d:\\aero\\aeroservice\\aero.api\\controllers\\v1\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBAB8C3E-7E35-74F0-F26A-508867E9F60F}|Aero.Api\\Aero.Api.csproj|solutionrelative:aero.api\\controllers\\v1\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|d:\\aero\\aeroservice\\aero.application\\services\\roleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|solutionrelative:aero.application\\services\\roleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BBAB8C3E-7E35-74F0-F26A-508867E9F60F}|Aero.Api\\Aero.Api.csproj|d:\\aero\\aeroservice\\aero.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{BBAB8C3E-7E35-74F0-F26A-508867E9F60F}|Aero.Api\\Aero.Api.csproj|solutionrelative:aero.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BBAB8C3E-7E35-74F0-F26A-508867E9F60F}|Aero.Api\\Aero.Api.csproj|d:\\aero\\aeroservice\\aero.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBAB8C3E-7E35-74F0-F26A-508867E9F60F}|Aero.Api\\Aero.Api.csproj|solutionrelative:aero.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\settings\\appsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\settings\\appsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\settings\\jwtsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\settings\\jwtsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BBAB8C3E-7E35-74F0-F26A-508867E9F60F}|Aero.Api\\Aero.Api.csproj|d:\\aero\\aeroservice\\aero.api\\aero.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{BBAB8C3E-7E35-74F0-F26A-508867E9F60F}|Aero.Api\\Aero.Api.csproj|solutionrelative:aero.api\\aero.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+      "AbsoluteMoniker": "D:0:0:{BBAB8C3E-7E35-74F0-F26A-508867E9F60F}|Aero.Api\\Aero.Api.csproj|d:\\aero\\aeroservice\\aero.api\\controllers\\v1\\rolecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBAB8C3E-7E35-74F0-F26A-508867E9F60F}|Aero.Api\\Aero.Api.csproj|solutionrelative:aero.api\\controllers\\v1\\rolecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,97 +22,45 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Api\\appsettings.json",
-              "RelativeDocumentMoniker": "Aero.Api\\appsettings.json",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Api\\appsettings.json",
-              "RelativeToolTip": "Aero.Api\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-02-03T08:26:26.528Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "AuthService.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Services\\AuthService.cs",
-              "RelativeDocumentMoniker": "Aero.Infrastructure\\Services\\AuthService.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Services\\AuthService.cs",
-              "RelativeToolTip": "Aero.Infrastructure\\Services\\AuthService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAA==",
+              "Title": "RoleRepository.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Repositories\\RoleRepository.cs",
+              "RelativeDocumentMoniker": "Aero.Infrastructure\\Repositories\\RoleRepository.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Repositories\\RoleRepository.cs",
+              "RelativeToolTip": "Aero.Infrastructure\\Repositories\\RoleRepository.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAiwCMAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-03T08:16:44.418Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "AppSettings.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Settings\\AppSettings.cs",
-              "RelativeDocumentMoniker": "Aero.Infrastructure\\Settings\\AppSettings.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Settings\\AppSettings.cs",
-              "RelativeToolTip": "Aero.Infrastructure\\Settings\\AppSettings.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-03T08:18:32.862Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "JwtSettings.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Settings\\JwtSettings.cs",
-              "RelativeDocumentMoniker": "Aero.Infrastructure\\Settings\\JwtSettings.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Settings\\JwtSettings.cs",
-              "RelativeToolTip": "Aero.Infrastructure\\Settings\\JwtSettings.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-03T08:18:29.656Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Api\\Program.cs",
-              "RelativeDocumentMoniker": "Aero.Api\\Program.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Api\\Program.cs",
-              "RelativeToolTip": "Aero.Api\\Program.cs",
-              "ViewState": "AgIAACIAAAAAAAAAAAAgwEQAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-03T08:17:46.692Z",
+              "WhenOpened": "2026-02-03T14:28:33.236Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "AuthController.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Api\\Controllers\\V1\\AuthController.cs",
-              "RelativeDocumentMoniker": "Aero.Api\\Controllers\\V1\\AuthController.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Api\\Controllers\\V1\\AuthController.cs",
-              "RelativeToolTip": "Aero.Api\\Controllers\\V1\\AuthController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAAgAAAAAAAAAA==",
+              "Title": "RoleService.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Application\\Services\\RoleService.cs",
+              "RelativeDocumentMoniker": "Aero.Application\\Services\\RoleService.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Application\\Services\\RoleService.cs",
+              "RelativeToolTip": "Aero.Application\\Services\\RoleService.cs",
+              "ViewState": "AgIAACoAAAAAAAAAAAAswE8AAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-03T08:16:29.751Z",
+              "WhenOpened": "2026-02-03T14:27:36.845Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Aero.Api",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Api\\Aero.Api.csproj",
-              "RelativeDocumentMoniker": "Aero.Api\\Aero.Api.csproj",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Api\\Aero.Api.csproj",
-              "RelativeToolTip": "Aero.Api\\Aero.Api.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-02-03T08:12:16.78Z",
+              "DocumentIndex": 2,
+              "Title": "RoleController.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Api\\Controllers\\V1\\RoleController.cs",
+              "RelativeDocumentMoniker": "Aero.Api\\Controllers\\V1\\RoleController.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Api\\Controllers\\V1\\RoleController.cs",
+              "RelativeToolTip": "Aero.Api\\Controllers\\V1\\RoleController.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAQwCkAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-03T14:27:06.403Z",
               "EditorCaption": ""
             }
           ]

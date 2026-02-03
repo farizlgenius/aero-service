@@ -80,6 +80,18 @@ namespace Aero.Application.Helpers
             };
         }
 
+        public static ResponseDto<T> NotFoundBuilder<T>(string message)
+        {
+            return new ResponseDto<T>()
+            {
+                code = HttpStatusCode.NotFound,
+                timestamp = DateTime.UtcNow,
+                message = message,
+                details = [],
+                data = default
+            };
+        }
+
         public static ResponseDto<T> FoundReferenceBuilder<T>()
         {
             return new ResponseDto<T>()

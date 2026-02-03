@@ -20,6 +20,8 @@ public sealed class RoleMapper
                   is_delete = x.IsDelete,
                   is_action = x.IsAction
             }).ToList();
+        res.created_date = DateTime.UtcNow;
+        res.updated_date = DateTime.UtcNow;
 
             return res;
       }
@@ -37,6 +39,7 @@ public sealed class RoleMapper
                   is_delete = x.IsDelete,
                   is_action = x.IsAction
             }).ToList();
+        res.updated_date = DateTime.UtcNow;
       }
 
 }

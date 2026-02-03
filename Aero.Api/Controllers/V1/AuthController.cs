@@ -19,14 +19,18 @@ namespace Aero.Api.Controllers.V1
         {
             var res = await service.LoginAsync(model, Request.HttpContext.Connection.RemoteIpAddress is null ? "" : Request.HttpContext.Connection.RemoteIpAddress.ToString());
             // set HttpOnly cookies (path limited to auth endpoint)
-            Response.Cookies.Append("refresh_token", res.data.RefreshToken, new CookieOptions
+            if(res.data is not null)
             {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Path = "/api/v1/Auth",
-                Expires = DateTimeOffset.UtcNow.Add(_cookieExpiry)
-            });
+                Response.Cookies.Append("refresh_token", res.data.RefreshToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Path = "/api/v1/Auth",
+                    Expires = DateTimeOffset.UtcNow.Add(_cookieExpiry)
+                });
+            }
+            
             return Ok(res);
         }
 
@@ -38,14 +42,18 @@ namespace Aero.Api.Controllers.V1
             // HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown"
             var res = await service.RefreshAsync(oldRaw,Request.HttpContext.Connection.RemoteIpAddress is null ? "" : Request.HttpContext.Connection.RemoteIpAddress.ToString());
              // set HttpOnly cookies (path limited to auth endpoint)
-            Response.Cookies.Append("refresh_token", res.data.RefreshToken, new CookieOptions
+             if(res.data is not null)
             {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Path = "/api/v1/Auth",
-                Expires = DateTimeOffset.UtcNow.Add(_cookieExpiry)
-            });
+                Response.Cookies.Append("refresh_token", res.data.RefreshToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Path = "/api/v1/Auth",
+                    Expires = DateTimeOffset.UtcNow.Add(_cookieExpiry)
+                });
+            }
+            
             return Ok(res);
 
         }

@@ -151,11 +151,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "d:\\Aero\\AeroService\\Aero.Application\\Aero.Application.csproj",
+      "projectUniqueName": "D:\\Aero\\AeroService\\Aero.Application\\Aero.Application.csproj",
       "projectName": "Aero.Application",
-      "projectPath": "d:\\Aero\\AeroService\\Aero.Application\\Aero.Application.csproj",
+      "projectPath": "D:\\Aero\\AeroService\\Aero.Application\\Aero.Application.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "d:\\Aero\\AeroService\\Aero.Application\\obj\\",
+      "outputPath": "D:\\Aero\\AeroService\\Aero.Application\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -236,5 +236,13 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1900",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json."
+    }
+  ]
 }

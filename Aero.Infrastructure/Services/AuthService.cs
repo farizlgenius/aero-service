@@ -41,9 +41,12 @@ namespace Aero.Application.Services
 
             var user = await qOper.GetByUsernameAsync(model.Username);
             var hash = await qOper.GetPasswordByUsername(model.Username);
-            var role = await qRole.GetByComponentIdAsync(user.RoleId);
 
             if (user is null) return ResponseHelper.NotFoundBuilder<TokenDtoWithRefresh>(["User not found."]);
+
+            var role = await qRole.GetByComponentIdAsync(user.RoleId);
+
+            
 
             // TODO: Replace with real user validation (DB, hashed passwords)
             if (!ValidateLogin(hash, model.Password))

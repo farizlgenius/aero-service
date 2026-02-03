@@ -38,6 +38,8 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
             if(en is null) return 0;
 
+            LocationMapper.Update(newData,en);
+
             context.location.Update(en);
             return await context.SaveChangesAsync();
       }
