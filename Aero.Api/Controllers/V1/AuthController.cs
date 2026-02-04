@@ -35,7 +35,6 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpPost("refresh")]
-        [Authorize]
         public async Task<ActionResult<ResponseDto<TokenDto>>> Refresh()
         {
             if (!Request.Cookies.TryGetValue("refresh_token", out var oldRaw)) return Unauthorized();

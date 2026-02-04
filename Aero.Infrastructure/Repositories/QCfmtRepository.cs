@@ -27,6 +27,7 @@ public class QCfmtRepository(AppDbContext context) : IQCfmtRepository
             {
                 // Baes 
                 IsActive = x.is_active,
+                LocationId = x.location_id,
 
                 // extend_desc
                 Name = x.name,
@@ -60,6 +61,7 @@ public class QCfmtRepository(AppDbContext context) : IQCfmtRepository
             {
                 // Baes 
                 IsActive = x.is_active,
+                LocationId = x.location_id,
 
                 // extend_desc
                 Name = x.name,
@@ -93,6 +95,7 @@ public class QCfmtRepository(AppDbContext context) : IQCfmtRepository
             {
                 // Baes 
                 IsActive = x.is_active,
+                LocationId = x.location_id,
 
                 // extend_desc
                 Name = x.name,

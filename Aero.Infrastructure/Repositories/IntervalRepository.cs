@@ -34,6 +34,7 @@ public class IntervalRepository(AppDbContext context) : IIntervalRepository
       public async Task<int> UpdateAsync(Interval newData)
       {
             var en = await context.interval
+            .Include(x => x.days)
             .Where(x => x.component_id == newData.ComponentId)
             .OrderBy(x => x.component_id)
             .FirstOrDefaultAsync();

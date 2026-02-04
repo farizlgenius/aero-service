@@ -30,10 +30,10 @@ public class QIdReportRepository(AppDbContext context) : IQIdReportRepository
             return await context.SaveChangesAsync();
       }
 
-      public async Task<IEnumerable<IdReportDto>> DeletePendingRecordAsync(string mac, short scpid)
+      public async Task<IEnumerable<IdReportDto>> DeletePendingRecordAsync(short scpid)
       {
             var en = await context.id_report
-            .Where(x => x.mac.Equals(mac) && x.scp_id == scpid)
+            .Where(x => x.scp_id == scpid)
             .OrderBy(x => x.scp_id)
             .FirstOrDefaultAsync();
 
@@ -51,14 +51,14 @@ public class QIdReportRepository(AppDbContext context) : IQIdReportRepository
                .AsNoTracking()
                .Select(x => new IdReportDto
                {
-                     ComponentId = 0,
+                     ComponentId = x.scp_id,
                      SerialNumber = x.serial_number,
                      MacAddress = x.mac,
                      Ip = x.ip,
                      Port = x.port,
                      Firmware = x.firmware,
                      HardwareType = x.device_id,
-                     HardwareTypeDescription = ""
+                     HardwareTypeDescription = "AERO"
                })
                .ToArrayAsync();
 
@@ -82,7 +82,7 @@ public class QIdReportRepository(AppDbContext context) : IQIdReportRepository
                .Where(x => x.mac.Equals(mac) && x.scp_id == scpid)
                .Select(x => new IdReportDto
                {
-                     ComponentId = 0,
+                     ComponentId = x.scp_id,
                      SerialNumber = x.serial_number,
                      MacAddress = x.mac,
                      Ip = x.ip,
@@ -112,9 +112,9 @@ public class QIdReportRepository(AppDbContext context) : IQIdReportRepository
             throw new NotImplementedException();
       }
 
-      public Task<bool> IsAnyByMacAndScpIdAsync(string mac, int scpid)
+      public async Task<bool> IsAnyByMacAndScpIdAsync(string mac, int scpid)
       {
-            throw new NotImplementedException();
+        return await context.id_report.AnyAsync(x => x.mac.Equals(mac) && x.scp_id == scpid);
       }
 
       public async Task<int> UpdateAsync(IScpReply message)

@@ -4,6 +4,7 @@ namespace Aero.Domain.Entities;
 
 public sealed class Timezone : NoMacBaseEntity
 {
+      public short TimezoneId { get; set; } 
       public string Name { get; set; } = string.Empty;
       public short Mode { get; set; }
       public string ActiveTime { get; set; } = string.Empty;

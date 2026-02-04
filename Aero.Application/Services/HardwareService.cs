@@ -239,7 +239,9 @@ namespace Aero.Application.Services
 
             // Timezone
 
-            var timezones = await qTz.GetAsync();
+            var locationId = await qHw.GetLocationIdFromMacAsync(mac);
+
+            var timezones = await qTz.GetByLocationIdAsync(locationId);
 
             var timezonesdomain = timezones.Select(x => TimezoneMapper.ToDomain(x)).ToList();
 
@@ -931,10 +933,8 @@ namespace Aero.Application.Services
 
         public async Task AssignIpAddressAsync(IScpReply message)
         {
-            if(!await qHw.IsAnyByComponentId((short)message.ScpId))
+            if(await qHw.IsAnyByComponentId((short)message.ScpId))
             {
-
-
                 if (message.web_network is not null) await rHw.UpdateIpAddressAsync(message.ScpId,UtilitiesHelper.IntegerToIp(message.web_network.cIpAddr));
 
                 scp.GetWebConfigRead((short)message.ScpId, 3);

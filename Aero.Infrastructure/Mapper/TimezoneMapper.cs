@@ -1,5 +1,6 @@
 using System;
 using Aero.Domain.Entities;
+using Aero.Infrastructure.Data.Entities;
 
 namespace Aero.Infrastructure.Mapper;
 
@@ -15,6 +16,13 @@ public sealed class TimezoneMapper
             res.mode = tz.Mode;
             res.active_time = tz.ActiveTime;
             res.deactive_time = tz.DeactiveTime;
+        res.timezone_intervals = tz.Intervals is null ? new List<TimeZoneInterval>() : tz.Intervals.Select(x => new Aero.Infrastructure.Data.Entities.TimeZoneInterval
+        {
+            timezone_id = tz.ComponentId,
+            interval_id = x.ComponentId,
+            created_date = DateTime.UtcNow,
+            updated_date = DateTime.UtcNow
+        }).ToArray();
 
             return res;
       }
@@ -27,7 +35,14 @@ public sealed class TimezoneMapper
             en.mode = timezone.Mode;
             en.active_time = timezone.ActiveTime;
             en.deactive_time = timezone.DeactiveTime;
-            
-      }
+        en.timezone_intervals = timezone.Intervals is null ? new List<TimeZoneInterval>() :  timezone.Intervals.Select(x => new Aero.Infrastructure.Data.Entities.TimeZoneInterval
+        {
+            timezone_id = timezone.ComponentId,
+            interval_id = x.ComponentId,
+            created_date = DateTime.UtcNow,
+            updated_date = DateTime.UtcNow
+        }).ToArray();
+
+    }
 
 }

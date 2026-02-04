@@ -44,7 +44,7 @@ public sealed class TransactionAdaptor(SCPReplyMessage.SCPReplyTransaction tran)
 
       public ITypeI64CardID c_idi64 => throw new NotImplementedException();
 
-      public ITypeCoS cos => throw new NotImplementedException();
+    public ITypeCoS cos => tran.cos is null ? null : new TypeCosAdapter(tran);
 
       public ITypeREX rex => throw new NotImplementedException();
 

@@ -47,6 +47,15 @@ public sealed class MpCommandService : BaseAeroCommand,IMpCommand
 
       public bool InputPointSpecification(short ScpId, short SioNo, short InputNo, short InputMode, short Debounce, short HoldTime)
       {
-            throw new NotImplementedException();
+        CC_IP cc = new CC_IP();
+        cc.scp_number = ScpId;
+        cc.lastModified = 0;
+        cc.sio_number = SioNo;
+        cc.input = InputNo;
+        cc.icvt_num = InputMode;
+        cc.debounce = Debounce;
+        cc.hold_time = HoldTime;
+        bool flag = Send((short)enCfgCmnd.enCcInput, cc);
+        return flag;
       }
 }

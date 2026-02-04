@@ -9,6 +9,7 @@ using Aero.Application.Mapper;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
+using System.Net;
 
 namespace Aero.Application.Services
 {
@@ -32,13 +33,16 @@ namespace Aero.Application.Services
         {
             List<string> errors = new List<string>();
             var ComponentId = await qTz.GetLowestUnassignedNumberAsync(10,"");
+            var TimezoneId = await qTz.GetLowestUnassignedNumberAsync(10,"");
             if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
-            dto.ComponentId = ComponentId;
 
             var timezone = TimezoneMapper.ToDomain(dto);
+            timezone.ComponentId = ComponentId;
+            timezone.TimezoneId = TimezoneId;
+
             
-            var ids = await qHw.GetComponentIdsAsync();
+            var ids = await qHw.GetComponentIdByLocationIdAsync(dto.LocationId);
 
             foreach (var id in ids)
             {
@@ -129,6 +133,24 @@ namespace Aero.Application.Services
         {
             var dtos = await qTz.GetByLocationIdAsync(location);
             return ResponseHelper.SuccessBuilder<IEnumerable<TimeZoneDto>>(dtos);
+        }
+
+        public async Task<ResponseDto<IEnumerable<ResponseDto<bool>>>> DeleteRangeAsync(List<short> components)
+        {
+            bool flag = true;
+            List<ResponseDto<bool>> data = new List<ResponseDto<bool>>();
+            foreach (var dto in components)
+            {
+                var re = await DeleteAsync(dto);
+                if (re.code != HttpStatusCode.OK) flag = false;
+                data.Add(re);
+            }
+
+            if (!flag) return ResponseHelper.UnsuccessBuilder<IEnumerable<ResponseDto<bool>>>(data);
+
+            var res = ResponseHelper.SuccessBuilder<IEnumerable<ResponseDto<bool>>>(data);
+
+            return res;
         }
     }
 }

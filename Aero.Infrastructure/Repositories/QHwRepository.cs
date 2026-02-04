@@ -459,10 +459,6 @@ public sealed class QHwRepository(AppDbContext context) : IQHwRepository
         return res;
     }
 
-    Task<IEnumerable<Mode>> IQHwRepository.GetHardwareTypeAsync()
-    {
-        throw new NotImplementedException();
-    }
 
     public async Task<List<MemoryDto>> CheckAllocateMemoryAsync(IScpReply message)
     {
@@ -886,5 +882,31 @@ public sealed class QHwRepository(AppDbContext context) : IQHwRepository
         .FirstOrDefaultAsync() ?? "";
 
         return res;
+    }
+
+    public async Task<IEnumerable<short>> GetComponentIdsByLocationIdAsync(short locationid)
+    {
+        return await context.hardware.AsNoTracking()
+            .Where(x => x.location_id == locationid)
+            .Select(x => x.component_id)
+            .ToArrayAsync();
+    }
+
+    public async Task<IEnumerable<string>> GetMacsByLocationIdAsync(short locationid)
+    {
+        return await context.hardware.AsNoTracking()
+           .Where(x => x.location_id == locationid)
+           .Select(x => x.mac)
+           .ToArrayAsync();
+    }
+
+    public async Task<short> GetLocationIdFromMacAsync(string mac)
+    {
+        return await context.hardware
+            .AsNoTracking()
+            .OrderBy(x => x.component_id)
+            .Where(x => x.mac.Equals(mac))
+            .Select(x => x.location_id)
+            .FirstOrDefaultAsync();
     }
 }

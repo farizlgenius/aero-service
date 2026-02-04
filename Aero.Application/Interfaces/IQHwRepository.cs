@@ -7,7 +7,10 @@ namespace Aero.Application.Interfaces;
 
 public interface IQHwRepository : IBaseQueryRespository<HardwareDto>
 {
-      Task<HardwareDto> GetByMacAsync(string mac);
+    Task<short> GetLocationIdFromMacAsync(string mac);
+      Task<IEnumerable<short>> GetComponentIdsByLocationIdAsync(short locationid);
+    Task<IEnumerable<string>> GetMacsByLocationIdAsync(short locationid);
+    Task<HardwareDto> GetByMacAsync(string mac);
       Task<bool> IsAnyByMac(string mac);
       Task<bool> IsAnyByMacAndComponent(string mac,short component);
       Task<short> GetComponentIdFromMacAsync(string mac);

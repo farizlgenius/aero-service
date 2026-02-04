@@ -189,13 +189,10 @@ namespace Aero.Infrastructure.Mapper
                             var qId = scope.ServiceProvider.GetRequiredService<IQIdReportRepository>();
                             if (message.comm.status != 2)
                             {
-                                var reports = await qId.DeletePendingRecordAsync(UtilitiesHelper.ByteToHex(message.id.mac_addr), (short)message.ScpId);
+                                var reports = await qId.DeletePendingRecordAsync((short)message.ScpId);
                                 await publisher.IdReportNotifyAsync(reports.ToList());
                                 break;
-                            }
-                            var s = scp.CheckSCPStatus((short)message.ScpId);
-                            var ss = new ScpStatus(UtilitiesHelper.ByteToHex(message.id.mac_addr), s);
-                            await publisher.ScpNotifyStatus(ss);
+                            }                            
                             break;
                         case (int)enSCPReplyType.enSCPReplyTranStatus:
                             TranStatus t = new TranStatus

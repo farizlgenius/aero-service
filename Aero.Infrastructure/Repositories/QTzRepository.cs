@@ -209,7 +209,7 @@ public class QTzRepository(AppDbContext context) : IQTzRepository
 
   public async Task<bool> IsAnyByComponentId(short component)
   {
-    return await context.hardware.AnyAsync(x => x.component_id == component);
+    return await context.timezone.AnyAsync(x => x.component_id == component);
   }
 
   public async Task<IEnumerable<Mode>> GetModeAsync()

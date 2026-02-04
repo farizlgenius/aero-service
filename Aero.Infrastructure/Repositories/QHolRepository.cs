@@ -25,6 +25,7 @@ public sealed class QHolRepository(AppDbContext context) : IQHolRepository
             .Select(p => new HolidayDto 
             {
                 // Base
+                ComponentId = p.component_id,
                 LocationId = p.location_id,
                 IsActive = p.is_active,
 
@@ -47,6 +48,7 @@ public sealed class QHolRepository(AppDbContext context) : IQHolRepository
             .Where(p => p.component_id == component).Select(p => new HolidayDto 
             {
                 // Base
+                ComponentId = p.component_id,
                 LocationId = p.location_id,
                 IsActive = p.is_active,
 
@@ -69,6 +71,7 @@ public sealed class QHolRepository(AppDbContext context) : IQHolRepository
             .Where(p => p.location_id == locationId).Select(p => new HolidayDto 
             {
                 // Base
+                ComponentId = p.component_id,
                 LocationId = p.location_id,
                 IsActive = p.is_active,
 

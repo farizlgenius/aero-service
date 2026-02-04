@@ -38,8 +38,12 @@ namespace Aero.Application.Services
             if (await qInterval.IsAnyOnEachDays(dto)) return ResponseHelper.Duplicate<bool>();
 
             var componentId = await qInterval.GetLowestUnassignedNumberAsync(10,"");
+            if (componentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
-            var status = await rInterval.AddAsync(IntervalMapper.ToDomain(dto));
+            var domain = IntervalMapper.ToDomain(dto);
+            domain.ComponentId = componentId;
+
+            var status = await rInterval.AddAsync(domain);
 
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
 

@@ -11,7 +11,7 @@ public class TimezoneMapper
       {
             var res = new Timezone();
             // Base
-            NoMacBaseMapper.ToDomain(res,dto);
+            NoMacBaseMapper.ToDomain(dto,res);
             res.Name = dto.Name;
             res.Mode = dto.Mode;
             res.ActiveTime = dto.ActiveTime;

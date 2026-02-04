@@ -4,9 +4,9 @@ using Aero.Domain.Interface;
 
 namespace Aero.Infrastructure.Data.Entities
 {
-    public sealed class TimeZone : NoMacBaseEntity,IComponentId
+    public sealed class TimeZone : NoMacBaseEntity
     {
-        public short component_id { get; set; }
+        public short timezone_id { get; set; }
         public string name { get; set; } = string.Empty;
         public short mode { get; set; }
         public string active_time { get; set; } = string.Empty;

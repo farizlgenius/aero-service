@@ -16,10 +16,11 @@ public class TzRepository(AppDbContext context) : ITzRepository
             return await context.SaveChangesAsync();
       }
 
-      public Task<int> AddAsync(Timezone data)
+      public async Task<int> AddAsync(Timezone data)
       {
-            throw new NotImplementedException();
-      }
+        await context.timezone.AddAsync(TimezoneMapper.ToEf(data));
+        return await context.SaveChangesAsync();
+    }
 
       public async Task<int> DeleteByComponentIdAsync(short component)
       {
