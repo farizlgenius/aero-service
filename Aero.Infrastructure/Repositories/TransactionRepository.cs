@@ -312,8 +312,7 @@ public class TransactionRepository(AppDbContext context,IQHwRepository qHw,IQCre
             //     updated_date = DateTime.UtcNow,
 
                 // extend_desc
-                Date = UtilitiesHelper.UnixToDateTimeParts(message.tran.time)[0],
-                Time = UtilitiesHelper.UnixToDateTimeParts(message.tran.time)[1],
+                DateTime = UtilitiesHelper.UnixToDateTimeUtc(message.tran.time),
                 SerialNumber = message.tran.ser_num,
                 Source = message.tran.source_number,
                 SourceModule = AeroTransactionHandlerHelper.Source((tranSrc)message.tran.source_type),

@@ -4,8 +4,7 @@ namespace Aero.Application.DTOs
 {
     public sealed class TransactionDto : BaseEntity
     {
-        public required string Date { get; set; }
-        public required string Time { get; set; }
+        public DateTime DateTime { get; set; } = DateTime.UtcNow;
         public int SerialNumber { get; set; }
         public string Actor { get; set; } = string.Empty;
         public double Source { get; set; }

@@ -164,7 +164,7 @@ public sealed class UtilitiesHelper
     string[] d = new string[2];
 
     //var dateTime = DateTimeOffset.FromUnixTimeMilliseconds(timestamp);
-    var dateTime = new DateTime(1970, 1, 1).AddSeconds(timestamp).ToLocalTime(); ;
+    var dateTime = new DateTime(1970, 1, 1).AddSeconds(timestamp).ToLocalTime(); 
 
     d[0] = dateTime.Date.ToString("yyyy-MM-dd");             // Only the date part (00:00:00 time)
     d[1] = dateTime.TimeOfDay.ToString(@"hh\:mm\:ss");        // Only the time part
@@ -173,7 +173,14 @@ public sealed class UtilitiesHelper
 
   }
 
-  public static string ParseFirmware(short major, short minor)
+    public static DateTime UnixToDateTimeUtc(int timestamp)
+    {
+        return DateTimeOffset
+            .FromUnixTimeSeconds(timestamp)
+            .UtcDateTime;
+    }
+
+    public static string ParseFirmware(short major, short minor)
   {
     string s = minor.ToString();
 

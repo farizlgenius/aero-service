@@ -3,28 +3,28 @@
   "WorkspaceRootPath": "D:\\Aero\\AeroService\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\adapter\\typecosadapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\adapter\\typecosadapter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\repositories\\qtransactionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\repositories\\qtransactionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\adapter\\typecardbcd.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\adapter\\typecardbcd.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|d:\\aero\\aeroservice\\aero.application\\services\\transactionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|solutionrelative:aero.application\\services\\transactionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\adapter\\transactionadaptor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\adapter\\transactionadaptor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BBAB8C3E-7E35-74F0-F26A-508867E9F60F}|Aero.Api\\Aero.Api.csproj|d:\\aero\\aeroservice\\aero.api\\controllers\\v1\\transactioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BBAB8C3E-7E35-74F0-F26A-508867E9F60F}|Aero.Api\\Aero.Api.csproj|solutionrelative:aero.api\\controllers\\v1\\transactioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\worker\\aeroworker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\worker\\aeroworker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|d:\\aero\\aeroservice\\aero.application\\services\\controlpointservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|solutionrelative:aero.application\\services\\controlpointservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\repositories\\transactionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\repositories\\transactionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BBAB8C3E-7E35-74F0-F26A-508867E9F60F}|Aero.Api\\Aero.Api.csproj|d:\\aero\\aeroservice\\aero.api\\controllers\\v1\\controlpointcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BBAB8C3E-7E35-74F0-F26A-508867E9F60F}|Aero.Api\\Aero.Api.csproj|solutionrelative:aero.api\\controllers\\v1\\controlpointcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|d:\\aero\\aeroservice\\aero.application\\helpers\\utilitieshelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|solutionrelative:aero.application\\helpers\\utilitieshelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,45 +34,45 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "TypeCardBcd.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\TypeCardBcd.cs",
-              "RelativeDocumentMoniker": "Aero.Infrastructure\\Adapter\\TypeCardBcd.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\TypeCardBcd.cs",
-              "RelativeToolTip": "Aero.Infrastructure\\Adapter\\TypeCardBcd.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAA7AAAAAAAAAA==",
+              "DocumentIndex": 4,
+              "Title": "TransactionRepository.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Repositories\\TransactionRepository.cs",
+              "RelativeDocumentMoniker": "Aero.Infrastructure\\Repositories\\TransactionRepository.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Repositories\\TransactionRepository.cs",
+              "RelativeToolTip": "Aero.Infrastructure\\Repositories\\TransactionRepository.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAxwBUAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-04T14:43:30.463Z",
+              "WhenOpened": "2026-02-06T14:55:59.98Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "UtilitiesHelper.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Application\\Helpers\\UtilitiesHelper.cs",
+              "RelativeDocumentMoniker": "Aero.Application\\Helpers\\UtilitiesHelper.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Application\\Helpers\\UtilitiesHelper.cs",
+              "RelativeToolTip": "Aero.Application\\Helpers\\UtilitiesHelper.cs",
+              "ViewState": "AgIAAI8AAAAAAAAAAAAuwK4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-06T14:55:40.802Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "TypeCosAdapter.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\TypeCosAdapter.cs",
-              "RelativeDocumentMoniker": "Aero.Infrastructure\\Adapter\\TypeCosAdapter.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\TypeCosAdapter.cs",
-              "RelativeToolTip": "Aero.Infrastructure\\Adapter\\TypeCosAdapter.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAwAAAAAAAAAA==",
+              "Title": "QTransactionRepository.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Repositories\\QTransactionRepository.cs",
+              "RelativeDocumentMoniker": "Aero.Infrastructure\\Repositories\\QTransactionRepository.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Repositories\\QTransactionRepository.cs",
+              "RelativeToolTip": "Aero.Infrastructure\\Repositories\\QTransactionRepository.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-04T14:43:22.613Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "TransactionAdaptor.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\TransactionAdaptor.cs",
-              "RelativeDocumentMoniker": "Aero.Infrastructure\\Adapter\\TransactionAdaptor.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Adapter\\TransactionAdaptor.cs*",
-              "RelativeToolTip": "Aero.Infrastructure\\Adapter\\TransactionAdaptor.cs*",
-              "ViewState": "AgIAABQAAAAAAAAAAAA8wCIAAABTAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-04T14:42:19.234Z",
+              "WhenOpened": "2026-02-06T14:54:43.259Z",
               "EditorCaption": ""
             },
             {
@@ -83,35 +83,35 @@
               "RelativeDocumentMoniker": "Aero.Infrastructure\\Worker\\AeroWorker.cs",
               "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Worker\\AeroWorker.cs",
               "RelativeToolTip": "Aero.Infrastructure\\Worker\\AeroWorker.cs",
-              "ViewState": "AgIAANUAAAAAAAAAAAAqwPAAAAAQAAAAAAAAAA==",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAgwCoAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-04T14:41:04.522Z",
+              "WhenOpened": "2026-02-06T14:47:11.269Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "ControlPointService.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Application\\Services\\ControlPointService.cs",
-              "RelativeDocumentMoniker": "Aero.Application\\Services\\ControlPointService.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Application\\Services\\ControlPointService.cs",
-              "RelativeToolTip": "Aero.Application\\Services\\ControlPointService.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAqwCsAAAAIAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "TransactionService.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Application\\Services\\TransactionService.cs",
+              "RelativeDocumentMoniker": "Aero.Application\\Services\\TransactionService.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Application\\Services\\TransactionService.cs",
+              "RelativeToolTip": "Aero.Application\\Services\\TransactionService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACsAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-04T14:39:45.425Z",
+              "WhenOpened": "2026-02-06T14:32:53.497Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "ControlPointController.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Api\\Controllers\\V1\\ControlPointController.cs",
-              "RelativeDocumentMoniker": "Aero.Api\\Controllers\\V1\\ControlPointController.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Api\\Controllers\\V1\\ControlPointController.cs",
-              "RelativeToolTip": "Aero.Api\\Controllers\\V1\\ControlPointController.cs",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAowD0AAAArAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "TransactionController.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Api\\Controllers\\V1\\TransactionController.cs",
+              "RelativeDocumentMoniker": "Aero.Api\\Controllers\\V1\\TransactionController.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Api\\Controllers\\V1\\TransactionController.cs",
+              "RelativeToolTip": "Aero.Api\\Controllers\\V1\\TransactionController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAABrAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-04T14:37:08.303Z",
+              "WhenOpened": "2026-02-06T09:43:16.389Z",
               "EditorCaption": ""
             }
           ]

@@ -11,11 +11,18 @@ namespace Aero.Api.Controllers.V1
     {
 
         [HttpGet]
-        public async Task<ActionResult<ResponseDto<PaginationDto>>> GetEvent([FromQuery] PaginationParams paginationParams)
+        public async Task<ActionResult<ResponseDto<PaginationDto>>> GetEvent([FromQuery] PaginationParamsWithDate paginationParams)
         {
-            var res = await transactionService.GetPageTransactionWithCountAsync(paginationParams);
+            var res = await transactionService.GetPageTransactionWithCountAndDateAndSearchAsync(paginationParams);
             return Ok(res);
         }
+
+        //[HttpGet]
+        //public async Task<ActionResult<ResponseDto<PaginationDto>>> GetEventWithDateFilter([FromQuery] PaginationParams paginationParams)
+        //{
+        //    var res = await transactionService.GetPageTransactionWithCountAsync(paginationParams);
+        //    return Ok(res);
+        //}
 
         [HttpPost("{mac}")]
         public async Task<ActionResult<ResponseDto<bool>>> SetTranIndexAsync(string mac)

@@ -22,10 +22,14 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<bool>> CreateAsync(CardHolderDto dto)
         {
             if (await qHolder.IsAnyByUserId(dto.UserId)) return ResponseHelper.Duplicate<bool>();
+
+            var ComponentId = await qHolder.GetLowestUnassignedNumberAsync(10,"");
+            if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
             List<short> CredentialComponentId = new List<short>();
             List<string> errors = new List<string>();
 
             var domain = HolderMapper.ToDomain(dto);
+            domain.ComponentId = ComponentId;
 
 
             foreach (var alvl in domain.AccessLevels)

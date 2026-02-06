@@ -8,8 +8,7 @@ public sealed class TransactionMapper
       {
             var res = new Aero.Infrastructure.Data.Entities.Transaction();
             MacBaseMapper.ToEf(data,res);
-            res.date = data.Date;
-            res.time = data.Time;
+            res.date_time = data.DateTime;
             res.serial_number = data.SerialNumber;
             res.actor = data.Actor;
             res.source = data.Source;

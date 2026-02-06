@@ -16,6 +16,12 @@ namespace Aero.Application.Services
             var dto = await qTran.GetPageTransactionWithCountAsync(param);
             return ResponseHelper.SuccessBuilder<PaginationDto>(dto);
         }
+        public async Task<ResponseDto<PaginationDto>> GetPageTransactionWithCountAndDateAndSearchAsync(PaginationParamsWithDate param)
+        {
+            var dto = await qTran.GetPageTransactionWithCountAndDateAndSearchAsync(param);
+            return ResponseHelper.SuccessBuilder<PaginationDto>(dto);
+        }
+
 
 
         public async Task<ResponseDto<bool>> SetTranIndexAsync(string mac)
@@ -38,23 +44,19 @@ namespace Aero.Application.Services
                 var tran = await rTran.HandleTransactionAsync(message);
                 
 
-                if (string.IsNullOrEmpty(tran.Date) && string.IsNullOrEmpty(tran.Time)) return;
-
                 await rTran.AddAsync(tran);
             
 
             }
             catch (Exception ex)
             {
-                
+                throw new Exception(ex.Message);
             }
 
 
         }
 
-        
-
-        
+       
     }
 
    

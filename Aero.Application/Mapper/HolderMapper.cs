@@ -40,7 +40,7 @@ public sealed class HolderMapper
                   ActiveDate = x.ActiveDate,
                   DeactiveDate = x.DeactiveDate
             }).ToList();
-            res.AccessLevels = dto.AccessLevels.Select(x => new AccessLevel
+            res.AccessLevels = dto.AccessLevels is null || dto.AccessLevels.Count == 0 ? new List<AccessLevel>() : dto.AccessLevels.Select(x => new AccessLevel
             {
                   Name = x.Name,
                   Components = x.Components.Select(x => new CreateUpdateAccessLevelComponent

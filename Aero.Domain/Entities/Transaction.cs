@@ -5,8 +5,7 @@ namespace Aero.Domain.Entities;
 public sealed class Transaction : BaseEntity
 {
       
-        public string Date { get; set; } = string.Empty;
-        public string Time { get; set; } = string.Empty;
+        public DateTime DateTime { get; set; } = DateTime.UtcNow;
         public int SerialNumber { get; set; }
         public string Actor { get; set; } = string.Empty;
         public double Source { get; set; }

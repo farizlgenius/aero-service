@@ -4,7 +4,7 @@ using Aero.Domain.Interface;
 
 namespace Aero.Infrastructure.Data.Entities
 {
-    public sealed class CardHolder : NoMacBaseEntity, IComponentId
+    public sealed class CardHolder : NoMacBaseEntity
     {
         [Required]
         public string user_id { get; set; } = string.Empty;

@@ -2,8 +2,7 @@
 {
     public sealed class Transaction : BaseEntity
     {
-        public string date { get; set; } = string.Empty;
-        public string time { get; set; } = string.Empty;
+        public DateTime date_time { get; set; } = DateTime.UtcNow;
         public int serial_number { get; set; }
         public string actor { get; set; } = string.Empty;
         public double source { get; set; }
