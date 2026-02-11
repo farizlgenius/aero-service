@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aero.Application.DTOs
+namespace Aero.Domain.Entities
 {
-    public sealed class PaginationParamsWithDate
+    public sealed class PaginationParamsWithFilter
     {
         public int PageNumber { get; set; } = 1; // Default to page 1
         public int PageSize { get; set; } = 10; // Default page size

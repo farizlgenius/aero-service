@@ -1,9 +1,9 @@
 ﻿
-namespace Aero.Application.DTOs
+namespace Aero.Domain.Entities
 {
-    public class PaginationDto
+    public class Pagination<T>
     {
-        public IEnumerable<TransactionDto>? Data { get; set; }
+        public IEnumerable<T>? Data { get; set; }
 
         public PaginationData? Page { get; set; }
     }

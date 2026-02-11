@@ -9,7 +9,7 @@ namespace Aero.Application.Services
     public class IdReportService(IQIdReportRepository qReport,IScpCommand scp) 
     {
 
-        public async Task<ResponseDto<IEnumerable<IdReportDto>>> GetAsync()
+        public async Task<ResponseDto<IEnumerable<IdReportDto>>> GetAsync(short location)
         {
 
             var dtos = await qReport.GetAsync();
@@ -27,9 +27,9 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder(true);
         }
 
-        public async Task<ResponseDto<int>> GetCount()
+        public async Task<ResponseDto<int>> GetCount(short location)
         {
-            int count = await qReport.GetCountAsync();
+            int count = await qReport.GetCountAsync(location);
             return ResponseHelper.SuccessBuilder(count);
 
         }

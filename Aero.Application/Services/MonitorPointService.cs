@@ -195,5 +195,11 @@ namespace Aero.Application.Services
                   var dtos = await qMp.GetByComponentIdAsync(component);
                   return ResponseHelper.SuccessBuilder<MonitorPointDto>(dtos);
             }
-      }
+
+        public async Task<ResponseDto<Pagination<MonitorPointDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        {
+            var res = await qMp.GetPaginationAsync(param, location);
+            return ResponseHelper.SuccessBuilder(res);
+        }
+    }
 }

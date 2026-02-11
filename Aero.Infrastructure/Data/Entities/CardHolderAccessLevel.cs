@@ -2,7 +2,7 @@ using System;
 
 namespace Aero.Infrastructure.Data.Entities;
 
-public sealed class CardHolderAccessLevel : NoMacBaseEntity
+public sealed class CardHolderAccessLevel 
 {
       public string holder_id { get; set;} = string.Empty;
       public CardHolder cardholder {get; set;} 

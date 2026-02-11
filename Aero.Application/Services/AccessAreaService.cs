@@ -119,5 +119,17 @@ namespace AeroService.Service.Impl
 
             return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dto);
         }
+
+        public async Task<ResponseDto<IEnumerable<AccessAreaDto>>> GetByLocationIdAsync(short location)
+        {
+            var dto = await qArea.GetByLocationIdAsync(location);
+            return ResponseHelper.SuccessBuilder<IEnumerable<AccessAreaDto>>(dto);
+        }
+
+        public async Task<ResponseDto<Pagination<AccessAreaDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        {
+            var dto = await qArea.GetPaginationAsync(param,location);
+            return ResponseHelper.SuccessBuilder<Pagination<AccessAreaDto>>(dto);
+        }
     }
 }

@@ -5,6 +5,7 @@ using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
 using Aero.Application.Mapper;
+using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 
 namespace Aero.Application.Services
@@ -86,6 +87,13 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder<IEnumerable<LocationDto>>(dtos);
         }
 
+
+        public async Task<ResponseDto<Pagination<LocationDto>>> GetPaginationAsync(PaginationParamsWithFilter param,short location)
+        {
+            var dtos = await qLoc.GetPaginationAsync(param,location);
+            return ResponseHelper.SuccessBuilder<Pagination<LocationDto>>(dtos);
+        }
+
         public async Task<ResponseDto<LocationDto>> UpdateAsync(LocationDto dto)
         {
             if (dto.ComponentId == 1) return ResponseHelper.DefaultRecord<LocationDto>();
@@ -101,5 +109,7 @@ namespace Aero.Application.Services
 
             return ResponseHelper.SuccessBuilder<LocationDto>(dto);
         }
+
+
     }
 }

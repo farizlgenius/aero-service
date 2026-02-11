@@ -234,44 +234,6 @@ namespace Aero.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "id_report",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    device_id = table.Column<short>(type: "smallint", nullable: false),
-                    device_ver = table.Column<short>(type: "smallint", nullable: false),
-                    software_rev_major = table.Column<short>(type: "smallint", nullable: false),
-                    software_rev_minor = table.Column<short>(type: "smallint", nullable: false),
-                    firmware = table.Column<string>(type: "text", nullable: false),
-                    serial_number = table.Column<int>(type: "integer", nullable: false),
-                    ram_size = table.Column<int>(type: "integer", nullable: false),
-                    ram_free = table.Column<int>(type: "integer", nullable: false),
-                    e_sec = table.Column<int>(type: "integer", nullable: false),
-                    db_max = table.Column<int>(type: "integer", nullable: false),
-                    db_active = table.Column<int>(type: "integer", nullable: false),
-                    dip_switch_powerup = table.Column<byte>(type: "smallint", nullable: false),
-                    dip_switch_current = table.Column<byte>(type: "smallint", nullable: false),
-                    scp_id = table.Column<short>(type: "smallint", nullable: false),
-                    firmware_advisory = table.Column<short>(type: "smallint", nullable: false),
-                    scp_in1 = table.Column<short>(type: "smallint", nullable: false),
-                    scp_in2 = table.Column<short>(type: "smallint", nullable: false),
-                    n_oem_code = table.Column<short>(type: "smallint", nullable: false),
-                    config_flag = table.Column<byte>(type: "smallint", nullable: false),
-                    mac = table.Column<string>(type: "text", nullable: false),
-                    tls_status = table.Column<byte>(type: "smallint", nullable: false),
-                    oper_mode = table.Column<byte>(type: "smallint", nullable: false),
-                    scp_in3 = table.Column<short>(type: "smallint", nullable: false),
-                    cumulative_bld_cnt = table.Column<int>(type: "integer", nullable: false),
-                    ip = table.Column<string>(type: "text", nullable: false),
-                    port = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_id_report", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "input_mode",
                 columns: table => new
                 {
@@ -567,23 +529,6 @@ namespace Aero.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_relay_offline_mode", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "role",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    component_id = table.Column<short>(type: "smallint", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_role", x => x.id);
-                    table.UniqueConstraint("AK_role_component_id", x => x.component_id);
                 });
 
             migrationBuilder.CreateTable(
@@ -913,6 +858,50 @@ namespace Aero.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "id_report",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    device_id = table.Column<short>(type: "smallint", nullable: false),
+                    device_ver = table.Column<short>(type: "smallint", nullable: false),
+                    software_rev_major = table.Column<short>(type: "smallint", nullable: false),
+                    software_rev_minor = table.Column<short>(type: "smallint", nullable: false),
+                    firmware = table.Column<string>(type: "text", nullable: false),
+                    serial_number = table.Column<int>(type: "integer", nullable: false),
+                    ram_size = table.Column<int>(type: "integer", nullable: false),
+                    ram_free = table.Column<int>(type: "integer", nullable: false),
+                    e_sec = table.Column<int>(type: "integer", nullable: false),
+                    db_max = table.Column<int>(type: "integer", nullable: false),
+                    db_active = table.Column<int>(type: "integer", nullable: false),
+                    dip_switch_powerup = table.Column<byte>(type: "smallint", nullable: false),
+                    dip_switch_current = table.Column<byte>(type: "smallint", nullable: false),
+                    scp_id = table.Column<short>(type: "smallint", nullable: false),
+                    firmware_advisory = table.Column<short>(type: "smallint", nullable: false),
+                    scp_in1 = table.Column<short>(type: "smallint", nullable: false),
+                    scp_in2 = table.Column<short>(type: "smallint", nullable: false),
+                    n_oem_code = table.Column<short>(type: "smallint", nullable: false),
+                    config_flag = table.Column<byte>(type: "smallint", nullable: false),
+                    mac = table.Column<string>(type: "text", nullable: false),
+                    tls_status = table.Column<byte>(type: "smallint", nullable: false),
+                    oper_mode = table.Column<byte>(type: "smallint", nullable: false),
+                    scp_in3 = table.Column<short>(type: "smallint", nullable: false),
+                    cumulative_bld_cnt = table.Column<int>(type: "integer", nullable: false),
+                    ip = table.Column<string>(type: "text", nullable: false),
+                    port = table.Column<string>(type: "text", nullable: false),
+                    location_id = table.Column<short>(type: "smallint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_id_report", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_id_report_location_location_id",
+                        column: x => x.location_id,
+                        principalTable: "location",
+                        principalColumn: "component_id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "interval",
                 columns: table => new
                 {
@@ -940,12 +929,36 @@ namespace Aero.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "timezone",
+                name: "role",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     component_id = table.Column<short>(type: "smallint", nullable: false),
+                    name = table.Column<string>(type: "text", nullable: false),
+                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    location_id = table.Column<short>(type: "smallint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_role", x => x.id);
+                    table.UniqueConstraint("AK_role_component_id", x => x.component_id);
+                    table.ForeignKey(
+                        name: "FK_role_location_location_id",
+                        column: x => x.location_id,
+                        principalTable: "location",
+                        principalColumn: "component_id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "timezone",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    timezone_id = table.Column<short>(type: "smallint", nullable: false),
                     name = table.Column<string>(type: "text", nullable: false),
                     mode = table.Column<short>(type: "smallint", nullable: false),
                     active_time = table.Column<string>(type: "text", nullable: false),
@@ -953,7 +966,8 @@ namespace Aero.Infrastructure.Migrations
                     location_id = table.Column<short>(type: "smallint", nullable: false),
                     is_active = table.Column<bool>(type: "boolean", nullable: false),
                     created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    component_id = table.Column<short>(type: "smallint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -973,8 +987,7 @@ namespace Aero.Infrastructure.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    date = table.Column<string>(type: "text", nullable: false),
-                    time = table.Column<string>(type: "text", nullable: false),
+                    date_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     serial_number = table.Column<int>(type: "integer", nullable: false),
                     actor = table.Column<string>(type: "text", nullable: false),
                     source = table.Column<double>(type: "double precision", nullable: false),
@@ -1026,69 +1039,6 @@ namespace Aero.Infrastructure.Migrations
                         principalTable: "password_rule",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "feature_role",
-                columns: table => new
-                {
-                    feature_id = table.Column<short>(type: "smallint", nullable: false),
-                    role_id = table.Column<short>(type: "smallint", nullable: false),
-                    is_allow = table.Column<bool>(type: "boolean", nullable: false),
-                    is_create = table.Column<bool>(type: "boolean", nullable: false),
-                    is_modify = table.Column<bool>(type: "boolean", nullable: false),
-                    is_delete = table.Column<bool>(type: "boolean", nullable: false),
-                    is_action = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_feature_role", x => new { x.role_id, x.feature_id });
-                    table.ForeignKey(
-                        name: "FK_feature_role_feature_feature_id",
-                        column: x => x.feature_id,
-                        principalTable: "feature",
-                        principalColumn: "component_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_feature_role_role_role_id",
-                        column: x => x.role_id,
-                        principalTable: "role",
-                        principalColumn: "component_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "operator",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    component_id = table.Column<short>(type: "smallint", nullable: false),
-                    user_id = table.Column<string>(type: "text", nullable: false),
-                    user_name = table.Column<string>(type: "text", nullable: false),
-                    password = table.Column<string>(type: "text", nullable: false),
-                    email = table.Column<string>(type: "text", nullable: false),
-                    title = table.Column<string>(type: "text", nullable: false),
-                    first_name = table.Column<string>(type: "text", nullable: false),
-                    middle_name = table.Column<string>(type: "text", nullable: false),
-                    last_name = table.Column<string>(type: "text", nullable: false),
-                    phone = table.Column<string>(type: "text", nullable: false),
-                    image_path = table.Column<string>(type: "text", nullable: false),
-                    role_id = table.Column<short>(type: "smallint", nullable: false),
-                    is_active = table.Column<bool>(type: "boolean", nullable: false),
-                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_operator", x => x.id);
-                    table.UniqueConstraint("AK_operator_component_id", x => x.component_id);
-                    table.ForeignKey(
-                        name: "FK_operator_role_role_id",
-                        column: x => x.role_id,
-                        principalTable: "role",
-                        principalColumn: "component_id",
-                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -1381,6 +1331,69 @@ namespace Aero.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "feature_role",
+                columns: table => new
+                {
+                    feature_id = table.Column<short>(type: "smallint", nullable: false),
+                    role_id = table.Column<short>(type: "smallint", nullable: false),
+                    is_allow = table.Column<bool>(type: "boolean", nullable: false),
+                    is_create = table.Column<bool>(type: "boolean", nullable: false),
+                    is_modify = table.Column<bool>(type: "boolean", nullable: false),
+                    is_delete = table.Column<bool>(type: "boolean", nullable: false),
+                    is_action = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_feature_role", x => new { x.role_id, x.feature_id });
+                    table.ForeignKey(
+                        name: "FK_feature_role_feature_feature_id",
+                        column: x => x.feature_id,
+                        principalTable: "feature",
+                        principalColumn: "component_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_feature_role_role_role_id",
+                        column: x => x.role_id,
+                        principalTable: "role",
+                        principalColumn: "component_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "operator",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    component_id = table.Column<short>(type: "smallint", nullable: false),
+                    user_id = table.Column<string>(type: "text", nullable: false),
+                    user_name = table.Column<string>(type: "text", nullable: false),
+                    password = table.Column<string>(type: "text", nullable: false),
+                    email = table.Column<string>(type: "text", nullable: false),
+                    title = table.Column<string>(type: "text", nullable: false),
+                    first_name = table.Column<string>(type: "text", nullable: false),
+                    middle_name = table.Column<string>(type: "text", nullable: false),
+                    last_name = table.Column<string>(type: "text", nullable: false),
+                    phone = table.Column<string>(type: "text", nullable: false),
+                    image_path = table.Column<string>(type: "text", nullable: false),
+                    role_id = table.Column<short>(type: "smallint", nullable: false),
+                    is_active = table.Column<bool>(type: "boolean", nullable: false),
+                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_operator", x => x.id);
+                    table.UniqueConstraint("AK_operator_component_id", x => x.component_id);
+                    table.ForeignKey(
+                        name: "FK_operator_role_role_id",
+                        column: x => x.role_id,
+                        principalTable: "role",
+                        principalColumn: "component_id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "timezone_interval",
                 columns: table => new
                 {
@@ -1427,31 +1440,6 @@ namespace Aero.Infrastructure.Migrations
                         column: x => x.transactionid,
                         principalTable: "transaction",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "operator_location",
-                columns: table => new
-                {
-                    location_id = table.Column<short>(type: "smallint", nullable: false),
-                    operator_id = table.Column<short>(type: "smallint", nullable: false),
-                    id = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_operator_location", x => new { x.location_id, x.operator_id });
-                    table.ForeignKey(
-                        name: "FK_operator_location_location_location_id",
-                        column: x => x.location_id,
-                        principalTable: "location",
-                        principalColumn: "component_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_operator_location_operator_operator_id",
-                        column: x => x.operator_id,
-                        principalTable: "operator",
-                        principalColumn: "component_id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -1841,6 +1829,31 @@ namespace Aero.Infrastructure.Migrations
                         name: "FK_trigger_procedure_procedure_id",
                         column: x => x.procedure_id,
                         principalTable: "procedure",
+                        principalColumn: "component_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "operator_location",
+                columns: table => new
+                {
+                    location_id = table.Column<short>(type: "smallint", nullable: false),
+                    operator_id = table.Column<short>(type: "smallint", nullable: false),
+                    id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_operator_location", x => new { x.location_id, x.operator_id });
+                    table.ForeignKey(
+                        name: "FK_operator_location_location_location_id",
+                        column: x => x.location_id,
+                        principalTable: "location",
+                        principalColumn: "component_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_operator_location_operator_operator_id",
+                        column: x => x.operator_id,
+                        principalTable: "operator",
                         principalColumn: "component_id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -2291,7 +2304,11 @@ namespace Aero.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "location",
                 columns: new[] { "id", "component_id", "created_date", "description", "is_active", "location_name", "updated_date" },
-                values: new object[] { 1, (short)1, new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Main location", true, "Main", new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc) });
+                values: new object[,]
+                {
+                    { 1, (short)1, new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Shared location", true, "Shared", new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { 2, (short)2, new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Main location", true, "Main", new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc) }
+                });
 
             migrationBuilder.InsertData(
                 table: "module_baudrate",
@@ -2458,11 +2475,6 @@ namespace Aero.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "role",
-                columns: new[] { "id", "component_id", "created_date", "name", "updated_date" },
-                values: new object[] { 1, (short)1, new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Administrator", new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc) });
-
-            migrationBuilder.InsertData(
                 table: "scp_setting",
                 columns: new[] { "id", "gmt_offset", "n_acr", "n_alvl", "n_area", "n_card", "n_cp", "n_hol", "n_mp", "n_mpg", "n_msp1_port", "n_proc", "n_sio", "n_transaction", "n_trgr", "n_tz" },
                 values: new object[] { 1, (short)-25200, (short)64, (short)32000, (short)127, (short)200, (short)388, (short)255, (short)615, (short)128, (short)3, (short)1024, (short)33, 60000, (short)1024, (short)255 });
@@ -2611,34 +2623,9 @@ namespace Aero.Infrastructure.Migrations
                 values: new object[] { 1, (short)26, (short)16, (short)9, (short)0, new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), (short)-1, (short)0, (short)0, (short)0, (short)1, (short)0, (short)0, true, (short)1, "26 bits (No Fac)", (short)0, (short)13, (short)0, (short)13, (short)13, new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc) });
 
             migrationBuilder.InsertData(
-                table: "feature_role",
-                columns: new[] { "feature_id", "role_id", "is_action", "is_allow", "is_create", "is_delete", "is_modify" },
-                values: new object[,]
-                {
-                    { (short)1, (short)1, true, true, true, true, true },
-                    { (short)2, (short)1, true, true, true, true, true },
-                    { (short)3, (short)1, true, true, true, true, true },
-                    { (short)4, (short)1, true, true, true, true, true },
-                    { (short)5, (short)1, true, true, true, true, true },
-                    { (short)6, (short)1, true, true, true, true, true },
-                    { (short)7, (short)1, true, true, true, true, true },
-                    { (short)8, (short)1, true, true, true, true, true },
-                    { (short)9, (short)1, true, true, true, true, true },
-                    { (short)10, (short)1, true, true, true, true, true },
-                    { (short)11, (short)1, true, true, true, true, true },
-                    { (short)12, (short)1, true, true, true, true, true },
-                    { (short)13, (short)1, true, true, true, true, true },
-                    { (short)14, (short)1, true, true, true, true, true },
-                    { (short)15, (short)1, true, true, true, true, true },
-                    { (short)16, (short)1, true, true, true, true, true },
-                    { (short)17, (short)1, true, true, true, true, true },
-                    { (short)18, (short)1, true, true, true, true, true }
-                });
-
-            migrationBuilder.InsertData(
-                table: "operator",
-                columns: new[] { "id", "component_id", "created_date", "email", "first_name", "image_path", "is_active", "last_name", "middle_name", "password", "phone", "role_id", "title", "updated_date", "user_id", "user_name" },
-                values: new object[] { 1, (short)1, new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "support@honorsupplying.com", "Administrator", "", true, "", "", "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY", "", (short)1, "Mr.", new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Administrator", "admin" });
+                table: "role",
+                columns: new[] { "id", "component_id", "created_date", "location_id", "name", "updated_date" },
+                values: new object[] { 1, (short)1, new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), (short)1, "Administrator", new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc) });
 
             migrationBuilder.InsertData(
                 table: "sub_feature",
@@ -2660,8 +2647,8 @@ namespace Aero.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "timezone",
-                columns: new[] { "id", "active_time", "component_id", "created_date", "deactive_time", "is_active", "location_id", "mode", "name", "updated_date" },
-                values: new object[] { 1, "", (short)1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "", true, (short)1, (short)1, "Always", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) });
+                columns: new[] { "id", "active_time", "component_id", "created_date", "deactive_time", "is_active", "location_id", "mode", "name", "timezone_id", "updated_date" },
+                values: new object[] { 1, "", (short)1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "", true, (short)1, (short)1, "Always", (short)0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) });
 
             migrationBuilder.InsertData(
                 table: "transaction_code",
@@ -2896,6 +2883,36 @@ namespace Aero.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "feature_role",
+                columns: new[] { "feature_id", "role_id", "is_action", "is_allow", "is_create", "is_delete", "is_modify" },
+                values: new object[,]
+                {
+                    { (short)1, (short)1, true, true, true, true, true },
+                    { (short)2, (short)1, true, true, true, true, true },
+                    { (short)3, (short)1, true, true, true, true, true },
+                    { (short)4, (short)1, true, true, true, true, true },
+                    { (short)5, (short)1, true, true, true, true, true },
+                    { (short)6, (short)1, true, true, true, true, true },
+                    { (short)7, (short)1, true, true, true, true, true },
+                    { (short)8, (short)1, true, true, true, true, true },
+                    { (short)9, (short)1, true, true, true, true, true },
+                    { (short)10, (short)1, true, true, true, true, true },
+                    { (short)11, (short)1, true, true, true, true, true },
+                    { (short)12, (short)1, true, true, true, true, true },
+                    { (short)13, (short)1, true, true, true, true, true },
+                    { (short)14, (short)1, true, true, true, true, true },
+                    { (short)15, (short)1, true, true, true, true, true },
+                    { (short)16, (short)1, true, true, true, true, true },
+                    { (short)17, (short)1, true, true, true, true, true },
+                    { (short)18, (short)1, true, true, true, true, true }
+                });
+
+            migrationBuilder.InsertData(
+                table: "operator",
+                columns: new[] { "id", "component_id", "created_date", "email", "first_name", "image_path", "is_active", "last_name", "middle_name", "password", "phone", "role_id", "title", "updated_date", "user_id", "user_name" },
+                values: new object[] { 1, (short)1, new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "support@honorsupplying.com", "Administrator", "", true, "", "", "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY", "", (short)1, "Mr.", new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Administrator", "admin" });
+
+            migrationBuilder.InsertData(
                 table: "operator_location",
                 columns: new[] { "location_id", "operator_id", "id" },
                 values: new object[] { (short)1, (short)1, 1 });
@@ -3059,6 +3076,11 @@ namespace Aero.Infrastructure.Migrations
                 column: "location_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_id_report_location_id",
+                table: "id_report",
+                column: "location_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_interval_component_id",
                 table: "interval",
                 column: "component_id",
@@ -3153,6 +3175,11 @@ namespace Aero.Infrastructure.Migrations
                 name: "IX_request_exit_module_id",
                 table: "request_exit",
                 column: "module_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_role_location_id",
+                table: "role",
+                column: "location_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_sensor_location_id",

@@ -32,6 +32,8 @@ namespace Aero.Infrastructure.Data.Entities
         public int cumulative_bld_cnt { get; set; }
         public string ip { get; set; } = string.Empty;
         public string port { get; set; } = string.Empty;
+        public short location_id { get; set; }
+        public Location location { get; set; }
 
     }
 }

@@ -4,6 +4,7 @@ namespace Aero.Domain.Entities;
 
 public sealed class Module : BaseEntity
 {
+    public short SioId { get; set; }
       public short Model { get; set; }
       public string ModelDescription { get; set; } = string.Empty;
       public string Revision { get; set; } = string.Empty;

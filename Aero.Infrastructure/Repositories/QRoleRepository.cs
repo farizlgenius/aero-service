@@ -1,6 +1,7 @@
 using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using Aero.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -103,7 +104,98 @@ public class QRoleRepository(AppDbContext context) : IQRoleRepository
             if (expected > max) return -1;
             return expected;
       }
-      public async Task<bool> IsAnyByComponentId(short component)
+
+    public async Task<Pagination<RoleDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    {
+
+        var query = context.role.AsNoTracking().AsQueryable();
+
+
+        if (!string.IsNullOrWhiteSpace(param.Search))
+        {
+            if (!string.IsNullOrWhiteSpace(param.Search))
+            {
+                var search = param.Search.Trim();
+
+                if (context.Database.IsNpgsql())
+                {
+                    var pattern = $"%{search}%";
+
+                    query = query.Where(x =>
+                        EF.Functions.ILike(x.name, pattern) 
+
+                    );
+                }
+                else // SQL Server
+                {
+                    query = query.Where(x =>
+                        x.name.Contains(search) 
+                    );
+                }
+            }
+        }
+
+        query = query.Where(x => x.location_id == location || x.location_id == 1);
+
+        if (param.StartDate != null)
+        {
+            var startUtc = DateTime.SpecifyKind(param.StartDate.Value, DateTimeKind.Utc);
+            query = query.Where(x => x.created_date >= startUtc);
+        }
+
+        if (param.EndDate != null)
+        {
+            var endUtc = DateTime.SpecifyKind(param.EndDate.Value, DateTimeKind.Utc);
+            query = query.Where(x => x.created_date <= endUtc);
+        }
+
+        var count = await query.CountAsync();
+
+
+        var data = await query
+            .AsNoTracking()
+            .OrderByDescending(t => t.created_date)
+            .Skip((param.PageNumber - 1) * param.PageSize)
+            .Take(param.PageSize)
+           .Select(x => new RoleDto
+           {
+               ComponentId = x.component_id,
+               Name = x.name,
+               Features = x.feature_roles != null && x.feature_roles.Count > 0 ? x.feature_roles.Select(x => new FeatureDto
+               {
+                   ComponentId = x.feature.component_id,
+                   Name = x.feature.name,
+                   Path = x.feature.path,
+                   SubItems = x.feature.sub_feature.Select(s => new SubFeatureDto
+                   {
+                       Name = s.name,
+                       Path = s.path
+                   }).ToList(),
+                   IsAction = x.is_action,
+                   IsAllow = x.is_allow,
+                   IsCreate = x.is_create,
+                   IsModify = x.is_modify,
+                   IsDelete = x.is_delete,
+
+               }).ToList() : new List<FeatureDto>()
+           })
+            .ToListAsync();
+
+
+        return new Pagination<RoleDto>
+        {
+            Data = data,
+            Page = new PaginationData
+            {
+                TotalCount = count,
+                PageNumber = param.PageNumber,
+                PageSize = param.PageSize,
+                TotalPage = (int)Math.Ceiling(count / (double)param.PageSize)
+            }
+        };
+    }
+
+    public async Task<bool> IsAnyByComponentId(short component)
       {
             return await context.role.AnyAsync(x => x.component_id == component);
       }

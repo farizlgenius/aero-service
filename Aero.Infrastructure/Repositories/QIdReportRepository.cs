@@ -1,11 +1,13 @@
-using System;
 using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using Aero.Domain.Interfaces;
 using Aero.Infrastructure.Data;
+using Aero.Infrastructure.Data.Entities;
 using Aero.Infrastructure.Mapper;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Aero.Infrastructure.Repositories;
 
@@ -42,13 +44,14 @@ public class QIdReportRepository(AppDbContext context) : IQIdReportRepository
             context.id_report.Remove(en);
             await context.SaveChangesAsync();
 
-            return await GetAsync();
+            return await GetAsync(en.location_id);
       }
 
-      public async Task<IEnumerable<IdReportDto>> GetAsync()
+      public async Task<IEnumerable<IdReportDto>> GetAsync(short location)
       {
             var dtos = await context.id_report
                .AsNoTracking()
+               .Where(x => x.location_id == location || x.location_id == 1)
                .Select(x => new IdReportDto
                {
                      ComponentId = x.scp_id,
@@ -65,7 +68,28 @@ public class QIdReportRepository(AppDbContext context) : IQIdReportRepository
             return dtos;
       }
 
-      public Task<IdReportDto> GetByComponentIdAsync(short componentId)
+    public async Task<IEnumerable<IdReportDto>> GetAsync()
+    {
+
+        var dtos = await context.id_report
+           .AsNoTracking()
+           .Select(x => new IdReportDto
+           {
+               ComponentId = x.scp_id,
+               SerialNumber = x.serial_number,
+               MacAddress = x.mac,
+               Ip = x.ip,
+               Port = x.port,
+               Firmware = x.firmware,
+               HardwareType = x.device_id,
+               HardwareTypeDescription = "AERO"
+           })
+           .ToArrayAsync();
+
+        return dtos;
+    }
+
+    public Task<IdReportDto> GetByComponentIdAsync(short componentId)
       {
             throw new NotImplementedException();
       }
@@ -97,7 +121,7 @@ public class QIdReportRepository(AppDbContext context) : IQIdReportRepository
             return dtos;
       }
 
-      public async Task<int> GetCountAsync()
+      public async Task<int> GetCountAsync(short location)
       {
             return await context.id_report.CountAsync();
       }
@@ -107,7 +131,12 @@ public class QIdReportRepository(AppDbContext context) : IQIdReportRepository
             throw new NotImplementedException();
       }
 
-      public Task<bool> IsAnyByComponentId(short component)
+    public Task<Pagination<IdReportDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> IsAnyByComponentId(short component)
       {
             throw new NotImplementedException();
       }

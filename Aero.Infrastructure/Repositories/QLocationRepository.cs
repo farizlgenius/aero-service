@@ -1,6 +1,8 @@
 using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
+using Aero.Domain.Interfaces;
 using Aero.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -258,7 +260,8 @@ public class QLocationRepository(AppDbContext context) : IQLocationRespository
             return expected;
       }
 
-      public async Task<bool> IsAnyByComponentId(short component)
+
+    public async Task<bool> IsAnyByComponentId(short component)
       {
             return await context.location.AnyAsync(x => x.component_id == component);
       }
@@ -267,4 +270,80 @@ public class QLocationRepository(AppDbContext context) : IQLocationRespository
       {
             return await context.location.AnyAsync(x => x.location_name.Equals(name));
       }
+
+    public async Task<Pagination<LocationDto>> GetPaginationAsync(PaginationParamsWithFilter param,short location)
+    {
+        var query = context.location.AsNoTracking().AsQueryable();
+
+
+        if (!string.IsNullOrWhiteSpace(param.Search))
+        {
+            if (!string.IsNullOrWhiteSpace(param.Search))
+            {
+                var search = param.Search.Trim();
+
+                if (context.Database.IsNpgsql())
+                {
+                    var pattern = $"%{search}%";
+
+                    query = query.Where(x =>
+                        EF.Functions.ILike(x.location_name, pattern) ||
+                        EF.Functions.ILike(x.description, pattern)
+                    );
+                }
+                else // SQL Server
+                {
+                    query = query.Where(x =>
+                        x.location_name.Contains(search) ||
+                        x.description.Contains(search)
+                    );
+                }
+            }
+        }
+
+
+        query = query.Where(x => x.component_id != 1);
+
+        if (param.StartDate != null)
+        {
+            var startUtc = DateTime.SpecifyKind(param.StartDate.Value, DateTimeKind.Utc);
+            query = query.Where(x => x.created_date >= startUtc);
+        }
+
+        if (param.EndDate != null)
+        {
+            var endUtc = DateTime.SpecifyKind(param.EndDate.Value, DateTimeKind.Utc);
+            query = query.Where(x => x.created_date <= endUtc);
+        }
+
+        var count = await query.CountAsync();
+
+
+        var data = await query
+            .AsNoTracking()
+            .OrderByDescending(t => t.created_date)
+            .Skip((param.PageNumber - 1) * param.PageSize)
+            .Take(param.PageSize)
+            .Select(x => new LocationDto
+            {
+                ComponentId = x.component_id,
+                LocationName = x.location_name,
+                Description = x.description
+
+            })
+            .ToListAsync();
+
+
+        return new Pagination<LocationDto>
+        {
+            Data = data,
+            Page = new PaginationData
+            {
+                TotalCount = count,
+                PageNumber = param.PageNumber,
+                PageSize = param.PageSize,
+                TotalPage = (int)Math.Ceiling(count / (double)param.PageSize)
+            }
+        };
+    }
 }

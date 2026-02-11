@@ -8,6 +8,7 @@ namespace Aero.Application.Interface
     {
         Task<ResponseDto<IEnumerable<ModuleDto>>> GetAsync();
         Task<ResponseDto<IEnumerable<ModuleDto>>> GetByLocationAsync(short location);
+        Task<ResponseDto<Pagination<ModuleDto>>> GetPaginationAsync(PaginationParamsWithFilter param,short location);
         void GetSioStatus(int ScpId, int SioNo);
         Task<ResponseDto<bool>> GetStatusAsync(string mac, short component);
         Task<ResponseDto<ModuleDto>> CreateAsync(ModuleDto dto);

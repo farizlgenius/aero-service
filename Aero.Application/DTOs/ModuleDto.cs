@@ -5,6 +5,7 @@ namespace Aero.Application.DTOs
 {
     public sealed class ModuleDto : BaseEntity
     {
+        public short SioId { get; set; }
         public short Model { get; set; }
         public string ModelDescription { get; set; } = string.Empty;
         public string Revision { get; set; } = string.Empty;

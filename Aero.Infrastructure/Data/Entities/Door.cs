@@ -14,11 +14,9 @@ namespace Aero.Infrastructure.Data.Entities
         public short reader_out_config { get; set; }
 
         // Strike setting for strike
-        public short strike_id { get; set; }
         public Strike strike {  get; set; }
 
         //sensor setting for sensor
-        public short sensor_id { get; set; }
         public Sensor sensor { get; set; }
         
         //sensor setting for rex0 / rex1
@@ -55,6 +53,7 @@ namespace Aero.Infrastructure.Data.Entities
         public short df_filter_time { get; set; }
         public bool is_held_mask { get; set; } = false;
         public bool is_force_mask { get; set; } = false;
+        public ICollection<AccessLevelDoorComponent> access_level_door_components { get; set; }
 
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using Aero.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +9,7 @@ namespace Aero.Infrastructure.Repositories;
 
 public class QTransactionRepository(AppDbContext context) : IQTransactionRepository
 {
-    public async Task<PaginationDto> GetPageTransactionWithCountAndDateAndSearchAsync(PaginationParamsWithDate param)
+    public async Task<Pagination<TransactionDto>> GetPageTransactionWithCountAndDateAndSearchAsync(PaginationParamsWithFilter param,short location)
     {
         var query = context.transaction.AsNoTracking().AsQueryable();
        
@@ -52,6 +53,11 @@ public class QTransactionRepository(AppDbContext context) : IQTransactionReposit
                     );
                 }
             }
+        }
+
+        if(location >= 0)
+        {
+            query = query.Where(x => x.location_id == location);
         }
 
         if(param.StartDate != null)
@@ -107,7 +113,7 @@ public class QTransactionRepository(AppDbContext context) : IQTransactionReposit
             .ToListAsync();
 
 
-        return new PaginationDto
+        return new Pagination<TransactionDto>
         {
             Data = data,
             Page = new PaginationData
@@ -120,7 +126,7 @@ public class QTransactionRepository(AppDbContext context) : IQTransactionReposit
         };
     }
 
-    public async Task<PaginationDto> GetPageTransactionWithCountAsync(PaginationParams param)
+    public async Task<Pagination<TransactionDto>> GetPageTransactionWithCountAsync(PaginationParams param)
       {
             var query = context.transaction.AsQueryable();
             var count = await query.CountAsync();
@@ -162,7 +168,7 @@ public class QTransactionRepository(AppDbContext context) : IQTransactionReposit
                 .ToListAsync();
 
 
-            return new PaginationDto 
+            return new Pagination<TransactionDto> 
             {
                 Data = data,
                 Page = new PaginationData

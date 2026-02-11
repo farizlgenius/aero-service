@@ -81,7 +81,7 @@ public class QMpgRepository(AppDbContext context) : IQMpgRepository
             var res = await context.monitor_group
             .AsNoTracking()
             .OrderBy(x => x.component_id)
-            .Where(x => x.location_id == locationId)
+            .Where(x => x.location_id == locationId || x.location_id == 1)
             .Select(en => new MonitorGroupDto
             {
                   // Base 
@@ -193,7 +193,97 @@ public class QMpgRepository(AppDbContext context) : IQMpgRepository
             return dtos;
       }
 
-      public async Task<bool> IsAnyByComponentId(short component)
+    public async Task<Pagination<MonitorGroupDto>> GetPaginationAsync(PaginationParamsWithFilter param,short location)
+    {
+
+        var query = context.monitor_group.AsNoTracking().AsQueryable();
+
+
+        if (!string.IsNullOrWhiteSpace(param.Search))
+        {
+            if (!string.IsNullOrWhiteSpace(param.Search))
+            {
+                var search = param.Search.Trim();
+
+                if (context.Database.IsNpgsql())
+                {
+                    var pattern = $"%{search}%";
+
+                    query = query.Where(x =>
+                        EF.Functions.ILike(x.name, pattern) ||
+                        EF.Functions.ILike(x.hardware_mac, pattern) ||
+                        EF.Functions.ILike(x.mac, pattern) 
+
+                    );
+                }
+                else // SQL Server
+                {
+                    query = query.Where(x =>
+                        x.name.Contains(search) ||
+                        x.hardware_mac.Contains(search) ||
+                        x.mac.Contains(search) 
+                    );
+                }
+            }
+        }
+
+        query = query.Where(x => x.location_id == location || x.location_id == 1);
+
+        if (param.StartDate != null)
+        {
+            var startUtc = DateTime.SpecifyKind(param.StartDate.Value, DateTimeKind.Utc);
+            query = query.Where(x => x.created_date >= startUtc);
+        }
+
+        if (param.EndDate != null)
+        {
+            var endUtc = DateTime.SpecifyKind(param.EndDate.Value, DateTimeKind.Utc);
+            query = query.Where(x => x.created_date <= endUtc);
+        }
+
+        var count = await query.CountAsync();
+
+
+        var data = await query
+            .AsNoTracking()
+            .OrderByDescending(t => t.created_date)
+            .Skip((param.PageNumber - 1) * param.PageSize)
+            .Take(param.PageSize)
+           .Select(en => new MonitorGroupDto
+           {
+               // Base 
+               ComponentId = en.component_id,
+               Mac = en.hardware_mac,
+               LocationId = en.location_id,
+               IsActive = en.is_active,
+
+               // Detail
+               Name = en.name,
+               nMpCount = en.n_mp_count,
+               nMpList = en.n_mp_list.Select(x => new MonitorGroupListDto
+               {
+                   PointType = x.point_type,
+                   PointNumber = x.point_number,
+                   PointTypeDesc = x.point_type_desc,
+               }).ToList(),
+           })
+            .ToListAsync();
+
+
+        return new Pagination<MonitorGroupDto>
+        {
+            Data = data,
+            Page = new PaginationData
+            {
+                TotalCount = count,
+                PageNumber = param.PageNumber,
+                PageSize = param.PageSize,
+                TotalPage = (int)Math.Ceiling(count / (double)param.PageSize)
+            }
+        };
+    }
+
+    public async Task<bool> IsAnyByComponentId(short component)
       {
             return await context.location.AnyAsync(x => x.component_id == component);
       }

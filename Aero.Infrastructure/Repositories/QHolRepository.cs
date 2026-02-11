@@ -1,6 +1,7 @@
 using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using Aero.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -68,7 +69,8 @@ public sealed class QHolRepository(AppDbContext context) : IQHolRepository
       {
             var res = await context.holiday
             .AsNoTracking()
-            .Where(p => p.location_id == locationId).Select(p => new HolidayDto 
+            .Where(p => p.location_id == locationId || p.location_id == locationId)
+            .Select(p => new HolidayDto 
             {
                 // Base
                 ComponentId = p.component_id,
@@ -116,9 +118,94 @@ public sealed class QHolRepository(AppDbContext context) : IQHolRepository
             return expected;
       }
 
+    public async Task<Pagination<HolidayDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    {
+
+        var query = context.holiday.AsNoTracking().AsQueryable();
 
 
-      public async Task<bool> IsAnyByComponentId(short component)
+        if (!string.IsNullOrWhiteSpace(param.Search))
+        {
+            if (!string.IsNullOrWhiteSpace(param.Search))
+            {
+                var search = param.Search.Trim();
+
+                if (context.Database.IsNpgsql())
+                {
+                    var pattern = $"%{search}%";
+
+                    query = query.Where(x =>
+                        EF.Functions.ILike(x.year.ToString(), pattern) ||
+                        EF.Functions.ILike(x.month.ToString(), pattern) ||
+                        EF.Functions.ILike(x.day.ToString(), pattern) 
+
+                    );
+                }
+                else // SQL Server
+                {
+                    query = query.Where(x =>
+                        x.year.ToString().Contains(search) ||
+                        x.month.ToString().Contains(search) ||
+                        x.day.ToString().Contains(search) 
+                    );
+                }
+            }
+        }
+
+        query = query.Where(x => x.location_id == location);
+
+        if (param.StartDate != null)
+        {
+            var startUtc = DateTime.SpecifyKind(param.StartDate.Value, DateTimeKind.Utc);
+            query = query.Where(x => x.created_date >= startUtc);
+        }
+
+        if (param.EndDate != null)
+        {
+            var endUtc = DateTime.SpecifyKind(param.EndDate.Value, DateTimeKind.Utc);
+            query = query.Where(x => x.created_date <= endUtc);
+        }
+
+        var count = await query.CountAsync();
+
+
+        var data = await query
+            .AsNoTracking()
+            .OrderByDescending(t => t.created_date)
+            .Skip((param.PageNumber - 1) * param.PageSize)
+            .Take(param.PageSize)
+            .Select(p => new HolidayDto
+            {
+                // Base
+                ComponentId = p.component_id,
+                LocationId = p.location_id,
+                IsActive = p.is_active,
+
+                // extend_desc
+                Day = p.day,
+                Month = p.month,
+                Year = p.year,
+                Extend = p.extend,
+                TypeMask = p.type_mask
+
+            })
+            .ToListAsync();
+
+
+        return new Pagination<HolidayDto>
+        {
+            Data = data,
+            Page = new PaginationData
+            {
+                TotalCount = count,
+                PageNumber = param.PageNumber,
+                PageSize = param.PageSize,
+                TotalPage = (int)Math.Ceiling(count / (double)param.PageSize)
+            }
+        };
+    }
+
+    public async Task<bool> IsAnyByComponentId(short component)
       {
             return await context.holiday.AnyAsync(x => x.component_id == component);
       }

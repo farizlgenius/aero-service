@@ -106,6 +106,9 @@ namespace Aero.Application.Services
             if (DoorId == -1 || AcrId == -1) return ResponseHelper.ExceedLimit<bool>();
 
             var domain = DoorMapper.ToDomain(dto);
+            domain.Mode = domain.DefaultMode;
+            domain.ComponentId = DoorId;
+            domain.AcrId = AcrId;
 
             short ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
 
@@ -188,6 +191,20 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<bool>> DeleteAsync(short component)
         {
             if(!await qDoor.IsAnyByComponentId(component)) return ResponseHelper.NotFoundBuilder<bool>();
+
+            // Send Command 
+
+            var dto = await qDoor.GetByComponentIdAsync(component);
+            var domain = DoorMapper.ToDeleteDomain(dto);
+
+            var ScpId = await qHw.GetComponentIdFromMacAsync(domain.Mac);
+
+            if (!door.AccessControlReaderConfiguration(ScpId, domain.ComponentId, domain))
+            {
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.ACR_CONFIG));
+            }
+
+            // 
             var status = await rDoor.DeleteByComponentIdAsync(component);
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,[]);
             return ResponseHelper.SuccessBuilder<bool>(true);
@@ -228,13 +245,15 @@ namespace Aero.Application.Services
             }
 
             // Strike Strike Config
-            if (!cp.OutputPointSpecification(domain.StrkComponentId, domain.Strk.ModuleId, domain.Strk.OutputNo, domain.Strk.RelayMode))
+            var StrikeId = await qHw.GetComponentIdFromMacAsync(domain.Strk.Mac);
+            if (!cp.OutputPointSpecification(StrikeId, domain.Strk.ModuleId, domain.Strk.OutputNo, domain.Strk.RelayMode))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.OUTPUT_SPEC));
             }
 
             // door sensor Config
-            if (!mp.InputPointSpecification(domain.SensorComponentId,domain.Sensor.ModuleId,domain.Sensor.InputNo, domain.Sensor.InputMode, domain.Sensor.Debounce, domain.Sensor.HoldTime))
+            var SensorId = await qHw.GetComponentIdFromMacAsync(domain.Sensor.Mac);
+            if (!mp.InputPointSpecification(SensorId, domain.Sensor.ModuleId,domain.Sensor.InputNo, domain.Sensor.InputMode, domain.Sensor.Debounce, domain.Sensor.HoldTime))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.INPUT_SPEC));
             }
@@ -329,5 +348,11 @@ namespace Aero.Application.Services
                   var dtos = await qDoor.GetByComponentIdAsync(component);
                   return ResponseHelper.SuccessBuilder<DoorDto>(dtos);
             }
-      }
+
+        public async Task<ResponseDto<Pagination<DoorDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        {
+            var res = await qDoor.GetPaginationAsync(param, location);
+            return ResponseHelper.SuccessBuilder(res);
+        }
+    }
 }

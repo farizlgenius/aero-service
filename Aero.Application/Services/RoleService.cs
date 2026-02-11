@@ -1,10 +1,12 @@
-﻿using System.Net;
-using Aero.Application.Constants;
+﻿using Aero.Application.Constants;
 using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interfaces;
 using Aero.Application.Mapper;
+using Aero.Domain.Entities;
 using Aero.Domain.Interface;
+using System.ComponentModel;
+using System.Net;
 
 namespace Aero.Application.Services
 {
@@ -69,6 +71,19 @@ namespace Aero.Application.Services
 
             return ResponseHelper.SuccessBuilder(dto);
                 
+        }
+
+        public async Task<ResponseDto<IEnumerable<RoleDto>>> GetByLocationAsync(short location)
+        {
+            var dto = await qRole.GetByLocationIdAsync(location);
+
+            return ResponseHelper.SuccessBuilder(dto);
+        }
+
+        public async Task<ResponseDto<Pagination<RoleDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        {
+            var res = await qRole.GetPaginationAsync(param,location);
+            return ResponseHelper.SuccessBuilder(res);
         }
 
         public async Task<ResponseDto<RoleDto>> UpdateAsync(RoleDto dto)

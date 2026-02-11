@@ -10,6 +10,7 @@ namespace Aero.Application.Interface
 {
     public interface IHardwareService
     {
+        Task<ResponseDto<Pagination<HardwareDto>>> GetPaginationAsync(PaginationParamsWithFilter param,short location);
         Task HandleFoundHardware(IScpReply message);
         Task<ResponseDto<IEnumerable<HardwareDto>>> GetAsync();
         Task<ResponseDto<IEnumerable<Mode>>> GetHardwareTypeAsync();

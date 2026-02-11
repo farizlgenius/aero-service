@@ -8,6 +8,7 @@ namespace Aero.Infrastructure.Data.Entities;
         [Key]
         public int id {get; set;}
         public string mac { get; set;} = string.Empty;
+        public Hardware hardware { get; set; }
         public ICollection<AccessLevelDoorComponent> door_component { get; set;}
 
         // Reference 

@@ -1,5 +1,6 @@
 ﻿using Aero.Application.DTOs;
 using Aero.Application.Interface;
+using Aero.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,6 +33,14 @@ namespace Aero.Api.Controllers.V1
         public async Task<ActionResult<ResponseDto<IEnumerable<HolidayDto>>>> GetByLocationAsync(short location)
         {
             var res = await service.GetByLocationAsync(location);
+            return Ok(res);
+        }
+
+        [HttpGet("/api/v1/{location}/[controller]/pagination")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<Pagination<HolidayDto>>>> GetByPaginationAsync([FromQuery]PaginationParamsWithFilter param,short location)
+        {
+            var res = await service.GetPaginationAsync(param,location);
             return Ok(res);
         }
 

@@ -5,6 +5,7 @@ namespace Aero.Infrastructure.Data.Entities
     {
         public Module module { get; set; }
         public Door strike_door { get; set; }
+        public short door_id { get; set; }
         public short module_id { get; set; }
         public short output_no { get; set; }
         public short relay_mode { get; set; }

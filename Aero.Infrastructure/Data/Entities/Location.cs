@@ -37,6 +37,8 @@ namespace Aero.Infrastructure.Data.Entities
         public ICollection<Interval> intervals { get; set; }
         public ICollection<TimeZone> timezones { get; set; }
         public ICollection<CardFormat> card_formats { get; set; }
+        public ICollection<IdReport> idreports { get; set; }
+        public ICollection<Role> roles { get; set; }
 
         public bool is_active { get; set; } = true;
         public DateTime created_date { get; set; }

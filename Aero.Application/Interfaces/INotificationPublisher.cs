@@ -23,7 +23,6 @@ public interface INotificationPublisher
 
       #region Door
 
-      Task DoorNotifyStatus(DoorStatus status);
 
       #endregion
 
@@ -32,5 +31,5 @@ public interface INotificationPublisher
       Task CardScanNotifyStatus(CardScanStatus status);
       Task MpNotifyStatus(MpStatus status);
       Task EventNotifyRecieve();
-      Task AcrNotifyStatus(AcrStatus status);
+        Task AcrNotifyStatus(AcrStatus status);
 }

@@ -1,6 +1,8 @@
 ﻿
 using Aero.Application.DTOs;
 using Aero.Application.Interface;
+using Aero.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aero.Api.Controllers.V1
@@ -10,10 +12,11 @@ namespace Aero.Api.Controllers.V1
     public class TransactionController(ITransactionService transactionService) : ControllerBase
     {
 
-        [HttpGet]
-        public async Task<ActionResult<ResponseDto<PaginationDto>>> GetEvent([FromQuery] PaginationParamsWithDate paginationParams)
+        [HttpGet("/api/v1/{location}/[controller]")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<Pagination<TransactionDto>>>> GetPaginationAsync([FromQuery]PaginationParamsWithFilter paginationParams,short location)
         {
-            var res = await transactionService.GetPageTransactionWithCountAndDateAndSearchAsync(paginationParams);
+            var res = await transactionService.GetPageTransactionWithCountAndDateAndSearchAsync(paginationParams,location);
             return Ok(res);
         }
 
@@ -25,6 +28,7 @@ namespace Aero.Api.Controllers.V1
         //}
 
         [HttpPost("{mac}")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<bool>>> SetTranIndexAsync(string mac)
         {
             var res = await transactionService.SetTranIndexAsync(mac);

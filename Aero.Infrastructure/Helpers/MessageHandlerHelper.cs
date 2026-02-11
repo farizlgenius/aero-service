@@ -46,7 +46,7 @@ namespace Aero.Infrastructure.Helpers
 
         }
 
-        public static void SCPReplyTransactionHandler(SCPReplyMessage message,bool isWaitingCardScan,short ScanScpId,short ScanAcrNo,Channel<IScpReply> queue,ILogger logger,IServiceScopeFactory scopeFactory)
+        public static void SCPReplyTransactionHandler(SCPReplyMessage message,Channel<IScpReply> queue,ILogger logger,IServiceScopeFactory scopeFactory)
         {
 
             switch (message.tran.tran_type)
@@ -64,58 +64,38 @@ namespace Aero.Infrastructure.Helpers
                     }
                 case (short)tranType.tranTypeCardBin:
                     ProcessAeroTransactionHelper.ProcessTypeCardBin(message);
+                    queue.Writer.TryWrite(new ScpReplyAdapter(message));
                     break;
                 case (short)tranType.tranTypeCardBcd:
                     ProcessAeroTransactionHelper.ProcessTypeCardBcd(message);
                     break;
                 case (short)tranType.tranTypeCardFull:
-                    if (isWaitingCardScan && ScanScpId == message.SCPId && ScanAcrNo == message.tran.source_number)
-                    {
-                        queue.Writer.TryWrite(new ScpReplyAdapter(message));
-                        isWaitingCardScan = false;
-                        ScanAcrNo = -1;
-                        ScanScpId = -1;
-                    }
                     ProcessAeroTransactionHelper.ProcessTypeCardFull(message);
+                    queue.Writer.TryWrite(new ScpReplyAdapter(message));
                     break;
                 case (short)tranType.tranTypeDblCardFull:
-                    if (isWaitingCardScan && ScanScpId == message.SCPId && ScanAcrNo == message.tran.source_number)
-                    {
-                        queue.Writer.TryWrite(new ScpReplyAdapter(message));
-                        isWaitingCardScan = false;
-                        ScanAcrNo = -1;
-                        ScanScpId = -1;
-                    }
                     ProcessAeroTransactionHelper.ProcessTypeDblCardFull(message);
+                    queue.Writer.TryWrite(new ScpReplyAdapter(message));
                     break;
                 case (short)tranType.tranTypeI64CardFull:
-                    if (isWaitingCardScan && ScanScpId == message.SCPId && ScanAcrNo == message.tran.source_number)
-                    {
-                        queue.Writer.TryWrite(new ScpReplyAdapter(message));
-                        isWaitingCardScan = false;
-                        ScanAcrNo = -1;
-                        ScanScpId = -1;
-                    }
                     ProcessAeroTransactionHelper.ProcessTypei64CardFull(message);
+                    queue.Writer.TryWrite(new ScpReplyAdapter(message));
                     break;
                 case (short)tranType.tranTypeI64CardFullIc32:
-                    if (isWaitingCardScan && ScanScpId == message.SCPId && ScanAcrNo == message.tran.source_number)
-                    {
-                         queue.Writer.TryWrite(new ScpReplyAdapter(message));
-                        isWaitingCardScan = false;
-                        ScanAcrNo = -1;
-                        ScanScpId = -1;
-                    }
                     ProcessAeroTransactionHelper.ProcessTypei64CardFullc32(message);
+                    queue.Writer.TryWrite(new ScpReplyAdapter(message));
                     break;
                 case (short)tranType.tranTypeCardID:
                     ProcessAeroTransactionHelper.ProcessTypeCardID(message);
+                    queue.Writer.TryWrite(new ScpReplyAdapter(message));
                     break;
                 case (short)tranType.tranTypeDblCardID:
                     ProcessAeroTransactionHelper.ProcessTypeDblCardID(message);
+                    queue.Writer.TryWrite(new ScpReplyAdapter(message));
                     break;
                 case (short)tranType.tranTypeI64CardID:
                     ProcessAeroTransactionHelper.tranTypei64CardID(message);
+                    queue.Writer.TryWrite(new ScpReplyAdapter(message));
                     break;
                 case (short)tranType.tranTypeCoS:
                     switch (message.tran.source_type)
@@ -133,6 +113,7 @@ namespace Aero.Infrastructure.Helpers
                             break;
                     }
                     ProcessAeroTransactionHelper.tranTypeCos(message);
+                    queue.Writer.TryWrite(new ScpReplyAdapter(message));
                     break;
                 case (short)tranType.tranTypeREX:
                     ProcessAeroTransactionHelper.tranTypeRex(message);

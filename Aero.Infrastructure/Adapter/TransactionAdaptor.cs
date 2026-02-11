@@ -24,33 +24,33 @@ public sealed class TransactionAdaptor(SCPReplyMessage.SCPReplyTransaction tran)
 
       public ITypeSioComm s_comm => tran.s_comm is null ? null : new  TypeSioCommAdapter(tran);
 
-      public ITypeCardBin c_bin => tran.c_bin is null ? null : new TypeCardBin(tran);
+      public ITypeCardBin c_bin => tran.c_bin is null ? null : new TypeCardBinAdapter(tran);
 
-      public ITypeCardBcd c_bcd => tran.c_bcd is null ? null : new TypeCardBcd(tran);
+      public ITypeCardBcd c_bcd => tran.c_bcd is null ? null : new TypeCardBcdAdapter(tran);
 
-      public ITypeCardFull c_full => tran.c_full is null ? null : new TypeCardFull(tran);
+      public ITypeCardFull c_full => tran.c_full is null ? null : new TypeCardFullAdapter(tran);
 
-      public ITypeCardID c_id => tran.c_id is null ? null : new TypeCardID(tran);
+      public ITypeCardID c_id => tran.c_id is null ? null : new TypeCardIDAdapter(tran);
 
-      public ITypeDblCardFull c_fulldbl => tran.c_fulldbl is null ? null : new TypeDblCardFull(tran);
+      public ITypeDblCardFull c_fulldbl => tran.c_fulldbl is null ? null : new TypeDblCardFullAdapter(tran);
 
       public ITypeDblCardID c_iddbl => throw new NotImplementedException();
 
-      public ITypeI64CardFull c_fulli64 => throw new NotImplementedException();
+    public ITypeI64CardFull c_fulli64 => tran.c_fulli64 is null ? null : new TypeI64CardFullAdapter(tran);
 
-      public ITypeI64CardFullIc32 c_fulli64i32 => throw new NotImplementedException();
+      public ITypeI64CardFullIc32 c_fulli64i32 => tran.c_fulli64i32 is null ? null : new TypeI64CardFullIc32Adapter(tran);
 
-      public ITypeHostCardFullPin c_fullHostPin => throw new NotImplementedException();
+    public ITypeHostCardFullPin c_fullHostPin => throw new NotImplementedException();
 
-      public ITypeI64CardID c_idi64 => throw new NotImplementedException();
+      public ITypeI64CardID c_idi64 => tran.c_idi64 is null ? null : new TypeI64CardIDAdapter(tran);
 
     public ITypeCoS cos => tran.cos is null ? null : new TypeCosAdapter(tran);
 
       public ITypeREX rex => throw new NotImplementedException();
 
-      public ITypeCoSDoor door => throw new NotImplementedException();
+      public ITypeCoSDoor door => tran.door is null ? null : new TypeCosDoorAdapter(tran);
 
-      public ITypeProcedure proc => throw new NotImplementedException();
+    public ITypeProcedure proc => throw new NotImplementedException();
 
       public ITypeUserCmnd usrcmd => throw new NotImplementedException();
 

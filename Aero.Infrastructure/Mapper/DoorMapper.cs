@@ -1,6 +1,7 @@
 using System;
 using Aero.Application.DTOs;
 using Aero.Domain.Entities;
+using Aero.Infrastructure.Helpers;
 using Pipelines.Sockets.Unofficial.Arenas;
 
 namespace Aero.Infrastructure.Mapper;
@@ -11,14 +12,23 @@ public sealed class DoorMapper
       {
             var en = new Aero.Infrastructure.Data.Entities.Door();
             MacBaseMapper.ToEf(data,en);
+            en.component_id = data.ComponentId;
             en.acr_id = data.AcrId;
             en.name = data.Name;
             en.access_config =data.AccessConfig;
             en.pair_door_no = data.PairDoorNo;
             en.hardware_mac = data.Mac;
-            en.readers = data.Readers.Count == 0 ? new List<Aero.Infrastructure.Data.Entities.Reader>() : data.Readers.Select(x => 
+            en.readers = data.Readers.Count == 0 ? new List<Aero.Infrastructure.Data.Entities.Reader>() : data.Readers.Where(x => x.ModuleId != -1).Select(x => 
              new Aero.Infrastructure.Data.Entities.Reader
             {
+                 // Base
+                 component_id = x.ComponentId,
+                 mac = x.Mac,
+                 location_id = x.LocationId,
+                 is_active = true,
+                 created_date = DateTime.UtcNow,
+                 updated_date = DateTime.UtcNow,
+
                   module_id = x.ModuleId,
                   reader_no = x.ReaderNo,
                   data_format = x.DataFormat,
@@ -31,12 +41,21 @@ public sealed class DoorMapper
                   osdp_tracing = x.OsdpTracing,
                   osdp_address = x.OsdpAddress,
                   osdp_secure_channel = x.OsdpSecureChannel
+                  
             }
             ).ToArray();
             en.reader_out_config = data.ReaderOutConfiguration;
-            en.strike_id = data.StrkComponentId;
             en.strike = new Aero.Infrastructure.Data.Entities.Strike
             {
+                // Base
+                component_id = data.ComponentId,
+                mac = data.Mac,
+                location_id = data.LocationId,
+                is_active = true,
+                created_date = DateTime.UtcNow,
+                updated_date = DateTime.UtcNow,
+
+
                   module_id = data.Strk.ModuleId,
                   output_no = data.Strk.OutputNo,
                   relay_mode = data.Strk.RelayMode,
@@ -45,20 +64,35 @@ public sealed class DoorMapper
                   strike_min = data.Strk.StrkMin,
                   strike_mode = data.Strk.StrkMode
             };
-            en.sensor_id = data.SensorComponentId;
             en.sensor =  new Aero.Infrastructure.Data.Entities.Sensor
             {
+                // Base
+                component_id = data.ComponentId,
+                mac = data.Mac,
+                location_id = data.LocationId,
+                is_active = true,
+                created_date = DateTime.UtcNow,
+                updated_date = DateTime.UtcNow,
+
                 module_id = data.Sensor.ModuleId,
                 input_no = data.Sensor.InputNo,
                 input_mode = data.Sensor.InputMode,
                 debounce = data.Sensor.Debounce,
                 holdtime = data.Sensor.HoldTime,
-                dc_held = data.Sensor.DcHeld  
+                dc_held = data.Sensor.DcHeld
             };
-            en.request_exits = data.RequestExits is null || data.RequestExits.Count == 0 ? new List<Aero.Infrastructure.Data.Entities.RequestExit>() : data.RequestExits.Select(x => 
+            en.request_exits = data.RequestExits is null || data.RequestExits.Count == 0 ? new List<Aero.Infrastructure.Data.Entities.RequestExit>() : data.RequestExits.Where(x => x.ModuleId != -1).Select(x => 
                   new Aero.Infrastructure.Data.Entities.RequestExit
                   {
-                        module_id = x.ModuleId,
+                      // Base
+                      component_id = x.ComponentId,
+                      mac = x.Mac,
+                      location_id = x.LocationId,
+                      is_active = true,
+                      created_date = DateTime.UtcNow,
+                      updated_date = DateTime.UtcNow,
+
+                      module_id = x.ModuleId,
                         input_no = x.InputNo,
                         input_mode = x.InputMode,
                         debounce = x.Debounce,
@@ -74,11 +108,11 @@ public sealed class DoorMapper
             en.spare_tag = data.SpareTags;
             en.access_control_flag = data.AccessControlFlags;
             en.mode = data.Mode;
-            en.mode_desc = data.ModeDesc;
+            en.mode_desc = DescriptionHelper.GetAcrModeForStatus(data.Mode);
             en.offline_mode = data.OfflineMode;
-            en.offline_mode_desc = data.OfflineModeDesc;
+            en.offline_mode_desc = DescriptionHelper.GetAcrModeForStatus(data.OfflineMode);
             en.default_mode = data.DefaultMode;
-            en.default_mode_desc = data.DefaultModeDesc;
+            en.default_mode_desc = DescriptionHelper.GetAcrModeForStatus(data.DefaultMode) ;
             en.default_led_mode = data.DefaultLEDMode;
             en.pre_alarm = data.PreAlarm;
             en.antipassback_delay = data.AntiPassbackDelay;
@@ -129,7 +163,7 @@ public sealed class DoorMapper
             en.access_config =data.AccessConfig;
             en.pair_door_no = data.PairDoorNo;
             en.hardware_mac = data.Mac;
-           en.readers = data.Readers.Count == 0 ? new List<Aero.Infrastructure.Data.Entities.Reader>() : data.Readers.Select(x => 
+           en.readers = data.Readers.Count == 0 ? new List<Aero.Infrastructure.Data.Entities.Reader>() : data.Readers.Where(x => x.ModuleId != -1).Select(x => 
              new Aero.Infrastructure.Data.Entities.Reader
             {
                   module_id = x.ModuleId,
@@ -147,7 +181,6 @@ public sealed class DoorMapper
             }
             ).ToArray();
             en.reader_out_config = data.ReaderOutConfiguration;
-            en.strike_id = data.StrkComponentId;
             en.strike = new Aero.Infrastructure.Data.Entities.Strike
             {
                   module_id = data.Strk.ModuleId,
@@ -158,7 +191,6 @@ public sealed class DoorMapper
                   strike_min = data.Strk.StrkMin,
                   strike_mode = data.Strk.StrkMode
             };
-            en.sensor_id = data.SensorComponentId;
             en.sensor =  new Aero.Infrastructure.Data.Entities.Sensor
             {
                 module_id = data.Sensor.ModuleId,
@@ -168,7 +200,7 @@ public sealed class DoorMapper
                 holdtime = data.Sensor.HoldTime,
                 dc_held = data.Sensor.DcHeld  
             };
-            en.request_exits = data.RequestExits is null || data.RequestExits.Count == 0 ? new List<Aero.Infrastructure.Data.Entities.RequestExit>() : data.RequestExits.Select(x => 
+            en.request_exits = data.RequestExits is null || data.RequestExits.Count == 0 ? new List<Aero.Infrastructure.Data.Entities.RequestExit>() : data.RequestExits.Where(x => x.ModuleId != -1).Select(x => 
                   new Aero.Infrastructure.Data.Entities.RequestExit
                   {
                         module_id = x.ModuleId,

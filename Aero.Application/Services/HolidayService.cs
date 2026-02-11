@@ -155,5 +155,11 @@ namespace Aero.Application.Services
 
             return ResponseHelper.SuccessBuilder<IEnumerable<HolidayDto>>(dtos);
         }
+
+        public async Task<ResponseDto<Pagination<HolidayDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        {
+            var res = await qHol.GetPaginationAsync(param, location);
+            return ResponseHelper.SuccessBuilder(res);
+        }
     }
 }

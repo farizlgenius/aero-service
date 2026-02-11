@@ -10,10 +10,10 @@ namespace Aero.Infrastructure.Data.Entities
         public string hardware_type_desc { get; set; } = string.Empty;
         public ICollection<Module> modules { get; set; }
         public ICollection<HardwareCredential> hardware_credentials { get; set; }
-        public ICollection<HardwareAccessLevel> hardware_accesslevels { get; set; }
         public ICollection<Door> doors { get; set; }
         public ICollection<MonitorGroup> monitor_groups { get; set; }
         public ICollection<Procedure> procedures { get; set; }
+        public ICollection<AccessLevelComponent> access_level_component {get; set;}
         public string ip { get; set; } = string.Empty;
         public string mac { get; set; } = string.Empty;
         public string port { get; set; } = string.Empty;

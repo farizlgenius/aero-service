@@ -10,17 +10,17 @@ namespace Aero.Api.Controllers.V1
     [ApiController]
     public class IdReportController(IdReportService idReportService) : ControllerBase
     {
-        [HttpGet]
-        public async Task<ActionResult<ResponseDto<IEnumerable<IdReportDto>>>> GetAsync()
+        [HttpGet("/api/v1/{location}/[controller]")]
+        public async Task<ActionResult<ResponseDto<IEnumerable<IdReportDto>>>> GetAsync(short location)
         {
-            var res = await idReportService.GetAsync();
+            var res = await idReportService.GetAsync(location);
             return Ok(res);
         }
 
-        [HttpGet("count")]
-        public async Task<ActionResult<ResponseDto<int>>> GetCountAsync()
+        [HttpGet("/api/v1/{location}/[controller]/count")]
+        public async Task<ActionResult<ResponseDto<int>>> GetCountAsync(short location)
         {
-            var res = await idReportService.GetCount();
+            var res = await idReportService.GetCount(location);
             return Ok(res);
         }
         [HttpGet("status")]

@@ -7,8 +7,11 @@ namespace Aero.Infrastructure.Data.Entities;
     {
         [Key]
         public int id {get; set;}
+    public short door_id { get; set; }
         public short acr_id {get; set;}
+        public Door door { get; set; }
         public short timezone_id {get; set;}
+        public TimeZone timezone { get; set; }
 
         // Reference 
 

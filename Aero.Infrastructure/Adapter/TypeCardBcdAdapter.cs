@@ -4,7 +4,7 @@ using HID.Aero.ScpdNet.Wrapper;
 
 namespace Aero.Infrastructure.Adapter;
 
-public sealed class TypeCardBcd(SCPReplyMessage.SCPReplyTransaction tran) : ITypeCardBcd
+public sealed class TypeCardBcdAdapter(SCPReplyMessage.SCPReplyTransaction tran) : ITypeCardBcd
 {
       public short digit_count => tran.c_bcd.digit_count;
 

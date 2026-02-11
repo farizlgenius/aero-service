@@ -839,6 +839,20 @@ namespace Aero.Infrastructure.Helpers
             return flags;
         }
 
+        public static string TypeCosDoorAccessPointStatusString(short s)
+        {
+            var flags = "";
+            if ((s & 0x01) != 0) flags += "Unlocked.";
+            if ((s & 0x02) != 0) flags += " Grant.";
+            if ((s & 0x04) != 0) flags += " Forced open.";
+            if ((s & 0x08) != 0) flags += " Forced open mask.";
+            if ((s & 0x10) != 0) flags += " Held open.";
+            if ((s & 0x20) != 0) flags += " Held open mask.";
+            if ((s & 0x40) != 0) flags += " Held open pre-alarm status.";
+            if ((s & 0x80) != 0) flags += " Door is in \"extended held open\" mode.";
+            return flags;
+        }
+
         #endregion
 
         #region TypeArea

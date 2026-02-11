@@ -38,7 +38,8 @@ public static class IdReportMapper
                   oper_mode = message.id.oper_mode,
                   cumulative_bld_cnt = message.id.cumulative_bld_cnt,
                   port = "",
-                  ip = ""
+                  ip = "",
+                  location_id = 1,
             };
       }
 
@@ -71,7 +72,8 @@ public static class IdReportMapper
                   ScpIn3 = message.id.scp_in_3,
                   CumulativeBldCnt = message.id.cumulative_bld_cnt,
                   Port = "",
-                  Ip = ""
+                  Ip = "",
+                  LocationId = 1
             };
       }
 
@@ -103,6 +105,7 @@ public static class IdReportMapper
             en.cumulative_bld_cnt = message.id.cumulative_bld_cnt;
             en.port = "";
             en.ip = "";
+        en.location_id = en.location_id;
       }
 
 

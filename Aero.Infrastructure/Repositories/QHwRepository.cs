@@ -173,7 +173,7 @@ public sealed class QHwRepository(AppDbContext context) : IQHwRepository
     {
         var dto = await context.hardware
             .AsNoTracking()
-            .Where(x => x.location_id == locationId)
+            .Where(x => x.location_id == locationId || x.location_id == 1)
             .Select(hardware => new HardwareDto
             {
                 // Base 
@@ -908,5 +908,152 @@ public sealed class QHwRepository(AppDbContext context) : IQHwRepository
             .Where(x => x.mac.Equals(mac))
             .Select(x => x.location_id)
             .FirstOrDefaultAsync();
+    }
+
+    public async Task<Pagination<HardwareDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    {
+
+        var query = context.hardware.AsNoTracking().AsQueryable();
+
+
+        if (!string.IsNullOrWhiteSpace(param.Search))
+        {
+            if (!string.IsNullOrWhiteSpace(param.Search))
+            {
+                var search = param.Search.Trim();
+
+                if (context.Database.IsNpgsql())
+                {
+                    var pattern = $"%{search}%";
+
+                    query = query.Where(x =>
+                        EF.Functions.ILike(x.name, pattern) ||
+                        EF.Functions.ILike(x.hardware_type_desc, pattern) ||
+                        EF.Functions.ILike(x.ip, pattern) ||
+                        EF.Functions.ILike(x.mac, pattern) ||
+                        EF.Functions.ILike(x.port, pattern) ||
+                        EF.Functions.ILike(x.firmware, pattern) ||
+                        EF.Functions.ILike(x.serial_number, pattern) 
+
+                    );
+                }
+                else // SQL Server
+                {
+                    query = query.Where(x =>
+                        x.name.Contains(search) ||
+                        x.hardware_type_desc.Contains(search) ||
+                        x.ip.Contains(search) ||
+                        x.mac.Contains(search) ||
+                        x.port.Contains(search) ||
+                        x.firmware.Contains(search) ||
+                        x.serial_number.Contains(search) 
+                    );
+                }
+            }
+        }
+
+        query = query.Where(x => x.location_id == location || x.location_id == 1);
+
+        if (param.StartDate != null)
+        {
+            var startUtc = DateTime.SpecifyKind(param.StartDate.Value, DateTimeKind.Utc);
+            query = query.Where(x => x.created_date >= startUtc);
+        }
+
+        if (param.EndDate != null)
+        {
+            var endUtc = DateTime.SpecifyKind(param.EndDate.Value, DateTimeKind.Utc);
+            query = query.Where(x => x.created_date <= endUtc);
+        }
+
+        var count = await query.CountAsync();
+
+
+        var data = await query
+            .AsNoTracking()
+            .OrderByDescending(t => t.created_date)
+            .Skip((param.PageNumber - 1) * param.PageSize)
+            .Take(param.PageSize)
+            .Select(hardware => new HardwareDto
+            {
+                // Base 
+                ComponentId = hardware.component_id,
+                Mac = hardware.mac,
+                LocationId = hardware.location_id,
+                IsActive = hardware.is_active,
+
+                // extend_desc
+                Name = hardware.name,
+                HardwareType = hardware.hardware_type,
+                HardwareTypeDescription = hardware.hardware_type_desc,
+                Firmware = hardware.firmware,
+                Ip = hardware.ip,
+                Port = hardware.port,
+                SerialNumber = hardware.serial_number,
+                IsReset = hardware.is_reset,
+                IsUpload = hardware.is_upload,
+                Modules = hardware.modules.Select(d => new ModuleDto
+                {
+                    // Base 
+                    ComponentId = d.component_id,
+                    HardwareName = hardware.name,
+                    Mac = hardware.mac,
+                    LocationId = d.location_id,
+                    IsActive = d.is_active,
+
+                    // extend_desc
+                    Model = d.model,
+                    ModelDescription = d.model_desc,
+                    Revision = d.revision,
+                    SerialNumber = d.serial_number,
+                    nHardwareId = d.n_hardware_id,
+                    nHardwareIdDescription = d.n_hardware_id_desc,
+                    nHardwareRev = d.n_hardware_rev,
+                    nProductId = d.n_product_id,
+                    nProductVer = d.n_product_ver,
+                    nEncConfig = d.n_enc_config,
+                    nEncConfigDescription = d.n_enc_config_desc,
+                    nEncKeyStatus = d.n_enc_key_status,
+                    nEncKeyStatusDescription = d.n_enc_key_status_desc,
+                    Readers = null,
+                    Sensors = null,
+                    Strikes = null,
+                    RequestExits = null,
+                    MonitorPoints = null,
+                    ControlPoints = null,
+                    Address = d.address,
+                    Port = d.port,
+                    nInput = d.n_input,
+                    nOutput = d.n_output,
+                    nReader = d.n_reader,
+                    Msp1No = d.msp1_no,
+                    BaudRate = d.baudrate,
+                    nProtocol = d.n_protocol,
+                    nDialect = d.n_dialect,
+                }).ToList(),
+                PortOne = hardware.port_one,
+                ProtocolOne = hardware.protocol_one,
+                ProtocolOneDescription = hardware.protocol_one_desc,
+                PortTwo = hardware.port_two,
+                ProtocolTwoDescription = hardware.protocol_two_desc,
+                ProtocolTwo = hardware.protocol_two,
+                BaudRateOne = hardware.baudrate_one,
+                BaudRateTwo = hardware.baudrate_two,
+
+            })
+            .ToListAsync();
+
+
+        return new Pagination<HardwareDto>
+        {
+            Data = data,
+            Page = new PaginationData
+            {
+                TotalCount = count,
+                PageNumber = param.PageNumber,
+                PageSize = param.PageSize,
+                TotalPage = (int)Math.Ceiling(count / (double)param.PageSize)
+            }
+        };
     }
 }

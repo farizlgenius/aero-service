@@ -120,7 +120,7 @@ public class QTzRepository(AppDbContext context) : IQTzRepository
   {
     var res = await context.timezone
 .AsNoTracking()
-.Where(x => x.location_id == locationId)
+.Where(x => x.location_id == locationId || x.location_id == 1)
 .Select(x => new TimeZoneDto
 {
   // Base
@@ -224,4 +224,115 @@ public class QTzRepository(AppDbContext context) : IQTzRepository
 
     return dtos;
   }
+
+    public async Task<Pagination<TimeZoneDto>> GetPaginationAsync(PaginationParamsWithFilter param,short location)
+    {
+
+        var query = context.timezone.AsNoTracking().AsQueryable();
+
+
+        if (!string.IsNullOrWhiteSpace(param.Search))
+        {
+            if (!string.IsNullOrWhiteSpace(param.Search))
+            {
+                var search = param.Search.Trim();
+
+                if (context.Database.IsNpgsql())
+                {
+                    var pattern = $"%{search}%";
+
+                    query = query.Where(x =>
+                        EF.Functions.ILike(x.name, pattern) ||
+                        EF.Functions.ILike(x.active_time, pattern) ||
+                        EF.Functions.ILike(x.deactive_time, pattern) 
+
+                    );
+                }
+                else // SQL Server
+                {
+                    query = query.Where(x =>
+                        x.name.Contains(search) ||
+                        x.active_time.Contains(search) ||
+                        x.deactive_time.Contains(search) 
+                    );
+                }
+            }
+        }
+
+        query = query.Where(x => x.location_id == location || x.location_id == 1);
+
+        if (param.StartDate != null)
+        {
+            var startUtc = DateTime.SpecifyKind(param.StartDate.Value, DateTimeKind.Utc);
+            query = query.Where(x => x.created_date >= startUtc);
+        }
+
+        if (param.EndDate != null)
+        {
+            var endUtc = DateTime.SpecifyKind(param.EndDate.Value, DateTimeKind.Utc);
+            query = query.Where(x => x.created_date <= endUtc);
+        }
+
+        var count = await query.CountAsync();
+
+
+        var data = await query
+            .AsNoTracking()
+            .OrderByDescending(t => t.created_date)
+            .Skip((param.PageNumber - 1) * param.PageSize)
+            .Take(param.PageSize)
+           .Select(x => new TimeZoneDto
+           {
+               // Base
+               IsActive = x.is_active,
+
+               // extend_desc
+               ComponentId = x.component_id,
+               Name = x.name,
+               Mode = x.mode,
+               ActiveTime = x.active_time,
+               DeactiveTime = x.deactive_time,
+               Intervals = x.timezone_intervals
+                .Select(s => s.interval)
+                .Select(p => new IntervalDto
+                {
+                    // Base 
+                    IsActive = p.is_active,
+                    LocationId = p.location_id,
+
+                    // extend_desc
+                    ComponentId = p.component_id,
+                    DaysDesc = p.days_desc,
+                    StartTime = p.start_time,
+                    EndTime = p.end_time,
+                    Days = new DaysInWeekDto
+                    {
+                        Sunday = p.days.sunday,
+                        Monday = p.days.monday,
+                        Tuesday = p.days.tuesday,
+                        Wednesday = p.days.wednesday,
+                        Thursday = p.days.thursday,
+                        Friday = p.days.friday,
+                        Saturday = p.days.saturday
+                    }
+
+                })
+                .ToList(),
+
+           })
+            .ToListAsync();
+
+
+        return new Pagination<TimeZoneDto>
+        {
+            Data = data,
+            Page = new PaginationData
+            {
+                TotalCount = count,
+                PageNumber = param.PageNumber,
+                PageSize = param.PageSize,
+                TotalPage = (int)Math.Ceiling(count / (double)param.PageSize)
+            }
+        };
+    }
 }

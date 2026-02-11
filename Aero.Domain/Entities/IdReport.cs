@@ -30,5 +30,6 @@ public sealed class IdReport
       public int CumulativeBldCnt { get; set; }
       public string Ip { get; set; } = string.Empty;
       public string Port { get; set; } = string.Empty;
+    public int LocationId { get; set; }
 
 }

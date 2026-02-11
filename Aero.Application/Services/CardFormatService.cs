@@ -5,6 +5,7 @@ using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
 using Aero.Application.Mapper;
+using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
 
@@ -100,5 +101,16 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder(dto);
         }
 
+        public async Task<ResponseDto<IEnumerable<CardFormatDto>>> GetByLocationIdAsync(short location)
+        {
+            var res = await qCfmt.GetByLocationIdAsync(location);
+            return ResponseHelper.SuccessBuilder(res);
+        }
+
+        public async Task<ResponseDto<Pagination<CardFormatDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        {
+            var res = await qCfmt.GetPaginationAsync(param,location);
+            return ResponseHelper.SuccessBuilder(res);
+        }
     }
 }

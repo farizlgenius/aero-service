@@ -35,6 +35,7 @@ public class QControlPointRepository(AppDbContext context) : IQCpRepository
 
                   // extend_desc
                   Name = x.name,
+                  CpId = x.cp_id,
                   ModuleId = x.module_id,
                   ModuleDescription = x.module.model_desc,
                   //module_desc = x.module_desc,
@@ -97,7 +98,8 @@ public class QControlPointRepository(AppDbContext context) : IQCpRepository
 
                   // extend_desc
                   Name = x.name,
-                  ModuleId = x.module_id,
+                CpId = x.cp_id,
+                ModuleId = x.module_id,
                   ModuleDescription = x.module.model_desc,
                   //module_desc = x.module_desc,
                   OutputNo = x.output_no,
@@ -116,7 +118,7 @@ public class QControlPointRepository(AppDbContext context) : IQCpRepository
       {
             var res = await context.control_point
             .AsNoTracking()
-            .Where(x => x.location_id == locationId)
+            .Where(x => x.location_id == locationId || x.location_id == 1)
             .OrderBy(x => x.component_id)
             .Select(x => new ControlPointDto
             {
@@ -129,7 +131,8 @@ public class QControlPointRepository(AppDbContext context) : IQCpRepository
 
                   // extend_desc
                   Name = x.name,
-                  ModuleId = x.module_id,
+                CpId = x.cp_id,
+                ModuleId = x.module_id,
                   ModuleDescription = x.module.model_desc,
                   //module_desc = x.module_desc,
                   OutputNo = x.output_no,
@@ -160,6 +163,7 @@ public class QControlPointRepository(AppDbContext context) : IQCpRepository
                    // extend_desc
                    Name = x.name,
                    ModuleId = x.module_id,
+                   CpId = x.cp_id,
                    ModuleDescription = x.module.model_desc,
                    //module_desc = x.module_desc,
                    OutputNo = x.output_no,
@@ -193,7 +197,8 @@ public class QControlPointRepository(AppDbContext context) : IQCpRepository
 
                   // extend_desc
                   Name = x.name,
-                  ModuleId = x.module_id,
+                CpId = x.cp_id,
+                ModuleId = x.module_id,
                   ModuleDescription = x.module.model_desc,
                   //module_desc = x.module_desc,
                   OutputNo = x.output_no,
@@ -304,7 +309,103 @@ public class QControlPointRepository(AppDbContext context) : IQCpRepository
             return dtos;
       }
 
-      public async Task<bool> IsAnyByComponentId(short component)
+    public async Task<Pagination<ControlPointDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    {
+
+        var query = context.control_point.AsNoTracking().AsQueryable();
+
+
+        if (!string.IsNullOrWhiteSpace(param.Search))
+        {
+            if (!string.IsNullOrWhiteSpace(param.Search))
+            {
+                var search = param.Search.Trim();
+
+                if (context.Database.IsNpgsql())
+                {
+                    var pattern = $"%{search}%";
+
+                    query = query.Where(x =>
+                        EF.Functions.ILike(x.name, pattern) ||
+                        EF.Functions.ILike(x.module_desc, pattern) ||
+                        EF.Functions.ILike(x.relay_mode_desc, pattern) ||
+                        EF.Functions.ILike(x.offline_mode_desc, pattern) 
+
+                    );
+                }
+                else // SQL Server
+                {
+                    query = query.Where(x =>
+                        x.name.Contains(search) ||
+                        x.module_desc.Contains(search) ||
+                        x.relay_mode_desc.Contains(search) ||
+                        x.offline_mode_desc.Contains(search) 
+                    );
+                }
+            }
+        }
+
+        query = query.Where(x => x.location_id == location || x.location_id == 1);
+
+        if (param.StartDate != null)
+        {
+            var startUtc = DateTime.SpecifyKind(param.StartDate.Value, DateTimeKind.Utc);
+            query = query.Where(x => x.created_date >= startUtc);
+        }
+
+        if (param.EndDate != null)
+        {
+            var endUtc = DateTime.SpecifyKind(param.EndDate.Value, DateTimeKind.Utc);
+            query = query.Where(x => x.created_date <= endUtc);
+        }
+
+        var count = await query.CountAsync();
+
+
+        var data = await query
+            .AsNoTracking()
+            .OrderByDescending(t => t.created_date)
+            .Skip((param.PageNumber - 1) * param.PageSize)
+            .Take(param.PageSize)
+             .Select(x => new ControlPointDto
+             {
+                 // Base
+                 ComponentId = x.component_id,
+                 HardwareName = x.module.hardware.name,
+                 Mac = x.module.hardware_mac,
+                 LocationId = x.location_id,
+                 IsActive = x.is_active,
+
+                 // extend_desc
+                 Name = x.name,
+                 ModuleId = x.module_id,
+                 CpId = x.cp_id,
+                 ModuleDescription = x.module.model_desc,
+                 //module_desc = x.module_desc,
+                 OutputNo = x.output_no,
+                 RelayMode = x.relay_mode,
+                 RelayModeDescription = x.relay_mode_desc,
+                 OfflineMode = x.offline_mode,
+                 OfflineModeDescription = x.offline_mode_desc,
+                 DefaultPulse = x.default_pulse,
+             })
+            .ToArrayAsync();
+
+
+        return new Pagination<ControlPointDto>
+        {
+            Data = data,
+            Page = new PaginationData
+            {
+                TotalCount = count,
+                PageNumber = param.PageNumber,
+                PageSize = param.PageSize,
+                TotalPage = (int)Math.Ceiling(count / (double)param.PageSize)
+            }
+        };
+    }
+
+    public async Task<bool> IsAnyByComponentId(short component)
       {
             return await context.control_point.AsNoTracking().AnyAsync(x => x.component_id == component);
       }

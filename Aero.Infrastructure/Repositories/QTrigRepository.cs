@@ -88,7 +88,7 @@ public class QTrigRepository(AppDbContext context) : IQTrigRepository
       {
             var dtos = await context.trigger
             .AsNoTracking()
-            .Where(x => x.location_id == locationId)
+            .Where(x => x.location_id == locationId || x.location_id == 1)
             .OrderBy(x => x.component_id)
             .Select(en => new TriggerDto
             {
@@ -244,7 +244,102 @@ public class QTrigRepository(AppDbContext context) : IQTrigRepository
             return dtos;
       }
 
-      public Task<bool> IsAnyByComponentId(short component)
+    public async Task<Pagination<TriggerDto>> GetPaginationAsync(PaginationParamsWithFilter param,short location)
+    {
+
+        var query = context.trigger.AsNoTracking().AsQueryable();
+
+
+        if (!string.IsNullOrWhiteSpace(param.Search))
+        {
+            if (!string.IsNullOrWhiteSpace(param.Search))
+            {
+                var search = param.Search.Trim();
+
+                if (context.Database.IsNpgsql())
+                {
+                    var pattern = $"%{search}%";
+
+                    query = query.Where(x =>
+                        EF.Functions.ILike(x.name, pattern) ||
+                        EF.Functions.ILike(x.hardware_mac, pattern) ||
+                        EF.Functions.ILike(x.mac, pattern) 
+
+                    );
+                }
+                else // SQL Server
+                {
+                    query = query.Where(x =>
+                        x.name.Contains(search) ||
+                        x.hardware_mac.Contains(search) ||
+                        x.mac.Contains(search) 
+                    );
+                }
+            }
+        }
+
+        query = query.Where(x => x.location_id == location || x.location_id == 1);
+
+        if (param.StartDate != null)
+        {
+            var startUtc = DateTime.SpecifyKind(param.StartDate.Value, DateTimeKind.Utc);
+            query = query.Where(x => x.created_date >= startUtc);
+        }
+
+        if (param.EndDate != null)
+        {
+            var endUtc = DateTime.SpecifyKind(param.EndDate.Value, DateTimeKind.Utc);
+            query = query.Where(x => x.created_date <= endUtc);
+        }
+
+        var count = await query.CountAsync();
+
+
+        var data = await query
+            .AsNoTracking()
+            .OrderByDescending(t => t.created_date)
+            .Skip((param.PageNumber - 1) * param.PageSize)
+            .Take(param.PageSize)
+            .Select(en => new TriggerDto
+            {
+                // Base
+                LocationId = en.location_id,
+                Mac = en.hardware_mac,
+                HardwareName = en.hardware.name,
+                IsActive = en.is_active,
+
+                // Detail
+                Name = en.name,
+                Command = en.command,
+                ProcedureId = en.procedure_id,
+                SourceNumber = en.source_number,
+                SourceType = en.source_type,
+                TranType = en.tran_type,
+                CodeMap = en.code_map.Select(x => new TransactionCodeDto
+                {
+                    Name = x.name,
+                    Value = x.value,
+                    Description = x.description
+                }).ToList(),
+                TimeZone = en.timezone,
+            })
+            .ToListAsync();
+
+
+        return new Pagination<TriggerDto>
+        {
+            Data = data,
+            Page = new PaginationData
+            {
+                TotalCount = count,
+                PageNumber = param.PageNumber,
+                PageSize = param.PageSize,
+                TotalPage = (int)Math.Ceiling(count / (double)param.PageSize)
+            }
+        };
+    }
+
+    public Task<bool> IsAnyByComponentId(short component)
       {
             throw new NotImplementedException();
       }

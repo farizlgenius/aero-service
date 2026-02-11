@@ -7,7 +7,7 @@ namespace Aero.Application.Mapper;
 
 public class HardwareMapper
 {
-    public static Hardware ToHardware(CreateHardwareDto dto)
+    public static Hardware ToDomain(CreateHardwareDto dto)
     {
         return new Hardware
         {
@@ -22,7 +22,8 @@ public class HardwareMapper
                     new Module
                     {
                         // Base 
-                        ComponentId = 0,
+                        ComponentId = dto.ComponentId,
+                        SioId = 0,
                         Mac = dto.Mac,
                         LocationId = dto.LocationId,
                         IsActive = dto.IsActive,
@@ -69,7 +70,7 @@ public class HardwareMapper
         };
     }
 
-    public static Hardware ToHardware(HardwareDto dto)
+    public static Hardware ToDomain(HardwareDto dto)
     {
         return new Hardware
         {
@@ -84,7 +85,8 @@ public class HardwareMapper
                     new Module
                     {
                         // Base 
-                        ComponentId = 0,
+                        ComponentId = 1,
+                        SioId = 0,
                         Mac = dto.Mac,
                         LocationId = dto.LocationId,
                         IsActive = dto.IsActive,

@@ -7,6 +7,7 @@ public static class ResponseMessage
       public static string SUCCESS = "Success.";
       public static string UNSUCCESS = "Unsuccess.";
       public static string NOT_FOUND = "Record not found.";
+    public static string BAD_REQUEST = "Bad request.";
       public static string FOUND_REFERENCE = "Found reference.";
       public static string COMPONENT_EXCEED_LIMIT = "Component exceed license limit.";
       public static string DUPLICATE_USER = "Duplicate record.";
@@ -22,4 +23,5 @@ public static class ResponseMessage
       public static string PASSWORD_UNASSIGN = "Password unassigned.";
       public static string OLD_PASSPORT_INCORRECT = "Old password incorrect.";
       public static string LICENSE_ERR = "License error.";
+    public static string TRANSACTION_ENABLE_FAIL = "Enable transaction fail.";
 }

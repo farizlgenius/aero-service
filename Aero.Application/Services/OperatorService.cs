@@ -6,6 +6,7 @@ using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
 using Aero.Application.Mapper;
+using Aero.Domain.Entities;
 using Aero.Domain.Helpers;
 using Aero.Domain.Interface;
 
@@ -83,7 +84,11 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder<OperatorDto>(dto);
         }
 
-        
+        public async Task<ResponseDto<Pagination<OperatorDto>>> GetPaginationAsync(PaginationParamsWithFilter param,short location)
+        {
+            var dtos = await qOper.GetPaginationAsync(param,location);
+            return ResponseHelper.SuccessBuilder<Pagination<OperatorDto>>(dtos);
+        }
 
         public async Task<ResponseDto<OperatorDto>> UpdateAsync(CreateOperatorDto dto)
         {

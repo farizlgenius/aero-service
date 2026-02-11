@@ -19,9 +19,6 @@ namespace Aero.Infrastructure.Listenser;
 public sealed class AeroMessageListener(ILogger<AeroMessageListener> logger,Channel<IScpReply> queue, IServiceScopeFactory scopeFactory) 
 {
 
-    public bool isWaitingCardScan { private get; set; }
-    public short ScanScpId { private get; set; }
-    public short ScanAcrNo { private get; set; }
     private bool shutdownFlag;
 
     public void SetShutDownflag()
@@ -61,7 +58,7 @@ public sealed class AeroMessageListener(ILogger<AeroMessageListener> logger,Chan
                 MessageHandlerHelper.SCPReplyNakHandler(message,logger);
                 break;
             case (int)enSCPReplyType.enSCPReplyTransaction:
-                MessageHandlerHelper.SCPReplyTransactionHandler(message, isWaitingCardScan, ScanScpId, ScanAcrNo,queue,logger,scopeFactory);
+                MessageHandlerHelper.SCPReplyTransactionHandler(message,queue,logger,scopeFactory);
                 break;
             case (int)enSCPReplyType.enSCPReplyCommStatus:
                 MessageHandlerHelper.SCPReplyCommStatus(message,logger);

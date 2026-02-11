@@ -2,6 +2,7 @@
 using Aero.Application.Interface;
 using Aero.Domain.Entities;
 using Aero.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aero.Api.Controllers.V1
@@ -13,6 +14,7 @@ namespace Aero.Api.Controllers.V1
 
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<DoorDto>>>> GetAsync()
         {
             var res = await doorService.GetAsync();
@@ -20,13 +22,23 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("/api/v1/{location}/[controller]")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<DoorDto>>>> GetByLocationIdAsync(short location)
         {
             var res = await doorService.GetByLocationIdAsync(location);
             return Ok(res);
         }
 
-        [HttpGet("mac/{mac}")]
+        [HttpGet("/api/v1/{location}/[controller]/pagination")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<IEnumerable<DoorDto>>>> GetPaginationAsync([FromQuery] PaginationParamsWithFilter param,short location)
+        {
+            var res = await doorService.GetPaginationAsync(param,location);
+            return Ok(res);
+        }
+
+        [HttpGet("{mac}")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<DoorDto>>> GetByMacAsync(string mac)
         {
             var res = await doorService.GetByMacAsync(mac);
@@ -35,6 +47,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("component/{component}")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<DoorDto>>> GetByComponentAsync(short component)
         {
             var res = await doorService.GetByComponentAsync(component);
@@ -43,6 +56,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<DoorDto>>> CreateAsync([FromBody]DoorDto dto)
         {
             var res = await doorService.CreateAsync(dto);
@@ -50,6 +64,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpDelete("{component}")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<DoorDto>>> DeleteAsync(short component)
         {
             var res = await doorService.DeleteAsync(component);
@@ -57,6 +72,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<DoorDto>>> UpdateAsync([FromBody]DoorDto dto)
         {
             var res = await doorService.UpdateAsync(dto);
@@ -65,6 +81,7 @@ namespace Aero.Api.Controllers.V1
 
 
         [HttpPost("unlock/{mac}/{component}")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<bool>>> UnlockAsync(string mac,short component)
         {
             var res = await doorService.UnlockAsync(mac,component);
@@ -72,6 +89,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("reader/mode")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<Mode>>> ReaderModeAsync()
         {
             var res = await doorService.GetModeAsync((int)DoorServiceMode.ReaderMode);
@@ -79,6 +97,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("strike/mode")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<Mode>>> StrikeModeAsync()
         {
             var res = await doorService.GetModeAsync((int)DoorServiceMode.StrikeMode);
@@ -86,6 +105,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("spareflag")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<Mode>>> SpareFlagAsync()
         {
             var res = await doorService.GetModeAsync((int)DoorServiceMode.SpareFlag);
@@ -94,6 +114,7 @@ namespace Aero.Api.Controllers.V1
 
 
         [HttpGet("accesscontrolflag")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<Mode>>> AccessControlFlagAsync()
         {
             var res = await doorService.GetModeAsync((int)DoorServiceMode.AccessControlFlag);
@@ -103,6 +124,7 @@ namespace Aero.Api.Controllers.V1
 
 
         [HttpGet("mode")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<Mode>>> AcrModeAsync()
         {
             var res = await doorService.GetModeAsync((int)DoorServiceMode.AcrMode);
@@ -110,6 +132,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("apb/mode")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<Mode>>> ApbModeAsync()
         {
             var res = await doorService.GetModeAsync((int)DoorServiceMode.ApbMode);
@@ -117,6 +140,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("readerout/mode")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<Mode>>> ReaderOutConfigurationAsync()
         {
             var res = await doorService.GetModeAsync((int)DoorServiceMode.ReaderOut);
@@ -124,6 +148,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("reader/{mac}/{component}")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<short>>> AvailableReaderAsync(string mac,short component)
         {
             var res = await doorService.AvailableReaderAsync(mac,component);
@@ -131,6 +156,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("status/{mac}/{component}")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<bool>>> GetStatusAsync(string mac, short component)
         {
             var res = await doorService.GetStatusAsync(mac,component);
@@ -140,6 +166,7 @@ namespace Aero.Api.Controllers.V1
 
 
         [HttpPost("mode")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<bool>>> ChangeModeAsync([FromBody] ChangeDoorModeDto dto)
         {
             var res = await doorService.ChangeModeAsync(dto);
@@ -147,6 +174,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("osdp/baudrate")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<Mode>>> GetOsdpBaudRate()
         {
             var res = await doorService.GetOsdpBaudRate();
@@ -154,6 +182,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("osdp/address")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<Mode>>> GetOsdpAddress()
         {
             var res = await doorService.GetOsdpAddress();
@@ -161,6 +190,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("osdp/address/{mac}/{component}")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<Mode>>> GetAvailableOsdpAddress(string mac,short component)
         {
             var res = await doorService.GetAvailableOsdpAddress(mac,component);

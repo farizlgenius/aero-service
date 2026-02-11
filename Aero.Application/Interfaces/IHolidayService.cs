@@ -1,6 +1,7 @@
 ﻿
 
 using Aero.Application.DTOs;
+using Aero.Domain.Entities;
 
 namespace Aero.Application.Interface
 {
@@ -8,6 +9,7 @@ namespace Aero.Application.Interface
     {
         Task<ResponseDto<IEnumerable<HolidayDto>>> GetAsync();
         Task<ResponseDto<IEnumerable<HolidayDto>>> GetByLocationAsync(short location);
+        Task<ResponseDto<Pagination<HolidayDto>>> GetPaginationAsync(PaginationParamsWithFilter param,short location);
         
         Task<ResponseDto<HolidayDto>> GetByComponentIdAsync(short component);
         Task<ResponseDto<bool>> CreateAsync(HolidayDto dto);

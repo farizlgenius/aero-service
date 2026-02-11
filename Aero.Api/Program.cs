@@ -1,5 +1,4 @@
-using System.Text;
-using System.Threading.Channels;
+using Aero.Api.Configuration;
 using Aero.Api.Constants;
 using Aero.Api.Exceptions.Middleware;
 using Aero.Api.Hubs;
@@ -19,13 +18,17 @@ using Aero.Infrastructure.Mapper;
 using Aero.Infrastructure.Repositories;
 using Aero.Infrastructure.Services;
 using Aero.Infrastructure.Settings;
+using Aero.Infrastructure.Storage;
 using AeroService.Service.Impl;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using StackExchange.Redis;
+using System.Text;
+using System.Threading.Channels;
 
 namespace AeroService
 {
@@ -124,6 +127,12 @@ namespace AeroService
 
             builder.Services.AddSwaggerGen(c => 
                 {
+                    c.MapType<IFormFile>(() => new OpenApiSchema
+                    {
+                        Type = "string",
+                        Format = "binary"
+                    });
+
                     c.SwaggerDoc("v1", new() { Title = "HIS API", Version = "v1" });
 
                     // Add JWT Authorization header
@@ -278,7 +287,9 @@ namespace AeroService
             builder.Services.AddTransient<ExceptionHandlingMiddleware>();
             builder.Services.AddHostedService<StartupTask>();
 
-
+            // Utility
+            builder.Services.AddSingleton<IFilePathProvider, FilePathProvider>();
+            builder.Services.AddScoped<IFileStorage, FileStorage>();
 
             // Register AeroDriver
             builder.Services.AddSingleton<AeroMessageListener>();
@@ -295,7 +306,9 @@ namespace AeroService
                 )
              );
 
-            builder.Services.AddHostedService<AeroWorker>();
+            //builder.Services.AddHostedService<AeroWorker>();
+            builder.Services.AddSingleton<AeroWorker>();
+            builder.Services.AddHostedService(provider => provider.GetRequiredService<AeroWorker>());
 
 
 

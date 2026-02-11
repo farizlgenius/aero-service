@@ -69,7 +69,7 @@ public sealed class QCredRepository(AppDbContext context) : IQCredRepository
             var res = await context.credential
             .AsNoTracking()
             .OrderBy(x => x.component_id)
-            .Where(x => x.location_id == locationId)
+            .Where(x => x.location_id == locationId || x.location_id == 1)
             .Select(entity => new CredentialDto
             {
                 // Base
@@ -120,16 +120,16 @@ public sealed class QCredRepository(AppDbContext context) : IQCredRepository
 
       }
 
-      public async Task<string> GetCardHolderFullnameByCardNoAsync(long cardno)
+      public async Task<List<string>> GetCardHolderFullnameAndUserIdByCardNoAsync(double cardno)
       {
             var res = await context.credential.AsNoTracking()
             .OrderBy(x => x.component_id)
             .Where(x => x.card_no == cardno)
-            .Select(x => $"{x.cardholder.title} {x.cardholder.first_name} {x.cardholder.middle_name} {x.cardholder.last_name}")
-            .FirstOrDefaultAsync() ?? "Unknown";
+            .Select(x => new List<string> { $"{x.cardholder.title} {x.cardholder.first_name} {x.cardholder.middle_name} {x.cardholder.last_name}", x.cardholder_id })
+            .FirstOrDefaultAsync() ?? new List<string> { "",""};
 
             return res;
-
+        
       }
 
       public async Task<IEnumerable<Mode>> GetCredentialFlagAsync()
@@ -237,7 +237,12 @@ public sealed class QCredRepository(AppDbContext context) : IQCredRepository
             }
       }
 
-      public async Task<bool> IsAnyByComponentId(short component)
+    public Task<Pagination<CredentialDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<bool> IsAnyByComponentId(short component)
       {
             return await context.credential.AnyAsync(x => x.component_id == component);
       }

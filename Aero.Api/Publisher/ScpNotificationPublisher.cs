@@ -40,10 +40,6 @@ public class ScpNotificationPublisher(IHubContext<AeroHub> hub) : INotificationP
             await hub.Clients.All.SendAsync("SIO.STATUS", status);
       }
 
-      public async Task DoorNotifyStatus(DoorStatus status)
-      {
-            await hub.Clients.All.SendAsync("DOOR.STATUS", status);
-      }
 
       public async Task CpNotifyStatus(CpStatus status)
       {
@@ -69,7 +65,7 @@ public class ScpNotificationPublisher(IHubContext<AeroHub> hub) : INotificationP
       }
       public async Task AcrNotifyStatus(AcrStatus status)
       {
-            await hub.Clients.All.SendAsync("ACR.EVENT");
+            await hub.Clients.All.SendAsync("ACR.STATUS",status);
       }
 
 

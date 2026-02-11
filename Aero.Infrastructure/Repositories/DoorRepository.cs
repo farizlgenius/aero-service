@@ -11,6 +11,17 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
 {
       public async Task<int> AddAsync(Door data)
       {
+            await context.access_level_door_component.AddAsync(new Data.Entities.AccessLevelDoorComponent
+            {
+                door_id = data.ComponentId,
+                acr_id = data.AcrId,
+                timezone_id = 1,
+                access_level_component = new Data.Entities.AccessLevelComponent 
+                {
+                    mac = data.Mac,
+                    access_level_id = 2
+                }
+            });
             var en = DoorMapper.ToEf(data);
             await context.door.AddAsync(en);
             return await context.SaveChangesAsync();
@@ -35,9 +46,17 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
             return await context.SaveChangesAsync();
       }
 
-      public Task<int> DeleteByComponentIdAsync(short component)
+      public async Task<int> DeleteByComponentIdAsync(short component)
       {
-            throw new NotImplementedException();
+        var en = await context.door
+        .Where(x => x.component_id == component)
+        .OrderBy(x => x.component_id)
+        .FirstOrDefaultAsync();
+
+        if (en is null) return 0;
+
+        context.door.Remove(en);
+        return await context.SaveChangesAsync();
       }
 
       public async Task<int> UpdateAsync(Door newData)

@@ -185,6 +185,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
             .OrderBy(x => x.component_id)
             .FirstOrDefaultAsync();
 
+
             if(en is null) return 0;
 
             HardwareMapper.Update(en,newData);

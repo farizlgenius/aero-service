@@ -189,5 +189,11 @@ namespace Aero.Application.Services
 
             return res;
         }
+
+        public async Task<ResponseDto<Pagination<ControlPointDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        {
+            var res = await qCp.GetPaginationAsync(param, location);
+            return ResponseHelper.SuccessBuilder(res);
+        }
     }
 }

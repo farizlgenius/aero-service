@@ -9,6 +9,7 @@ namespace Aero.Application.Interface
     {
         Task<ResponseDto<IEnumerable<ControlPointDto>>> GetAsync();
         Task<ResponseDto<IEnumerable<ControlPointDto>>> GetByLocationAsync(short location);
+        Task<ResponseDto<Pagination<ControlPointDto>>> GetPaginationAsync(PaginationParamsWithFilter param,short location);
         
         Task<ResponseDto<bool>> CreateAsync(ControlPointDto dto);
         Task<ResponseDto<bool>> DeleteAsync(short component);

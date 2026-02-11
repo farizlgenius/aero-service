@@ -98,6 +98,10 @@ namespace Aero.Application.Services
             throw new NotImplementedException();
         }
 
-
+        public async Task<ResponseDto<Pagination<TriggerDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        {
+            var res = await qTrig.GetPaginationAsync(param,location);
+            return ResponseHelper.SuccessBuilder(res);
+        }
     }
 }

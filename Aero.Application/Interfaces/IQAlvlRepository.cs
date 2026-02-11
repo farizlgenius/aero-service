@@ -12,6 +12,5 @@ public interface IQAlvlRepository : IBaseQueryRespository<AccessLevelDto>
       Task<string> GetTimezoneNameByComponentIdAsync(short component);
 
       Task<IEnumerable<CreateUpdateAccessLevelDoorComponent>> GetDoorComponentFromMacAsync(string mac);
-      // Task<List<string>> GetUniqueMacFromDoorIdAsync(short doorId);
 
 }

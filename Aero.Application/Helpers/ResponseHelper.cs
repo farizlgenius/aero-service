@@ -141,6 +141,18 @@ namespace Aero.Application.Helpers
             };
         }
 
+        public static ResponseDto<T> BadRequest<T>()
+        {
+            return new ResponseDto<T>()
+            {
+                code = HttpStatusCode.BadRequest,
+                timestamp = DateTime.UtcNow,
+                message = ResponseMessage.DUPLICATE_USER,
+                details = Enumerable.Empty<string>(),
+                data = default
+            };
+        }
+
         public static ResponseDto<T> Unauthorize<T>()
         {
             return new ResponseDto<T>()

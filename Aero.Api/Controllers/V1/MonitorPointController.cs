@@ -30,6 +30,14 @@ namespace Aero.Api.Controllers.V1
             return Ok(res);
         }
 
+        [HttpGet("/api/v1/{location}/[controller]/pagination")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<Pagination<MonitorPointDto>>>> GetPaginationAsync([FromQuery]PaginationParamsWithFilter param,short location)
+        {
+            var res = await service.GetPaginationAsync(param,location);
+            return Ok(res);
+        }
+
         [HttpGet("component/{component}")]
         [Authorize]
         public async Task<ActionResult<ResponseDto<MonitorPointDto>>> GetByComponentAsync(short component)

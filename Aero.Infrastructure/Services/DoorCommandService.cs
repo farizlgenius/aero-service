@@ -35,7 +35,7 @@ public class DoorCommandService : BaseAeroCommand, IDoorCommand
             cc_acr.access_cfg = dto.AccessConfig;
             cc_acr.pair_acr_number = dto.PairDoorNo;
             cc_acr.rdr_sio = dto.Readers.ElementAt(0).ModuleId;
-            cc_acr.rdr_number = dto.Readers.ElementAt(0).ModuleId;
+            cc_acr.rdr_number = dto.Readers.ElementAt(0).ReaderNo;
             cc_acr.strk_sio = dto.Strk.ModuleId;
             cc_acr.strk_number = dto.Strk.OutputNo;
             cc_acr.strike_t_min = dto.Strk.StrkMin;
@@ -44,7 +44,7 @@ public class DoorCommandService : BaseAeroCommand, IDoorCommand
             cc_acr.door_sio = dto.Sensor.ModuleId;
             cc_acr.door_number = dto.Sensor.InputNo;
             cc_acr.dc_held = dto.Sensor.DcHeld;
-            if (dto.RequestExits is not null)
+            if (dto.RequestExits is not null && dto.RequestExits.Count > 0)
             {
                   cc_acr.rex0_sio = dto.RequestExits.ElementAt(0).ModuleId;
                   cc_acr.rex0_number = dto.RequestExits.ElementAt(0).InputNo;

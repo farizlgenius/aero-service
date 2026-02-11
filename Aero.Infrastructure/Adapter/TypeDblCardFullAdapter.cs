@@ -4,7 +4,7 @@ using HID.Aero.ScpdNet.Wrapper;
 
 namespace Aero.Infrastructure.Adapter;
 
-public sealed class TypeDblCardFull(SCPReplyMessage.SCPReplyTransaction tran) : ITypeDblCardFull
+public sealed class TypeDblCardFullAdapter(SCPReplyMessage.SCPReplyTransaction tran) : ITypeDblCardFull
 {
       public short format_number => tran.c_fulldbl.format_number;
 

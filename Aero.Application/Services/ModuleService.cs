@@ -91,6 +91,10 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
-        
+        public async Task<ResponseDto<Pagination<ModuleDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        {
+            var res = await qModule.GetPaginationAsync(param,location);
+            return ResponseHelper.SuccessBuilder(res);
+        }
     }
 }

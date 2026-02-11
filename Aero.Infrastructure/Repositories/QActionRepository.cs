@@ -1,6 +1,7 @@
 using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using Aero.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,7 +39,12 @@ public sealed class QActionRepository(AppDbContext context) : IQActionRepository
             throw new NotImplementedException();
       }
 
-      public Task<bool> IsAnyByComponentId(short component)
+    public Task<Pagination<ActionDto>> GetPaginationAsync(PaginationParamsWithFilter param,short location)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> IsAnyByComponentId(short component)
       {
             throw new NotImplementedException();
       }

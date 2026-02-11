@@ -268,4 +268,17 @@ public sealed class UtilitiesHelper
   {
     return (value & (1 << bit)) != 0;
   }
+
+    public static byte[] Base64ToBytes(string base64)
+    {
+        if (string.IsNullOrWhiteSpace(base64))
+            throw new ArgumentException("Base64 string is empty");
+
+        // Remove data URL prefix if present
+        var commaIndex = base64.IndexOf(',');
+        if (commaIndex >= 0)
+            base64 = base64[(commaIndex + 1)..];
+
+        return Convert.FromBase64String(base64);
+    }
 }

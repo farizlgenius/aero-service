@@ -46,7 +46,7 @@ public class QAlvlRepository(AppDbContext context) : IQAlvlRepository
                   // 
                   Name = x.name,
                   ComponentId = x.component_id,
-                  Components = x.component.Select(x => new AccessLevelComponentDto
+                  Components = x.components.Select(x => new AccessLevelComponentDto
                   {
                         Mac = x.mac,
                         DoorComponent = x.door_component.Select(x => new AccessLevelDoorComponentDto
@@ -162,11 +162,12 @@ public class QAlvlRepository(AppDbContext context) : IQAlvlRepository
                   // 
                   Name = x.name,
                   ComponentId = x.component_id,
-                  Components = x.component.Select(x => new AccessLevelComponentDto
+                  Components = x.components.Select(x => new AccessLevelComponentDto
                   {
                         Mac = x.mac,
                         DoorComponent = x.door_component.Select(x => new AccessLevelDoorComponentDto
                         {
+                            DoorId = x.door_id,
                               AcrId = x.acr_id,
                               TimezoneId = x.timezone_id
                         }).ToList()
@@ -181,7 +182,7 @@ public class QAlvlRepository(AppDbContext context) : IQAlvlRepository
       {
             var res = await context.access_level
             .AsNoTracking()
-            .Where(x => x.location_id == locationId)
+            .Where(x => x.location_id == locationId || x.location_id == 1)
             .OrderBy(x => x.component_id)
             .Select(x => new AccessLevelDto
             {
@@ -193,11 +194,12 @@ public class QAlvlRepository(AppDbContext context) : IQAlvlRepository
                   // 
                   Name = x.name,
                   ComponentId = x.component_id,
-                  Components = x.component.Select(x => new AccessLevelComponentDto
+                  Components = x.components.Select(x => new AccessLevelComponentDto
                   {
                         Mac = x.mac,
                         DoorComponent = x.door_component.Select(x => new AccessLevelDoorComponentDto
                         {
+                            DoorId = x.door_id,
                               AcrId = x.acr_id,
                               TimezoneId = x.timezone_id
                         }).ToList()
@@ -213,9 +215,10 @@ public class QAlvlRepository(AppDbContext context) : IQAlvlRepository
             var res = await context.access_level
             .AsNoTracking()
             .OrderBy(x => x.component_id)
-            .Where(x => x.component.Any(x => x.mac.Equals(mac)))
-            .SelectMany(x => x.component.SelectMany(x => x.door_component.Select(x => new CreateUpdateAccessLevelDoorComponent
+            .Where(x => x.components.Any(x => x.mac.Equals(mac)))
+            .SelectMany(x => x.components.SelectMany(x => x.door_component.Select(x => new CreateUpdateAccessLevelDoorComponent
             {
+                DoorId= x.door_id,
                   AcrId = x.acr_id,
                   TimezoneId = x.timezone_id
             })
@@ -258,19 +261,108 @@ public class QAlvlRepository(AppDbContext context) : IQAlvlRepository
             return await context.timezone.AsNoTracking().Where(x => x.component_id == component).Select(x => x.name).FirstOrDefaultAsync() ?? ""; 
       }
 
-      // public async Task<List<string>> GetUniqueMacFromDoorIdAsync(short doorId)
-      // {
-      //       var res = await context.access_level
-      //       .AsNoTracking()
-      //       .Where(x => x.accesslevel_door_timezones.Any(x => x.door_id == doorId))
-      //       .SelectMany(x => x.accesslevel_door_timezones.Select(x => x.door.mac))
-      //       .Distinct()
-      //       .ToListAsync();
+    public async Task<Pagination<AccessLevelDto>> GetPaginationAsync(PaginationParamsWithFilter param,short location)
+    {
 
-      //       return res;
-      // }
+        var query = context.access_level.AsNoTracking().AsQueryable();
 
-      public async Task<bool> IsAnyByComponentId(short component)
+
+        if (!string.IsNullOrWhiteSpace(param.Search))
+        {
+            if (!string.IsNullOrWhiteSpace(param.Search))
+            {
+                var search = param.Search.Trim();
+
+                if (context.Database.IsNpgsql())
+                {
+                    var pattern = $"%{search}%";
+
+                    query = query.Where(x =>
+                        EF.Functions.ILike(x.name, pattern) 
+                    );
+                }
+                else // SQL Server
+                {
+                    query = query.Where(x =>
+                        x.name.Contains(search) 
+                    );
+                }
+            }
+        }
+
+        query = query.Where(x => x.location_id == location);
+
+        if (param.StartDate != null)
+        {
+            var startUtc = DateTime.SpecifyKind(param.StartDate.Value, DateTimeKind.Utc);
+            query = query.Where(x => x.created_date >= startUtc);
+        }
+
+        if (param.EndDate != null)
+        {
+            var endUtc = DateTime.SpecifyKind(param.EndDate.Value, DateTimeKind.Utc);
+            query = query.Where(x => x.created_date <= endUtc);
+        }
+
+        var count = await query.CountAsync();
+
+
+        var data = await query
+            .AsNoTracking()
+            .OrderByDescending(t => t.created_date)
+            .Skip((param.PageNumber - 1) * param.PageSize)
+            .Take(param.PageSize)
+            .Select(x => new AccessLevelDto
+            {
+                // Base
+
+                LocationId = x.location_id,
+                IsActive = x.is_active,
+
+                // 
+                Name = x.name,
+                ComponentId = x.component_id,
+                Components = x.components.Select(x => new AccessLevelComponentDto
+                {
+                    Mac = x.mac,
+                    DoorComponent = x.door_component.Select(x => new AccessLevelDoorComponentDto
+                    {
+                        DoorId = x.door_id,
+                        AcrId = x.acr_id,
+                        TimezoneId = x.timezone_id
+                    }).ToList()
+                }).ToList()
+
+            })
+            .ToListAsync();
+
+
+        return new Pagination<AccessLevelDto>
+        {
+            Data = data,
+            Page = new PaginationData
+            {
+                TotalCount = count,
+                PageNumber = param.PageNumber,
+                PageSize = param.PageSize,
+                TotalPage = (int)Math.Ceiling(count / (double)param.PageSize)
+            }
+        };
+    }
+
+    // public async Task<List<string>> GetUniqueMacFromDoorIdAsync(short doorId)
+    // {
+    //       var res = await context.access_level
+    //       .AsNoTracking()
+    //       .Where(x => x.accesslevel_door_timezones.Any(x => x.door_id == doorId))
+    //       .SelectMany(x => x.accesslevel_door_timezones.Select(x => x.door.mac))
+    //       .Distinct()
+    //       .ToListAsync();
+
+    //       return res;
+    // }
+
+    public async Task<bool> IsAnyByComponentId(short component)
       {
             return await context.access_level.AsNoTracking().AnyAsync(x => x.component_id == component);
       }

@@ -107,6 +107,12 @@ namespace Aero.Application.Services{
             return ResponseHelper.SuccessBuilder<IEnumerable<ProcedureDto>>(dtos);
         }
 
+        public async Task<ResponseDto<Pagination<ProcedureDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        {
+            var res = await qProc.GetPaginationAsync(param,location);
+            return ResponseHelper.SuccessBuilder(res);
+        }
+
         public Task<ResponseDto<ProcedureDto>> UpdateAsync(ProcedureDto dto)
         {
             throw new NotImplementedException();

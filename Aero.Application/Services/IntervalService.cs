@@ -6,6 +6,7 @@ using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
 using Aero.Application.Mapper;
+using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
 
@@ -207,6 +208,12 @@ namespace Aero.Application.Services
             var res = ResponseHelper.SuccessBuilder<IEnumerable<ResponseDto<bool>>>(data);
 
             return res;
+        }
+
+        public async Task<ResponseDto<Pagination<IntervalDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        {
+            var res = await qInterval.GetPaginationAsync(param,location);
+            return ResponseHelper.SuccessBuilder(res);
         }
     }
 }

@@ -89,7 +89,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<MonitorPointLogFunction> monitor_point_log_function { get; set; }
     public DbSet<CommandLog> commnad_log { get; set; }
     public DbSet<DaysInWeek> days_in_week { get; set; }
-    public DbSet<HardwareAccessLevel> hardware_access_level { get; set; }
     public DbSet<HardwareCredential> hardware_credential { get; set; }
     public DbSet<TransactionFlag> transaction_flag { get; set; }
     public DbSet<TransactionSourceType> transaction_source_type { get; set; }
@@ -101,7 +100,8 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         modelBuilder.Entity<Location>()
             .HasData(
-            new Location { id = 1, component_id = 1, location_name = "Main", description = "Main location", created_date = SeedDefaults.SystemDate, updated_date = SeedDefaults.SystemDate, is_active = true }
+            new Location { id = 1, component_id = 1, location_name = "Shared", description = "Shared location", created_date = SeedDefaults.SystemDate, updated_date = SeedDefaults.SystemDate, is_active = true },
+            new Location { id = 2, component_id = 2, location_name = "Main", description = "Main location", created_date = SeedDefaults.SystemDate, updated_date = SeedDefaults.SystemDate, is_active = true }
             );
 
         modelBuilder.Entity<Location>()
@@ -266,6 +266,20 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     .HasPrincipalKey(p => p.component_id)
     .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<Location>()
+    .HasMany(l => l.idreports)
+    .WithOne(c => c.location)
+    .HasForeignKey(f => f.location_id)
+    .HasPrincipalKey(p => p.component_id)
+    .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<Location>()
+    .HasMany(l => l.roles)
+    .WithOne(c => c.location)
+    .HasForeignKey(f => f.location_id)
+    .HasPrincipalKey(p => p.component_id)
+    .OnDelete(DeleteBehavior.Restrict);
+
 
         #endregion
 
@@ -293,10 +307,24 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Hardware>()
+            .HasMany(p => p.monitor_groups)
+            .WithOne(p => p.hardware)
+            .HasForeignKey(p => p.hardware_mac)
+            .HasPrincipalKey(p => p.mac)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Hardware>()
             .HasMany(p => p.doors)
             .WithOne(t => t.hardware)
             .HasForeignKey(p => p.hardware_mac)
             .HasPrincipalKey(t => t.mac)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Hardware>()
+            .HasMany(p => p.access_level_component)
+            .WithOne(p => p.hardware)
+            .HasForeignKey(p => p.mac)
+            .HasPrincipalKey(p => p.mac)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<HardwareCredential>()
@@ -309,12 +337,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .HasPrincipalKey(e => e.component_id)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<HardwareAccessLevel>()
-            .HasOne(e => e.hardware)
-            .WithMany(e => e.hardware_accesslevels)
-            .HasForeignKey(e => e.hardware_mac)
-            .HasPrincipalKey(e => e.mac)
-            .OnDelete(DeleteBehavior.Restrict);
 
         #endregion
 
@@ -461,11 +483,12 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
 
         modelBuilder.Entity<AccessLevel>()
-            .HasMany(s => s.component)
+            .HasMany(s => s.components)
             .WithOne(s => s.access_level)
             .HasForeignKey(p => p.access_level_id)
             .HasPrincipalKey(p => p.component_id)
             .OnDelete(DeleteBehavior.Cascade);
+
 
         modelBuilder.Entity<AccessLevelComponent>()
             .HasMany(x => x.door_component)
@@ -518,6 +541,13 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .WithOne(s => s.interval)
             .HasForeignKey(e => e.interval_id)
             .HasPrincipalKey(e => e.component_id)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Aero.Infrastructure.Data.Entities.TimeZone>()
+            .HasMany(x => x.access_level_door_components)
+            .WithOne(x => x.timezone)
+            .HasForeignKey(x => x.timezone_id)
+            .HasPrincipalKey(x => x.component_id)
             .OnDelete(DeleteBehavior.Cascade);
 
 
@@ -574,8 +604,8 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
         modelBuilder.Entity<Door>()
             .HasOne(p => p.sensor)
             .WithOne(p => p.sensor_door)
-            .HasForeignKey<Door>(p => p.sensor_id)
-            .HasPrincipalKey<Sensor>(p => p.component_id)
+            .HasForeignKey<Sensor>(p => p.door_id)
+            .HasPrincipalKey<Door>(p => p.component_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Door>()
@@ -588,9 +618,17 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
         modelBuilder.Entity<Door>()
             .HasOne(p => p.strike)
             .WithOne(p => p.strike_door)
-            .HasForeignKey<Door>(p => p.strike_id)
-            .HasPrincipalKey<Strike>(p => p.component_id)
+            .HasForeignKey<Strike>(p => p.door_id)
+            .HasPrincipalKey<Door>(p => p.component_id)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Door>()
+            .HasMany(x => x.access_level_door_components)
+            .WithOne(x => x.door)
+            .HasForeignKey(x => x.door_id)
+            .HasPrincipalKey(x => x.component_id)
+            .OnDelete(DeleteBehavior.Cascade);
+            
 
         modelBuilder.Entity<DoorSpareFlag>().HasData(
             new DoorSpareFlag { id = 1, name = "No extend", value = 0x0001, description = "ACR_FE_NOEXTEND\t0x0001\t\r\n🔹 Purpose: Prevents the “Extended door Held Open Timer” from being restarted when a new access is granted.\r\n🔹 Effect: If someone presents a valid credential while the door is already open, the extended hold timer won’t reset — the timer continues to count down.\r\n🔹 Use Case: High-traffic door where you don’t want repeated badge reads to keep the door open indefinitely." },
@@ -697,7 +735,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .HasKey(x => new { x.accesslevel_id, x.holder_id });
 
         modelBuilder.Entity<CardHolderAccessLevel>()
-            .HasOne(e => e.cardholder)
+            .HasOne(e => e.accessLevel)
             .WithMany(e => e.cardholder_access_levels)
             .HasForeignKey(e => e.accesslevel_id)
             .HasPrincipalKey(e => e.component_id)
@@ -1520,7 +1558,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         modelBuilder.Entity<Role>()
             .HasData(
-                new Role { id = 1, component_id = 1, name = "Administrator", updated_date = SeedDefaults.SystemDate, created_date = SeedDefaults.SystemDate }
+                new Role { id = 1, component_id = 1, name = "Administrator",location_id=1,updated_date = SeedDefaults.SystemDate, created_date = SeedDefaults.SystemDate }
             );
 
         #endregion

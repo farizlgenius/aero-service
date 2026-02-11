@@ -87,4 +87,18 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
             context.cardholder.Update(en);
             return await context.SaveChangesAsync();
       }
+
+    public async Task<int> UpdateImagePathAsync(string path,string userid)
+    {
+        var en = await context.cardholder
+            .Where(x => x.user_id.Equals(userid))
+            .OrderBy(x => x.component_id)
+            .FirstOrDefaultAsync();
+
+        if(en is null) return 0;
+
+        en.image_path = path;
+        context.cardholder.Update(en);
+        return await context.SaveChangesAsync();
+    }
 }

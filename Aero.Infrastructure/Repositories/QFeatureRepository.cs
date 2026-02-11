@@ -1,6 +1,7 @@
 using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using Aero.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -122,7 +123,12 @@ public class QFeatureRepository(AppDbContext context) : IQFeatureRepository
             throw new NotImplementedException();
       }
 
-      public async Task<bool> IsAnyByComponentId(short component)
+    public Task<Pagination<FeatureDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<bool> IsAnyByComponentId(short component)
       {
             return await context.feature.AnyAsync(x => x.component_id == component);
       }

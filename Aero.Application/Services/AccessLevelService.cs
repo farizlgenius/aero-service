@@ -5,6 +5,7 @@ using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
 using Aero.Application.Mapper;
+using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
 
@@ -126,5 +127,11 @@ namespace Aero.Application.Services
                   var res = await qAlvl.GetAsync();
                   return ResponseHelper.SuccessBuilder(res);
             }
-      }
+
+        public async Task<ResponseDto<Pagination<AccessLevelDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        {
+            var res = await qAlvl.GetPaginationAsync(param,location);
+            return ResponseHelper.SuccessBuilder(res);
+        }
+    }
 }

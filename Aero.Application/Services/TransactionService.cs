@@ -4,6 +4,7 @@ using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
 
@@ -11,15 +12,15 @@ namespace Aero.Application.Services
 {
     public sealed class TransactionService(IQTransactionRepository qTran,ITransactionRepository rTran, IScpCommand scp, IQHwRepository qHw) : ITransactionService
     {
-        public async Task<ResponseDto<PaginationDto>> GetPageTransactionWithCountAsync(PaginationParams param)
+        public async Task<ResponseDto<Pagination<TransactionDto>>> GetPageTransactionWithCountAsync(PaginationParams param)
         {
             var dto = await qTran.GetPageTransactionWithCountAsync(param);
-            return ResponseHelper.SuccessBuilder<PaginationDto>(dto);
+            return ResponseHelper.SuccessBuilder<Pagination<TransactionDto>>(dto);
         }
-        public async Task<ResponseDto<PaginationDto>> GetPageTransactionWithCountAndDateAndSearchAsync(PaginationParamsWithDate param)
+        public async Task<ResponseDto<Pagination<TransactionDto>>> GetPageTransactionWithCountAndDateAndSearchAsync(PaginationParamsWithFilter param,short location)
         {
-            var dto = await qTran.GetPageTransactionWithCountAndDateAndSearchAsync(param);
-            return ResponseHelper.SuccessBuilder<PaginationDto>(dto);
+            var dto = await qTran.GetPageTransactionWithCountAndDateAndSearchAsync(param,location);
+            return ResponseHelper.SuccessBuilder<Pagination<TransactionDto>>(dto);
         }
 
 

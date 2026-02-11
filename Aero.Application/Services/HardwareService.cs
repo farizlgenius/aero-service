@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Aero.Api.Constants;
+﻿using Aero.Api.Constants;
 using Aero.Application.Constants;
 using Aero.Application.DTOs;
 using Aero.Application.Helpers;
@@ -9,6 +8,9 @@ using Aero.Application.Mapper;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
+using System.Net;
+using System.Security.Cryptography;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aero.Application.Services
 {
@@ -656,7 +658,10 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<bool>> CreateAsync(CreateHardwareDto dto)
         {
-            var hardware = HardwareMapper.ToHardware(dto);
+            var ComponentId = await qModule.GetLowestUnassignedNumberAsync(10,"");
+            if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
+            var hardware = HardwareMapper.ToDomain(dto);
+            hardware.Modules[0].ComponentId = ComponentId;
 
             if (!await VerifyMemoryAllocateAsync(hardware.Mac))
             {
@@ -720,6 +725,11 @@ namespace Aero.Application.Services
                 }
             }
 
+            if (!scp.SetTransactionLogIndex(dto.ComponentId, true))
+            {
+                return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.TRANSACTION_ENABLE_FAIL, []);
+            }
+
             var report = await qId.GetByMacAndScpIdAsync(dto.Mac, dto.ComponentId);
 
             if (report is null) return ResponseHelper.NotFoundBuilder<bool>();
@@ -744,7 +754,7 @@ namespace Aero.Application.Services
 
             if (en is null) return ResponseHelper.NotFoundBuilder<HardwareDto>();
 
-            var ens = HardwareMapper.ToHardware(dto);
+            var ens = HardwareMapper.ToDomain(dto);
 
             var status = await rHw.UpdateAsync(ens);
 
@@ -1005,8 +1015,10 @@ namespace Aero.Application.Services
 
         }
 
-
-
-
+        public async Task<ResponseDto<Pagination<HardwareDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        {
+            var res = await qHw.GetPaginationAsync(param,location);
+            return ResponseHelper.SuccessBuilder(res);
+        }
     }
 }

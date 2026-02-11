@@ -77,6 +77,11 @@ namespace Aero.Application.Services
 
         }
 
+        public async Task<ResponseDto<Pagination<MonitorGroupDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        {
+            var res = await qMpg.GetPaginationAsync(param,location);
+            return ResponseHelper.SuccessBuilder(res);
+        }
 
         public async Task<ResponseDto<IEnumerable<Mode>>> GetTypeAsync()
         {

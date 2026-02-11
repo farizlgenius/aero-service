@@ -3,6 +3,7 @@
 using Aero.Application.DTOs;
 using Aero.Application.Interface;
 using Aero.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aero.Api.Controllers.V1
@@ -12,8 +13,8 @@ namespace Aero.Api.Controllers.V1
     public class ControlPointController(IControlPointService service) : ControllerBase
     {
 
-
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<ControlPointDto>>>> GetAsync()
         {
             var res = await service.GetAsync();
@@ -21,9 +22,18 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("/api/v1/{location}/[controller]")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<ControlPointDto>>>> GetByLocationAsync(short location)
         {
             var res = await service.GetByLocationAsync(location);
+            return Ok(res);
+        }
+
+        [HttpGet("/api/v1/{location}/[controller]/pagination")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<Pagination<ControlPointDto>>>> GetPaginationAsync( [FromQuery] PaginationParamsWithFilter param,short location)
+        {
+            var res = await service.GetPaginationAsync(param,location);
             return Ok(res);
         }
 
@@ -35,6 +45,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpPost("control")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<ControlPointDto>>> CreateControlPointAsync([FromBody] ControlPointDto dto)
         {
             var res = await service.CreateAsync(dto);
@@ -42,6 +53,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<ControlPointDto>>> UpdateAsync([FromBody] ControlPointDto dto)
         {
             var res = await service.UpdateAsync(dto);
@@ -57,6 +69,7 @@ namespace Aero.Api.Controllers.V1
 
 
         [HttpPost("trigger")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<bool>>> ControlPointTriggerAsync(ToggleControlPointDto dto)
         {
             var res = await service.ToggleAsync(dto);
@@ -66,6 +79,7 @@ namespace Aero.Api.Controllers.V1
 
 
         [HttpGet("mode/offline")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<List<Mode>>>> GetOfflineModeAsync()
         {
             var res = await service.GetModeAsync(0);
@@ -73,6 +87,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("mode/relay")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<List<Mode>>>> GetRelayModeAsync()
         {
             var res = await service.GetModeAsync(1);
@@ -80,6 +95,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("op/{mac}/{component}")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<List<short>>>> GetAvailableOpAsync(string mac,short component)
         {
             var res = await service.GetAvailableOpAsync(mac,component);
@@ -95,6 +111,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpPost("delete/range")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<ResponseDto<bool>>>>> DeleteRangeAsync([FromBody] List<short> components) 
         {
             var res = await service.DeleteRangeAsync(components);

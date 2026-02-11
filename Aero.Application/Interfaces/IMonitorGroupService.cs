@@ -8,6 +8,7 @@ namespace Aero.Application.Interface
     public interface IMonitorGroupService
     {
         Task<ResponseDto<IEnumerable<MonitorGroupDto>>> GetAsync();
+        Task<ResponseDto<Pagination<MonitorGroupDto>>> GetPaginationAsync(PaginationParamsWithFilter param,short location);
         Task<ResponseDto<IEnumerable<Mode>>> GetCommandAsync();
         Task<ResponseDto<IEnumerable<Mode>>> GetTypeAsync();
         Task<ResponseDto<IEnumerable<MonitorGroupDto>>> GetByLocationAsync(short location);

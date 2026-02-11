@@ -13,7 +13,7 @@ namespace Aero.Application.Interface
         Task<ResponseDto<bool>> DeleteAsync(string Mac,short ComponentId);
         Task<ResponseDto<TriggerDto>> UpdateAsync(TriggerDto dto);
 
-        // 
+        Task<ResponseDto<Pagination<TriggerDto>>> GetPaginationAsync(PaginationParamsWithFilter param,short location);
 
         Task<ResponseDto<IEnumerable<Mode>>> GetCommandAsync();
         Task<ResponseDto<IEnumerable<Mode>>> GetCodeByTranAsync(short tran);

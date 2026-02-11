@@ -22,5 +22,6 @@ namespace Aero.Application.Interface
         Task<ResponseDto<bool>> MaskAsync(MonitorPointDto dto, bool IsMask);
 
         Task<ResponseDto<IEnumerable<Mode>>> GetLogFunctionAsync();
+        Task<ResponseDto<Pagination<MonitorPointDto>>> GetPaginationAsync(PaginationParamsWithFilter param,short location);
     }
 }

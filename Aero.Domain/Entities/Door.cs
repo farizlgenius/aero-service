@@ -13,11 +13,9 @@ public sealed class Door : BaseEntity
       public short ReaderOutConfiguration { get; set; }
 
       // Strike setting for strike
-      public short StrkComponentId { get; set; }
       public Strike? Strk { get; set; }
 
       //sensor setting for sensor
-      public short SensorComponentId { get; set; }
       public Sensor? Sensor { get; set; }
       public List<RequestExit>? RequestExits { get; set; }
       public short CardFormat { get; set; }
@@ -50,4 +48,5 @@ public sealed class Door : BaseEntity
       public short DfOfFilterTime { get; set; }
       public bool MaskHeldOpen { get; set; } = false;
       public bool MaskForceOpen { get; set; } = false;
+
 }

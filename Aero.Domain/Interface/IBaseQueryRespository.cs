@@ -1,3 +1,4 @@
+using Aero.Domain.Entities;
 using System;
 
 namespace Aero.Domain.Interfaces;
@@ -9,6 +10,8 @@ public interface IBaseQueryRespository<T>
       Task<T> GetByComponentIdAsync(short componentId);
       Task<IEnumerable<T>> GetByLocationIdAsync(short locationId);
       Task<short> GetLowestUnassignedNumberAsync(int max,string mac);
-      
+    Task<Pagination<T>> GetPaginationAsync(PaginationParamsWithFilter param,short location);
+
+
 
 }

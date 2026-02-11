@@ -4,7 +4,7 @@ using HID.Aero.ScpdNet.Wrapper;
 
 namespace Aero.Infrastructure.Adapter;
 
-public sealed class TypeCardFull(SCPReplyMessage.SCPReplyTransaction tran) : ITypeCardFull
+public sealed class TypeCardFullAdapter(SCPReplyMessage.SCPReplyTransaction tran) : ITypeCardFull
 {
       public short format_number => tran.c_full.format_number;
 

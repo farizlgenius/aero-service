@@ -2,6 +2,8 @@
 
 using Aero.Application.DTOs;
 using Aero.Application.Interface;
+using Aero.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aero.Api.Controllers.V1
@@ -12,6 +14,7 @@ namespace Aero.Api.Controllers.V1
     {
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<AccessLevelDto>>>> GetAsync()
         {
             var res = await accesslevelService.GetAsync();
@@ -19,13 +22,23 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpGet("/api/v1/{location}/[controller]")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<AccessLevelDto>>>> GetByLocationIdAsync(short location)
         {
             var res = await accesslevelService.GetByLocationIdAsync(location);
             return Ok(res);
         }
 
+        [HttpGet("/api/v1/{location}/[controller]/pagination")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<Pagination<AccessLevelDto>>>> GetPaginationAsync([FromQuery]PaginationParamsWithFilter param,short location)
+        {
+            var res = await accesslevelService.GetPaginationAsync(param,location);
+            return Ok(res);
+        }
+
         [HttpGet("{component}")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<AccessLevelDto>>> GetByComponentAsync(short component)
         {
             var  res = await accesslevelService.GetByComponentIdAsync(component);
@@ -33,6 +46,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<AccessLevelDto>>> CreateAsync([FromBody] CreateUpdateAccessLevelDto dto)
         {
             var res = await accesslevelService.CreateAsync(dto);
@@ -40,6 +54,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpDelete("{component}")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<AccessLevelDto>>> DeleteAsync(short component)
         {
             var res = await accesslevelService.DeleteAsync(component);
@@ -47,6 +62,7 @@ namespace Aero.Api.Controllers.V1
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<ActionResult<ResponseDto<AccessLevelDto>>> UpdateAsync([FromBody] CreateUpdateAccessLevelDto dto)
         {
             var res = await accesslevelService.UpdateAsync(dto);

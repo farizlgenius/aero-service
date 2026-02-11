@@ -8,4 +8,5 @@ public interface IHolderRepository : IBaseRepository<CardHolder>
 {
       Task<int> DeleteByUserIdAsync(string UserId);
       Task<int> DeleteReferenceByUserIdAsync(string UserId);
+    Task<int> UpdateImagePathAsync(string path,string userid);
 }

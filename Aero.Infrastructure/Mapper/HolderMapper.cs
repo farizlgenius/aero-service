@@ -28,7 +28,7 @@ public sealed class HolderMapper
                   additional = x
             }).ToArray();
             res.image_path = data.ImagePath;
-            res.credentials = data.Credentials is null || data.Credentials.Count > 0 ? new List<Credential>() :  data.Credentials.Select(x => new Credential
+            res.credentials = data.Credentials is null || data.Credentials.Count <= 0 ? new List<Credential>() :  data.Credentials.Select(x => new Credential
             {
                   component_id = x.ComponentId,
                   bits = x.Bits,
@@ -40,7 +40,7 @@ public sealed class HolderMapper
                   deactive_date = x.DeactiveDate,
                   cardholder_id = data.UserId
             }).ToList();
-            res.cardholder_access_levels = data.AccessLevels is null || data.AccessLevels.Count > 0 ? new List<CardHolderAccessLevel>() :  data.AccessLevels.Select(x => new CardHolderAccessLevel
+            res.cardholder_access_levels = data.AccessLevels is null || data.AccessLevels.Count <= 0 ? new List<CardHolderAccessLevel>() :  data.AccessLevels.Select(x => new CardHolderAccessLevel
             {
                   holder_id = data.UserId,
                   accesslevel_id = x.ComponentId
@@ -71,7 +71,7 @@ public sealed class HolderMapper
                   additional = x
             }).ToArray();
             res.image_path = data.ImagePath;
-            res.credentials = data.Credentials is null || data.Credentials.Count > 0 ? new List<Credential>() :  data.Credentials.Select(x => new Credential
+            res.credentials = data.Credentials is null || data.Credentials.Count <= 0 ? new List<Credential>() :  data.Credentials.Select(x => new Credential
             {
                   component_id = x.ComponentId,
                   bits = x.Bits,
@@ -83,7 +83,7 @@ public sealed class HolderMapper
                   deactive_date = x.DeactiveDate,
                   cardholder_id = data.UserId
             }).ToList();
-            res.cardholder_access_levels = data.AccessLevels is null || data.AccessLevels.Count > 0 ? new List<CardHolderAccessLevel>() :  data.AccessLevels.Select(x => new CardHolderAccessLevel
+            res.cardholder_access_levels = data.AccessLevels is null || data.AccessLevels.Count <= 0 ? new List<CardHolderAccessLevel>() :  data.AccessLevels.Select(x => new CardHolderAccessLevel
             {
                   holder_id = data.UserId,
                   accesslevel_id = x.ComponentId

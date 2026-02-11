@@ -3,6 +3,7 @@ namespace Aero.Infrastructure.Data.Entities
 {
     public sealed class Module : BaseEntity
     {
+        public short sio_id { get; set; }
         public short model { get; set; }
         public string model_desc { get; set; } = string.Empty;
         public string revision { get; set; } = string.Empty;

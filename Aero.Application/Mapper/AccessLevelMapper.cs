@@ -18,6 +18,7 @@ public sealed class AccessLevelMapper
                   Mac = x.Mac,
                   DoorComponents = x.DoorComponent.Select(x => new CreateUpdateAccessLevelDoorComponent
                   {
+                      DoorId = x.DoorId,
                         AcrId = x.AcrId,
                         TimezoneId = x.TimezoneId
                   }).ToList()

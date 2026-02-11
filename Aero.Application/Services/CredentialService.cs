@@ -6,19 +6,22 @@ using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
 using Aero.Domain.Entities;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Aero.Application.Services
 {
-    public class CredentialService(IQCredRepository qCred,IQHwRepository qHw,IHolderCommand holder) : ICredentialService
+    public class CredentialService(IQCredRepository qCred,ICredRepository rCred,IQHwRepository qHw,IHolderCommand holder, IServiceScopeFactory scopeFactory) : ICredentialService
     {
        
 
         public async Task<bool> ScanCardTrigger(ScanCardDto dto)
         {
-            // var ScpId = await helperService.GetIdFromMacAsync(dto.Mac);
-            // read.isWaitingCardScan = true;
-            // read.ScanScpId = ScpId;
-            // read.ScanAcrNo = dto.DoorId;
+
+            //var ScpId = await helperService.GetIdFromMacAsync(dto.Mac);
+            //read.isWaitingCardScan = true;
+            //read.ScanScpId = ScpId;
+            //read.ScanAcrNo = dto.DoorId;
+            await rCred.ToggleScanCardAsync(dto);
             return true;
         }
 

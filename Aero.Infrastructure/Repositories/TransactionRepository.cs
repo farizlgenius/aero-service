@@ -134,55 +134,63 @@ public class TransactionRepository(AppDbContext context,IQHwRepository qHw,IQCre
                                     break;
                               case (short)tranType.tranTypeCardBcd:
                                     tran = await TransactionBuilder(message);
-                                    tran.Remark = $"Digits Count: {message.tran.c_bin.bit_count}";
+                                    tran.Remark = $"Digits Count: {message.tran.c_bcd.digit_count}";
                                     tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
                                     break;
                               case (short)tranType.tranTypeCardFull:
                                     tran = await TransactionBuilder(message);
-                                    var holder = await qCred.GetCardHolderFullnameByCardNoAsync(message.tran.c_full.cardholder_id);
-                                    tran.Actor = holder;
+                                    var holder = await qCred.GetCardHolderFullnameAndUserIdByCardNoAsync(message.tran.c_full.cardholder_id);
+                                    tran.Actor = holder[0];
+                                    tran.Image = holder[1];
                                     tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
                                     tran.Remark = $"FAC: {message.tran.c_full.facility_code}   Card: {message.tran.c_full.cardholder_id}";
                                     break;
                               case (short)tranType.tranTypeDblCardFull:
                                     tran = await TransactionBuilder(message);
-                                    holder = await qCred.GetCardHolderFullnameByCardNoAsync(message.tran.c_full.cardholder_id);
-                                    tran.Actor = holder;
+                                    holder = await qCred.GetCardHolderFullnameAndUserIdByCardNoAsync(message.tran.c_fulldbl.cardholder_id);
+                                    tran.Actor = holder[0];
+                                    tran.Image = holder[1];
                                     tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
                                     tran.Remark = $"FAC: {message.tran.c_fulldbl.facility_code}   Card: {message.tran.c_fulldbl.cardholder_id}";
                                     break;
                               case (short)tranType.tranTypeI64CardFull:
                                     tran = await TransactionBuilder(message);
-                                    holder = await qCred.GetCardHolderFullnameByCardNoAsync(message.tran.c_full.cardholder_id);
-                                    tran.Actor = holder;
-                                    tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
+                                    holder = await qCred.GetCardHolderFullnameAndUserIdByCardNoAsync(message.tran.c_fulli64.cardholder_id);
+                        tran.Actor = holder[0];
+                        tran.Image = holder[1];
+                        tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
                                     tran.Remark = $"FAC: {message.tran.c_fulli64.facility_code}   Card: {message.tran.c_fulli64.cardholder_id}";
                                     break;
                               case (short)tranType.tranTypeI64CardFullIc32:
                                     tran = await TransactionBuilder(message);
-                                    holder = await qCred.GetCardHolderFullnameByCardNoAsync(message.tran.c_full.cardholder_id);
-                                    tran.Actor = holder;
-                                    tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
+                                    holder = await qCred.GetCardHolderFullnameAndUserIdByCardNoAsync(message.tran.c_fulli64i32.cardholder_id);
+                        tran.Actor = holder[0];
+                        tran.Image = holder[1];
+                        tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
                                     tran.Remark = $"FAC: {message.tran.c_fulli64i32.facility_code}   Card: {message.tran.c_fulli64i32.cardholder_id}";
-                                    //tran.TypeCardFull.formatNumber = message.tran.c_full.format_number;
-                                    //tran.TypeCardFull.facilityCode = message.tran.c_full.facility_code;
-                                    //tran.TypeCardFull.cardHolderId = message.tran.c_full.cardholder_id;
-                                    //tran.TypeCardFull.issueCode = message.tran.c_full.issue_code;
-                                    //tran.TypeCardFull.floorNumber = message.tran.c_full.floor_number;
-                                    //tran.TypeCardFull.encodedCard = BitConverter.ToString(message.tran.c_full.encoded_card).Replace("-",":");
                                     break;
                               case (short)tranType.tranTypeCardID:
-                              case (short)tranType.tranTypeDblCardID:
-                              case (short)tranType.tranTypeI64CardID:
                                     tran = await TransactionBuilder(message);
-                                    //tran.TypeCardID.formatNumber = message.tran.c_id.format_number;
-                                    //tran.TypeCardID.cardHolderId = message.tran.c_id.cardholder_id;
-                                    //tran.TypeCardID.floorNumber = message.tran.c_id.floor_number;
-                                    //tran.TypeCardID.cardTypeFlag = message.tran.c_id.card_type_flags;
-                                    //tran.TypeCardID.transaction_flag = AeroTransactionHandlerHelper.TypeCardIDCardTypeFlag(message.tran.c_id.card_type_flags);
-                                    holder = await qCred.GetCardHolderFullnameByCardNoAsync(message.tran.c_full.cardholder_id);
-                                    tran.Actor = holder;
-                                    tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
+                                    holder = await qCred.GetCardHolderFullnameAndUserIdByCardNoAsync(message.tran.c_id.cardholder_id);
+                        tran.Actor = holder[0];
+                        tran.Image = holder[1];
+                        tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
+                                    tran.Remark = $"Card: {message.tran.c_id.cardholder_id}";
+                                    break;
+                                case (short)tranType.tranTypeDblCardID:
+                                    tran = await TransactionBuilder(message);
+                                    holder = await qCred.GetCardHolderFullnameAndUserIdByCardNoAsync(message.tran.c_iddbl.cardholder_id);
+                        tran.Actor = holder[0];
+                        tran.Image = holder[1];
+                        tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
+                                    tran.Remark = $"Card: {message.tran.c_iddbl.cardholder_id}";
+                                    break;
+                                case (short)tranType.tranTypeI64CardID:
+                                    tran = await TransactionBuilder(message);
+                                    holder = await qCred.GetCardHolderFullnameAndUserIdByCardNoAsync(message.tran.c_idi64.cardholder_id);
+                        tran.Actor = holder[0];
+                        tran.Image = holder[1];
+                        tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
                                     break;
                               case (short)tranType.tranTypeREX:
                                     tran = await TransactionBuilder(message);
@@ -204,9 +212,10 @@ public class TransactionRepository(AppDbContext context,IQHwRepository qHw,IQCre
                               case (short)tranType.tranTypeUseLimit:
                                     tran = await TransactionBuilder(message);
                                     tran.Remark = $"Use count: {message.tran.c_uselimit.use_count}";
-                                    holder = await qCred.GetCardHolderFullnameByCardNoAsync(message.tran.c_full.cardholder_id);
-                                    tran.Actor = holder;
-                                    tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
+                                    holder = await qCred.GetCardHolderFullnameAndUserIdByCardNoAsync(message.tran.c_full.cardholder_id);
+                        tran.Actor = holder[0];
+                        tran.Image = holder[1];
+                        tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
                                     break;
                               case (short)tranType.tranTypeCoSElevator:
                                     tran = await TransactionBuilder(message);
@@ -215,9 +224,10 @@ public class TransactionRepository(AppDbContext context,IQHwRepository qHw,IQCre
                                     break;
                               case (short)tranType.tranTypeCoSElevatorAccess:
                                     tran = await TransactionBuilder(message);
-                                    holder = await qCred.GetCardHolderFullnameByCardNoAsync(message.tran.c_full.cardholder_id);
-                                    tran.Actor = holder;
-                                    tran.Remark = string.Join(" ", message.tran.elev_access.floors.Select(b => Convert.ToString(b, 2).PadLeft(8, '0')));
+                                    holder = await qCred.GetCardHolderFullnameAndUserIdByCardNoAsync(message.tran.c_full.cardholder_id);
+                        tran.Actor = holder[0];
+                        tran.Image = holder[1];
+                        tran.Remark = string.Join(" ", message.tran.elev_access.floors.Select(b => Convert.ToString(b, 2).PadLeft(8, '0')));
                                     tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
                                     break;
                               case (short)tranType.tranTypeAcrExtFeatureStls:
@@ -246,6 +256,7 @@ public class TransactionRepository(AppDbContext context,IQHwRepository qHw,IQCre
                         mac = await qHw.GetMacFromComponentAsync((short)message.ScpId);
                         tran.Origin = await context.door.AsNoTracking().OrderBy(x => x.component_id).Where(x => x.hardware_mac == mac && x.component_id == message.tran.source_number).Select(x => x.name).FirstOrDefaultAsync() ?? "";
                         tran.TransactionFlags.AddRange(AeroTransactionHandlerHelper.TypeCosStatus(message.tran.door.door_status, message.tran.source_number, tranSrc.tranSrcAcrDoor));
+                        tran.ExtendDesc += AeroTransactionHandlerHelper.TypeCosDoorAccessPointStatusString(message.tran.door.ap_status);
                         tran.TransactionFlags.AddRange(AeroTransactionHandlerHelper.TypeCosDoorAccessPointStatus(message.tran.door.ap_status));
                         break;
                   case (short)tranSrc.tranSrcAcrRex0:

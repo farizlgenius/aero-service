@@ -1,5 +1,6 @@
 ﻿
 using Aero.Application.DTOs;
+using Aero.Domain.Entities;
 
 namespace Aero.Application.Interface
 {
@@ -13,6 +14,7 @@ namespace Aero.Application.Interface
         Task<ResponseDto<OperatorDto>> GetByUsernameAsync(string username);
         Task<ResponseDto<bool>> UpdatePasswordAsync(PasswordDto dto);
         Task<ResponseDto<IEnumerable<ResponseDto<bool>>>> DeleteRangeAsync(List<short> dtos);
+        Task<ResponseDto<Pagination<OperatorDto>>> GetPaginationAsync(PaginationParamsWithFilter param,short location);
 
 
     }

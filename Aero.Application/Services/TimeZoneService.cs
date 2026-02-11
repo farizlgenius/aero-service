@@ -152,5 +152,11 @@ namespace Aero.Application.Services
 
             return res;
         }
+
+        public async Task<ResponseDto<Pagination<TimeZoneDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        {
+            var res = await qTz.GetPaginationAsync(param,location);
+            return ResponseHelper.SuccessBuilder(res);
+        }
     }
 }

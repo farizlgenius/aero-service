@@ -8,6 +8,8 @@ namespace Aero.Application.Interface
     {
         Task<ResponseDto<IEnumerable<AccessAreaDto>>> GetAsync();
         Task<ResponseDto<AccessAreaDto>> GetByComponentAsync(short component);
+        Task<ResponseDto<IEnumerable<AccessAreaDto>>> GetByLocationIdAsync(short location);
+        Task<ResponseDto<Pagination<AccessAreaDto>>> GetPaginationAsync(PaginationParamsWithFilter param,short location);
         Task<ResponseDto<bool>> CreateAsync(AccessAreaDto dto);
         Task<ResponseDto<bool>> DeleteAsync(short component);
         Task<ResponseDto<AccessAreaDto>> UpdateAsync(AccessAreaDto dto);

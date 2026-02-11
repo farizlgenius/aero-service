@@ -1,6 +1,7 @@
 using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using Aero.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -76,7 +77,7 @@ public sealed class QIntervalRepository(AppDbContext context) : IQIntervalReposi
       {
             var res = await context.interval
             .AsNoTracking()
-            .Where(x => x.location_id == locationId)
+            .Where(x => x.location_id == locationId || x.location_id == 1)
             .OrderBy(x => x.component_id)
             .Select(x => new IntervalDto
             {
@@ -210,4 +211,98 @@ public sealed class QIntervalRepository(AppDbContext context) : IQIntervalReposi
 
             return res;
       }
+
+    public async Task<Pagination<IntervalDto>> GetPaginationAsync(PaginationParamsWithFilter param,short location)
+    {
+
+        var query = context.interval.AsNoTracking().AsQueryable();
+
+
+        if (!string.IsNullOrWhiteSpace(param.Search))
+        {
+            if (!string.IsNullOrWhiteSpace(param.Search))
+            {
+                var search = param.Search.Trim();
+
+                if (context.Database.IsNpgsql())
+                {
+                    var pattern = $"%{search}%";
+
+                    query = query.Where(x =>
+                        EF.Functions.ILike(x.days_desc, pattern) ||
+                        EF.Functions.ILike(x.start_time, pattern) ||
+                        EF.Functions.ILike(x.end_time, pattern) 
+
+                    );
+                }
+                else // SQL Server
+                {
+                    query = query.Where(x =>
+                        x.days_desc.Contains(search) ||
+                        x.start_time.Contains(search) ||
+                        x.end_time.Contains(search) 
+                    );
+                }
+            }
+        }
+
+        query = query.Where(x => x.location_id == location || x.location_id == 1);
+
+        if (param.StartDate != null)
+        {
+            var startUtc = DateTime.SpecifyKind(param.StartDate.Value, DateTimeKind.Utc);
+            query = query.Where(x => x.created_date >= startUtc);
+        }
+
+        if (param.EndDate != null)
+        {
+            var endUtc = DateTime.SpecifyKind(param.EndDate.Value, DateTimeKind.Utc);
+            query = query.Where(x => x.created_date <= endUtc);
+        }
+
+        var count = await query.CountAsync();
+
+
+        var data = await query
+            .AsNoTracking()
+            .OrderByDescending(t => t.created_date)
+            .Skip((param.PageNumber - 1) * param.PageSize)
+            .Take(param.PageSize)
+            .Select(x => new IntervalDto
+            {
+                // Base
+                IsActive = x.is_active,
+                LocationId = x.location_id,
+
+                // extend_desc
+                ComponentId = x.component_id,
+                DaysDesc = x.days_desc,
+                StartTime = x.start_time,
+                EndTime = x.end_time,
+                Days = new DaysInWeekDto
+                {
+                    Sunday = x.days.sunday,
+                    Monday = x.days.monday,
+                    Tuesday = x.days.tuesday,
+                    Wednesday = x.days.wednesday,
+                    Thursday = x.days.thursday,
+                    Friday = x.days.friday,
+                    Saturday = x.days.saturday,
+                }
+            })
+            .ToListAsync();
+
+
+        return new Pagination<IntervalDto>
+        {
+            Data = data,
+            Page = new PaginationData
+            {
+                TotalCount = count,
+                PageNumber = param.PageNumber,
+                PageSize = param.PageSize,
+                TotalPage = (int)Math.Ceiling(count / (double)param.PageSize)
+            }
+        };
+    }
 }

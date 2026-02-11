@@ -276,7 +276,7 @@ namespace Aero.Infrastructure.Helpers
          * SCPReplySrAcr
          **/
 
-        public static string GetACRModeForStatus(short s)
+        public static string GetAcrModeForStatus(short s)
         {
             switch (s)
             {

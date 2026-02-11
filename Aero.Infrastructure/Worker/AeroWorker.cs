@@ -1,24 +1,29 @@
 ﻿
-using HID.Aero.ScpdNet.Wrapper;
-using System.Threading.Channels;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Aero.Infrastructure.Data;
-using Aero.Application.Interfaces;
 using Aero.Application.DTOs;
-using Aero.Infrastructure.Services;
-using Aero.Application.Services;
 using Aero.Application.Helpers;
-using Aero.Domain.Interface;
 using Aero.Application.Interface;
+using Aero.Application.Interfaces;
+using Aero.Application.Services;
 using Aero.Domain.Entities;
-using Aero.Infrastructure.Helpers;
+using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
+using Aero.Infrastructure.Adapter;
+using Aero.Infrastructure.Data;
+using Aero.Infrastructure.Helpers;
+using Aero.Infrastructure.Services;
+using HID.Aero.ScpdNet.Wrapper;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System.Net.NetworkInformation;
+using System.Threading.Channels;
 
 namespace Aero.Infrastructure.Mapper
 {
     public sealed class AeroWorker(Channel<IScpReply> queue, IServiceScopeFactory scopeFactory) : BackgroundService
     {
+        public bool isWaitingCardScan { private get; set; }
+        public short ScanScpId { private get; set; }
+        public short ScanAcrNo { private get; set; }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -47,52 +52,80 @@ namespace Aero.Infrastructure.Mapper
                                     // await md.HandleFoundModuleAsync(message);
                                     break;
                                 case (short)tranType.tranTypeCardFull:
-                                    var status = new CardScanStatus
+                                    if (isWaitingCardScan && ScanScpId == message.ScpId && ScanAcrNo == message.tran.source_number)
                                     {
-                                        Mac = await qhw.GetMacFromComponentAsync((short)message.ScpId),
-                                        FormatNumber = message.tran.c_full.format_number,
-                                        Fac = message.tran.c_full.facility_code,
-                                        CardId = message.tran.c_full.cardholder_id,
-                                        Issue = message.tran.c_full.issue_code,
-                                        Floor = message.tran.c_full.floor_number
-                                    };
-                                    await publisher.CardScanNotifyStatus(status);
+                                        var status = new CardScanStatus
+                                        {
+                                            Mac = await qhw.GetMacFromComponentAsync((short)message.ScpId),
+                                            FormatNumber = message.tran.c_full.format_number,
+                                            Fac = message.tran.c_full.facility_code,
+                                            CardId = message.tran.c_full.cardholder_id,
+                                            Issue = message.tran.c_full.issue_code,
+                                            Floor = message.tran.c_full.floor_number
+                                        };
+                                        await publisher.CardScanNotifyStatus(status);
+                                        isWaitingCardScan = false;
+                                        ScanAcrNo = -1;
+                                        ScanScpId = -1;
+                                    }
+                                    
                                     break;
                                 case (short)tranType.tranTypeDblCardFull:
-                                    status = new CardScanStatus
+                                    if (isWaitingCardScan && ScanScpId == message.ScpId && ScanAcrNo == message.tran.source_number)
                                     {
-                                        Mac = await qhw.GetMacFromComponentAsync((short)message.ScpId),
-                                        FormatNumber = message.tran.c_fulldbl.format_number,
-                                        Fac = message.tran.c_fulldbl.facility_code,
-                                        CardId = message.tran.c_fulldbl.cardholder_id,
-                                        Issue = message.tran.c_fulldbl.issue_code,
-                                        Floor = message.tran.c_fulldbl.floor_number
-                                    };
-                                    await publisher.CardScanNotifyStatus(status);
+                                        var status = new CardScanStatus
+                                        {
+                                            Mac = await qhw.GetMacFromComponentAsync((short)message.ScpId),
+                                            FormatNumber = message.tran.c_fulldbl.format_number,
+                                            Fac = message.tran.c_fulldbl.facility_code,
+                                            CardId = message.tran.c_fulldbl.cardholder_id,
+                                            Issue = message.tran.c_fulldbl.issue_code,
+                                            Floor = message.tran.c_fulldbl.floor_number
+                                        };
+                                        await publisher.CardScanNotifyStatus(status);
+                                        isWaitingCardScan = false;
+                                        ScanAcrNo = -1;
+                                        ScanScpId = -1;
+                                    }
+                                    
                                     break;
                                 case (short)tranType.tranTypeI64CardFull:
-                                    status = new CardScanStatus
+                                    if (isWaitingCardScan && ScanScpId == message.ScpId && ScanAcrNo == message.tran.source_number)
                                     {
-                                        Mac = await qhw.GetMacFromComponentAsync((short)message.ScpId),
-                                        FormatNumber = message.tran.c_fulli64.format_number,
-                                        Fac = message.tran.c_fulli64.facility_code,
-                                        CardId = message.tran.c_fulli64.cardholder_id,
-                                        Issue = message.tran.c_fulli64.issue_code,
-                                        Floor = message.tran.c_fulli64.floor_number
-                                    };
-                                    await publisher.CardScanNotifyStatus(status);
+                                        var status = new CardScanStatus
+                                        {
+                                            Mac = await qhw.GetMacFromComponentAsync((short)message.ScpId),
+                                            FormatNumber = message.tran.c_fulli64.format_number,
+                                            Fac = message.tran.c_fulli64.facility_code,
+                                            CardId = message.tran.c_fulli64.cardholder_id,
+                                            Issue = message.tran.c_fulli64.issue_code,
+                                            Floor = message.tran.c_fulli64.floor_number
+                                        };
+                                        await publisher.CardScanNotifyStatus(status);
+                                        isWaitingCardScan = false;
+                                        ScanAcrNo = -1;
+                                        ScanScpId = -1;
+                                    }
+                                    
                                     break;
                                 case (short)tranType.tranTypeI64CardFullIc32:
-                                    status = new CardScanStatus
+                                    if (isWaitingCardScan && ScanScpId == message.ScpId && ScanAcrNo == message.tran.source_number)
                                     {
-                                        Mac = await qhw.GetMacFromComponentAsync((short)message.ScpId),
-                                        FormatNumber = message.tran.c_fulli64i32.format_number,
-                                        Fac = message.tran.c_fulli64i32.facility_code,
-                                        CardId = message.tran.c_fulli64i32.cardholder_id,
-                                        Issue = message.tran.c_fulli64i32.issue_code,
-                                        Floor = message.tran.c_fulli64i32.floor_number
-                                    };
-                                    await publisher.CardScanNotifyStatus(status);
+                                        var status = new CardScanStatus
+                                        {
+                                            Mac = await qhw.GetMacFromComponentAsync((short)message.ScpId),
+                                            FormatNumber = message.tran.c_fulli64i32.format_number,
+                                            Fac = message.tran.c_fulli64i32.facility_code,
+                                            CardId = message.tran.c_fulli64i32.cardholder_id,
+                                            Issue = message.tran.c_fulli64i32.issue_code,
+                                            Floor = message.tran.c_fulli64i32.floor_number
+                                        };
+                                        await publisher.CardScanNotifyStatus(status);
+                                        isWaitingCardScan = false;
+                                        ScanAcrNo = -1;
+                                        ScanScpId = -1;
+                                    }
+                                    
                                     break;
                                 case (short)tranType.tranTypeCardID:
                                     break;
@@ -136,7 +169,7 @@ namespace Aero.Infrastructure.Mapper
    
                                     break;
                                 case (short)tranType.tranTypeAcr:
-                                    var modestatus = new AcrStatus(await qhw.GetMacFromComponentAsync((short)message.ScpId),message.tran.source_number,DescriptionHelper.GetACRModeForStatus(message.tran.tran_code),"");
+                                    var modestatus = new AcrStatus(await qhw.GetMacFromComponentAsync((short)message.ScpId),message.tran.source_number,DescriptionHelper.GetAcrModeForStatus(message.tran.tran_code),"");
                                     await publisher.AcrNotifyStatus(modestatus);
                                     break;
                                 case (short)tranType.tranTypeMpg:
@@ -221,7 +254,7 @@ namespace Aero.Infrastructure.Mapper
                             await publisher.CpNotifyStatus(cpstatus);
                             break;
                         case (int)enSCPReplyType.enSCPReplySrAcr:
-                            var acrstatus = new AcrStatus(await qhw.GetMacFromComponentAsync((short)message.ScpId), message.sts_acr.number, DescriptionHelper.GetACRModeForStatus(message.sts_acr.door_status), DescriptionHelper.GetAccessPointStatusFlagResult((byte)message.sts_acr.ap_status));
+                            var acrstatus = new AcrStatus(await qhw.GetMacFromComponentAsync((short)message.ScpId), message.sts_acr.number, DescriptionHelper.GetAcrModeForStatus(message.sts_acr.door_status), DescriptionHelper.GetAccessPointStatusFlagResult((byte)message.sts_acr.ap_status));
                             await publisher.AcrNotifyStatus(acrstatus);
                             break;
                         case (int)enSCPReplyType.enSCPReplyStrStatus:

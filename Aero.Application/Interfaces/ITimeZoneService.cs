@@ -8,6 +8,7 @@ namespace Aero.Application.Interface
     public interface ITimeZoneService
     {
         Task<ResponseDto<IEnumerable<TimeZoneDto>>> GetAsync();
+        Task<ResponseDto<Pagination<TimeZoneDto>>> GetPaginationAsync(PaginationParamsWithFilter param,short location);
         Task<ResponseDto<IEnumerable<TimeZoneDto>>> GetByLocationAsync(short location);
         Task<ResponseDto<TimeZoneDto>> GetByComponentIdAsync(short component);
         Task<ResponseDto<bool>> CreateAsync(TimeZoneDto dto);

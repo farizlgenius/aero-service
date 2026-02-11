@@ -4,7 +4,7 @@ using HID.Aero.ScpdNet.Wrapper;
 
 namespace Aero.Infrastructure.Adapter;
 
-public sealed class TypeCardID(SCPReplyMessage.SCPReplyTransaction tran) : ITypeCardID
+public sealed class TypeCardIDAdapter(SCPReplyMessage.SCPReplyTransaction tran) : ITypeCardID
 {
       public short format_number => tran.c_id.format_number;
 

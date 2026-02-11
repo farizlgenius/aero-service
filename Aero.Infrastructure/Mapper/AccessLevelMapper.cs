@@ -13,12 +13,13 @@ public sealed class AccessLevelMapper
             NoMacBaseMapper.ToEf(data,res);
             res.name = data.Name;
             res.component_id = data.ComponentId;
-            res.component =  data.Components
+            res.components =  data.Components
             .Select(x => new AccessLevelComponent
             {
                   mac = x.Mac,
                   door_component = x.DoorComponents.Select(x => new AccessLevelDoorComponent
                   {
+                        door_id = x.DoorId,
                         acr_id = x.AcrId,
                         timezone_id = x.TimezoneId
                   }).ToList()
@@ -32,7 +33,7 @@ public sealed class AccessLevelMapper
             // Base 
             NoMacBaseMapper.Update(from,to);
             to.name = from.Name;
-            to.component = from.Components.Select(x => new AccessLevelComponent
+            to.components = from.Components.Select(x => new AccessLevelComponent
             {
                   mac = x.Mac,
                   door_component = x.DoorComponents.Select(a => new AccessLevelDoorComponent
