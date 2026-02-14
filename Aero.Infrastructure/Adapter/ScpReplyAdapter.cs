@@ -20,8 +20,8 @@ public class ScpReplyAdapter(SCPReplyMessage message) : IScpReply
       public IStrStatus str_sts => message.str_sts is null ? null : new StrStatusAdapter(message.str_sts);
       public ICcWebConfigNetwork web_network => message.web_network is null ? null : new CcWebConfigNetwork(message.web_network);
       public ICcWebConfigHostCommPrim web_host_comm_prim => message.web_host_comm_prim is null ? null : new CcWebConfigHostCommPrim(message.web_host_comm_prim);
-
       public ITransaction tran => message.tran is null ? null : new TransactionAdaptor(message.tran);
-
       public ITranStatus tran_sts => message.tran_sts is null ? null : new TranStatusAdapter(message.tran_sts);
+
+    public IScpReplyCmndStatus cmnd_sts => message.cmnd_sts is null ? null : new ScpReplyCmndStatusAdapter(message.cmnd_sts);
 }

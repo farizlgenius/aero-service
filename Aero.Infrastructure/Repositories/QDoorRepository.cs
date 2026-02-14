@@ -697,7 +697,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
             // Handle empty table case quickly
             var hasAny = await query.AnyAsync();
             if (!hasAny)
-                return 1; // start at 1 if table is empty
+                return 0; // start at 0 if table is empty
 
             // Load all numbers into memory (only the column, so it's lightweight)
             var numbers = await query.Distinct().OrderBy(x => x).ToListAsync();

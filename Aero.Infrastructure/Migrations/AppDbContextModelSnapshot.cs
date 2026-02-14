@@ -235,51 +235,33 @@ namespace Aero.Infrastructure.Migrations
                     b.Property<short>("access_level_id")
                         .HasColumnType("smallint");
 
-                    b.Property<string>("mac")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("access_level_id");
-
-                    b.HasIndex("mac");
-
-                    b.ToTable("access_level_component");
-                });
-
-            modelBuilder.Entity("Aero.Infrastructure.Data.Entities.AccessLevelDoorComponent", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<int>("access_level_component_id")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("access_level_componentid")
-                        .HasColumnType("integer");
-
                     b.Property<short>("acr_id")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("alvl_id")
                         .HasColumnType("smallint");
 
                     b.Property<short>("door_id")
                         .HasColumnType("smallint");
+
+                    b.Property<string>("mac")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<short>("timezone_id")
                         .HasColumnType("smallint");
 
                     b.HasKey("id");
 
-                    b.HasIndex("access_level_componentid");
+                    b.HasIndex("access_level_id");
 
                     b.HasIndex("door_id");
 
+                    b.HasIndex("mac");
+
                     b.HasIndex("timezone_id");
 
-                    b.ToTable("access_level_door_component");
+                    b.ToTable("access_level_component");
                 });
 
             modelBuilder.Entity("Aero.Infrastructure.Data.Entities.Action", b =>
@@ -849,7 +831,7 @@ namespace Aero.Infrastructure.Migrations
                     b.ToTable("cardholder_additional");
                 });
 
-            modelBuilder.Entity("Aero.Infrastructure.Data.Entities.CommandLog", b =>
+            modelBuilder.Entity("Aero.Infrastructure.Data.Entities.CommandAudit", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -863,14 +845,17 @@ namespace Aero.Infrastructure.Migrations
                     b.Property<DateTime>("created_date")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("hardware_id")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("hardware_mac")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("is_active")
+                    b.Property<bool>("is_pending")
                         .HasColumnType("boolean");
+
+                    b.Property<bool>("is_success")
+                        .HasColumnType("boolean");
+
+                    b.Property<short>("location_id")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("mac")
+                        .HasColumnType("text");
 
                     b.Property<string>("nak_reason")
                         .HasColumnType("text");
@@ -878,8 +863,8 @@ namespace Aero.Infrastructure.Migrations
                     b.Property<int>("nake_desc_code")
                         .HasColumnType("integer");
 
-                    b.Property<char>("status")
-                        .HasColumnType("character(1)");
+                    b.Property<int>("scp_id")
+                        .HasColumnType("integer");
 
                     b.Property<int>("tag_no")
                         .HasColumnType("integer");
@@ -889,7 +874,9 @@ namespace Aero.Infrastructure.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("commnad_log");
+                    b.HasIndex("location_id");
+
+                    b.ToTable("commnad_audit");
                 });
 
             modelBuilder.Entity("Aero.Infrastructure.Data.Entities.ControlPoint", b =>
@@ -2894,6 +2881,9 @@ namespace Aero.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<short>("mpg_id")
+                        .HasColumnType("smallint");
+
                     b.Property<short>("n_mp_count")
                         .HasColumnType("smallint");
 
@@ -4588,7 +4578,7 @@ namespace Aero.Infrastructure.Migrations
                             location_id = (short)1,
                             mode = (short)1,
                             name = "Always",
-                            timezone_id = (short)0,
+                            timezone_id = (short)1,
                             updated_date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
@@ -7171,6 +7161,13 @@ namespace Aero.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Aero.Infrastructure.Data.Entities.Door", "door")
+                        .WithMany("access_level_component")
+                        .HasForeignKey("door_id")
+                        .HasPrincipalKey("component_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Aero.Infrastructure.Data.Entities.Hardware", "hardware")
                         .WithMany("access_level_component")
                         .HasForeignKey("mac")
@@ -7178,36 +7175,18 @@ namespace Aero.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("access_level");
-
-                    b.Navigation("hardware");
-                });
-
-            modelBuilder.Entity("Aero.Infrastructure.Data.Entities.AccessLevelDoorComponent", b =>
-                {
-                    b.HasOne("Aero.Infrastructure.Data.Entities.AccessLevelComponent", "access_level_component")
-                        .WithMany("door_component")
-                        .HasForeignKey("access_level_componentid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Aero.Infrastructure.Data.Entities.Door", "door")
-                        .WithMany("access_level_door_components")
-                        .HasForeignKey("door_id")
-                        .HasPrincipalKey("component_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Aero.Infrastructure.Data.Entities.TimeZone", "timezone")
-                        .WithMany("access_level_door_components")
+                        .WithMany("access_level_components")
                         .HasForeignKey("timezone_id")
                         .HasPrincipalKey("component_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("access_level_component");
+                    b.Navigation("access_level");
 
                     b.Navigation("door");
+
+                    b.Navigation("hardware");
 
                     b.Navigation("timezone");
                 });
@@ -7288,6 +7267,18 @@ namespace Aero.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("card_holder");
+                });
+
+            modelBuilder.Entity("Aero.Infrastructure.Data.Entities.CommandAudit", b =>
+                {
+                    b.HasOne("Aero.Infrastructure.Data.Entities.Location", "location")
+                        .WithMany("command_audit")
+                        .HasForeignKey("location_id")
+                        .HasPrincipalKey("component_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("location");
                 });
 
             modelBuilder.Entity("Aero.Infrastructure.Data.Entities.ControlPoint", b =>
@@ -7890,11 +7881,6 @@ namespace Aero.Infrastructure.Migrations
                     b.Navigation("components");
                 });
 
-            modelBuilder.Entity("Aero.Infrastructure.Data.Entities.AccessLevelComponent", b =>
-                {
-                    b.Navigation("door_component");
-                });
-
             modelBuilder.Entity("Aero.Infrastructure.Data.Entities.CardHolder", b =>
                 {
                     b.Navigation("additionals");
@@ -7911,7 +7897,7 @@ namespace Aero.Infrastructure.Migrations
 
             modelBuilder.Entity("Aero.Infrastructure.Data.Entities.Door", b =>
                 {
-                    b.Navigation("access_level_door_components");
+                    b.Navigation("access_level_component");
 
                     b.Navigation("readers");
 
@@ -7965,6 +7951,8 @@ namespace Aero.Infrastructure.Migrations
                     b.Navigation("card_formats");
 
                     b.Navigation("cardholders");
+
+                    b.Navigation("command_audit");
 
                     b.Navigation("control_points");
 
@@ -8054,7 +8042,7 @@ namespace Aero.Infrastructure.Migrations
 
             modelBuilder.Entity("Aero.Infrastructure.Data.Entities.TimeZone", b =>
                 {
-                    b.Navigation("access_level_door_components");
+                    b.Navigation("access_level_components");
 
                     b.Navigation("timezone_intervals");
                 });

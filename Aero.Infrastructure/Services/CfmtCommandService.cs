@@ -2,14 +2,15 @@ using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
 using Aero.Domain.Entities;
+using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
 using HID.Aero.ScpdNet.Wrapper;
 
 namespace Aero.Infrastructure.Services;
 
-public sealed class CfmtCommandService : BaseAeroCommand,ICfmtCommand
+public sealed class CfmtCommandService(ICmndRepository cmnd,IQHwRepository qHw) : BaseAeroCommand,ICfmtCommand
 {
-      public bool CardFormatterConfiguration(short ScpId, short FormatNo, short facility, short offset, short function_id, short flags, short bits, short pe_ln, short pe_loc, short po_ln, short po_loc, short fc_ln, short fc_loc, short ch_ln, short ch_loc, short ic_ln, short ic_loc)
+      public async Task<bool> CardFormatterConfiguration(short ScpId, short FormatNo, short facility, short offset, short function_id, short flags, short bits, short pe_ln, short pe_loc, short po_ln, short po_loc, short fc_ln, short fc_loc, short ch_ln, short ch_loc, short ic_ln, short ic_loc)
       {
             CC_SCP_CFMT cc = new CC_SCP_CFMT();
             cc.lastModified = 0;
@@ -30,12 +31,43 @@ public sealed class CfmtCommandService : BaseAeroCommand,ICfmtCommand
             cc.arg.sensor.ic_loc = ic_loc;
 
             bool flag = Send((short)enCfgCmnd.enCcScpCfmt, cc);
-            return flag;
+        if (flag)
+        {
+            await cmnd.AddAsync(new CommandAudit
+            {
+                TagNo = SCPDLL.scpGetTagLastPosted(ScpId),
+                ScpId = ScpId,
+                Mac = await qHw.GetMacFromComponentAsync(ScpId),
+                Command = enCfgCmnd.enCcScpCfmt.ToString(),
+                IsPending = true,
+                IsSuccess = false,
+                NakReason = "",
+                NakDescCode = 0,
+                LoationId = await qHw.GetLocationIdFromMacAsync(await qHw.GetMacFromComponentAsync(ScpId))
+            });
+        }
+        else
+        {
+            await cmnd.AddAsync(new CommandAudit
+            {
+                TagNo = -1,
+                ScpId = ScpId,
+                Mac = await qHw.GetMacFromComponentAsync(ScpId),
+                Command = enCfgCmnd.enCcScpCfmt.ToString(),
+                IsPending = false,
+                IsSuccess = false,
+                NakReason = "",
+                NakDescCode = 0,
+                LoationId = await qHw.GetLocationIdFromMacAsync(await qHw.GetMacFromComponentAsync(ScpId))
+            });
+
+        }
+        return flag;
       }
 
 
 
-      public bool CardFormatterConfiguration(short ScpId, CardFormat dto, short funtionId)
+      public async Task<bool> CardFormatterConfiguration(short ScpId, CardFormat dto, short funtionId)
       {
             CC_SCP_CFMT cc = new CC_SCP_CFMT();
             cc.lastModified = 0;
@@ -56,6 +88,37 @@ public sealed class CfmtCommandService : BaseAeroCommand,ICfmtCommand
             cc.arg.sensor.ic_loc = dto.IcLoc;
 
             bool flag = Send((short)enCfgCmnd.enCcScpCfmt, cc);
-            return flag;
+        if (flag)
+        {
+            await cmnd.AddAsync(new CommandAudit
+            {
+                TagNo = SCPDLL.scpGetTagLastPosted(ScpId),
+                ScpId = ScpId,
+                Mac = await qHw.GetMacFromComponentAsync(ScpId),
+                Command = enCfgCmnd.enCcScpCfmt.ToString(),
+                IsPending = true,
+                IsSuccess = false,
+                NakReason = "",
+                NakDescCode = 0,
+                LoationId = await qHw.GetLocationIdFromMacAsync(await qHw.GetMacFromComponentAsync(ScpId))
+            });
+        }
+        else
+        {
+            await cmnd.AddAsync(new CommandAudit
+            {
+                TagNo = -1,
+                ScpId = ScpId,
+                Mac = await qHw.GetMacFromComponentAsync(ScpId),
+                Command = enCfgCmnd.enCcScpCfmt.ToString(),
+                IsPending = false,
+                IsSuccess = false,
+                NakReason = "",
+                NakDescCode = 0,
+                LoationId = await qHw.GetLocationIdFromMacAsync(await qHw.GetMacFromComponentAsync(ScpId))
+            });
+
+        }
+        return flag;
       }
 }

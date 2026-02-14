@@ -11,65 +11,137 @@ namespace Aero.Infrastructure.Helpers
 
         #region Source
 
-        public static string Source(tranSrc src)
-        {
-            return src switch 
-            {
-                tranSrc.tranSrcScpDiag => "hardware",
-                tranSrc.tranSrcScpCom => "hardware",
-                tranSrc.tranSrcScpLcl => "hardware",
-                tranSrc.tranSrcSioDiag => "modules",
-                tranSrc.tranSrcSioCom => "modules",
-                tranSrc.tranSrcSioTmpr => "modules",
-                tranSrc.tranSrcSioPwr => "modules",
-                tranSrc.tranSrcMP => "Monitor Point",
-                tranSrc.tranSrcCP => "Control Point",
-                tranSrc.tranSrcACR => "door",
-                tranSrc.tranSrcAcrTmpr => "door",
-                tranSrc.tranSrcAcrDoor => "door",
-                tranSrc.tranSrcAcrRex0 => "door REX",
-                tranSrc.tranSrcAcrRex1 => "door REX",
-                tranSrc.tranSrcTimeZone => "time Zone",
-                tranSrc.tranSrcProcedure => "procedure",
-                tranSrc.tranSrcTrigger => "trigger",
-                tranSrc.tranSrcTrigVar => "trigger",
-                tranSrc.tranSrcMPG => "Monitor Group",
-                tranSrc.tranSrcArea => "Area",
-                tranSrc.tranSrcAcrTmprAlt => "door",
-                tranSrc.tranSrcLoginService => "Login Service",
-                _ => "Unknown"
-            };
-        }
+        //public static string Source(tranSrc src)
+        //{
+        //    return src switch 
+        //    {
+        //        tranSrc.tranSrcScpDiag => "Hardware",
+        //        tranSrc.tranSrcScpCom => "Hardware",
+        //        tranSrc.tranSrcScpLcl => "Hardware",
+        //        tranSrc.tranSrcSioDiag => "Modules",
+        //        tranSrc.tranSrcSioCom => "Modules",
+        //        tranSrc.tranSrcSioTmpr => "Modules",
+        //        tranSrc.tranSrcSioPwr => "Modules",
+        //        tranSrc.tranSrcMP => "Monitor Point",
+        //        tranSrc.tranSrcCP => "Control Point",
+        //        tranSrc.tranSrcACR => "Door",
+        //        tranSrc.tranSrcAcrTmpr => "Door",
+        //        tranSrc.tranSrcAcrDoor => "Door",
+        //        tranSrc.tranSrcAcrRex0 => "REX",
+        //        tranSrc.tranSrcAcrRex1 => "REX",
+        //        tranSrc.tranSrcTimeZone => "Timezone",
+        //        tranSrc.tranSrcProcedure => "Procedure",
+        //        tranSrc.tranSrcTrigger => "Trigger",
+        //        tranSrc.tranSrcTrigVar => "Trigger",
+        //        tranSrc.tranSrcMPG => "Monitor Group",
+        //        tranSrc.tranSrcArea => "Area",
+        //        tranSrc.tranSrcAcrTmprAlt => "Door",
+        //        tranSrc.tranSrcLoginService => "Login Service",
+        //        _ => "Unknown"
+        //    };
+        //}
+        public static string Source(tranSrc src) { return SourceMap.TryGetValue(src, out var value) ? value : "Unknown"; }
 
-        public static string SourceDesc(tranSrc src)
+
+        public static readonly Dictionary<tranSrc, string> SourceMap = new()
         {
-            return src switch
-            {
-                tranSrc.tranSrcScpDiag => "SCP diagnostics",
-                tranSrc.tranSrcScpCom => "SCP to HOST communication driver - not defined",
-                tranSrc.tranSrcScpLcl => "SCP local monitor points (tamper & power fault)",
-                tranSrc.tranSrcSioDiag => "SIO diagnostics",
-                tranSrc.tranSrcSioCom => "SIO communication driver",
-                tranSrc.tranSrcSioTmpr => "SIO cabinet tamper",
-                tranSrc.tranSrcSioPwr => "SIO power monitor",
-                tranSrc.tranSrcMP => "Alarm monitor point",
-                tranSrc.tranSrcCP => "Output control point",
-                tranSrc.tranSrcACR => "Access Control Reader (ACR)",
-                tranSrc.tranSrcAcrTmpr => "ACR: reader tamper monitor",
-                tranSrc.tranSrcAcrDoor => "ACR: door position sensor",
-                tranSrc.tranSrcAcrRex0 => "ACR: 1st \"Request to exit\" input",
-                tranSrc.tranSrcAcrRex1 => "ACR: 2nd \"Request to exit\" input",
-                tranSrc.tranSrcTimeZone => "time Zone",
-                tranSrc.tranSrcProcedure => "procedure (action list)",
-                tranSrc.tranSrcTrigger => "trigger",
-                tranSrc.tranSrcTrigVar => "trigger variable",
-                tranSrc.tranSrcMPG => "Monitor point group",
-                tranSrc.tranSrcArea => "Access area",
-                tranSrc.tranSrcAcrTmprAlt => "ACR: the alternate reader's tamper monitor source_number",
-                tranSrc.tranSrcLoginService => "Login Service",
-                _ => "Unknown"
-            };
-        }
+            { tranSrc.tranSrcScpDiag, "Hardware" },
+            { tranSrc.tranSrcScpCom, "Hardware" },
+            { tranSrc.tranSrcScpLcl, "Hardware" },
+
+            { tranSrc.tranSrcSioDiag, "Modules" },
+            { tranSrc.tranSrcSioCom, "Modules" },
+            { tranSrc.tranSrcSioTmpr, "Modules" },
+            { tranSrc.tranSrcSioPwr, "Modules" },
+
+            { tranSrc.tranSrcMP, "Monitor Point" },
+            { tranSrc.tranSrcCP, "Control Point" },
+
+            { tranSrc.tranSrcACR, "Door" },
+            { tranSrc.tranSrcAcrTmpr, "Door" },
+            { tranSrc.tranSrcAcrDoor, "Door" },
+            { tranSrc.tranSrcAcrTmprAlt, "Door" },
+
+            { tranSrc.tranSrcAcrRex0, "REX" },
+            { tranSrc.tranSrcAcrRex1, "REX" },
+
+            { tranSrc.tranSrcTimeZone, "Timezone" },
+            { tranSrc.tranSrcProcedure, "Procedure" },
+
+            { tranSrc.tranSrcTrigger, "Trigger" },
+            { tranSrc.tranSrcTrigVar, "Trigger" },
+
+            { tranSrc.tranSrcMPG, "Monitor Group" },
+            { tranSrc.tranSrcArea, "Area" },
+
+            { tranSrc.tranSrcLoginService, "Login Service" }
+        };
+
+        //public static string SourceDesc(tranSrc src)
+        //{
+        //    return src switch
+        //    {
+        //        tranSrc.tranSrcScpDiag => "SCP diagnostics",
+        //        tranSrc.tranSrcScpCom => "SCP to HOST communication driver - not defined",
+        //        tranSrc.tranSrcScpLcl => "SCP local monitor points (tamper & power fault)",
+        //        tranSrc.tranSrcSioDiag => "SIO diagnostics",
+        //        tranSrc.tranSrcSioCom => "SIO communication driver",
+        //        tranSrc.tranSrcSioTmpr => "SIO cabinet tamper",
+        //        tranSrc.tranSrcSioPwr => "SIO power monitor",
+        //        tranSrc.tranSrcMP => "Alarm monitor point",
+        //        tranSrc.tranSrcCP => "Output control point",
+        //        tranSrc.tranSrcACR => "Access Control Reader (ACR)",
+        //        tranSrc.tranSrcAcrTmpr => "ACR: reader tamper monitor",
+        //        tranSrc.tranSrcAcrDoor => "ACR: door position sensor",
+        //        tranSrc.tranSrcAcrRex0 => "ACR: 1st \"Request to exit\" input",
+        //        tranSrc.tranSrcAcrRex1 => "ACR: 2nd \"Request to exit\" input",
+        //        tranSrc.tranSrcTimeZone => "Timezone",
+        //        tranSrc.tranSrcProcedure => "Procedure (action list)",
+        //        tranSrc.tranSrcTrigger => "Trigger",
+        //        tranSrc.tranSrcTrigVar => "Trigger variable",
+        //        tranSrc.tranSrcMPG => "Monitor point group",
+        //        tranSrc.tranSrcArea => "Access area",
+        //        tranSrc.tranSrcAcrTmprAlt => "ACR: the alternate reader's tamper monitor source_number",
+        //        tranSrc.tranSrcLoginService => "Login Service",
+        //        _ => "Unknown"
+        //    };
+        //}
+
+        public static string SourceDesc(tranSrc src) { return SourceDescMap.TryGetValue(src, out var value) ? value : "Unknown"; }
+
+        public static readonly Dictionary<tranSrc, string> SourceDescMap = new()
+    {
+        { tranSrc.tranSrcScpDiag, "SCP diagnostics" },
+        { tranSrc.tranSrcScpCom, "SCP to HOST communication driver - not defined" },
+        { tranSrc.tranSrcScpLcl, "SCP local monitor points (tamper & power fault)" },
+
+        { tranSrc.tranSrcSioDiag, "SIO diagnostics" },
+        { tranSrc.tranSrcSioCom, "SIO communication driver" },
+        { tranSrc.tranSrcSioTmpr, "SIO cabinet tamper" },
+        { tranSrc.tranSrcSioPwr, "SIO power monitor" },
+
+        { tranSrc.tranSrcMP, "Alarm monitor point" },
+        { tranSrc.tranSrcCP, "Output control point" },
+
+        { tranSrc.tranSrcACR, "Access Control Reader (ACR)" },
+        { tranSrc.tranSrcAcrTmpr, "ACR: reader tamper monitor" },
+        { tranSrc.tranSrcAcrDoor, "ACR: door position sensor" },
+        { tranSrc.tranSrcAcrRex0, "ACR: 1st \"Request to exit\" input" },
+        { tranSrc.tranSrcAcrRex1, "ACR: 2nd \"Request to exit\" input" },
+        { tranSrc.tranSrcAcrTmprAlt, "ACR: the alternate reader's tamper monitor source_number" },
+
+        { tranSrc.tranSrcTimeZone, "Timezone" },
+        { tranSrc.tranSrcProcedure, "Procedure (action list)" },
+
+        { tranSrc.tranSrcTrigger, "Trigger" },
+        { tranSrc.tranSrcTrigVar, "Trigger variable" },
+
+        { tranSrc.tranSrcMPG, "Monitor point group" },
+        { tranSrc.tranSrcArea, "Access area" },
+
+        { tranSrc.tranSrcLoginService, "Login Service" }
+    };
+
 
         #endregion
 

@@ -6,6 +6,7 @@ namespace Aero.Domain.Interfaces;
 
 public interface IAlvlCommand
 {
-      bool AccessLevelConfigurationExtended(short ScpId, short component, short tzAcr);
-      bool AccessLevelConfigurationExtendedCreate(short ScpId, short number, List<CreateUpdateAccessLevelDoorComponent> accessLevelDoorTimeZoneDto);
+    Task<bool> AccessLevelConfigurationExtended(short ScpId, short component, short tzAcr);
+    Task<bool> AccessLevelConfigurationExtended(short ScpId,short number, AccessLevel data);
+    Task<bool> AccessLevelConfigurationExtendedCreate(short ScpId, short number, List<AccessLevelComponent> component);
 }

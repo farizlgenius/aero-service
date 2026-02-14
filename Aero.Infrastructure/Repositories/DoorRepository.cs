@@ -11,16 +11,14 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
 {
       public async Task<int> AddAsync(Door data)
       {
-            await context.access_level_door_component.AddAsync(new Data.Entities.AccessLevelDoorComponent
+            await context.access_level_component.AddAsync(new Data.Entities.AccessLevelComponent
             {
+                mac = data.Mac,
+                alvl_id = (short)(data.AccessLevelComponents.Count() == 0 ? -1 : data.AccessLevelComponents.ElementAt(0).AlvlId),
                 door_id = data.ComponentId,
                 acr_id = data.AcrId,
                 timezone_id = 1,
-                access_level_component = new Data.Entities.AccessLevelComponent 
-                {
-                    mac = data.Mac,
-                    access_level_id = 2
-                }
+                access_level_id = 2
             });
             var en = DoorMapper.ToEf(data);
             await context.door.AddAsync(en);

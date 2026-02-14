@@ -105,10 +105,13 @@ namespace Aero.Application.Services
 
             if (DoorId == -1 || AcrId == -1) return ResponseHelper.ExceedLimit<bool>();
 
+            dto.Mode = dto.DefaultMode;
+            dto.ComponentId = DoorId;
+            dto.AcrId = AcrId;
             var domain = DoorMapper.ToDomain(dto);
-            domain.Mode = domain.DefaultMode;
-            domain.ComponentId = DoorId;
-            domain.AcrId = AcrId;
+            //domain.Mode = domain.DefaultMode;
+            //domain.ComponentId = DoorId;
+            //domain.AcrId = AcrId;
 
             short ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
 
@@ -176,7 +179,7 @@ namespace Aero.Application.Services
                 }
             }
 
-            if (!door.AccessControlReaderConfiguration(ScpId, DoorId, domain))
+            if (!door.AccessControlReaderConfiguration(ScpId, AcrId, domain))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.ACR_CONFIG));
             }

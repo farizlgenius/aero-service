@@ -48,5 +48,6 @@ public sealed class Door : BaseEntity
       public short DfOfFilterTime { get; set; }
       public bool MaskHeldOpen { get; set; } = false;
       public bool MaskForceOpen { get; set; } = false;
+    public List<AccessLevelComponent> AccessLevelComponents { get; set; }
 
 }

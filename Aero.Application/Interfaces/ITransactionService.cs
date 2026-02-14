@@ -10,9 +10,12 @@ namespace Aero.Application.Interface
     {
         Task<ResponseDto<Pagination<TransactionDto>>> GetPageTransactionWithCountAsync(PaginationParams param);
         Task<ResponseDto<Pagination<TransactionDto>>> GetPageTransactionWithCountAndDateAndSearchAsync(PaginationParamsWithFilter param, short location);
+        Task<ResponseDto<IEnumerable<Mode>>> GetSourceAsync();
+        Task<ResponseDto<IEnumerable<Mode>>> GetDeviceAsync(int source);
 
         Task<ResponseDto<bool>> SetTranIndexAsync(string mac);
         Task SaveToDatabaseAsync(IScpReply message);
+
 
     }
 }

@@ -66,12 +66,10 @@ public class QHolderRepository(AppDbContext context,IFileStorage file) : IQHolde
                     Components = x.accessLevel.components.Select(x => new AccessLevelComponentDto
                     {
                         Mac = x.mac,
-                        DoorComponent = x.door_component.Select(x => new AccessLevelDoorComponentDto
-                        {
-                            DoorId = x.door_id,
-                            AcrId = x.acr_id,
-                            TimezoneId = x.timezone_id
-                        }).ToList()
+                        DoorId = x.door_id,
+                        AcrId = x.acr_id,
+                        TimezoneId = x.timezone_id,
+                        AlvlId = x.alvl_id
                     }).ToList()
 
                 }).ToList()
@@ -138,13 +136,12 @@ public class QHolderRepository(AppDbContext context,IFileStorage file) : IQHolde
                     Name = x.accessLevel.name,
                     Components = x.accessLevel.components.Select(x => new AccessLevelComponentDto
                     {
+
                         Mac = x.mac,
-                        DoorComponent = x.door_component.Select(x => new AccessLevelDoorComponentDto
-                        {
-                            DoorId = x.door_id,
-                            AcrId = x.acr_id,
-                            TimezoneId = x.timezone_id
-                        }).ToList()
+                        DoorId = x.door_id,
+                        AcrId = x.acr_id,
+                        TimezoneId = x.timezone_id,
+                        AlvlId = x.alvl_id
                     }).ToList()
 
                 }).ToList()
@@ -212,12 +209,11 @@ public class QHolderRepository(AppDbContext context,IFileStorage file) : IQHolde
                     Components = x.accessLevel.components.Select(x => new AccessLevelComponentDto
                     {
                         Mac = x.mac,
-                        DoorComponent = x.door_component.Select(x => new AccessLevelDoorComponentDto
-                        {
-                            DoorId = x.door_id,
-                            AcrId = x.acr_id,
-                            TimezoneId = x.timezone_id
-                        }).ToList()
+
+                        DoorId = x.door_id,
+                        AcrId = x.acr_id,
+                        TimezoneId = x.timezone_id,
+                        AlvlId = x.alvl_id
                     }).ToList()
 
                 }).ToList()
@@ -285,12 +281,10 @@ public class QHolderRepository(AppDbContext context,IFileStorage file) : IQHolde
                     Components = x.accessLevel.components.Select(x => new AccessLevelComponentDto
                     {
                         Mac = x.mac,
-                        DoorComponent = x.door_component.Select(x => new AccessLevelDoorComponentDto
-                        {
-                            DoorId = x.door_id,
-                            AcrId = x.acr_id,
-                            TimezoneId = x.timezone_id
-                        }).ToList()
+                        DoorId = x.door_id,
+                        AcrId = x.acr_id,
+                        TimezoneId = x.timezone_id,
+                        AlvlId = x.alvl_id
                     }).ToList()
 
                 }).ToList()
@@ -460,12 +454,10 @@ public class QHolderRepository(AppDbContext context,IFileStorage file) : IQHolde
                     Components = x.accessLevel.components.Select(x => new AccessLevelComponentDto 
                     {
                         Mac = x.mac,
-                        DoorComponent = x.door_component.Select(x => new AccessLevelDoorComponentDto 
-                        {
-                            DoorId = x.door_id,
-                            AcrId = x.acr_id,
-                            TimezoneId = x.timezone_id
-                        }).ToList()
+                        DoorId = x.door_id,
+                        AcrId = x.acr_id,
+                        TimezoneId = x.timezone_id,
+                        AlvlId = x.alvl_id
                     }).ToList()
                     
                 }).ToList()

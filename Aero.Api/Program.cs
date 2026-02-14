@@ -246,6 +246,8 @@ namespace AeroService
             builder.Services.AddScoped<IHolRepository, HolRepository>();
             builder.Services.AddScoped<IQIdReportRepository, QIdReportRepository>();
             builder.Services.AddScoped<IQActionRepository, QActionRepository>();
+            builder.Services.AddScoped<IDiagRepository, DiagRepository>();
+            builder.Services.AddScoped<ICmndRepository, CmndRepository>();
 
 
             // DI for Service
@@ -274,14 +276,13 @@ namespace AeroService
             builder.Services.AddScoped<IProcedureService, ProcedureService>();
             builder.Services.AddScoped<ITriggerService, TriggerService>();
             builder.Services.AddScoped<IMonitorGroupService, MonitorGroupService>();
-            builder.Services.AddScoped<IAeroCommandService, AeroCommandService>();
             builder.Services.AddScoped<ISettingService, SettingService>();
             builder.Services.AddScoped<IFeatureService, FeatureService>();
             builder.Services.AddScoped<ILicenseService,LicenseService>();
             builder.Services.AddScoped<IMachineFingerprint,MachineFingerprint>();
             builder.Services.AddScoped<INotificationPublisher, ScpNotificationPublisher>();
+            builder.Services.AddScoped<IDiagnosticService, DiagnosticService>();
 
-            builder.Services.AddScoped<IAeroCommandService,AeroCommandService>();
             builder.Services.AddSignalR();
             builder.Services.AddScoped<IdReportService>();
             builder.Services.AddTransient<ExceptionHandlingMiddleware>();
@@ -309,6 +310,7 @@ namespace AeroService
             //builder.Services.AddHostedService<AeroWorker>();
             builder.Services.AddSingleton<AeroWorker>();
             builder.Services.AddHostedService(provider => provider.GetRequiredService<AeroWorker>());
+
 
 
 

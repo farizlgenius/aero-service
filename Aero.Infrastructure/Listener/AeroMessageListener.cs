@@ -115,6 +115,7 @@ public sealed class AeroMessageListener(ILogger<AeroMessageListener> logger,Chan
                 // commandService.HandleSaveFailCommand(command, message);
                 MessageHandlerHelper.SCPReplyCmndStatus(message);
                 //command.CompleteCommand($"{message.SCPId}/{message.cmnd_sts.sequence_number}",message.cmnd_sts.status == 1);
+                queue.Writer.TryWrite(new ScpReplyAdapter(message));
                 break;
             case (int)enSCPReplyType.enSCPReplyWebConfigNetwork:
                 MessageHandlerHelper.SCPReplyWebConfigNetwork(message);

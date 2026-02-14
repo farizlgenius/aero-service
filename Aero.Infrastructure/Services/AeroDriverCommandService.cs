@@ -1,4 +1,5 @@
 using System;
+using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Infrastructure.Settings;
 using HID.Aero.ScpdNet.Wrapper;
@@ -87,6 +88,7 @@ public sealed class AeroDriverCommandService(IOptions<AppSettings> options) : Ba
                   cc_sys.nDebugArg[i] = 0;
             }
             bool flag = Send((short)enCfgCmnd.enCcSystem, cc_sys);
+            
             return flag;
       }
 

@@ -36,7 +36,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<ReaderConfigurationMode> reader_configuration_mode { get; set; }
     public DbSet<AntipassbackMode> antipassback_mode { get; set; }
     public DbSet<AccessLevelComponent> access_level_component { get; set; }
-    public DbSet<AccessLevelDoorComponent> access_level_door_component { get; set; }
     public DbSet<CardHolder> cardholder { get; set; }
     public DbSet<Credential> credential { get; set; }
     public DbSet<AccessArea> area { get; set; }
@@ -87,7 +86,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<ModuleBaudrate> module_baudrate { get; set; }
     public DbSet<ModuleProtocol> module_protocol { get; set; }
     public DbSet<MonitorPointLogFunction> monitor_point_log_function { get; set; }
-    public DbSet<CommandLog> commnad_log { get; set; }
+    public DbSet<CommandAudit> commnad_audit { get; set; }
     public DbSet<DaysInWeek> days_in_week { get; set; }
     public DbSet<HardwareCredential> hardware_credential { get; set; }
     public DbSet<TransactionFlag> transaction_flag { get; set; }
@@ -279,6 +278,13 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     .HasForeignKey(f => f.location_id)
     .HasPrincipalKey(p => p.component_id)
     .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Location>()
+   .HasMany(l => l.command_audit)
+   .WithOne(c => c.location)
+   .HasForeignKey(f => f.location_id)
+   .HasPrincipalKey(p => p.component_id)
+   .OnDelete(DeleteBehavior.Cascade);
 
 
         #endregion
@@ -490,13 +496,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .OnDelete(DeleteBehavior.Cascade);
 
 
-        modelBuilder.Entity<AccessLevelComponent>()
-            .HasMany(x => x.door_component)
-            .WithOne(x => x.access_level_component)
-            .OnDelete(DeleteBehavior.Cascade);
-
-
-
         var NoAccess = new AccessLevel { id = 1, name = "No Access", component_id = 1, location_id = 1, is_active = true };
 
         var FullAccess = new AccessLevel { id = 2, name = "Full Access", component_id = 2, location_id = 1, is_active = true };
@@ -544,7 +543,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Aero.Infrastructure.Data.Entities.TimeZone>()
-            .HasMany(x => x.access_level_door_components)
+            .HasMany(x => x.access_level_components)
             .WithOne(x => x.timezone)
             .HasForeignKey(x => x.timezone_id)
             .HasPrincipalKey(x => x.component_id)
@@ -553,7 +552,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
 
         modelBuilder.Entity<Aero.Infrastructure.Data.Entities.TimeZone>().HasData(
-            new Aero.Infrastructure.Data.Entities.TimeZone { id = 1, name = "Always", component_id = 1, mode = 1, active_time = "", deactive_time = "", is_active = true, location_id = 1 }
+            new Aero.Infrastructure.Data.Entities.TimeZone { id = 1, name = "Always",timezone_id=1, component_id = 1, mode = 1, active_time = "", deactive_time = "", is_active = true, location_id = 1 }
            );
 
         modelBuilder.Entity<TimeZoneMode>().HasData(
@@ -623,7 +622,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Door>()
-            .HasMany(x => x.access_level_door_components)
+            .HasMany(x => x.access_level_component)
             .WithOne(x => x.door)
             .HasForeignKey(x => x.door_id)
             .HasPrincipalKey(x => x.component_id)

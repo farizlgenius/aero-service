@@ -39,6 +39,7 @@ namespace Aero.Infrastructure.Data.Entities
         public ICollection<CardFormat> card_formats { get; set; }
         public ICollection<IdReport> idreports { get; set; }
         public ICollection<Role> roles { get; set; }
+        public ICollection<CommandAudit> command_audit { get; set; }
 
         public bool is_active { get; set; } = true;
         public DateTime created_date { get; set; }

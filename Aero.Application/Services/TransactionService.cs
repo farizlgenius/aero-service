@@ -57,7 +57,17 @@ namespace Aero.Application.Services
 
         }
 
-       
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetSourceAsync()
+        {
+            var res = qTran.GetSourceAsync();
+            return ResponseHelper.SuccessBuilder(res);
+        }
+
+        public async Task<ResponseDto<IEnumerable<Mode>>> GetDeviceAsync(int source)
+        {
+            var res = await qTran.GetDeviceAsync(source);
+            return ResponseHelper.SuccessBuilder(res);
+        }
     }
 
    

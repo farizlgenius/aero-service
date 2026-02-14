@@ -15,7 +15,6 @@ namespace Aero.Infrastructure.Data.Entities
         public ICollection<Procedure> procedures { get; set; }
         public ICollection<AccessLevelComponent> access_level_component {get; set;}
         public string ip { get; set; } = string.Empty;
-        public string mac { get; set; } = string.Empty;
         public string port { get; set; } = string.Empty;
         public string firmware { get; set; } = string.Empty;
         public string serial_number { get; set; } = string.Empty;

@@ -8,4 +8,6 @@ public interface IQTransactionRepository
 {
       Task<Pagination<TransactionDto>> GetPageTransactionWithCountAsync(PaginationParams param);
     Task<Pagination<TransactionDto>> GetPageTransactionWithCountAndDateAndSearchAsync(PaginationParamsWithFilter param, short location);
+    IEnumerable<Mode> GetSourceAsync();
+    Task<IEnumerable<Mode>> GetDeviceAsync(int source);
 }

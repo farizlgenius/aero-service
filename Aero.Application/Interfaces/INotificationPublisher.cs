@@ -32,4 +32,5 @@ public interface INotificationPublisher
       Task MpNotifyStatus(MpStatus status);
       Task EventNotifyRecieve();
         Task AcrNotifyStatus(AcrStatus status);
+        Task CmndNotifyStatus(CmndStatus status);
 }

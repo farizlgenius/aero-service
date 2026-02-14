@@ -1,8 +1,11 @@
 using System;
+using System.Threading.Tasks;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
 using Aero.Domain.Entities;
 using Aero.Infrastructure.Data;
+using Aero.Infrastructure.Helpers;
+using HID.Aero.ScpdNet.Wrapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aero.Infrastructure.Repositories;
@@ -180,4 +183,113 @@ public class QTransactionRepository(AppDbContext context) : IQTransactionReposit
                 }
             };
       }
+
+    public IEnumerable<Mode> GetSourceAsync()
+    {
+        var res = AeroTransactionHandlerHelper.SourceMap
+     .GroupBy(x => x.Value)
+     .Select(g => new Mode
+     {
+         Name = g.Key,              // unique string (Hardware, Modules, etc.)
+         Value = (int)g.First().Key, // pick first enum value
+         Description = g.Key
+     })
+     .ToList();
+
+        return res;
+    }
+
+    public async Task<IEnumerable<Mode>> GetDeviceAsync(int source)
+    {
+        switch (source)
+        {
+            case (int)tranSrc.tranSrcScpDiag:
+            case (int)tranSrc.tranSrcScpCom:
+            case (int)tranSrc.tranSrcScpLcl:
+                return await context.hardware.AsNoTracking().Select(x => new Mode
+                {
+                    Name = x.name,
+                    Value = x.component_id,
+                    Description = x.mac
+                }).ToArrayAsync();
+            case (int)tranSrc.tranSrcSioDiag:
+            case (int)tranSrc.tranSrcSioCom:
+            case (int)tranSrc.tranSrcSioTmpr:
+            case (int)tranSrc.tranSrcSioPwr:
+                return await context.module.AsNoTracking().Select(x => new Mode
+                {
+                    Name = x.model_desc,
+                    Value = x.sio_id,
+                    Description = x.mac
+                }).ToArrayAsync();
+            case (int)tranSrc.tranSrcMP:
+                return await context.monitor_point.AsNoTracking().Select(x => new Mode
+                {
+                    Name = x.name,
+                    Value = x.mp_id,
+                    Description = x.mac
+                }).ToArrayAsync();
+            case (int)tranSrc.tranSrcCP:
+                return await context.control_point.AsNoTracking().Select(x => new Mode
+                {
+                    Name = x.name,
+                    Value = x.cp_id,
+                    Description = x.mac
+                }).ToArrayAsync();
+            case (int)tranSrc.tranSrcACR:
+            case (int)tranSrc.tranSrcAcrTmpr:
+            case (int)tranSrc.tranSrcAcrDoor:
+            case (int)tranSrc.tranSrcAcrTmprAlt:
+            case (int)tranSrc.tranSrcAcrRex0:
+            case (int)tranSrc.tranSrcAcrRex1:
+                return await context.door.AsNoTracking().Select(x => new Mode
+                {
+                    Name = x.name,
+                    Value = x.acr_id,
+                    Description = x.mac
+                }).ToArrayAsync();
+            case (int)tranSrc.tranSrcTimeZone:
+                return await context.timezone.AsNoTracking().Select(x => new Mode
+                {
+                    Name = x.name,
+                    Value = x.component_id,
+                    Description = x.timezone_id.ToString()
+                }).ToArrayAsync();
+            case (int)tranSrc.tranSrcProcedure:
+                return await context.procedure.AsNoTracking().Select(x => new Mode
+                {
+                    Name = x.name,
+                    Value = x.component_id,
+                    Description = x.proc_id.ToString()
+                }).ToArrayAsync();
+            case (int)tranSrc.tranSrcTrigger:
+            case (int)tranSrc.tranSrcTrigVar:
+                return await context.trigger.AsNoTracking().Select(x => new Mode
+                {
+                    Name = x.name,
+                    Value = x.component_id,
+                    Description = x.trig_id.ToString()
+                }).ToArrayAsync();
+            case (int)tranSrc.tranSrcMPG:
+                return await context.monitor_group.AsNoTracking().Select(x => new Mode
+                {
+                    Name = x.name,
+                    Value = x.mpg_id,
+                    Description = x.mac
+                }).ToArrayAsync();
+            case (int)tranSrc.tranSrcArea:
+                return await context.area.AsNoTracking().Select(x => new Mode
+                {
+                    Name = x.name,
+                    Value = x.component_id,
+                    //Description = x.mac
+                }).ToArrayAsync();
+            case (int)tranSrc.tranSrcLoginService:
+                return Enumerable.Empty<Mode>();
+            default:
+                return Enumerable.Empty<Mode>();
+        }
+
+        
+    }
 }

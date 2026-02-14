@@ -47,15 +47,13 @@ public sealed class HolderMapper
                   HardwareName = x.HardwareName,
                   LocationId = x.LocationId,
                   IsActive = x.IsActive,
-                  Components = x.Components.Select(x => new CreateUpdateAccessLevelComponent
+                  Components = x.Components.Select(x => new AccessLevelComponent
                   {
                         Mac = x.Mac,
-                        DoorComponents = x.DoorComponent.Select(x => new CreateUpdateAccessLevelDoorComponent
-                        {
-                            DoorId = x.DoorId,
-                              AcrId = x.AcrId,
-                              TimezoneId = x.TimezoneId
-                        }).ToList()
+                      DoorId = x.DoorId,
+                      AcrId = x.AcrId,
+                      TimezoneId = x.TimezoneId,
+                      AlvlId = x.AlvlId,
                   }).ToList()
             }).ToList();
 

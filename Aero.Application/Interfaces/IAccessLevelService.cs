@@ -9,9 +9,9 @@ namespace Aero.Application.Interface
         Task<ResponseDto<IEnumerable<AccessLevelDto>>> GetByLocationIdAsync(short location);
         Task<ResponseDto<Pagination<AccessLevelDto>>> GetPaginationAsync(PaginationParamsWithFilter param,short location);
         Task<ResponseDto<AccessLevelDto>> GetByComponentIdAsync(short component);
-        Task<ResponseDto<bool>> CreateAsync(CreateUpdateAccessLevelDto dto);
+        Task<ResponseDto<bool>> CreateAsync(AccessLevelDto dto);
         Task<ResponseDto<bool>> DeleteAsync(short component);
-        Task<ResponseDto<AccessLevelDto>> UpdateAsync(CreateUpdateAccessLevelDto dto);
+        Task<ResponseDto<AccessLevelDto>> UpdateAsync(AccessLevelDto dto);
         Task<string> GetAcrName(string mac, short component);
         Task<string> GetTzName(short component);
 

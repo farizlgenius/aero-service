@@ -15,7 +15,7 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
             throw new NotImplementedException();
       }
 
-      public async Task<int> AddCreateAsync(CreateUpdateAccessLevel domain)
+      public async Task<int> AddCreateAsync(AccessLevel domain)
       {
             await context.access_level.AddAsync(Aero.Infrastructure.Mapper.AccessLevelMapper.ToEf(domain));
             return await context.SaveChangesAsync();
@@ -39,7 +39,7 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
             throw new NotImplementedException();
       }
 
-      public async Task<int> UpdateCreateAsync(CreateUpdateAccessLevel domain)
+      public async Task<int> UpdateCreateAsync(AccessLevel domain)
       {
             var en = await context.access_level
             .Where(x => x.component_id == domain.ComponentId)

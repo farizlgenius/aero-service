@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Aero.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDb : Migration
+    public partial class InitialDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -90,25 +90,25 @@ namespace Aero.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "commnad_log",
+                name: "commnad_audit",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     tag_no = table.Column<int>(type: "integer", nullable: false),
-                    hardware_id = table.Column<int>(type: "integer", nullable: false),
-                    hardware_mac = table.Column<string>(type: "text", nullable: true),
+                    scp_id = table.Column<int>(type: "integer", nullable: false),
+                    mac = table.Column<string>(type: "text", nullable: true),
                     command = table.Column<string>(type: "text", nullable: true),
-                    status = table.Column<char>(type: "character(1)", nullable: false),
+                    is_success = table.Column<bool>(type: "boolean", nullable: false),
+                    is_pending = table.Column<bool>(type: "boolean", nullable: false),
                     nak_reason = table.Column<string>(type: "text", nullable: true),
                     nake_desc_code = table.Column<int>(type: "integer", nullable: false),
-                    is_active = table.Column<bool>(type: "boolean", nullable: false),
                     created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_commnad_log", x => x.id);
+                    table.PrimaryKey("PK_commnad_audit", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -786,6 +786,43 @@ namespace Aero.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "cardholder",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    user_id = table.Column<string>(type: "text", nullable: false),
+                    title = table.Column<string>(type: "text", nullable: false),
+                    first_name = table.Column<string>(type: "text", nullable: false),
+                    middle_name = table.Column<string>(type: "text", nullable: false),
+                    last_name = table.Column<string>(type: "text", nullable: false),
+                    sex = table.Column<string>(type: "text", nullable: false),
+                    email = table.Column<string>(type: "text", nullable: false),
+                    phone = table.Column<string>(type: "text", nullable: false),
+                    company = table.Column<string>(type: "text", nullable: false),
+                    department = table.Column<string>(type: "text", nullable: false),
+                    position = table.Column<string>(type: "text", nullable: false),
+                    flag = table.Column<short>(type: "smallint", nullable: false),
+                    image_path = table.Column<string>(type: "text", nullable: false),
+                    location_id = table.Column<short>(type: "smallint", nullable: false),
+                    is_active = table.Column<bool>(type: "boolean", nullable: false),
+                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    component_id = table.Column<short>(type: "smallint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_cardholder", x => x.id);
+                    table.UniqueConstraint("AK_cardholder_user_id", x => x.user_id);
+                    table.ForeignKey(
+                        name: "FK_cardholder_location_location_id",
+                        column: x => x.location_id,
+                        principalTable: "location",
+                        principalColumn: "component_id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "hardware",
                 columns: table => new
                 {
@@ -1090,45 +1127,64 @@ namespace Aero.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "access_level_component",
+                name: "cardholder_access_level",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    mac = table.Column<string>(type: "text", nullable: false),
-                    access_level_id = table.Column<short>(type: "smallint", nullable: false)
+                    holder_id = table.Column<string>(type: "text", nullable: false),
+                    accesslevel_id = table.Column<short>(type: "smallint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_access_level_component", x => x.id);
+                    table.PrimaryKey("PK_cardholder_access_level", x => new { x.accesslevel_id, x.holder_id });
                     table.ForeignKey(
-                        name: "FK_access_level_component_access_level_access_level_id",
-                        column: x => x.access_level_id,
+                        name: "FK_cardholder_access_level_access_level_accesslevel_id",
+                        column: x => x.accesslevel_id,
                         principalTable: "access_level",
                         principalColumn: "component_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_cardholder_access_level_cardholder_holder_id",
+                        column: x => x.holder_id,
+                        principalTable: "cardholder",
+                        principalColumn: "user_id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "cardholder",
+                name: "cardholder_additional",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    user_id = table.Column<string>(type: "text", nullable: false),
-                    title = table.Column<string>(type: "text", nullable: false),
-                    first_name = table.Column<string>(type: "text", nullable: false),
-                    middle_name = table.Column<string>(type: "text", nullable: false),
-                    last_name = table.Column<string>(type: "text", nullable: false),
-                    sex = table.Column<string>(type: "text", nullable: false),
-                    email = table.Column<string>(type: "text", nullable: false),
-                    phone = table.Column<string>(type: "text", nullable: false),
-                    company = table.Column<string>(type: "text", nullable: false),
-                    department = table.Column<string>(type: "text", nullable: false),
-                    position = table.Column<string>(type: "text", nullable: false),
-                    flag = table.Column<short>(type: "smallint", nullable: false),
-                    image_path = table.Column<string>(type: "text", nullable: false),
-                    AccessLevelid = table.Column<int>(type: "integer", nullable: true),
+                    holder_id = table.Column<string>(type: "text", nullable: false),
+                    additional = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_cardholder_additional", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_cardholder_additional_cardholder_holder_id",
+                        column: x => x.holder_id,
+                        principalTable: "cardholder",
+                        principalColumn: "user_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "credential",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    bits = table.Column<int>(type: "integer", nullable: false),
+                    issue_code = table.Column<int>(type: "integer", nullable: false),
+                    fac_code = table.Column<int>(type: "integer", nullable: false),
+                    card_no = table.Column<long>(type: "bigint", nullable: false),
+                    pin = table.Column<string>(type: "text", nullable: true),
+                    active_date = table.Column<string>(type: "text", nullable: false),
+                    deactive_date = table.Column<string>(type: "text", nullable: false),
+                    cardholder_id = table.Column<string>(type: "text", nullable: false),
+                    cardholderid = table.Column<int>(type: "integer", nullable: false),
                     location_id = table.Column<short>(type: "smallint", nullable: false),
                     is_active = table.Column<bool>(type: "boolean", nullable: false),
                     created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -1137,16 +1193,15 @@ namespace Aero.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_cardholder", x => x.id);
-                    table.UniqueConstraint("AK_cardholder_component_id", x => x.component_id);
-                    table.UniqueConstraint("AK_cardholder_user_id", x => x.user_id);
+                    table.PrimaryKey("PK_credential", x => x.id);
                     table.ForeignKey(
-                        name: "FK_cardholder_access_level_AccessLevelid",
-                        column: x => x.AccessLevelid,
-                        principalTable: "access_level",
-                        principalColumn: "id");
+                        name: "FK_credential_cardholder_cardholderid",
+                        column: x => x.cardholderid,
+                        principalTable: "cardholder",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_cardholder_location_location_id",
+                        name: "FK_credential_location_location_id",
                         column: x => x.location_id,
                         principalTable: "location",
                         principalColumn: "component_id",
@@ -1154,29 +1209,79 @@ namespace Aero.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "hardware_access_level",
+                name: "door",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    hardware_accesslevel_id = table.Column<short>(type: "smallint", nullable: false),
-                    access_levelid = table.Column<int>(type: "integer", nullable: false),
-                    hardware_mac = table.Column<string>(type: "text", nullable: false)
+                    acr_id = table.Column<short>(type: "smallint", nullable: false),
+                    name = table.Column<string>(type: "text", nullable: false),
+                    access_config = table.Column<short>(type: "smallint", nullable: false),
+                    pair_door_no = table.Column<short>(type: "smallint", nullable: false),
+                    hardware_mac = table.Column<string>(type: "text", nullable: false),
+                    reader_out_config = table.Column<short>(type: "smallint", nullable: false),
+                    card_format = table.Column<short>(type: "smallint", nullable: false),
+                    antipassback_mode = table.Column<short>(type: "smallint", nullable: false),
+                    antipassback_in = table.Column<short>(type: "smallint", nullable: true),
+                    area_in_id = table.Column<short>(type: "smallint", nullable: false),
+                    antipassback_out = table.Column<short>(type: "smallint", nullable: true),
+                    area_out_id = table.Column<short>(type: "smallint", nullable: false),
+                    spare_tag = table.Column<short>(type: "smallint", nullable: false),
+                    access_control_flag = table.Column<short>(type: "smallint", nullable: false),
+                    mode = table.Column<short>(type: "smallint", nullable: false),
+                    mode_desc = table.Column<string>(type: "text", nullable: false),
+                    offline_mode = table.Column<short>(type: "smallint", nullable: false),
+                    offline_mode_desc = table.Column<string>(type: "text", nullable: false),
+                    default_mode = table.Column<short>(type: "smallint", nullable: false),
+                    default_mode_desc = table.Column<string>(type: "text", nullable: false),
+                    default_led_mode = table.Column<short>(type: "smallint", nullable: false),
+                    pre_alarm = table.Column<short>(type: "smallint", nullable: false),
+                    antipassback_delay = table.Column<short>(type: "smallint", nullable: false),
+                    strike_t2 = table.Column<short>(type: "smallint", nullable: false),
+                    dc_held2 = table.Column<short>(type: "smallint", nullable: false),
+                    strike_follow_pulse = table.Column<short>(type: "smallint", nullable: false),
+                    strike_follow_delay = table.Column<short>(type: "smallint", nullable: false),
+                    n_ext_feature_type = table.Column<short>(type: "smallint", nullable: false),
+                    i_lpb_sio = table.Column<short>(type: "smallint", nullable: false),
+                    i_lpb_number = table.Column<short>(type: "smallint", nullable: false),
+                    i_lpb_long_press = table.Column<short>(type: "smallint", nullable: false),
+                    i_lpb_out_sio = table.Column<short>(type: "smallint", nullable: false),
+                    i_lpb_out_num = table.Column<short>(type: "smallint", nullable: false),
+                    df_filter_time = table.Column<short>(type: "smallint", nullable: false),
+                    is_held_mask = table.Column<bool>(type: "boolean", nullable: false),
+                    is_force_mask = table.Column<bool>(type: "boolean", nullable: false),
+                    component_id = table.Column<short>(type: "smallint", nullable: false),
+                    mac = table.Column<string>(type: "text", nullable: false),
+                    location_id = table.Column<short>(type: "smallint", nullable: false),
+                    is_active = table.Column<bool>(type: "boolean", nullable: false),
+                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_hardware_access_level", x => x.id);
+                    table.PrimaryKey("PK_door", x => x.id);
+                    table.UniqueConstraint("AK_door_component_id", x => x.component_id);
                     table.ForeignKey(
-                        name: "FK_hardware_access_level_access_level_access_levelid",
-                        column: x => x.access_levelid,
-                        principalTable: "access_level",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_door_area_antipassback_in",
+                        column: x => x.antipassback_in,
+                        principalTable: "area",
+                        principalColumn: "component_id");
                     table.ForeignKey(
-                        name: "FK_hardware_access_level_hardware_hardware_mac",
+                        name: "FK_door_area_antipassback_out",
+                        column: x => x.antipassback_out,
+                        principalTable: "area",
+                        principalColumn: "component_id");
+                    table.ForeignKey(
+                        name: "FK_door_hardware_hardware_mac",
                         column: x => x.hardware_mac,
                         principalTable: "hardware",
                         principalColumn: "mac",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_door_location_location_id",
+                        column: x => x.location_id,
+                        principalTable: "location",
+                        principalColumn: "component_id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -1186,6 +1291,7 @@ namespace Aero.Infrastructure.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    sio_id = table.Column<short>(type: "smallint", nullable: false),
                     model = table.Column<short>(type: "smallint", nullable: false),
                     model_desc = table.Column<string>(type: "text", nullable: false),
                     revision = table.Column<string>(type: "text", nullable: false),
@@ -1241,6 +1347,7 @@ namespace Aero.Infrastructure.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    mpg_id = table.Column<short>(type: "smallint", nullable: false),
                     name = table.Column<string>(type: "text", nullable: false),
                     n_mp_count = table.Column<short>(type: "smallint", nullable: false),
                     hardware_mac = table.Column<string>(type: "text", nullable: false),
@@ -1444,121 +1551,71 @@ namespace Aero.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "access_level_door_component",
+                name: "hardware_credential",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    acr_id = table.Column<short>(type: "smallint", nullable: false),
-                    timezone_id = table.Column<short>(type: "smallint", nullable: false),
-                    access_level_component_id = table.Column<int>(type: "integer", nullable: false),
-                    access_level_componentid = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_access_level_door_component", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_access_level_door_component_access_level_component_access_l~",
-                        column: x => x.access_level_componentid,
-                        principalTable: "access_level_component",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "cardholder_access_level",
-                columns: table => new
-                {
-                    holder_id = table.Column<string>(type: "text", nullable: false),
-                    accesslevel_id = table.Column<short>(type: "smallint", nullable: false),
-                    accessLevelid = table.Column<int>(type: "integer", nullable: false),
+                    hardware_mac = table.Column<string>(type: "text", nullable: false),
+                    hardware_credential_id = table.Column<short>(type: "smallint", nullable: false),
                     id = table.Column<int>(type: "integer", nullable: false),
-                    location_id = table.Column<short>(type: "smallint", nullable: false),
-                    locationid = table.Column<int>(type: "integer", nullable: false),
-                    is_active = table.Column<bool>(type: "boolean", nullable: false),
-                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    component_id = table.Column<short>(type: "smallint", nullable: false)
+                    credentialid = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_cardholder_access_level", x => new { x.accesslevel_id, x.holder_id });
+                    table.PrimaryKey("PK_hardware_credential", x => new { x.hardware_mac, x.hardware_credential_id });
                     table.ForeignKey(
-                        name: "FK_cardholder_access_level_access_level_accessLevelid",
-                        column: x => x.accessLevelid,
-                        principalTable: "access_level",
+                        name: "FK_hardware_credential_credential_credentialid",
+                        column: x => x.credentialid,
+                        principalTable: "credential",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_cardholder_access_level_cardholder_holder_id",
-                        column: x => x.holder_id,
-                        principalTable: "cardholder",
-                        principalColumn: "user_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_cardholder_access_level_location_locationid",
-                        column: x => x.locationid,
-                        principalTable: "location",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "cardholder_additional",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    holder_id = table.Column<string>(type: "text", nullable: false),
-                    additional = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_cardholder_additional", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_cardholder_additional_cardholder_holder_id",
-                        column: x => x.holder_id,
-                        principalTable: "cardholder",
-                        principalColumn: "user_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "credential",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    bits = table.Column<int>(type: "integer", nullable: false),
-                    issue_code = table.Column<int>(type: "integer", nullable: false),
-                    fac_code = table.Column<int>(type: "integer", nullable: false),
-                    card_no = table.Column<long>(type: "bigint", nullable: false),
-                    pin = table.Column<string>(type: "text", nullable: true),
-                    active_date = table.Column<string>(type: "text", nullable: false),
-                    deactive_date = table.Column<string>(type: "text", nullable: false),
-                    cardholder_id = table.Column<string>(type: "text", nullable: false),
-                    cardholderid = table.Column<int>(type: "integer", nullable: false),
-                    location_id = table.Column<short>(type: "smallint", nullable: false),
-                    is_active = table.Column<bool>(type: "boolean", nullable: false),
-                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    component_id = table.Column<short>(type: "smallint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_credential", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_credential_cardholder_cardholderid",
-                        column: x => x.cardholderid,
-                        principalTable: "cardholder",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_credential_location_location_id",
-                        column: x => x.location_id,
-                        principalTable: "location",
+                        name: "FK_hardware_credential_hardware_hardware_credential_id",
+                        column: x => x.hardware_credential_id,
+                        principalTable: "hardware",
                         principalColumn: "component_id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "access_level_component",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    alvl_id = table.Column<short>(type: "smallint", nullable: false),
+                    mac = table.Column<string>(type: "text", nullable: false),
+                    door_id = table.Column<short>(type: "smallint", nullable: false),
+                    acr_id = table.Column<short>(type: "smallint", nullable: false),
+                    timezone_id = table.Column<short>(type: "smallint", nullable: false),
+                    access_level_id = table.Column<short>(type: "smallint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_access_level_component", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_access_level_component_access_level_access_level_id",
+                        column: x => x.access_level_id,
+                        principalTable: "access_level",
+                        principalColumn: "component_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_access_level_component_door_door_id",
+                        column: x => x.door_id,
+                        principalTable: "door",
+                        principalColumn: "component_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_access_level_component_hardware_mac",
+                        column: x => x.mac,
+                        principalTable: "hardware",
+                        principalColumn: "mac",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_access_level_component_timezone_timezone_id",
+                        column: x => x.timezone_id,
+                        principalTable: "timezone",
+                        principalColumn: "component_id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1647,11 +1704,102 @@ namespace Aero.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "reader",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    module_id = table.Column<short>(type: "smallint", nullable: false),
+                    reader_no = table.Column<short>(type: "smallint", nullable: false),
+                    data_format = table.Column<short>(type: "smallint", nullable: false),
+                    keypad_mode = table.Column<short>(type: "smallint", nullable: false),
+                    led_drive_mode = table.Column<short>(type: "smallint", nullable: false),
+                    direction = table.Column<int>(type: "integer", nullable: false),
+                    osdp_flag = table.Column<bool>(type: "boolean", nullable: false),
+                    osdp_baudrate = table.Column<short>(type: "smallint", nullable: false),
+                    osdp_discover = table.Column<short>(type: "smallint", nullable: false),
+                    osdp_tracing = table.Column<short>(type: "smallint", nullable: false),
+                    osdp_address = table.Column<short>(type: "smallint", nullable: false),
+                    osdp_secure_channel = table.Column<short>(type: "smallint", nullable: false),
+                    component_id = table.Column<short>(type: "smallint", nullable: false),
+                    mac = table.Column<string>(type: "text", nullable: false),
+                    location_id = table.Column<short>(type: "smallint", nullable: false),
+                    is_active = table.Column<bool>(type: "boolean", nullable: false),
+                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_reader", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_reader_door_component_id",
+                        column: x => x.component_id,
+                        principalTable: "door",
+                        principalColumn: "component_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_reader_location_location_id",
+                        column: x => x.location_id,
+                        principalTable: "location",
+                        principalColumn: "component_id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_reader_module_module_id",
+                        column: x => x.module_id,
+                        principalTable: "module",
+                        principalColumn: "component_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "request_exit",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    module_id = table.Column<short>(type: "smallint", nullable: false),
+                    input_no = table.Column<short>(type: "smallint", nullable: false),
+                    input_mode = table.Column<short>(type: "smallint", nullable: false),
+                    debounce = table.Column<short>(type: "smallint", nullable: false),
+                    holdtime = table.Column<short>(type: "smallint", nullable: false),
+                    mask_timezone = table.Column<short>(type: "smallint", nullable: false),
+                    component_id = table.Column<short>(type: "smallint", nullable: false),
+                    mac = table.Column<string>(type: "text", nullable: false),
+                    location_id = table.Column<short>(type: "smallint", nullable: false),
+                    is_active = table.Column<bool>(type: "boolean", nullable: false),
+                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_request_exit", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_request_exit_door_component_id",
+                        column: x => x.component_id,
+                        principalTable: "door",
+                        principalColumn: "component_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_request_exit_location_location_id",
+                        column: x => x.location_id,
+                        principalTable: "location",
+                        principalColumn: "component_id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_request_exit_module_module_id",
+                        column: x => x.module_id,
+                        principalTable: "module",
+                        principalColumn: "component_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "sensor",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    door_id = table.Column<short>(type: "smallint", nullable: false),
                     module_id = table.Column<short>(type: "smallint", nullable: false),
                     input_no = table.Column<short>(type: "smallint", nullable: false),
                     input_mode = table.Column<short>(type: "smallint", nullable: false),
@@ -1668,7 +1816,12 @@ namespace Aero.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_sensor", x => x.id);
-                    table.UniqueConstraint("AK_sensor_component_id", x => x.component_id);
+                    table.ForeignKey(
+                        name: "FK_sensor_door_door_id",
+                        column: x => x.door_id,
+                        principalTable: "door",
+                        principalColumn: "component_id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_sensor_location_location_id",
                         column: x => x.location_id,
@@ -1689,6 +1842,7 @@ namespace Aero.Infrastructure.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    door_id = table.Column<short>(type: "smallint", nullable: false),
                     module_id = table.Column<short>(type: "smallint", nullable: false),
                     output_no = table.Column<short>(type: "smallint", nullable: false),
                     relay_mode = table.Column<short>(type: "smallint", nullable: false),
@@ -1706,7 +1860,12 @@ namespace Aero.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_strike", x => x.id);
-                    table.UniqueConstraint("AK_strike_component_id", x => x.component_id);
+                    table.ForeignKey(
+                        name: "FK_strike_door_door_id",
+                        column: x => x.door_id,
+                        principalTable: "door",
+                        principalColumn: "component_id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_strike_location_location_id",
                         column: x => x.location_id,
@@ -1859,123 +2018,6 @@ namespace Aero.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "hardware_credential",
-                columns: table => new
-                {
-                    hardware_mac = table.Column<string>(type: "text", nullable: false),
-                    hardware_credential_id = table.Column<short>(type: "smallint", nullable: false),
-                    id = table.Column<int>(type: "integer", nullable: false),
-                    credentialid = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_hardware_credential", x => new { x.hardware_mac, x.hardware_credential_id });
-                    table.ForeignKey(
-                        name: "FK_hardware_credential_credential_credentialid",
-                        column: x => x.credentialid,
-                        principalTable: "credential",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_hardware_credential_hardware_hardware_credential_id",
-                        column: x => x.hardware_credential_id,
-                        principalTable: "hardware",
-                        principalColumn: "component_id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "door",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    acr_id = table.Column<short>(type: "smallint", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    access_config = table.Column<short>(type: "smallint", nullable: false),
-                    pair_door_no = table.Column<short>(type: "smallint", nullable: false),
-                    hardware_mac = table.Column<string>(type: "text", nullable: false),
-                    reader_out_config = table.Column<short>(type: "smallint", nullable: false),
-                    strike_id = table.Column<short>(type: "smallint", nullable: false),
-                    sensor_id = table.Column<short>(type: "smallint", nullable: false),
-                    card_format = table.Column<short>(type: "smallint", nullable: false),
-                    antipassback_mode = table.Column<short>(type: "smallint", nullable: false),
-                    antipassback_in = table.Column<short>(type: "smallint", nullable: true),
-                    area_in_id = table.Column<short>(type: "smallint", nullable: false),
-                    antipassback_out = table.Column<short>(type: "smallint", nullable: true),
-                    area_out_id = table.Column<short>(type: "smallint", nullable: false),
-                    spare_tag = table.Column<short>(type: "smallint", nullable: false),
-                    access_control_flag = table.Column<short>(type: "smallint", nullable: false),
-                    mode = table.Column<short>(type: "smallint", nullable: false),
-                    mode_desc = table.Column<string>(type: "text", nullable: false),
-                    offline_mode = table.Column<short>(type: "smallint", nullable: false),
-                    offline_mode_desc = table.Column<string>(type: "text", nullable: false),
-                    default_mode = table.Column<short>(type: "smallint", nullable: false),
-                    default_mode_desc = table.Column<string>(type: "text", nullable: false),
-                    default_led_mode = table.Column<short>(type: "smallint", nullable: false),
-                    pre_alarm = table.Column<short>(type: "smallint", nullable: false),
-                    antipassback_delay = table.Column<short>(type: "smallint", nullable: false),
-                    strike_t2 = table.Column<short>(type: "smallint", nullable: false),
-                    dc_held2 = table.Column<short>(type: "smallint", nullable: false),
-                    strike_follow_pulse = table.Column<short>(type: "smallint", nullable: false),
-                    strike_follow_delay = table.Column<short>(type: "smallint", nullable: false),
-                    n_ext_feature_type = table.Column<short>(type: "smallint", nullable: false),
-                    i_lpb_sio = table.Column<short>(type: "smallint", nullable: false),
-                    i_lpb_number = table.Column<short>(type: "smallint", nullable: false),
-                    i_lpb_long_press = table.Column<short>(type: "smallint", nullable: false),
-                    i_lpb_out_sio = table.Column<short>(type: "smallint", nullable: false),
-                    i_lpb_out_num = table.Column<short>(type: "smallint", nullable: false),
-                    df_filter_time = table.Column<short>(type: "smallint", nullable: false),
-                    is_held_mask = table.Column<bool>(type: "boolean", nullable: false),
-                    is_force_mask = table.Column<bool>(type: "boolean", nullable: false),
-                    component_id = table.Column<short>(type: "smallint", nullable: false),
-                    mac = table.Column<string>(type: "text", nullable: false),
-                    location_id = table.Column<short>(type: "smallint", nullable: false),
-                    is_active = table.Column<bool>(type: "boolean", nullable: false),
-                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_door", x => x.id);
-                    table.UniqueConstraint("AK_door_component_id", x => x.component_id);
-                    table.ForeignKey(
-                        name: "FK_door_area_antipassback_in",
-                        column: x => x.antipassback_in,
-                        principalTable: "area",
-                        principalColumn: "component_id");
-                    table.ForeignKey(
-                        name: "FK_door_area_antipassback_out",
-                        column: x => x.antipassback_out,
-                        principalTable: "area",
-                        principalColumn: "component_id");
-                    table.ForeignKey(
-                        name: "FK_door_hardware_hardware_mac",
-                        column: x => x.hardware_mac,
-                        principalTable: "hardware",
-                        principalColumn: "mac",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_door_location_location_id",
-                        column: x => x.location_id,
-                        principalTable: "location",
-                        principalColumn: "component_id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_door_sensor_sensor_id",
-                        column: x => x.sensor_id,
-                        principalTable: "sensor",
-                        principalColumn: "component_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_door_strike_strike_id",
-                        column: x => x.strike_id,
-                        principalTable: "strike",
-                        principalColumn: "component_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "trigger_tran_code",
                 columns: table => new
                 {
@@ -1993,96 +2035,6 @@ namespace Aero.Infrastructure.Migrations
                         name: "FK_trigger_tran_code_trigger_value",
                         column: x => x.value,
                         principalTable: "trigger",
-                        principalColumn: "component_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "reader",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    module_id = table.Column<short>(type: "smallint", nullable: false),
-                    reader_no = table.Column<short>(type: "smallint", nullable: false),
-                    data_format = table.Column<short>(type: "smallint", nullable: false),
-                    keypad_mode = table.Column<short>(type: "smallint", nullable: false),
-                    led_drive_mode = table.Column<short>(type: "smallint", nullable: false),
-                    direction = table.Column<int>(type: "integer", nullable: false),
-                    osdp_flag = table.Column<bool>(type: "boolean", nullable: false),
-                    osdp_baudrate = table.Column<short>(type: "smallint", nullable: false),
-                    osdp_discover = table.Column<short>(type: "smallint", nullable: false),
-                    osdp_tracing = table.Column<short>(type: "smallint", nullable: false),
-                    osdp_address = table.Column<short>(type: "smallint", nullable: false),
-                    osdp_secure_channel = table.Column<short>(type: "smallint", nullable: false),
-                    component_id = table.Column<short>(type: "smallint", nullable: false),
-                    mac = table.Column<string>(type: "text", nullable: false),
-                    location_id = table.Column<short>(type: "smallint", nullable: false),
-                    is_active = table.Column<bool>(type: "boolean", nullable: false),
-                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_reader", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_reader_door_component_id",
-                        column: x => x.component_id,
-                        principalTable: "door",
-                        principalColumn: "component_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_reader_location_location_id",
-                        column: x => x.location_id,
-                        principalTable: "location",
-                        principalColumn: "component_id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_reader_module_module_id",
-                        column: x => x.module_id,
-                        principalTable: "module",
-                        principalColumn: "component_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "request_exit",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    module_id = table.Column<short>(type: "smallint", nullable: false),
-                    input_no = table.Column<short>(type: "smallint", nullable: false),
-                    input_mode = table.Column<short>(type: "smallint", nullable: false),
-                    debounce = table.Column<short>(type: "smallint", nullable: false),
-                    holdtime = table.Column<short>(type: "smallint", nullable: false),
-                    mask_timezone = table.Column<short>(type: "smallint", nullable: false),
-                    component_id = table.Column<short>(type: "smallint", nullable: false),
-                    mac = table.Column<string>(type: "text", nullable: false),
-                    location_id = table.Column<short>(type: "smallint", nullable: false),
-                    is_active = table.Column<bool>(type: "boolean", nullable: false),
-                    created_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_request_exit", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_request_exit_door_component_id",
-                        column: x => x.component_id,
-                        principalTable: "door",
-                        principalColumn: "component_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_request_exit_location_location_id",
-                        column: x => x.location_id,
-                        principalTable: "location",
-                        principalColumn: "component_id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_request_exit_module_module_id",
-                        column: x => x.module_id,
-                        principalTable: "module",
                         principalColumn: "component_id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -2928,9 +2880,19 @@ namespace Aero.Infrastructure.Migrations
                 column: "access_level_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_access_level_door_component_access_level_componentid",
-                table: "access_level_door_component",
-                column: "access_level_componentid");
+                name: "IX_access_level_component_door_id",
+                table: "access_level_component",
+                column: "door_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_access_level_component_mac",
+                table: "access_level_component",
+                column: "mac");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_access_level_component_timezone_id",
+                table: "access_level_component",
+                column: "timezone_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_action_location_id",
@@ -2953,29 +2915,14 @@ namespace Aero.Infrastructure.Migrations
                 column: "location_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_cardholder_AccessLevelid",
-                table: "cardholder",
-                column: "AccessLevelid");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_cardholder_location_id",
                 table: "cardholder",
                 column: "location_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_cardholder_access_level_accessLevelid",
-                table: "cardholder_access_level",
-                column: "accessLevelid");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_cardholder_access_level_holder_id",
                 table: "cardholder_access_level",
                 column: "holder_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_cardholder_access_level_locationid",
-                table: "cardholder_access_level",
-                column: "locationid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_cardholder_additional_holder_id",
@@ -3029,18 +2976,6 @@ namespace Aero.Infrastructure.Migrations
                 column: "location_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_door_sensor_id",
-                table: "door",
-                column: "sensor_id",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_door_strike_id",
-                table: "door",
-                column: "strike_id",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_feature_role_feature_id",
                 table: "feature_role",
                 column: "feature_id");
@@ -3049,16 +2984,6 @@ namespace Aero.Infrastructure.Migrations
                 name: "IX_hardware_location_id",
                 table: "hardware",
                 column: "location_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_hardware_access_level_access_levelid",
-                table: "hardware_access_level",
-                column: "access_levelid");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_hardware_access_level_hardware_mac",
-                table: "hardware_access_level",
-                column: "hardware_mac");
 
             migrationBuilder.CreateIndex(
                 name: "IX_hardware_credential_credentialid",
@@ -3182,6 +3107,12 @@ namespace Aero.Infrastructure.Migrations
                 column: "location_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_sensor_door_id",
+                table: "sensor",
+                column: "door_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_sensor_location_id",
                 table: "sensor",
                 column: "location_id");
@@ -3190,6 +3121,12 @@ namespace Aero.Infrastructure.Migrations
                 name: "IX_sensor_module_id",
                 table: "sensor",
                 column: "module_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_strike_door_id",
+                table: "strike",
+                column: "door_id",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_strike_location_id",
@@ -3275,7 +3212,7 @@ namespace Aero.Infrastructure.Migrations
                 name: "access_area_command");
 
             migrationBuilder.DropTable(
-                name: "access_level_door_component");
+                name: "access_level_component");
 
             migrationBuilder.DropTable(
                 name: "action");
@@ -3302,7 +3239,7 @@ namespace Aero.Infrastructure.Migrations
                 name: "cardholder_additional");
 
             migrationBuilder.DropTable(
-                name: "commnad_log");
+                name: "commnad_audit");
 
             migrationBuilder.DropTable(
                 name: "control_point");
@@ -3327,9 +3264,6 @@ namespace Aero.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "file_type");
-
-            migrationBuilder.DropTable(
-                name: "hardware_access_level");
 
             migrationBuilder.DropTable(
                 name: "hardware_component");
@@ -3416,6 +3350,12 @@ namespace Aero.Infrastructure.Migrations
                 name: "scp_setting");
 
             migrationBuilder.DropTable(
+                name: "sensor");
+
+            migrationBuilder.DropTable(
+                name: "strike");
+
+            migrationBuilder.DropTable(
                 name: "strike_mode");
 
             migrationBuilder.DropTable(
@@ -3452,7 +3392,7 @@ namespace Aero.Infrastructure.Migrations
                 name: "weak_password");
 
             migrationBuilder.DropTable(
-                name: "access_level_component");
+                name: "access_level");
 
             migrationBuilder.DropTable(
                 name: "credential");
@@ -3465,6 +3405,9 @@ namespace Aero.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "door");
+
+            migrationBuilder.DropTable(
+                name: "module");
 
             migrationBuilder.DropTable(
                 name: "feature");
@@ -3500,19 +3443,7 @@ namespace Aero.Infrastructure.Migrations
                 name: "area");
 
             migrationBuilder.DropTable(
-                name: "sensor");
-
-            migrationBuilder.DropTable(
-                name: "strike");
-
-            migrationBuilder.DropTable(
                 name: "procedure");
-
-            migrationBuilder.DropTable(
-                name: "access_level");
-
-            migrationBuilder.DropTable(
-                name: "module");
 
             migrationBuilder.DropTable(
                 name: "hardware");

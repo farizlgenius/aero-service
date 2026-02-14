@@ -47,7 +47,7 @@ namespace Aero.Api.Controllers.V1
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<AccessLevelDto>>> CreateAsync([FromBody] CreateUpdateAccessLevelDto dto)
+        public async Task<ActionResult<ResponseDto<AccessLevelDto>>> CreateAsync([FromBody] AccessLevelDto dto)
         {
             var res = await accesslevelService.CreateAsync(dto);
             return Ok(res);
@@ -63,7 +63,7 @@ namespace Aero.Api.Controllers.V1
 
         [HttpPut]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<AccessLevelDto>>> UpdateAsync([FromBody] CreateUpdateAccessLevelDto dto)
+        public async Task<ActionResult<ResponseDto<AccessLevelDto>>> UpdateAsync([FromBody] AccessLevelDto dto)
         {
             var res = await accesslevelService.UpdateAsync(dto);
             return Ok(res);

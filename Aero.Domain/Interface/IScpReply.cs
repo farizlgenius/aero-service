@@ -12,15 +12,14 @@ public interface IScpReply
       ICommStatus comm {get;}
       ISrSio sts_sio {get;}
       ISrMp sts_mp {get;}
-
       ISrCp sts_cp {get;}
       ISrAcr sts_acr {get;}
       IStrStatus str_sts {get;}
       ICcWebConfigNetwork web_network {get;}
       ICcWebConfigHostCommPrim web_host_comm_prim {get;}
       ITransaction tran {get;}
-
       ITranStatus tran_sts {get;}
+    IScpReplyCmndStatus cmnd_sts { get; }
 
 }
 

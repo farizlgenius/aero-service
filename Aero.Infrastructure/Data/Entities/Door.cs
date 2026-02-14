@@ -53,7 +53,7 @@ namespace Aero.Infrastructure.Data.Entities
         public short df_filter_time { get; set; }
         public bool is_held_mask { get; set; } = false;
         public bool is_force_mask { get; set; } = false;
-        public ICollection<AccessLevelDoorComponent> access_level_door_components { get; set; }
+        public ICollection<AccessLevelComponent> access_level_component { get; set; }
 
     }
 }

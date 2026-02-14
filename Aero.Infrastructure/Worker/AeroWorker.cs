@@ -36,6 +36,7 @@ namespace Aero.Infrastructure.Mapper
                 var hw = scope.ServiceProvider.GetRequiredService<IHardwareService>();
                 var tran = scope.ServiceProvider.GetRequiredService<ITransactionService>();
                 var publisher = scope.ServiceProvider.GetRequiredService<INotificationPublisher>();
+                var cmnd = scope.ServiceProvider.GetRequiredService<ICmndRepository>();
 
 
                 try
@@ -257,11 +258,51 @@ namespace Aero.Infrastructure.Mapper
                             var acrstatus = new AcrStatus(await qhw.GetMacFromComponentAsync((short)message.ScpId), message.sts_acr.number, DescriptionHelper.GetAcrModeForStatus(message.sts_acr.door_status), DescriptionHelper.GetAccessPointStatusFlagResult((byte)message.sts_acr.ap_status));
                             await publisher.AcrNotifyStatus(acrstatus);
                             break;
+                        case (int)enSCPReplyType.enSCPReplySrTz:
+                            break;
+                        case (int)enSCPReplyType.enSCPReplySrTv:
+                            break;
+                        case (int)enSCPReplyType.enSCPReplySrMpg:
+                            break;
+                        case (int)enSCPReplyType.enSCPReplySrArea:
+                            break;
+                        case (int)enSCPReplyType.enSCPReplySioRelayCounts:
+                            break;
                         case (int)enSCPReplyType.enSCPReplyStrStatus:
                             await hw.VerifyAllocateHardwareMemoryAsync(message);
                             break;
+                        case (int)enSCPReplyType.enSCPReplyCmndStatus:
+                            var comm = new CommandAudit
+                            {
+                                TagNo = message.cmnd_sts.sequence_number,
+                                ScpId = message.ScpId,
+                                Mac = await qhw.GetMacFromComponentAsync((short)message.ScpId),
+                                Command = "",
+                                IsPending = false,
+                                IsSuccess = message.cmnd_sts.status == 2 ? true : false,
+                                NakReason = message.cmnd_sts.nak is not null ? DescriptionHelper.GetNakReasonDescription(message.cmnd_sts.nak.reason) : "",
+                                NakDescCode = message.cmnd_sts.nak is not null ? message.cmnd_sts.nak.description_code : 0,
+                            };
+                            await cmnd.UpdateAsync(comm);
+                            var cstatus = new CmndStatus(await qhw.GetMacFromComponentAsync((short)message.ScpId), message.cmnd_sts.sequence_number);
+                            await publisher.CmndNotifyStatus(cstatus);
+                            break;
                         case (int)enSCPReplyType.enSCPReplyWebConfigNetwork:
                             await hw.AssignIpAddressAsync(message);
+                            break;
+                        case (int)enSCPReplyType.enSCPReplyWebConfigNotes:
+                            break;
+                        case (int)enSCPReplyType.enSCPReplyWebConfigSessionTmr:
+                            break;
+                        case (int)enSCPReplyType.enSCPReplyWebConfigWebConn:
+                            break;
+                        case (int)enSCPReplyType.enSCPReplyWebConfigAutoSave:
+                            break;
+                        case (int)enSCPReplyType.enSCPReplyWebConfigNetDiag:
+                            break;
+                        case (int)enSCPReplyType.enSCPReplyWebConfigTimeServer:
+                            break;
+                        case (int)enSCPReplyType.enSCPReplyWebConfigDiagnostics:
                             break;
                         case (int)enSCPReplyType.enSCPReplyWebConfigHostCommPrim:
                             await hw.AssignPortAsync(message);

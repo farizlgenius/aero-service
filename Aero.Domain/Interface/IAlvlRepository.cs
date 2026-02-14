@@ -6,6 +6,6 @@ namespace Aero.Domain.Interface;
 
 public interface IAlvlRepository : IBaseRepository<AccessLevel>
 {
-      Task<int> AddCreateAsync(CreateUpdateAccessLevel domain);
-      Task<int> UpdateCreateAsync(CreateUpdateAccessLevel domain);
+      Task<int> AddCreateAsync(AccessLevel domain);
+      Task<int> UpdateCreateAsync(AccessLevel domain);
 }

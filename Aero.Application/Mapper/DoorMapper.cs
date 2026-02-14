@@ -116,6 +116,14 @@ public sealed class DoorMapper
             res.DfOfFilterTime = dto.DfOfFilterTime;
             res.MaskForceOpen = dto.MaskForceOpen;
             res.MaskHeldOpen = dto.MaskHeldOpen;
+        res.AccessLevelComponents = new List<AccessLevelComponent> {
+            new AccessLevelComponent{
+                Mac = dto.Mac,
+                DoorId = dto.ComponentId,
+                AcrId = dto.AcrId,
+                TimezoneId = 1
+            },
+        };
 
             return res;
       }

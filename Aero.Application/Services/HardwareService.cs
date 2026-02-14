@@ -268,51 +268,36 @@ namespace Aero.Application.Services
 
             // Access Level
 
-            var accessLevels = await qAlvl.GetAsync();
+            var accessLevels = await qAlvl.GetDomainAsync();
 
 
-            foreach (var a in accessLevels)
+            foreach (var domain in accessLevels)
             {
-                if (a.ComponentId == 1 || a.ComponentId == 2)
+                if (domain.ComponentId == 1 || domain.ComponentId == 2)
                 {
-                    if (!alvl.AccessLevelConfigurationExtended(ScpId, a.ComponentId, a.ComponentId == 1 ? (short)0 : (short)1))
+                    if (!await alvl.AccessLevelConfigurationExtended(ScpId, domain.ComponentId, domain.ComponentId == 1 ? (short)0 : (short)1))
                     {
                         errors.Add(MessageBuilder.Unsuccess(mac, Command.ALVL_CONFIG));
-                    }
-                    ;
+                    };
                 }
                 else
                 {
-                    var accss = a.Components.Where(x => x.Mac.Equals(mac)).SelectMany(x => x.DoorComponent.Select(x => new CreateUpdateAccessLevelDoorComponent
-                    {
-                        AcrId = x.AcrId,
-                        TimezoneId = x.TimezoneId
-                    })).ToList();
+                    var macs = domain.Components.Select(x => x.Mac).Distinct();
 
-                    if (!alvl.AccessLevelConfigurationExtendedCreate(ScpId, a.ComponentId, accss))
+                    for (int i = 0; i < macs.Count(); i++)
                     {
-                        errors.Add(MessageBuilder.Unsuccess(mac, Command.ALVL_CONFIG));
+                        //var AlvlId = await qAlvl.GetLowestUnassignedNumberAsync(10, macs.ElementAt(i));
+                        //domain.Components.ElementAt(i).AlvlId = AlvlId;
+                        if (!await alvl.AccessLevelConfigurationExtended(await qHw.GetComponentIdFromMacAsync(macs.ElementAt(i)), domain.Components.Where(x => x.Mac.Equals(macs.ElementAt(i))).Select(x => x.AlvlId).FirstOrDefault(), domain))
+                        {
+                            errors.Add(MessageBuilder.Unsuccess(macs.ElementAt(i), Command.ALVL_CONFIG));
+
+                        }
                     }
                 }
 
             }
 
-
-            #endregion
-
-            #region Card Format Upload
-
-            // Card format
-
-            var formats = await qCfmt.GetAsync();
-            foreach (var format in formats)
-            {
-                if (!cfmt.CardFormatterConfiguration(ScpId, format.ComponentId, format.Facility, 0, 1, 0, format.Bits, format.PeLn, format.PeLn, format.PoLn, format.PoLoc, format.FcLn, format.FcLoc, format.ChLn, format.ChLoc, format.IcLn, format.IcLoc))
-                {
-                    errors.Add(MessageBuilder.Unsuccess(mac, Command.CARDFORMAT_CONFIG));
-                }
-
-            }
 
             #endregion
 
@@ -486,6 +471,22 @@ namespace Aero.Application.Services
             }
 
 
+
+            #endregion
+
+            #region Card Format Upload
+
+            // Card format
+
+            var formats = await qCfmt.GetAsync();
+            foreach (var format in formats)
+            {
+                if (!await cfmt.CardFormatterConfiguration(ScpId, format.ComponentId, format.Facility, 0, 1, 0, format.Bits, format.PeLn, format.PeLn, format.PoLn, format.PoLoc, format.FcLn, format.FcLoc, format.ChLn, format.ChLoc, format.IcLn, format.IcLoc))
+                {
+                    errors.Add(MessageBuilder.Unsuccess(mac, Command.CARDFORMAT_CONFIG));
+                }
+
+            }
 
             #endregion
 

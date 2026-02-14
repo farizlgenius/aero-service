@@ -68,6 +68,11 @@ public class ScpNotificationPublisher(IHubContext<AeroHub> hub) : INotificationP
             await hub.Clients.All.SendAsync("ACR.STATUS",status);
       }
 
+    public async Task CmndNotifyStatus(CmndStatus status)
+    {
+        await hub.Clients.All.SendAsync("COMMAND.STATUS", status);
+    }
+
 
 
 }

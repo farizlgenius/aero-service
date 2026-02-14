@@ -39,7 +39,7 @@ namespace AeroService.Service.Impl
             foreach(var mac in macs)
             {
                var ScpId = await qHw.GetComponentIdFromMacAsync(mac);
-               if (!area.ConfigureAccessArea(ScpId, ComponentId, domain.MultiOccupancy, domain.AccessControl, domain.OccControl, domain.OccSet, domain.OccMax, domain.OccUp, domain.OccDown, domain.AreaFlag))
+               if (!await area.ConfigureAccessArea(ScpId, ComponentId, domain.MultiOccupancy, domain.AccessControl, domain.OccControl, domain.OccSet, domain.OccMax, domain.OccUp, domain.OccDown, domain.AreaFlag))
                {
                    return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.AREA_CONFIG));
                }
@@ -65,7 +65,7 @@ namespace AeroService.Service.Impl
             foreach (var mac in macs)
             {
                 var ScpId = await qHw.GetComponentIdFromMacAsync(mac);
-                if (!area.ConfigureAccessArea(ScpId, dto.component_id, dto.MultiOccupancy, dto.AccessControl, dto.OccControl, dto.OccSet, dto.OccMax, dto.OccUp, dto.OccDown, dto.AreaFlag))
+                if (!await area.ConfigureAccessArea(ScpId, dto.component_id, dto.MultiOccupancy, dto.AccessControl, dto.OccControl, dto.OccSet, dto.OccMax, dto.OccUp, dto.OccDown, dto.AreaFlag))
                 {
                     return ResponseHelper.UnsuccessBuilderWithString<AccessAreaDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.AREA_CONFIG));
                 }

@@ -7,21 +7,19 @@ namespace Aero.Application.Mapper;
 
 public sealed class AccessLevelMapper
 {
-      public static CreateUpdateAccessLevel ToCreateDomain(CreateUpdateAccessLevelDto dto)
+      public static AccessLevel ToDomain(AccessLevelDto dto)
       {
-            var res = new CreateUpdateAccessLevel();
+            var res = new AccessLevel();
             // Base 
             NoMacBaseMapper.ToDomain(dto,res);
             res.Name = dto.Name;
-            res.Components = dto.Components.Select(x => new CreateUpdateAccessLevelComponent
+            res.Components = dto.Components.Select(x => new AccessLevelComponent
             {
+                AlvlId = x.AlvlId,
                   Mac = x.Mac,
-                  DoorComponents = x.DoorComponent.Select(x => new CreateUpdateAccessLevelDoorComponent
-                  {
-                      DoorId = x.DoorId,
-                        AcrId = x.AcrId,
-                        TimezoneId = x.TimezoneId
-                  }).ToList()
+                DoorId = x.DoorId,
+                AcrId = x.AcrId,
+                TimezoneId = x.TimezoneId
             }).ToList();
 
             return res;

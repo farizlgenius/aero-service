@@ -8,6 +8,7 @@ using Aero.Application.Mapper;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
+using System.Security.Cryptography;
 
 namespace Aero.Application.Services
 {
@@ -29,23 +30,30 @@ namespace Aero.Application.Services
 
 
 
-        public async Task<ResponseDto<bool>> CreateAsync(CreateUpdateAccessLevelDto dto)
+        public async Task<ResponseDto<bool>> CreateAsync(AccessLevelDto dto)
         {
             List<string> errors = new List<string>();
             var ComponentId = await qAlvl.GetLowestUnassignedNumberAsync(10,"");
+            
             if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
             
-            var domain = AccessLevelMapper.ToCreateDomain(dto);
+            var domain = AccessLevelMapper.ToDomain(dto);
+            domain.ComponentId = ComponentId;
 
-            foreach(var component in domain.Components)
+            var macs = domain.Components.Select(x => x.Mac).Distinct();
+
+            for(int i = 0;i < macs.Count(); i++)
             {
-                if (!alvl.AccessLevelConfigurationExtendedCreate(await qHw.GetComponentIdFromMacAsync(component.Mac), ComponentId,component.DoorComponents))
+                var AlvlId = await qAlvl.GetLowestUnassignedNumberAsync(10, macs.ElementAt(i));
+                domain.Components.ElementAt(i).AlvlId = AlvlId; 
+                if (!await alvl.AccessLevelConfigurationExtended(await qHw.GetComponentIdFromMacAsync(macs.ElementAt(i)),AlvlId, domain))
                 {
-                   errors.Add(MessageBuilder.Unsuccess(component.Mac, Command.ALVL_CONFIG));
+                    errors.Add(MessageBuilder.Unsuccess(macs.ElementAt(i), Command.ALVL_CONFIG));
 
                 }
             }
+
 
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, errors);
@@ -65,7 +73,7 @@ namespace Aero.Application.Services
             foreach (var component in domain.Components)
             {
                 var ScpId = await qHw.GetComponentIdFromMacAsync(component.Mac);
-                if (!alvl.AccessLevelConfigurationExtended(ScpId,ComponentId, 0))
+                if (!await alvl.AccessLevelConfigurationExtended(ScpId,ComponentId, 0))
                 {
                     errors.Add(MessageBuilder.Unsuccess(component.Mac, Command.ALVL_CONFIG));
                 }
@@ -76,31 +84,43 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder(true);
         }
 
-        public async Task<ResponseDto<AccessLevelDto>> UpdateAsync(CreateUpdateAccessLevelDto dto)
+        public async Task<ResponseDto<AccessLevelDto>> UpdateAsync(AccessLevelDto dto)
         {
 
-
+            List<string> errors = new List<string>();
             if (!await qAlvl.IsAnyByComponentId(dto.ComponentId)) return ResponseHelper.NotFoundBuilder<AccessLevelDto>();
 
-            var domain = AccessLevelMapper.ToCreateDomain(dto);
+            var domain = AccessLevelMapper.ToDomain(dto);
+            var macs = domain.Components.Select(x => x.Mac).Distinct();
 
-            List<string> errors = new List<string>();
-
-            foreach (var component in domain.Components)
+            for (int i = 0; i < macs.Count(); i++)
             {
-                var ScpId = await qHw.GetComponentIdFromMacAsync(component.Mac);
-                if (ScpId == 0)
+                //var AlvlId = await qAlvl.GetLowestUnassignedNumberAsync(10, macs.ElementAt(i));
+                //domain.Components.ElementAt(i).AlvlId = AlvlId;
+                if (!await alvl.AccessLevelConfigurationExtended(await qHw.GetComponentIdFromMacAsync(macs.ElementAt(i)),domain.Components.Where(x => x.Mac.Equals(macs.ElementAt(i))).Select(x => x.AlvlId).FirstOrDefault(),domain))
                 {
-                    errors.Add(MessageBuilder.Notfound());
-                    continue;
-                }
-                if (!alvl.AccessLevelConfigurationExtendedCreate(ScpId, dto.ComponentId,component.DoorComponents))
-                {
-                    errors.Add(MessageBuilder.Unsuccess(component.Mac, Command.ALVL_CONFIG));
+                    errors.Add(MessageBuilder.Unsuccess(macs.ElementAt(i), Command.ALVL_CONFIG));
 
                 }
-
             }
+
+
+
+            //foreach (var component in domain.Components)
+            //{
+            //    var ScpId = await qHw.GetComponentIdFromMacAsync(component.Mac);
+            //    if (ScpId == 0)
+            //    {
+            //        errors.Add(MessageBuilder.Notfound());
+            //        continue;
+            //    }
+            //    if (!alvl.AccessLevelConfigurationExtendedCreate(ScpId, dto.ComponentId,component.DoorComponents))
+            //    {
+            //        errors.Add(MessageBuilder.Unsuccess(component.Mac, Command.ALVL_CONFIG));
+
+            //    }
+
+            //}
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<AccessLevelDto>(ResponseMessage.COMMAND_UNSUCCESS, errors);
             

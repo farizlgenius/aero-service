@@ -34,5 +34,19 @@ namespace Aero.Api.Controllers.V1
             var res = await transactionService.SetTranIndexAsync(mac);
             return Ok(res);
         }
+
+        [HttpGet("source")]
+        public async Task<ActionResult<ResponseDto<IEnumerable<Mode>>>> GetSourceAsync()
+        {
+            var res = await transactionService.GetSourceAsync();
+            return Ok(res);
+        }
+
+        [HttpGet("device/{source}")]
+        public async Task<ActionResult<ResponseDto<IEnumerable<Mode>>>> GetDeviceAsync(int source)
+        {
+            var res = await transactionService.GetDeviceAsync(source);
+            return Ok(res);
+        }
     }
 }
