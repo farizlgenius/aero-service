@@ -10,7 +10,7 @@ using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Services
 {
-    public sealed class TransactionService(IQTransactionRepository qTran,ITransactionRepository rTran, IScpCommand scp, IQHwRepository qHw) : ITransactionService
+    public sealed class TransactionService(Interfaces.ITransactionRepository qTran, Domain.Interface.ITransactionRepository rTran, IScpCommand scp, IQHwRepository qHw) : ITransactionService
     {
         public async Task<ResponseDto<Pagination<TransactionDto>>> GetPageTransactionWithCountAsync(PaginationParams param)
         {

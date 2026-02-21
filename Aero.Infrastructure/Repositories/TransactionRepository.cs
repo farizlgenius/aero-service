@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aero.Infrastructure.Repositories;
 
-public class TransactionRepository(AppDbContext context,IQHwRepository qHw,IQCredRepository qCred) : ITransactionRepository
+public class TransactionRepository(AppDbContext context,IQHwRepository qHw,IQCredRepository qCred) : Domain.Interface.ITransactionRepository
 {
       public async Task<int> AddAsync(Transaction data)
       {

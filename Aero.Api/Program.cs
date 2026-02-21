@@ -88,6 +88,7 @@ namespace AeroService
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
+            
             // Add Authentication
             builder.Services.AddAuthentication(options =>
             {
@@ -237,8 +238,8 @@ namespace AeroService
             builder.Services.AddScoped<IQRoleRepository,QRoleRepository>();
             builder.Services.AddScoped<ISettingRepository,SettingRepository>();
             builder.Services.AddScoped<IQSettingRepository,QSettingRepository>();
-            builder.Services.AddScoped<ITransactionRepository,TransactionRepository>();
-            builder.Services.AddScoped<IQTransactionRepository,QTransactionRepository>();
+            builder.Services.AddScoped<Aero.Domain.Interface.ITransactionRepository, TransactionRepository>();
+            builder.Services.AddScoped<Aero.Application.Interfaces.ITransactionRepository, QTransactionRepository>();
             builder.Services.AddScoped<ITzRepository,TzRepository>();
             builder.Services.AddScoped<IQTzRepository,QTzRepository>();
             builder.Services.AddScoped<IQFeatureRepository, QFeatureRepository>();

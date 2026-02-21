@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aero.Infrastructure.Repositories;
 
-public class QTransactionRepository(AppDbContext context) : IQTransactionRepository
+public class QTransactionRepository(AppDbContext context) : ITransactionRepository
 {
     public async Task<Pagination<TransactionDto>> GetPageTransactionWithCountAndDateAndSearchAsync(PaginationParamsWithFilter param,short location)
     {

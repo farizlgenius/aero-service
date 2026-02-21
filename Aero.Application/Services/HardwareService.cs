@@ -642,7 +642,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<IEnumerable<VerifyHardwareDeviceConfigDto>>> VerifyComponentConfigurationAsync(string mac)
         {
-            var hardware = await rHw.GetByMacAsync(mac);
+            var hardware = await rHw.GetDomainByMacAsync(mac);
 
             if (hardware is null) return ResponseHelper.NotFoundBuilder<IEnumerable<VerifyHardwareDeviceConfigDto>>();
 
@@ -844,7 +844,7 @@ namespace Aero.Application.Services
         {
             if (await qHw.IsAnyByMac(UtilitiesHelper.ByteToHexStr(message.id.mac_addr)))
             {
-                var hardware = await rHw.GetByMacAsync(UtilitiesHelper.ByteToHexStr(message.id.mac_addr));
+                var hardware = await rHw.GetDomainByMacAsync(UtilitiesHelper.ByteToHexStr(message.id.mac_addr));
 
                 if (hardware is null) return;
 

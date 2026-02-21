@@ -5,8 +5,13 @@ using System;
 
 namespace Aero.Application.Interfaces;
 
-public interface ICredRepository : IBaseRepository<Credential>
+public interface ICredRepository : IBaseRepository<CredentialDto,Credential>
 {
       Task<int> DeleteByCardNoAsync(long Cardno);
     Task ToggleScanCardAsync(ScanCardDto dto);
+    Task<short> GetLowestUnassignedIssueCodeByUserIdAsync(int max, string UserId);
+    Task<bool> IsAnyWithCardNumberAsync(long cardno);
+    Task<IEnumerable<CredentialDto>> GetByUserIdAsync(string UserId);
+    Task<IEnumerable<Mode>> GetCredentialFlagAsync();
+    Task<List<string>> GetCardHolderFullnameAndUserIdByCardNoAsync(double cardno);
 }

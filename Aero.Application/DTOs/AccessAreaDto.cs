@@ -5,7 +5,7 @@ using Aero.Domain.Interface;
 
 namespace Aero.Application.DTOs
 {
-    public sealed class AccessAreaDto : NoMacBaseEntity,IComponentId
+    public sealed class AccessAreaDto : NoMacBaseEntity
     {
         public string Name { get; set; } = string.Empty;
         public short component_id { get; set; }
@@ -18,4 +18,6 @@ namespace Aero.Application.DTOs
         public short OccDown { get; set; }
         public short AreaFlag { get; set; }
     }
+
+
 }
