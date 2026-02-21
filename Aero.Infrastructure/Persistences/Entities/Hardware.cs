@@ -1,11 +1,13 @@
 ﻿
+using Aero.Domain.Interfaces;
 using System.ComponentModel.DataAnnotations;
 
-namespace Aero.Infrastructure.Data.Entities
+namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class Hardware : BaseEntity
+    public sealed class Hardware : BaseEntity,IMac,IDriverId
     {
         public string name { get; set; } = string.Empty;
+        public short driver_id { get; set; }
         public int hardware_type { get; set; } 
         public string hardware_type_desc { get; set; } = string.Empty;
         public ICollection<Module> modules { get; set; }
@@ -14,6 +16,7 @@ namespace Aero.Infrastructure.Data.Entities
         public ICollection<MonitorGroup> monitor_groups { get; set; }
         public ICollection<Procedure> procedures { get; set; }
         public ICollection<AccessLevelComponent> access_level_component {get; set;}
+        public string mac { get; set; } = string.Empty;
         public string ip { get; set; } = string.Empty;
         public string port { get; set; } = string.Empty;
         public string firmware { get; set; } = string.Empty;

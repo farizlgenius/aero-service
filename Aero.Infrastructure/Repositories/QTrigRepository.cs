@@ -13,7 +13,7 @@ public class QTrigRepository(AppDbContext context) : IQTrigRepository
       {
             var res = await context.trigger
             .AsNoTracking()
-            .Where(x => x.hardware_mac.Equals(mac) && x.updated_date > sync)
+            .Where(x => x.mac.Equals(mac) && x.updated_date > sync)
             .CountAsync();
 
             return res;
@@ -262,7 +262,7 @@ public class QTrigRepository(AppDbContext context) : IQTrigRepository
 
                     query = query.Where(x =>
                         EF.Functions.ILike(x.name, pattern) ||
-                        EF.Functions.ILike(x.hardware_mac, pattern) ||
+                        EF.Functions.ILike(x.mac, pattern) ||
                         EF.Functions.ILike(x.mac, pattern) 
 
                     );
@@ -271,7 +271,7 @@ public class QTrigRepository(AppDbContext context) : IQTrigRepository
                 {
                     query = query.Where(x =>
                         x.name.Contains(search) ||
-                        x.hardware_mac.Contains(search) ||
+                        x.mac.Contains(search) ||
                         x.mac.Contains(search) 
                     );
                 }

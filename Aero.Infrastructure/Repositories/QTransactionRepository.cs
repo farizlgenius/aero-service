@@ -219,7 +219,7 @@ public class QTransactionRepository(AppDbContext context) : ITransactionReposito
                 return await context.module.AsNoTracking().Select(x => new Mode
                 {
                     Name = x.model_desc,
-                    Value = x.sio_id,
+                    Value = x.driver_id,
                     Description = x.mac
                 }).ToArrayAsync();
             case (int)tranSrc.tranSrcMP:
@@ -245,7 +245,7 @@ public class QTransactionRepository(AppDbContext context) : ITransactionReposito
                 return await context.door.AsNoTracking().Select(x => new Mode
                 {
                     Name = x.name,
-                    Value = x.acr_id,
+                    Value = x.driver_id,
                     Description = x.mac
                 }).ToArrayAsync();
             case (int)tranSrc.tranSrcTimeZone:
@@ -268,13 +268,13 @@ public class QTransactionRepository(AppDbContext context) : ITransactionReposito
                 {
                     Name = x.name,
                     Value = x.component_id,
-                    Description = x.trig_id.ToString()
+                    Description = x.driver_id.ToString()
                 }).ToArrayAsync();
             case (int)tranSrc.tranSrcMPG:
                 return await context.monitor_group.AsNoTracking().Select(x => new Mode
                 {
                     Name = x.name,
-                    Value = x.mpg_id,
+                    Value = x.driver_id,
                     Description = x.mac
                 }).ToArrayAsync();
             case (int)tranSrc.tranSrcArea:

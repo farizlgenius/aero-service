@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Aero.Domain.Interface;
 
-namespace Aero.Infrastructure.Data.Entities
+namespace Aero.Infrastructure.Persistences.Entities
 {
     public sealed class RefreshToken : IDatetime
     {

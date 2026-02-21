@@ -3,13 +3,12 @@ using System.ComponentModel.DataAnnotations;
 using Aero.Domain.Interface;
 
 
-namespace Aero.Infrastructure.Data.Entities
+namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class Location : IComponentId,IDatetime
+    public sealed class Location : IDatetime
     {
         [Key]
         public int id { get; set; }
-        public short component_id { get; set; }
         public string location_name { get; set; } = string.Empty;
         public string description { get; set; } = string.Empty;
 

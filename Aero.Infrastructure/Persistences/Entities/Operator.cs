@@ -1,13 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 
-namespace Aero.Infrastructure.Data.Entities
+namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class Operator : IComponentId,IDatetime
+    public sealed class Operator : BaseEntity
     {
-        [Key]
-        public int id { get; set; }
-        public short component_id { get; set; }
         public required string user_id { get; set; }
         public required string user_name { get; set; }
         public required string password { get; set; } 
@@ -21,9 +19,7 @@ namespace Aero.Infrastructure.Data.Entities
         public short role_id { get; set; }
         public Role role { get; set; }
         public ICollection<OperatorLocation> operator_locations { get; set; }
-        public bool is_active { get; set; } = true;
-        public DateTime created_date { get; set; }
-        public DateTime updated_date { get; set; }
+
 
     }
 }

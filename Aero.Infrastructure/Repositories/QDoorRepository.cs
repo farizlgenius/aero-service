@@ -13,7 +13,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
       {
             var res = await context.door
             .AsNoTracking()
-            .Where(x => x.hardware_mac.Equals(mac) && x.updated_date > sync)
+            .Where(x => x.mac.Equals(mac) && x.updated_date > sync)
             .CountAsync();
 
             return res;
@@ -182,13 +182,13 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
       {
             var reader = await context.module
                 .AsNoTracking()
-                .Where(cp => cp.component_id == component && cp.hardware_mac == mac)
+                .Where(cp => cp.component_id == component && cp.mac == mac)
                 .Select(cp => (short)cp.n_reader)
                 .FirstOrDefaultAsync();
 
             var rdrNos = await context.reader
                 .AsNoTracking()
-                .Where(cp => cp.module_id == component && cp.module.hardware_mac == mac)
+                .Where(cp => cp.module_id == component && cp.module.mac == mac)
                 .Select(x => x.reader_no)
                 .ToArrayAsync();
 
@@ -499,7 +499,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
       {
             var res = await context.door
             .AsNoTracking()
-            .Where(x => x.hardware_mac.Equals(mac))
+            .Where(x => x.mac.Equals(mac))
             .OrderBy(x => x.component_id)
             .Select(x => new DoorDto
             {
@@ -934,7 +934,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
 
                     query = query.Where(x =>
                         EF.Functions.ILike(x.name, pattern) ||
-                        EF.Functions.ILike(x.hardware_mac, pattern) ||
+                        EF.Functions.ILike(x.mac, pattern) ||
                         EF.Functions.ILike(x.mac,pattern)
 
                     );
@@ -943,7 +943,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
                 {
                     query = query.Where(x =>
                         x.name.Contains(search) ||
-                        x.hardware_mac.Contains(search) ||
+                        x.mac.Contains(search) ||
                         x.mac.Contains(search) 
                     );
                 }
@@ -977,7 +977,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
                  // Base 
 
                  ComponentId = x.component_id,
-                 Mac = x.hardware_mac,
+                 Mac = x.mac,
                  LocationId = x.location_id,
                  IsActive = x.is_active,
 
@@ -993,7 +993,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
                         // Base
 
                         ComponentId = x.component_id,
-                        Mac = x.module.hardware_mac,
+                        Mac = x.module.mac,
                         HardwareName = x.module.hardware.name,
                         LocationId = x.location_id,
                         IsActive = x.is_active,
@@ -1020,7 +1020,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
                  {
                      // Base 
                      ComponentId = x.strike.component_id,
-                     Mac = x.strike.module.hardware_mac,
+                     Mac = x.strike.module.mac,
                      HardwareName = x.strike.module.hardware.name,
                      LocationId = x.location_id,
                      IsActive = x.is_active,
@@ -1042,7 +1042,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
 
                      // Base 
                      ComponentId = x.sensor.component_id,
-                     Mac = x.sensor.module.hardware_mac,
+                     Mac = x.sensor.module.mac,
                      HardwareName = x.sensor.module.hardware.name,
                      LocationId = x.sensor.location_id,
                      IsActive = x.sensor.is_active,
@@ -1064,7 +1064,7 @@ public class QDoorRepository(AppDbContext context) : IQDoorRepository
                         // Base
 
                         ComponentId = x.component_id,
-                        Mac = x.module.hardware_mac,
+                        Mac = x.module.mac,
                         HardwareName = x.module.hardware.name,
                         LocationId = x.location_id,
                         IsActive = x.is_active,

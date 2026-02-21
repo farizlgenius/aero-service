@@ -13,7 +13,7 @@ public class QControlPointRepository(AppDbContext context) : IQCpRepository
       {
             var res = await context.control_point
             .AsNoTracking()
-            .Where(x => x.module.hardware_mac.Equals(mac) && x.updated_date > sync)
+            .Where(x => x.module.mac.Equals(mac) && x.updated_date > sync)
             .CountAsync();
 
             return res;
@@ -55,19 +55,19 @@ public class QControlPointRepository(AppDbContext context) : IQCpRepository
       {
             var ops = await context.module
                 .AsNoTracking()
-                .Where(sio => sio.hardware_mac == mac && sio.component_id == ModuleId)
+                .Where(sio => sio.mac == mac && sio.component_id == ModuleId)
                 .Select(cp => cp.n_output)
                 .FirstOrDefaultAsync();
 
             var strk = await context.strike
                 .AsNoTracking()
-                .Where(x => x.module_id == ModuleId && x.module.hardware_mac == mac)
+                .Where(x => x.module_id == ModuleId && x.module.mac == mac)
                 .Select(x => x.output_no)
                 .ToArrayAsync();
 
             var cp = await context.control_point
                 .AsNoTracking()
-                .Where(x => x.module_id == ModuleId && x.module.hardware_mac == mac)
+                .Where(x => x.module_id == ModuleId && x.module.mac == mac)
                 .Select(x => x.output_no)
                 .ToArrayAsync();
 
@@ -150,7 +150,7 @@ public class QControlPointRepository(AppDbContext context) : IQCpRepository
       public async Task<ControlPointDto> GetByMacAndComponentIdAsync(string mac, short component)
       {
              var dto = await context.control_point
-                .Where(x => x.module.hardware_mac == mac && x.component_id == component)
+                .Where(x => x.module.mac == mac && x.component_id == component)
                .Select(x => new ControlPointDto
                {
                    // Base
@@ -372,7 +372,7 @@ public class QControlPointRepository(AppDbContext context) : IQCpRepository
                  // Base
                  ComponentId = x.component_id,
                  HardwareName = x.module.hardware.name,
-                 Mac = x.module.hardware_mac,
+                 Mac = x.module.mac,
                  LocationId = x.location_id,
                  IsActive = x.is_active,
 

@@ -1,12 +1,13 @@
 ﻿
 
 using Aero.Domain.Interface;
+using Aero.Domain.Interfaces;
 
-namespace Aero.Infrastructure.Data.Entities
+namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class TimeZone : NoMacBaseEntity
+    public sealed class TimeZone : BaseEntity,IDriverId
     {
-        public short timezone_id { get; set; }
+        public short driver_id { get; set; }
         public string name { get; set; } = string.Empty;
         public short mode { get; set; }
         public string active_time { get; set; } = string.Empty;

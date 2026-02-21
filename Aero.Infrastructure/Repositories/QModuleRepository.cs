@@ -13,7 +13,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
       {
             var res = await context.module
             .AsNoTracking()
-            .Where(x => x.hardware_mac.Equals(mac) && x.updated_date > sync)
+            .Where(x => x.mac.Equals(mac) && x.updated_date > sync)
             .CountAsync();
 
             return res;
@@ -28,7 +28,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                       // Base 
 
                       ComponentId = d.component_id,
-                      Mac = d.hardware_mac,
+                      Mac = d.mac,
                       HardwareName = d.hardware.name,
                       LocationId = d.location_id,
                       IsActive = d.is_active,
@@ -52,7 +52,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                             // Base
                             
                             ComponentId = x.component_id,
-                            Mac = x.module.hardware_mac,
+                            Mac = x.module.mac,
                             HardwareName = x.module.hardware.name,
                             LocationId = x.location_id,
                             IsActive = x.is_active,
@@ -76,7 +76,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                             // Base 
                             
                             ComponentId = x.component_id,
-                            Mac = x.module.hardware_mac,
+                            Mac = x.module.mac,
                             HardwareName = x.module.hardware.name,
                             LocationId = x.location_id,
                             IsActive = x.is_active,
@@ -95,7 +95,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                             // Base 
                             
                             ComponentId = x.component_id,
-                            Mac = x.module.hardware_mac,
+                            Mac = x.module.mac,
                             HardwareName = x.module.hardware.name,
                             LocationId = x.location_id,
                             IsActive = x.is_active,
@@ -114,7 +114,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                             // Base
                             
                             ComponentId = x.component_id,
-                            Mac = x.module.hardware_mac,
+                            Mac = x.module.mac,
                             HardwareName = x.module.hardware.name,
                             LocationId = x.location_id,
                             IsActive = x.is_active,
@@ -132,7 +132,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                             // Base 
                             
                             ComponentId = x.component_id,
-                            Mac = x.module.hardware_mac,
+                            Mac = x.module.mac,
                             HardwareName = x.module.hardware.name,
                             LocationId = x.location_id,
                             IsActive = x.is_active,
@@ -159,7 +159,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                             // Base
                             
                             ComponentId = x.component_id,
-                            Mac = x.module.hardware_mac,
+                            Mac = x.module.mac,
                             HardwareName = x.module.hardware.name,
                             LocationId = x.location_id,
                             IsActive = x.is_active,
@@ -219,7 +219,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                 {
                     // Base 
                     ComponentId = d.component_id,
-                    Mac = d.hardware_mac,
+                    Mac = d.mac,
                     HardwareName = d.hardware.name,
                     LocationId = d.location_id,
                     IsActive = d.is_active,
@@ -243,7 +243,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                         // Base
                         
                         ComponentId = x.component_id,
-                        Mac = x.module.hardware_mac,
+                        Mac = x.module.mac,
                         HardwareName = x.module.hardware.name,
                         LocationId = x.location_id,
                         IsActive = x.is_active,
@@ -267,7 +267,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                         // Base 
                         
                         ComponentId = x.component_id,
-                        Mac = x.module.hardware_mac,
+                        Mac = x.module.mac,
                         HardwareName = x.module.hardware.name,
                         LocationId = x.location_id,
                         IsActive = x.is_active,
@@ -286,7 +286,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                         // Base 
                         
                         ComponentId = x.component_id,
-                        Mac = x.module.hardware_mac,
+                        Mac = x.module.mac,
                         HardwareName = x.module.hardware.name,
                         LocationId = x.location_id,
                         IsActive = x.is_active,
@@ -305,7 +305,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                         // Base
                         
                         ComponentId = x.component_id,
-                        Mac = x.module.hardware_mac,
+                        Mac = x.module.mac,
                         HardwareName = x.module.hardware.name,
                         LocationId = x.location_id,
                         IsActive = x.is_active,
@@ -323,7 +323,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                         // Base 
                         
                         ComponentId = x.component_id,
-                        Mac = x.module.hardware_mac,
+                        Mac = x.module.mac,
                         HardwareName = x.module.hardware.name,
                         LocationId = x.location_id,
                         IsActive = x.is_active,
@@ -350,7 +350,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                         // Base
                         
                         ComponentId = x.component_id,
-                        Mac = x.module.hardware_mac,
+                        Mac = x.module.mac,
                         HardwareName = x.module.hardware.name,
                         LocationId = x.location_id,
                         IsActive = x.is_active,
@@ -385,7 +385,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
       {
             var res = await context.module
             .AsNoTracking()
-            .Where(x => x.hardware_mac.Equals(mac))
+            .Where(x => x.mac.Equals(mac))
             .OrderBy(x => x.component_id)
             .Select(d => new ModuleDto
             {
@@ -649,7 +649,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                     query = query.Where(x =>
                         EF.Functions.ILike(x.model_desc, pattern) ||
                         EF.Functions.ILike(x.serial_number, pattern) ||
-                        EF.Functions.ILike(x.hardware_mac, pattern) ||
+                        EF.Functions.ILike(x.mac, pattern) ||
                         EF.Functions.ILike(x.mac, pattern) ||
                         EF.Functions.ILike(x.address_desc, pattern) 
 
@@ -660,7 +660,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                     query = query.Where(x =>
                         x.model_desc.Contains(search) ||
                         x.serial_number.Contains(search) ||
-                        x.hardware_mac.Contains(search) ||
+                        x.mac.Contains(search) ||
                         x.mac.Contains(search) ||
                         x.address_desc.Contains(search) 
                     );
@@ -695,7 +695,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                  // Base 
 
                  ComponentId = d.component_id,
-                 Mac = d.hardware_mac,
+                 Mac = d.mac,
                  HardwareName = d.hardware.name,
                  LocationId = d.location_id,
                  IsActive = d.is_active,
@@ -719,7 +719,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                      // Base
 
                      ComponentId = x.component_id,
-                     Mac = x.module.hardware_mac,
+                     Mac = x.module.mac,
                      HardwareName = x.module.hardware.name,
                      LocationId = x.location_id,
                      IsActive = x.is_active,
@@ -743,7 +743,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                      // Base 
 
                      ComponentId = x.component_id,
-                     Mac = x.module.hardware_mac,
+                     Mac = x.module.mac,
                      HardwareName = x.module.hardware.name,
                      LocationId = x.location_id,
                      IsActive = x.is_active,
@@ -762,7 +762,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                      // Base 
 
                      ComponentId = x.component_id,
-                     Mac = x.module.hardware_mac,
+                     Mac = x.module.mac,
                      HardwareName = x.module.hardware.name,
                      LocationId = x.location_id,
                      IsActive = x.is_active,
@@ -781,7 +781,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                      // Base
 
                      ComponentId = x.component_id,
-                     Mac = x.module.hardware_mac,
+                     Mac = x.module.mac,
                      HardwareName = x.module.hardware.name,
                      LocationId = x.location_id,
                      IsActive = x.is_active,
@@ -799,7 +799,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                      // Base 
 
                      ComponentId = x.component_id,
-                     Mac = x.module.hardware_mac,
+                     Mac = x.module.mac,
                      HardwareName = x.module.hardware.name,
                      LocationId = x.location_id,
                      IsActive = x.is_active,
@@ -826,7 +826,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
                      // Base
 
                      ComponentId = x.component_id,
-                     Mac = x.module.hardware_mac,
+                     Mac = x.module.mac,
                      HardwareName = x.module.hardware.name,
                      LocationId = x.location_id,
                      IsActive = x.is_active,
@@ -871,7 +871,7 @@ public sealed class QModuleRepository(AppDbContext context) : IQModuleRepository
 
     public async Task<bool> IsAnyByComponentAndMacAsnyc(string mac, short component)
       {
-            return await context.module.AnyAsync(x => x.hardware_mac.Equals(mac) && x.component_id == component);
+            return await context.module.AnyAsync(x => x.mac.Equals(mac) && x.component_id == component);
       }
 
       public async Task<bool> IsAnyByComponentId(short component)

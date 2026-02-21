@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using Aero.Domain.Interface;
 
-namespace Aero.Infrastructure.Data.Entities
+namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class CardHolder : NoMacBaseEntity
+    public sealed class CardHolder : BaseEntity
     {
         [Required]
         public string user_id { get; set; } = string.Empty;

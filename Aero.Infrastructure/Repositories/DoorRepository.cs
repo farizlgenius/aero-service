@@ -28,7 +28,7 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
       public async Task<int> ChangeDoorModeAsync(string mac,short component,short acr,short mode)
       {
             var en = await context.door
-            .Where(x => x.acr_id == acr && x.mac == mac && x.component_id == component)
+            .Where(x => x.driver_id == acr && x.mac == mac && x.component_id == component)
             .OrderBy(x => x.component_id)
             .FirstOrDefaultAsync();
 

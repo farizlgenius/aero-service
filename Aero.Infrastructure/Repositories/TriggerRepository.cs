@@ -55,7 +55,7 @@ public class TriggerRepository(AppDbContext context) : ITriggerRepository
                             {
                                   Name = x.model_desc,
                                   Value = x.component_id,
-                                  Description = x.hardware_mac
+                                  Description = x.mac
                             })
                             .ToArrayAsync();
                         return dtos;
@@ -67,7 +67,7 @@ public class TriggerRepository(AppDbContext context) : ITriggerRepository
                             {
                                   Name = x.name,
                                   Value = x.component_id,
-                                  Description = x.module.hardware_mac
+                                  Description = x.module.mac
                             })
                             .ToArrayAsync();
                         return dtos;
@@ -79,7 +79,7 @@ public class TriggerRepository(AppDbContext context) : ITriggerRepository
                             {
                                   Name = x.name,
                                   Value = x.component_id,
-                                  Description = x.module.hardware_mac
+                                  Description = x.module.mac
                             })
                             .ToArrayAsync();
                         return dtos;
@@ -96,7 +96,7 @@ public class TriggerRepository(AppDbContext context) : ITriggerRepository
                             {
                                   Name = x.name,
                                   Value = x.component_id,
-                                  Description = x.hardware_mac
+                                  Description = x.mac
                             })
                             .ToArrayAsync();
                         return dtos;
@@ -145,7 +145,7 @@ public class TriggerRepository(AppDbContext context) : ITriggerRepository
                             {
                                   Name = x.name,
                                   Value = x.component_id,
-                                  Description = x.hardware_mac
+                                  Description = x.mac
                             })
                             .ToArrayAsync();
                         return dtos;

@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Aero.Infrastructure.Data.Entities;
+namespace Aero.Infrastructure.Persistences.Entities;
 
 public sealed class SecretKey 
 {

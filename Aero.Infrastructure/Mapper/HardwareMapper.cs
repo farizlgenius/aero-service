@@ -24,7 +24,7 @@ public static class HardwareMapper
                     {
                         // Base 
                         component_id = 0,
-                        hardware_mac = domain.Mac,
+                        mac = domain.Mac,
                         mac = domain.Mac,
                         location_id = domain.LocationId,
                         is_active = domain.IsActive,

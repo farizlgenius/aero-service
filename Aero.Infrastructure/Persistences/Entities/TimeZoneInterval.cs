@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Aero.Domain.Interface;
 
-namespace Aero.Infrastructure.Data.Entities
+namespace Aero.Infrastructure.Persistences.Entities
 {
     public sealed class TimeZoneInterval : IDatetime
     {
@@ -12,7 +12,7 @@ namespace Aero.Infrastructure.Data.Entities
         public DateTime updated_date { get; set; }
         public short timezone_id {  get; set; }
         public TimeZone timezone { get; set; }
-        public short interval_id { get; set; }
+        public int interval_id { get; set; }
         public Interval interval { get; set; }
     }
 }

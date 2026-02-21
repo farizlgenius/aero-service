@@ -1,10 +1,12 @@
 ﻿
 using Aero.Domain.Interface;
+using Aero.Domain.Interfaces;
 
-namespace Aero.Infrastructure.Data.Entities
+namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class AccessArea : NoMacBaseEntity,IComponentId
+    public sealed class AccessArea : BaseEntity,IDriverId
     {
+        public short driver_id { get; set; }
         public string name { get; set; } = string.Empty;    
         public short multi_occ { get; set; }
         public short access_control { get; set; }

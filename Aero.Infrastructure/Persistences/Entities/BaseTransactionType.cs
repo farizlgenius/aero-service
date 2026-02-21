@@ -1,4 +1,4 @@
-﻿namespace Aero.Infrastructure.Data.Entities
+﻿namespace Aero.Infrastructure.Persistences.Entities
 {
     public class BaseTransactionType
     {

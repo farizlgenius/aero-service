@@ -12,7 +12,7 @@ public class QMpRepository(AppDbContext context) : IQMpRepository
       public async Task<int> CountByMacAndUpdateTimeAsync(string mac, DateTime sync)
       {
             var res = await context.monitor_point.AsNoTracking()
-            .Where(x => x.module.hardware_mac.Equals(mac) && x.updated_date > sync)
+            .Where(x => x.module.mac.Equals(mac) && x.updated_date > sync)
             .CountAsync();
 
             return res;
@@ -60,25 +60,25 @@ public class QMpRepository(AppDbContext context) : IQMpRepository
       {
             var input = await context.module
                 .AsNoTracking()
-                .Where(mp => mp.component_id == moduleId && mp.hardware_mac == mac)
+                .Where(mp => mp.component_id == moduleId && mp.mac == mac)
                 .Select(mp => mp.n_input)
                 .FirstOrDefaultAsync();
 
             var sensors = await context.sensor
                 .AsNoTracking()
-                .Where(x => x.module_id == moduleId && x.module.hardware_mac == mac)
+                .Where(x => x.module_id == moduleId && x.module.mac == mac)
                 .Select(x => x.input_no)
                 .ToArrayAsync();
 
             var rex = await context.request_exit
                 .AsNoTracking()
-                .Where(x => x.module_id == moduleId && x.module.hardware_mac == mac)
+                .Where(x => x.module_id == moduleId && x.module.mac == mac)
                 .Select(x => x.input_no)
                 .ToArrayAsync();
 
             var mp = await context.monitor_point
                 .AsNoTracking()
-                .Where(x => x.module_id == moduleId && x.module.hardware_mac == mac)
+                .Where(x => x.module_id == moduleId && x.module.mac == mac)
                 .Select(x => x.input_no)
                 .ToArrayAsync();
 
@@ -177,7 +177,7 @@ public class QMpRepository(AppDbContext context) : IQMpRepository
       {
             var res = await context.monitor_point
             .AsNoTracking()
-            .Where(x => x.module.hardware_mac.Equals(mac))
+            .Where(x => x.module.mac.Equals(mac))
             .OrderBy(x => x.component_id)
             .Select(x => new MonitorPointDto
             {

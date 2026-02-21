@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using Aero.Domain.Interface;
 
-namespace Aero.Infrastructure.Data.Entities
+namespace Aero.Infrastructure.Persistences.Entities
 {
-    public class CardFormat : NoMacBaseEntity
+    public class CardFormat : BaseEntity
     {
         public string name { get; set; } = string.Empty;
         public short facility { get; set; }

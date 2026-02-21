@@ -1,8 +1,10 @@
-﻿namespace Aero.Infrastructure.Data.Entities
+﻿using Aero.Domain.Interfaces;
+
+namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class MonitorPoint : BaseEntity
+    public sealed class MonitorPoint : BaseEntity,IDriverId,IMac
     {
-        public short mp_id {get; set;}
+        public short driver_id {get; set;}
         public string name { get; set; } = string.Empty;
         public short module_id { get; set; }
         public Module module { get; set; }
@@ -18,5 +20,6 @@
         public short delay_entry { get; set; } = -1;
         public short delay_exit { get; set; } = -1;
         public bool is_mask { get; set; }
+        public string mac { get; set; } = string.Empty;
     }
 }

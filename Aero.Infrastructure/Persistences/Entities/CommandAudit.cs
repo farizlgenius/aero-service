@@ -2,12 +2,11 @@
 using System.ComponentModel.DataAnnotations;
 using Aero.Domain.Interface;
 
-namespace Aero.Infrastructure.Data.Entities
+namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class CommandAudit : IDatetime
+    public sealed class CommandAudit : BaseEntity
     {
-        [Key]
-        public int id { get; set; }
+
         public int tag_no { get; set; }
         public int scp_id { get; set; }
         public string? mac { get; set; } = string.Empty;
@@ -16,9 +15,6 @@ namespace Aero.Infrastructure.Data.Entities
         public bool is_pending { get; set; }
         public string? nak_reason { get; set; }
         public int nake_desc_code { get; set; }
-        public short location_id { get; set; }
-        public Location location { get; set; }
-        public DateTime created_date { get; set; }
-        public DateTime updated_date { get; set; }
+
     }
 }

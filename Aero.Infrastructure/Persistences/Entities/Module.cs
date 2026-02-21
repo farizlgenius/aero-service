@@ -1,9 +1,11 @@
 ﻿
-namespace Aero.Infrastructure.Data.Entities
+using Aero.Domain.Interfaces;
+
+namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class Module : BaseEntity
+    public sealed class Module : BaseEntity,IMac,IDriverId
     {
-        public short sio_id { get; set; }
+        public short driver_id { get; set; }
         public short model { get; set; }
         public string model_desc { get; set; } = string.Empty;
         public string revision { get; set; } = string.Empty;
@@ -17,7 +19,7 @@ namespace Aero.Infrastructure.Data.Entities
         public string n_enc_config_desc { get; set; } = string.Empty;
         public short n_enc_key_status { get; set; }
         public string n_enc_key_status_desc { get; set; } = string.Empty;
-        public string hardware_mac { get; set; } = string.Empty;
+        public string mac { get; set; } = string.Empty;
         public Hardware hardware { get; set; }
         // HardwareComponent 
         public ICollection<Reader>? readers { get; set; }

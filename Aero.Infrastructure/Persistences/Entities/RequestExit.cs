@@ -1,8 +1,9 @@
-﻿namespace Aero.Infrastructure.Data.Entities
+﻿namespace Aero.Infrastructure.Persistences.Entities
 {
     public class RequestExit : BaseEntity
     {
         public Module module { get; set; }
+        public short door_id { get; set; }
         public Door door { get; set; }
         public short module_id { get; set; }
         public short input_no { get; set; }

@@ -1,13 +1,15 @@
 ﻿
-namespace Aero.Infrastructure.Data.Entities
+using Aero.Domain.Interfaces;
+
+namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class Door : BaseEntity
+    public sealed class Door : BaseEntity,IMac,IDriverId
     {
-        public short acr_id {get; set;}
+        public short driver_id {get; set;}
         public string name { get; set; } = string.Empty;   
         public short access_config { get; set; }
         public short pair_door_no { get; set; }
-        public string hardware_mac { get; set; } = string.Empty;
+        public string mac { get; set; } = string.Empty;
         public Hardware hardware { get; set; }
         // Reader setting for Reader In / Reader Out
         public ICollection<Reader> readers { get; set; }

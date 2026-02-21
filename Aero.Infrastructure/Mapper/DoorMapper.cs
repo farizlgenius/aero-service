@@ -13,11 +13,11 @@ public sealed class DoorMapper
             var en = new Aero.Infrastructure.Data.Entities.Door();
             MacBaseMapper.ToEf(data,en);
             en.component_id = data.ComponentId;
-            en.acr_id = data.AcrId;
+            en.driver_id = data.AcrId;
             en.name = data.Name;
             en.access_config =data.AccessConfig;
             en.pair_door_no = data.PairDoorNo;
-            en.hardware_mac = data.Mac;
+            en.mac = data.Mac;
             en.readers = data.Readers.Count == 0 ? new List<Aero.Infrastructure.Data.Entities.Reader>() : data.Readers.Where(x => x.ModuleId != -1).Select(x => 
              new Aero.Infrastructure.Data.Entities.Reader
             {
@@ -158,11 +158,11 @@ public sealed class DoorMapper
       {
             // Base
             MacBaseMapper.Update(data,en);
-             en.acr_id = data.AcrId;
+             en.driver_id = data.AcrId;
             en.name = data.Name;
             en.access_config =data.AccessConfig;
             en.pair_door_no = data.PairDoorNo;
-            en.hardware_mac = data.Mac;
+            en.mac = data.Mac;
            en.readers = data.Readers.Count == 0 ? new List<Aero.Infrastructure.Data.Entities.Reader>() : data.Readers.Where(x => x.ModuleId != -1).Select(x => 
              new Aero.Infrastructure.Data.Entities.Reader
             {

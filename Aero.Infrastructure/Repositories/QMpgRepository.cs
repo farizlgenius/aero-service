@@ -13,7 +13,7 @@ public class QMpgRepository(AppDbContext context) : IQMpgRepository
       {
             var res = await context.monitor_group
             .AsNoTracking()
-            .Where(x => x.hardware_mac.Equals(mac) && x.updated_date > sync)
+            .Where(x => x.mac.Equals(mac) && x.updated_date > sync)
             .CountAsync();
 
             return res;
@@ -27,7 +27,7 @@ public class QMpgRepository(AppDbContext context) : IQMpgRepository
             {
                   // Base 
                   ComponentId = en.component_id,
-                  Mac = en.hardware_mac,
+                  Mac = en.mac,
                   LocationId = en.location_id,
                   IsActive = en.is_active,
 
@@ -211,7 +211,7 @@ public class QMpgRepository(AppDbContext context) : IQMpgRepository
 
                     query = query.Where(x =>
                         EF.Functions.ILike(x.name, pattern) ||
-                        EF.Functions.ILike(x.hardware_mac, pattern) ||
+                        EF.Functions.ILike(x.mac, pattern) ||
                         EF.Functions.ILike(x.mac, pattern) 
 
                     );
@@ -220,7 +220,7 @@ public class QMpgRepository(AppDbContext context) : IQMpgRepository
                 {
                     query = query.Where(x =>
                         x.name.Contains(search) ||
-                        x.hardware_mac.Contains(search) ||
+                        x.mac.Contains(search) ||
                         x.mac.Contains(search) 
                     );
                 }
@@ -253,7 +253,7 @@ public class QMpgRepository(AppDbContext context) : IQMpgRepository
            {
                // Base 
                ComponentId = en.component_id,
-               Mac = en.hardware_mac,
+               Mac = en.mac,
                LocationId = en.location_id,
                IsActive = en.is_active,
 

@@ -1,11 +1,10 @@
 ﻿
 using Aero.Domain.Interface;
 
-namespace Aero.Infrastructure.Data.Entities
+namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class Holiday : NoMacBaseEntity,IComponentId
+    public sealed class Holiday : BaseEntity
     {
-        public short component_id { get; set; }
         public short year { get; set; }
         public short month { get; set; }
         public short day { get; set; }

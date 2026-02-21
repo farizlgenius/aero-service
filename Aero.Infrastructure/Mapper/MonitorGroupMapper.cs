@@ -12,7 +12,7 @@ public sealed class MonitorGroupMapper
             MacBaseMapper.ToEf(data, res);
             res.name = data.Name;
             res.n_mp_count = data.nMpCount;
-            res.hardware_mac = data.Mac;
+            res.mac = data.Mac;
             res.n_mp_list = data.nMpList
                  .Select(x => new Aero.Infrastructure.Data.Entities.MonitorGroupList
                  {

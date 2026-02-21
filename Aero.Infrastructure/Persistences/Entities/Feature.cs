@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using Aero.Domain.Interface;
 
-namespace Aero.Infrastructure.Data.Entities
+namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class Feature : IComponentId
+    public sealed class Feature 
     {
         [Key]
         public int id { get; set; }
