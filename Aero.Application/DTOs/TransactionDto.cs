@@ -2,7 +2,7 @@
 
 namespace Aero.Application.DTOs
 {
-    public sealed class TransactionDto : BaseEntity
+    public sealed class TransactionDto : BaseDomain
     {
         public DateTime DateTime { get; set; } = DateTime.UtcNow;
         public int SerialNumber { get; set; }

@@ -2,12 +2,12 @@ using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
 using Aero.Domain.Entities;
-using Aero.Infrastructure.Data;
+using Aero.Infrastructure.Persistences;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aero.Infrastructure.Repositories;
 
-public class QFeatureRepository(AppDbContext context) : IQFeatureRepository
+public class FeatureRepository(AppDbContext context) : IFeatureRepository
 {
       public async Task<IEnumerable<FeatureDto>> GetAsync()
       {

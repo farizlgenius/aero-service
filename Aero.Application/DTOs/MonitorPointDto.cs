@@ -2,7 +2,7 @@
 
 namespace Aero.Application.DTOs
 {
-    public sealed class MonitorPointDto : BaseEntity
+    public sealed class MonitorPointDto : BaseDomain
     {
         public short MpId {get; set;}
         public string Name { get; set; } = string.Empty;

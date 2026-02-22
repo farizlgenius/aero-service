@@ -2,7 +2,7 @@
 
 namespace Aero.Application.DTOs
 {
-    public sealed class StrikeDto : BaseEntity
+    public sealed class StrikeDto : BaseDomain
     {
         public short ModuleId { get; set; }
         public short OutputNo { get; set; }

@@ -3,7 +3,7 @@ using Aero.Domain.Entities;
 
 namespace Aero.Application.DTOs
 {
-    public class TriggerDto : BaseEntity
+    public class TriggerDto : BaseDomain
     {
         public short TrigId {get; set;}
         public string Name { get; set; } = string.Empty;

@@ -2,7 +2,7 @@ using System;
 
 namespace Aero.Domain.Entities;
 
-public sealed class Transaction : BaseEntity
+public sealed class Transaction : BaseDomain
 {
       
         public DateTime DateTime { get; set; } = DateTime.UtcNow;

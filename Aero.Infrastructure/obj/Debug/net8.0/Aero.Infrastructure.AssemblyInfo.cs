@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Aero.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c667f4be6461f5b38741e018508ca9cd5a4331d6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+26ad85d55a23d1f949625541525431acf25e8f8f")]
 [assembly: System.Reflection.AssemblyProductAttribute("Aero.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Aero.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

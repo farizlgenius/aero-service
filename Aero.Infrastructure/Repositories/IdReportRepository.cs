@@ -3,15 +3,16 @@ using Aero.Application.Helpers;
 using Aero.Application.Interfaces;
 using Aero.Domain.Entities;
 using Aero.Domain.Interfaces;
-using Aero.Infrastructure.Data;
-using Aero.Infrastructure.Data.Entities;
+using Aero.Infrastructure.Persistences;
+using Aero.Infrastructure.Persistences.Entities;
 using Aero.Infrastructure.Mapper;
 using Microsoft.EntityFrameworkCore;
 using System;
+using Aero.DomaApplicationin.Interfaces;
 
 namespace Aero.Infrastructure.Repositories;
 
-public class QIdReportRepository(AppDbContext context) : IQIdReportRepository
+public class IdReportRepository(AppDbContext context) : IQIdReportRepository
 {
       public async Task<int> AddAsync(IScpReply message)
       {

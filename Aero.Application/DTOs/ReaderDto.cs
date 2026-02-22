@@ -3,7 +3,7 @@ using Aero.Domain.Enums;
 
 namespace Aero.Application.DTOs
 {
-    public sealed class ReaderDto : BaseEntity
+    public sealed class ReaderDto : BaseDomain
     {
         public short ModuleId { get; set; }
         public short ReaderNo { get; set; }

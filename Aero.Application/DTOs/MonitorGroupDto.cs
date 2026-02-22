@@ -3,7 +3,7 @@ using Aero.Domain.Entities;
 
 namespace Aero.Application.DTOs
 {
-    public sealed class MonitorGroupDto : BaseEntity
+    public sealed class MonitorGroupDto : BaseDomain
     {
         public string Name { get; set; } = string.Empty;
         public short nMpCount { get; set; }

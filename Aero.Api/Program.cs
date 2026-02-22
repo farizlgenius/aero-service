@@ -229,7 +229,7 @@ namespace AeroService
             builder.Services.AddScoped<IQMpRepository,QMpRepository>();
             builder.Services.AddScoped<IOperatorRepository,OperatorRepository>();
             builder.Services.AddScoped<IQOperatorRepository,QOperatorRepository>();
-            builder.Services.AddScoped<IProcedureRepository,ProcedureRepository>();
+            builder.Services.AddScoped<IProcedureRepository,ProcRepository>();
             builder.Services.AddScoped<IQProcRepository,QProcRepository>();
             builder.Services.AddScoped<ITriggerRepository,TriggerRepository>();
             builder.Services.AddScoped<IQTrigRepository,QTrigRepository>();
@@ -238,15 +238,15 @@ namespace AeroService
             builder.Services.AddScoped<IQRoleRepository,QRoleRepository>();
             builder.Services.AddScoped<ISettingRepository,SettingRepository>();
             builder.Services.AddScoped<IQSettingRepository,QSettingRepository>();
-            builder.Services.AddScoped<Aero.Domain.Interface.ITransactionRepository, TransactionRepository>();
+            builder.Services.AddScoped<Aero.Domain.Interface.ITransactionRepository, TranRepository>();
             builder.Services.AddScoped<Aero.Application.Interfaces.ITransactionRepository, QTransactionRepository>();
             builder.Services.AddScoped<ITzRepository,TzRepository>();
             builder.Services.AddScoped<IQTzRepository,QTzRepository>();
-            builder.Services.AddScoped<IQFeatureRepository, QFeatureRepository>();
+            builder.Services.AddScoped<IQFeatureRepository, FeatureRepository>();
             builder.Services.AddScoped<IQHolRepository, QHolRepository>();
             builder.Services.AddScoped<IHolRepository, HolRepository>();
-            builder.Services.AddScoped<IQIdReportRepository, QIdReportRepository>();
-            builder.Services.AddScoped<IQActionRepository, QActionRepository>();
+            builder.Services.AddScoped<IQIdReportRepository, IdReportRepository>();
+            builder.Services.AddScoped<IQActionRepository, ActionRepository>();
             builder.Services.AddScoped<IDiagRepository, DiagRepository>();
             builder.Services.AddScoped<ICmndRepository, CmndRepository>();
 

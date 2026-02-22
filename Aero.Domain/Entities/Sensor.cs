@@ -2,7 +2,7 @@ using System;
 
 namespace Aero.Domain.Entities;
 
-public sealed class Sensor : BaseEntity
+public sealed class Sensor : BaseDomain
 {
       public short ModuleId { get; set; }
         public short InputNo { get; set; }

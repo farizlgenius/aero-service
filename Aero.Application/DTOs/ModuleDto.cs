@@ -3,7 +3,7 @@ using Aero.Domain.Entities;
 
 namespace Aero.Application.DTOs
 {
-    public sealed class ModuleDto : BaseEntity
+    public sealed class ModuleDto : BaseDomain
     {
         public short SioId { get; set; }
         public short Model { get; set; }

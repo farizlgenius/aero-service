@@ -2,7 +2,7 @@ using System;
 
 namespace Aero.Domain.Entities;
 
-public sealed class Strike : BaseEntity
+public sealed class Strike : BaseDomain
 {
        public short ModuleId { get; set; }
         public short OutputNo { get; set; }

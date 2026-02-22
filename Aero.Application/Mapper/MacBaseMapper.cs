@@ -5,7 +5,7 @@ namespace Aero.Application.Mapper;
 
 public sealed class MacBaseMapper 
 {
-      public static void ToDomain(BaseEntity from,BaseEntity to)
+      public static void ToDomain(BaseDomain from,BaseDomain to)
       {
             to.ComponentId = from.ComponentId;
             to.HardwareName = from.HardwareName;

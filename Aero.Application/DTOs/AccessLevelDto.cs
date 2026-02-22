@@ -1,14 +1,17 @@
 ﻿
+using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
 using Aero.Domain.Entities;
 
 namespace Aero.Application.DTOs
 {
-    public sealed class AccessLevelDto : NoMacBaseEntity
-    {
-        public string Name { get; set; } = string.Empty;
-        public List<AccessLevelComponentDto> Components { get; set;} = new List<AccessLevelComponentDto>();
 
-
-    }
+   
+    public sealed record AccessLevelDto(
+        string Name,
+        List<AccessLevelComponentDto> Components,
+        int LocationId,
+        bool IsActive
+        ) : BaseDto(LocationId,IsActive);
+    
 }

@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Aero.Application.DTOs
 {
-
-    public sealed record CommandDto(
-        string Command
+    public record BaseDto(
+        int LocationId,
+        bool IsActive
         );
+    
+
 }

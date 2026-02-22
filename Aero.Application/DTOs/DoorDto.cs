@@ -4,7 +4,7 @@ using Aero.Domain.Entities;
 
 namespace Aero.Application.DTOs
 {
-    public sealed class DoorDto : BaseEntity
+    public sealed class DoorDto : BaseDomain
     {
         public short AcrId {get; set;}
         public string Name { get; set; } = string.Empty;

@@ -2,7 +2,7 @@
 
 namespace Aero.Application.DTOs
 {
-    public sealed class CreateHardwareDto : BaseEntity
+    public sealed class CreateHardwareDto : BaseDomain
     {
         public string Name { get; set; } = string.Empty;
         public int HardwareType { get; set; }

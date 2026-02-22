@@ -3,6 +3,22 @@
   "WorkspaceRootPath": "D:\\Aero\\AeroService\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|d:\\aero\\aeroservice\\aero.application\\dtos\\monitorpointdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|solutionrelative:aero.application\\dtos\\monitorpointdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|d:\\aero\\aeroservice\\aero.application\\dtos\\requestexitdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|solutionrelative:aero.application\\dtos\\requestexitdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|d:\\aero\\aeroservice\\aero.application\\dtos\\sensordto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|solutionrelative:aero.application\\dtos\\sensordto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|d:\\aero\\aeroservice\\aero.application\\dtos\\readerdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|solutionrelative:aero.application\\dtos\\readerdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -54,7 +70,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 11,
               "Title": "HttpRepository.cs",
               "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Repositories\\HttpRepository.cs",
               "RelativeDocumentMoniker": "Aero.Infrastructure\\Repositories\\HttpRepository.cs",
@@ -68,19 +84,71 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "MonitorPointDto.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Application\\DTOs\\MonitorPointDto.cs",
+              "RelativeDocumentMoniker": "Aero.Application\\DTOs\\MonitorPointDto.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Application\\DTOs\\MonitorPointDto.cs",
+              "RelativeToolTip": "Aero.Application\\DTOs\\MonitorPointDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-21T11:30:53.326Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RequestExitDto.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Application\\DTOs\\RequestExitDto.cs",
+              "RelativeDocumentMoniker": "Aero.Application\\DTOs\\RequestExitDto.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Application\\DTOs\\RequestExitDto.cs",
+              "RelativeToolTip": "Aero.Application\\DTOs\\RequestExitDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-21T11:29:37.249Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SensorDto.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Application\\DTOs\\SensorDto.cs",
+              "RelativeDocumentMoniker": "Aero.Application\\DTOs\\SensorDto.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Application\\DTOs\\SensorDto.cs",
+              "RelativeToolTip": "Aero.Application\\DTOs\\SensorDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-21T11:27:14.956Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ReaderDto.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Application\\DTOs\\ReaderDto.cs",
+              "RelativeDocumentMoniker": "Aero.Application\\DTOs\\ReaderDto.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Application\\DTOs\\ReaderDto.cs",
+              "RelativeToolTip": "Aero.Application\\DTOs\\ReaderDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-21T11:23:38.518Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "AppDbContext.cs",
               "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Data\\AppDbContext.cs",
               "RelativeDocumentMoniker": "Aero.Infrastructure\\Data\\AppDbContext.cs",
               "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Data\\AppDbContext.cs",
               "RelativeToolTip": "Aero.Infrastructure\\Data\\AppDbContext.cs",
-              "ViewState": "AgIAAFIAAAAAAAAAAAA9wF8AAABGAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAF8AAABGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-20T08:52:22.424Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 5,
               "Title": "Module.cs",
               "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Data\\Entities\\Module.cs",
               "RelativeDocumentMoniker": "Aero.Infrastructure\\Data\\Entities\\Module.cs",
@@ -88,12 +156,11 @@
               "RelativeToolTip": "Aero.Infrastructure\\Data\\Entities\\Module.cs",
               "ViewState": "AgIAABEAAAAAAAAAAADwvyYAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-20T07:01:28.581Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-20T07:01:28.581Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 6,
               "Title": "HwRepository.cs",
               "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Repositories\\HwRepository.cs",
               "RelativeDocumentMoniker": "Aero.Infrastructure\\Repositories\\HwRepository.cs",
@@ -101,12 +168,11 @@
               "RelativeToolTip": "Aero.Infrastructure\\Repositories\\HwRepository.cs",
               "ViewState": "AgIAABgAAAAAAAAAAAAowA8AAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-20T06:51:27.748Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-20T06:51:27.748Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 7,
               "Title": "Hardware.cs",
               "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Domain\\Entities\\Hardware.cs",
               "RelativeDocumentMoniker": "Aero.Domain\\Entities\\Hardware.cs",
@@ -114,12 +180,11 @@
               "RelativeToolTip": "Aero.Domain\\Entities\\Hardware.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-20T02:16:12.622Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-20T02:16:12.622Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 8,
               "Title": "AeroWorker.cs",
               "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Worker\\AeroWorker.cs",
               "RelativeDocumentMoniker": "Aero.Infrastructure\\Worker\\AeroWorker.cs",
@@ -127,12 +192,11 @@
               "RelativeToolTip": "Aero.Infrastructure\\Worker\\AeroWorker.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-17T15:46:27.465Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-17T15:46:27.465Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 10,
               "Title": "OperatorService.cs",
               "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Application\\Services\\OperatorService.cs",
               "RelativeDocumentMoniker": "Aero.Application\\Services\\OperatorService.cs",
@@ -144,7 +208,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 9,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Api\\Program.cs",
               "RelativeDocumentMoniker": "Aero.Api\\Program.cs",
@@ -156,7 +220,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 12,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Api\\appsettings.json",
               "RelativeDocumentMoniker": "Aero.Api\\appsettings.json",
@@ -168,7 +232,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 13,
               "Title": "IHttpRepository.cs",
               "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Domain\\Interface\\IHttpRepository.cs",
               "RelativeDocumentMoniker": "Aero.Domain\\Interface\\IHttpRepository.cs",

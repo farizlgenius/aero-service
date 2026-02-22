@@ -2,7 +2,7 @@ using System;
 
 namespace Aero.Domain.Entities;
 
-public sealed class Trigger : BaseEntity
+public sealed class Trigger : BaseDomain
 {
       public short TrigId {get; set;}
       public string Name { get; set; } = string.Empty;

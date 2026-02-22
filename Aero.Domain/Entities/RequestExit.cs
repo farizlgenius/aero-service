@@ -2,7 +2,7 @@ using System;
 
 namespace Aero.Domain.Entities;
 
-public sealed class RequestExit : BaseEntity
+public sealed class RequestExit : BaseDomain
 {
       public short ModuleId { get; set; }
         public short InputNo { get; set; }

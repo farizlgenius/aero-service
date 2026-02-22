@@ -2,7 +2,7 @@ using System;
 
 namespace Aero.Domain.Entities;
 
-public sealed class Procedure : BaseEntity
+public sealed class Procedure : BaseDomain
 {
       public short ProcId {get; set;}
       public string Name { get; set; } = string.Empty;

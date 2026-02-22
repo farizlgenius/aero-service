@@ -2,7 +2,7 @@ using System;
 
 namespace Aero.Domain.Entities;
 
-public sealed class Door : BaseEntity
+public sealed class Door : BaseDomain
 {
       public short AcrId { get; set; }
       public string Name { get; set; } = string.Empty;

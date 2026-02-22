@@ -2,7 +2,7 @@ using System;
 
 namespace Aero.Domain.Entities;
 
-public sealed class MonitorGroup : BaseEntity
+public sealed class MonitorGroup : BaseDomain
 {
       public string Name { get; set; } = string.Empty;
         public short nMpCount { get; set; }

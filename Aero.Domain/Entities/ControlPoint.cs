@@ -2,7 +2,7 @@ using System;
 
 namespace Aero.Domain.Entities;
 
-public class ControlPoint : BaseEntity
+public class ControlPoint : BaseDomain
 {
         public short CpId {get; set;}
        public string Name { get; set; } = string.Empty;

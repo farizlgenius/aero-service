@@ -2,7 +2,7 @@ using System;
 
 namespace Aero.Domain.Entities;
 
-public sealed class AccessArea : NoMacBaseEntity
+public sealed class AccessArea 
 {
 
       public string Name { get; set; } = string.Empty;

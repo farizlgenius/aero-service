@@ -2,19 +2,22 @@
 
 namespace Aero.Application.DTOs
 {
-    public sealed class ActionDto : BaseEntity
-    {
-        public short ScpId { get; set; }
-        public short ActionType { get; set; }
-        public string ActionTypeDesc { get; set; } = string.Empty;
-        public short Arg1 { get; set; } 
-        public short Arg2 { get; set; } 
-        public short Arg3 { get; set; } 
-        public short Arg4 { get; set; } 
-        public short Arg5 { get; set; }
-        public short Arg6 { get; set; }
-        public short Arg7 { get; set; }
-        public string StrArg { get; set; } = string.Empty;
-        public short DelayTime { get; set; }
-    }
+
+
+    public sealed record ActionDto(
+        short ScpId,
+        short ActionType,
+        string ActionDetail,
+        short Arg1,
+        short Arg2,
+        short Arg3,
+        short Arg4,
+        short Arg5,
+        short Arg6,
+        short Arg7,
+        string StrArg,
+        short DelayTime,
+        int LocationId,
+        bool IsActive
+        ) : BaseDto(LocationId,IsActive);
 }

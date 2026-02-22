@@ -2,7 +2,7 @@ using System;
 
 namespace Aero.Domain.Entities;
 
-public sealed class Action : BaseEntity
+public sealed class Action : BaseDomain
 {
        public short ScpId { get; set; }
         public short ActionType { get; set; }

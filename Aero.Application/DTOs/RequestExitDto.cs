@@ -2,7 +2,7 @@
 
 namespace Aero.Application.DTOs
 {
-    public sealed class RequestExitDto : BaseEntity
+    public sealed class RequestExitDto : BaseDomain
     {
         public short ModuleId { get; set; }
         public short InputNo { get; set; }

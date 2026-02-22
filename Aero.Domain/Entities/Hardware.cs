@@ -3,7 +3,7 @@ using Aero.Domain.Interface;
 
 namespace Aero.Domain.Entities;
 
-public sealed class Hardware : BaseEntity
+public sealed class Hardware : BaseDomain
 {
     public string Name { get; set; } = string.Empty;
     public int HardwareType { get; set; }

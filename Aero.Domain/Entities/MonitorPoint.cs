@@ -2,7 +2,7 @@ using System;
 
 namespace Aero.Domain.Entities;
 
-public class MonitorPoint : BaseEntity
+public class MonitorPoint : BaseDomain
 {
   public short MpId {get; set;}
       public string Name { get; set; } = string.Empty;
