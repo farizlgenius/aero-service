@@ -2,7 +2,7 @@ using System;
 using Aero.Application.Interfaces;
 using Aero.Domain.Interface;
 
-namespace Aero.DomaApplicationin.Interfaces;
+namespace Aero.Application.Interfaces;
 
 public interface IScpReply
 {
@@ -20,7 +20,7 @@ public interface IScpReply
       ICcWebConfigHostCommPrim web_host_comm_prim {get;}
       ITransaction tran {get;}
       ITranStatus tran_sts {get;}
-    IScpReplyCmndStatus cmnd_sts { get; }
+        IScpReplyCmndStatus cmnd_sts { get; }
 
 }
 

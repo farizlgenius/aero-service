@@ -3,18 +3,22 @@ using Aero.Domain.Interfaces;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class AccessLevel : BaseEntity,IDriverId
+    public sealed class AccessLevel : BaseEntity
     {
-        public short driver_id { get;  set; }
         public string name { get;  set; } = string.Empty;
         public ICollection<AccessLevelComponent> components { get;  set;}
         public ICollection<CardHolderAccessLevel> cardholder_access_levels { get;  set;}
 
-        public AccessLevel(short driver,string name,List<AccessLevelComponent> component,int location) : base(location)
+        public AccessLevel(string name,List<AccessLevelComponent> component,int location) : base(location)
         {
-            this.driver_id = driver;
             this.name = name;
             this.components = component;
+        }
+
+        public void Update(Aero.Domain.Entities.AccessLevel data)
+        {
+            name = data.Name;
+            components = data.Components.Select(x => new AccessLevelComponent(x.DriverId,x.Mac,x.DoorId,x.AcrId,x.TimezoneId)).ToList();
         }
         
     }

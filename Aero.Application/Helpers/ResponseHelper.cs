@@ -135,7 +135,7 @@ namespace Aero.Application.Helpers
             {
                 code = HttpStatusCode.BadRequest,
                 timestamp = DateTime.UtcNow,
-                message = ResponseMessage.DUPLICATE_USER,
+                message = ResponseMessage.DUPLICATE_RECORD,
                 details = Enumerable.Empty<string>(),
                 data = default
             };
@@ -147,7 +147,19 @@ namespace Aero.Application.Helpers
             {
                 code = HttpStatusCode.BadRequest,
                 timestamp = DateTime.UtcNow,
-                message = ResponseMessage.DUPLICATE_USER,
+                message = ResponseMessage.DUPLICATE_RECORD,
+                details = Enumerable.Empty<string>(),
+                data = default
+            };
+        }
+
+        public static ResponseDto<T> BadRequestName<T>()
+        {
+            return new ResponseDto<T>()
+            {
+                code = HttpStatusCode.BadRequest,
+                timestamp = DateTime.UtcNow,
+                message = ResponseMessage.DUPLICATE_NAME,
                 details = Enumerable.Empty<string>(),
                 data = default
             };

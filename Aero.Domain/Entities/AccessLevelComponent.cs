@@ -3,15 +3,13 @@ using System;
 
 namespace Aero.Domain.Entities;
 
-public sealed class AccessLevelComponent
+public sealed class AccessLevelComponent()
 {
     public short DriverId { get; private set; }
     public string Mac {get; private set;} = string.Empty;
     public int DoorId { get; private set; }
     public short AcrId { get; private set; }
     public short TimezoneId { get; private set; }
-
-    public AccessLevelComponent() { }
 
     public AccessLevelComponent(short driverId,string mac,int doorId,short acrId,short timezoneId)
     {
@@ -22,7 +20,7 @@ public sealed class AccessLevelComponent
         SetTimezoneId(timezoneId);
     }
 
-    private void SetDriverId(short driverid)
+    public void SetDriverId(short driverid)
     {
         if (driverid <= 0) throw new ArgumentException("Access Level is invalid.");
         this.DriverId = driverid;
@@ -34,7 +32,7 @@ public sealed class AccessLevelComponent
         this.Mac = mac; 
     }
 
-    private void SetDoorId(short doorid)
+    private void SetDoorId(int doorid)
     {
         if (doorid <= 0) throw new ArgumentException("Door is invalid.");
         this.DoorId = doorid;

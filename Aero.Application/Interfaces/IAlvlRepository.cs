@@ -6,12 +6,11 @@ using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Interface;
 
-public interface IAlvlRepository : IBaseRepository<AccessLevelDto,AccessLevel>
+public interface IAlvlRepository : IBaseRepository<AccessLevelDto,AccessLevel,CreateAccessLevel>
 {
-      Task<int> AddCreateAsync(AccessLevel domain);
-      Task<int> UpdateCreateAsync(AccessLevel domain);
     Task<int> CountByLocationIdAndUpdateTimeAsync(short locationId, DateTime sync);
     Task<string> GetAcrNameByIdAndMacAsync(short id, string mac);
     Task<string> GetTimezoneNameByIdAsync(short id);
     Task<IEnumerable<AccessLevel>> GetDomainAsync();
+    
 }

@@ -6,7 +6,7 @@ using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Interface;
 
-public interface IHwRepository : IBaseRepository<HardwareDto,Hardware>
+public interface IHwRepository : IBaseRepository<HardwareDto,Hardware,CreateHardwareDto>
 {
       Task<Hardware> GetDomainByMacAsync(string mac);
       Task<int> DeleteByMacAsync(string mac);

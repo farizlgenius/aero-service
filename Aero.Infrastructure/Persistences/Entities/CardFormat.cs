@@ -22,5 +22,15 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short ch_loc { get; set; }
         public short ic_ln { get; set; }
         public short ic_loc { get; set; }
+
+
+        public CardFormat(, int location_id) : base(location_id)
+        {
+
+        }
+
+
     }
+
+    
 }

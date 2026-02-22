@@ -8,7 +8,7 @@ namespace Aero.Application.DTOs
 {
     public record BaseDto(
         int LocationId,
-        bool IsActive
+        bool IsActive = true
         );
     
 

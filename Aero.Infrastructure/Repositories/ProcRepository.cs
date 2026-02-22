@@ -101,7 +101,7 @@ public sealed class ProcRepository(AppDbContext context) : IProcedureRepository
                // Detail
                ScpId = en.scp_id,
                ActionType = en.action_type,
-               ActionTypeDesc = en.action_type_desc,
+               ActionTypeDesc = en.action_type_detail,
                Arg1 = en.arg1,
                Arg2 = en.arg2,
                Arg3 = en.arg3,
@@ -154,7 +154,7 @@ public sealed class ProcRepository(AppDbContext context) : IProcedureRepository
                 // Detail
                 ScpId = en.scp_id,
                 ActionType = en.action_type,
-                ActionTypeDesc = en.action_type_desc,
+                ActionTypeDesc = en.action_type_detail,
                 Arg1 = en.arg1,
                 Arg2 = en.arg2,
                 Arg3 = en.arg3,
@@ -279,7 +279,7 @@ public sealed class ProcRepository(AppDbContext context) : IProcedureRepository
                    // Detail
                    ScpId = en.scp_id,
                    ActionType = en.action_type,
-                   ActionTypeDesc = en.action_type_desc,
+                   ActionTypeDesc = en.action_type_detail,
                    Arg1 = en.arg1,
                    Arg2 = en.arg2,
                    Arg3 = en.arg3,
