@@ -1,11 +1,12 @@
+using Aero.Infrastructure.Persistences.Entities;
 using System;
-using Aero.Infrastructure.Data.Entities;
+
 
 namespace Aero.Infrastructure.Mapper;
 
 public sealed  class SettingMapper
 {
-      public static void PasswordRuleUpdate(Aero.Domain.Entities.PasswordRule from,Aero.Infrastructure.Data.Entities.PasswordRule to)
+      public static void PasswordRuleUpdate(Aero.Domain.Entities.PasswordRule from,Aero.Infrastructure.Persistences.Entities.PasswordRule to)
       {
             to.len = from.Len;
             to.is_lower = from.IsLower;

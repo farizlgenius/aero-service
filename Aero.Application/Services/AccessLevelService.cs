@@ -13,7 +13,7 @@ using System.Security.Cryptography;
 
 namespace Aero.Application.Services
 {
-    public sealed class AccessLevelService(IAlvlRepository repo,IHwRepository hw,IAlvlCommand alvl) : IAccessLevelService
+    public sealed class AccessLevelService(IAlvlRepository repo,IHwRepository hw,IAlvlCommand alvl,ISettingRepository setting) : IAccessLevelService
     {
         public async Task<ResponseDto<IEnumerable<AccessLevelDto>>> GetByLocationIdAsync(int location)
         {
@@ -33,7 +33,14 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<AccessLevelDto>> CreateAsync(CreateAccessLevelDto dto)
         {
+            // Check value in license here 
+            // ....to be implement
+
             if(await repo.IsAnyByNameAsync(dto.Name.Trim())) return ResponseHelper.BadRequestName<AccessLevelDto>();
+
+            var ScpSetting = await setting.GetScpSettingAsync();
+
+
             List<string> errors = new List<string>();
 
             var domain = new CreateAccessLevel(
@@ -45,7 +52,7 @@ namespace Aero.Application.Services
 
             for(int i = 0;i < macs.Count(); i++)
             {
-                var DriverId = await repo.GetLowestUnassignedNumberAsync(10, macs.ElementAt(i));
+                var DriverId = await repo.GetLowestUnassignedNumberByMacAsync(macs.ElementAt(i), ScpSetting.nAlvl);
                 domain.Components.ElementAt(i).SetDriverId(DriverId); 
                 if (!await alvl.AccessLevelConfigurationExtended(await hw.GetComponentIdFromMacAsync(macs.ElementAt(i)), DriverId, domain))
                 {
@@ -89,7 +96,7 @@ namespace Aero.Application.Services
             List<string> errors = new List<string>();
             if (!await repo.IsAnyById(dto.Id)) return ResponseHelper.NotFoundBuilder<AccessLevelDto>();
 
-            var domain = new AccessLevel(dto.Id,dto.Name,dto.Components.Select(c => new AccessLevelComponent(c.DriverId,c.Mac,c.DoorId,c.AcrId,c.TimeZoneId)).ToList(),dto.LocationId);
+            var domain = new AccessLevel(dto.Id,dto.Name,dto.Components.Select(c => new AccessLevelComponent(c.DriverId,c.Mac,c.DoorId,c.AcrId,c.TimeZoneId)).ToList(),dto.LocationId,dto.IsActive);
             var macs = domain.Components.Select(x => x.Mac).Distinct();
 
             for (int i = 0; i < macs.Count(); i++)

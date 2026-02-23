@@ -3,7 +3,7 @@ using Aero.Domain.Interfaces;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class AccessLevel : BaseEntity
+    public sealed class AccessLevel : BaseEntity,IDbFunc<Aero.Domain.Entities.AccessLevel>
     {
         public string name { get;  set; } = string.Empty;
         public ICollection<AccessLevelComponent> components { get;  set;}
@@ -19,8 +19,13 @@ namespace Aero.Infrastructure.Persistences.Entities
         {
             name = data.Name;
             components = data.Components.Select(x => new AccessLevelComponent(x.DriverId,x.Mac,x.DoorId,x.AcrId,x.TimezoneId)).ToList();
+            updated_date = DateTime.UtcNow;
         }
-        
+
+        public void ToggleStatus(bool status)
+        {
+            is_active = status;
+        }
     }
 
 }

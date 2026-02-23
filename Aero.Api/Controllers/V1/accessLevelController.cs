@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aero.Api.Controllers.V1
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public sealed class AccessLevelController(IAccessLevelService accesslevelService) : ControllerBase
     {
@@ -21,7 +21,7 @@ namespace Aero.Api.Controllers.V1
             return Ok(res);
         }
 
-        [HttpGet("/api/v1/{location}/[controller]")]
+        [HttpGet("/api/{location}/[controller]")]
         [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<AccessLevelDto>>>> GetByLocationIdAsync(short location)
         {
@@ -29,7 +29,7 @@ namespace Aero.Api.Controllers.V1
             return Ok(res);
         }
 
-        [HttpGet("/api/v1/{location}/[controller]/pagination")]
+        [HttpGet("/api/{location}/[controller]/pagination")]
         [Authorize]
         public async Task<ActionResult<ResponseDto<Pagination<AccessLevelDto>>>> GetPaginationAsync([FromQuery]PaginationParamsWithFilter param,short location)
         {

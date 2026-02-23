@@ -1,8 +1,8 @@
 using Aero.Application.DTOs;
+using Aero.Application.Interface;
 using Aero.Domain.Entities;
-using Aero.Domain.Interface;
-using Aero.Infrastructure.Data;
 using Aero.Infrastructure.Mapper;
+using Aero.Infrastructure.Persistences;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -42,5 +42,11 @@ public class SettingRepository(AppDbContext context) : ISettingRepository
     public async Task<bool> IsAnyPasswordRule()
     {
         return await context.password_rule.AnyAsync();
+    }
+
+    public async Task<ScpSetting> GetScpSettingAsync()
+    {
+        var en = await context.scp_setting.FirstOrDefaultAsync();
+        return new ScpSetting(en.n_msp1_port,en.n_transaction,en.n_sio,en.n_mp,en.n_cp,en.n_acr,en.n_alvl,en.n_trgr,en.n_proc,en.gmt_offset,en.n_tz,en.n_hol,en.n_mpg,en.n_card,en.n_area);
     }
 }

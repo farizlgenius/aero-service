@@ -12,7 +12,8 @@ public interface IBaseRepository<Y,T,Z>
     Task<IEnumerable<Y>> GetAsync();
     Task<Y> GetByIdAsync(int id);
     Task<IEnumerable<Y>> GetByLocationIdAsync(int locationId);
-    Task<short> GetLowestUnassignedNumberAsync(int max, string mac);
+    Task<short> GetLowestUnassignedNumberAsync(int max);
+    Task<short> GetLowestUnassignedNumberByMacAsync(string mac, int max);
     Task<Pagination<Y>> GetPaginationAsync(PaginationParamsWithFilter param, int location);
     Task<bool> IsAnyByNameAsync(string name);
 

@@ -731,7 +731,7 @@ MaskHeldOpen = x.is_held_mask,
         return dtos;
     }
 
-    public async Task<short> GetLowestUnassignedNumberAsync(int max, string mac)
+    public async Task<short> GetLowestUnassignedNumberAsync(int max)
     {
         if (max <= 0) return -1;
 

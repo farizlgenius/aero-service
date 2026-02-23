@@ -1,16 +1,15 @@
-﻿using Aero.Application.Interfaces;
-using Aero.Domain.Entities;
-using Aero.Domain.Interface;
-
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Aero.Application.DTOs
 {
-
-
-    public sealed record AccessAreaDto(
-        int Id,
-        short DriverId,
+    public sealed record CreateAccessAreaDto
+    (
         string Name,
+        short DriverId,
         short MultiOccupancy,
         short AccessControl,
         short OccControl,
@@ -20,8 +19,6 @@ namespace Aero.Application.DTOs
         short OccDown,
         short AreaFlag,
         int LocationId,
-        bool IsActive
-        ) : BaseDto(LocationId,IsActive);
-
-
+        bool Status
+        ) : BaseDto(LocationId,Status);
 }

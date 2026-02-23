@@ -6,6 +6,7 @@ namespace Aero.Application.Interface;
 
 public interface ISettingRepository
 {
+    Task<ScpSetting> GetScpSettingAsync();
       Task<int> UpdatePasswordRuleAsync(PasswordRule data);
     Task<PasswordRuleDto> GetPasswordRuleAsync();
     Task<bool> IsAnyPasswordRule();

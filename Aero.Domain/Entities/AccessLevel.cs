@@ -11,7 +11,7 @@ public sealed class AccessLevel : BaseDomain
 
        public AccessLevel() { }
 
-    public AccessLevel(int id, string name, List<AccessLevelComponent> components, int location) : base(location)
+    public AccessLevel(int id, string name, List<AccessLevelComponent> components, int location,bool status) : base(location,status)
     {
         SetId(id);
         SetName(name);
@@ -31,7 +31,7 @@ public sealed class AccessLevel : BaseDomain
     {
         
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
-        if (!RegexHelper.IsValidOnlyCharAndDigit(name)) throw new ArgumentException("Name invalid.");
+        if (!RegexHelper.IsValidName(name.Trim())) throw new ArgumentException("Name invalid.");
         this.Name = name;
     }
     private void SetComponents(List<AccessLevelComponent> components) 

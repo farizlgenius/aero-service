@@ -4,6 +4,7 @@ using Aero.Application.Mapper;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Infrastructure.Persistences;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -13,16 +14,16 @@ public class AreaRepository(AppDbContext context) : IAreaRepository
 {
       public async Task<int> AddAsync(AccessArea data)
       {
-            var en = Aero.Infrastructure.Mapper.AreaMapper.ToEf(data);
+            var en = new Aero.Infrastructure.Persistences.Entities.AccessArea(data.DriverId,data.Name,data.MultiOccupancy,data.AccessControl,data.OccControl,data.OccSet,data.OccMax,data.OccUp,data.OccDown,data.AreaFlag,data.LocationId);
             await context.area.AddAsync(en);
             return await context.SaveChangesAsync();
       }
 
-      public async Task<int> DeleteByComponentIdAsync(short component)
+      public async Task<int> DeleteByIdAsync(int id)
       {
              var en = await context.area
-            .Where(x => x.component_id == component)
-            .OrderBy(x => x.component_id)
+            .Where(x => x.id == id)
+            .OrderBy(x => x.id)
             .FirstOrDefaultAsync();
 
              if(en is null) return 0;
@@ -32,22 +33,22 @@ public class AreaRepository(AppDbContext context) : IAreaRepository
 
       }
 
-      public async Task<int> UpdateAsync(AccessArea newData)
+      public async Task<int> UpdateAsync(AccessArea data)
       {
             var en = await context.area
-            .Where(x => x.component_id == newData.ComponentId)
-            .OrderBy(x => x.component_id)
+            .Where(x => x.id == data.Id)
+            .OrderBy(x => x.id)
             .FirstOrDefaultAsync();
 
             if(en is null) return 0;
 
-            Aero.Infrastructure.Mapper.AreaMapper.Update(newData,en);
+            en.Update(data);
 
             context.area.Update(en);
             return await context.SaveChangesAsync();
       }
 
-    public async Task<int> CountByLocationIdAndUpdateTimeAsync(short locationId, DateTime sync)
+    public async Task<int> CountByLocationIdAndUpdateTimeAsync(int locationId, DateTime sync)
     {
         var res = await context.area
         .AsNoTracking()
@@ -89,82 +90,31 @@ public class AreaRepository(AppDbContext context) : IAreaRepository
     {
         var res = await context.area
         .AsNoTracking()
-        .Select(entity => new AccessAreaDto
-        {
-            // Base
-            LocationId = entity.location_id,
-            IsActive = entity.is_active,
-            component_id = entity.component_id,
-
-            // extend_desc
-            Name = entity.name,
-            MultiOccupancy = entity.multi_occ,
-            AccessControl = entity.access_control,
-            OccControl = entity.occ_control,
-            OccSet = entity.occ_set,
-            OccMax = entity.occ_max,
-            OccDown = entity.occ_down,
-            OccUp = entity.occ_up,
-            AreaFlag = entity.area_flag,
-        })
+        .Select(a => new AccessAreaDto(a.id,a.name,a.multi_occ,a.access_control,a.occ_control,a.occ_set,a.occ_max,a.occ_up,a.occ_down,a.area_flag,a.location_id,a.is_active))
         .ToArrayAsync();
 
         return res;
     }
 
-    public async Task<AccessAreaDto> GetByComponentIdAsync(short componentId)
+    public async Task<AccessAreaDto> GetByIdAsync(int id)
     {
         var res = await context.area
         .AsNoTracking()
-        .Where(x => x.component_id == componentId)
-        .OrderBy(x => x.component_id)
-        .Select(entity => new AccessAreaDto
-        {
-            // Base
-            LocationId = entity.location_id,
-            IsActive = entity.is_active,
-            component_id = entity.component_id,
-
-            // extend_desc
-            Name = entity.name,
-            MultiOccupancy = entity.multi_occ,
-            AccessControl = entity.access_control,
-            OccControl = entity.occ_control,
-            OccSet = entity.occ_set,
-            OccMax = entity.occ_max,
-            OccDown = entity.occ_down,
-            OccUp = entity.occ_up,
-            AreaFlag = entity.area_flag,
-        })
+        .Where(x => x.id == id)
+        .OrderBy(x => x.id)
+        .Select(a => new AccessAreaDto(a.id, a.name, a.multi_occ, a.access_control, a.occ_control, a.occ_set, a.occ_max, a.occ_up, a.occ_down, a.area_flag,a.location_id,a.is_active))
         .FirstOrDefaultAsync();
 
         return res;
     }
 
-    public async Task<IEnumerable<AccessAreaDto>> GetByLocationIdAsync(short locationId)
+    public async Task<IEnumerable<AccessAreaDto>> GetByLocationIdAsync(int locationId)
     {
         var res = await context.area
         .AsNoTracking()
         .Where(x => x.location_id == locationId || x.location_id == 1)
-        .OrderBy(x => x.component_id)
-        .Select(entity => new AccessAreaDto
-        {
-            // Base
-            LocationId = entity.location_id,
-            IsActive = entity.is_active,
-            component_id = entity.component_id,
-
-            // extend_desc
-            Name = entity.name,
-            MultiOccupancy = entity.multi_occ,
-            AccessControl = entity.access_control,
-            OccControl = entity.occ_control,
-            OccSet = entity.occ_set,
-            OccMax = entity.occ_max,
-            OccDown = entity.occ_down,
-            OccUp = entity.occ_up,
-            AreaFlag = entity.area_flag,
-        })
+        .OrderBy(x => x.id)
+        .Select(a => new AccessAreaDto(a.id, a.name, a.multi_occ, a.access_control, a.occ_control, a.occ_set, a.occ_max, a.occ_up, a.occ_down, a.area_flag, a.location_id, a.is_active))
         .ToArrayAsync();
 
         return res;
@@ -190,7 +140,7 @@ public class AreaRepository(AppDbContext context) : IAreaRepository
 
         var query = context.area
             .AsNoTracking()
-            .Select(x => x.component_id);
+            .Select(x => x.driver_id);
 
         // Handle empty table case quickly
         var hasAny = await query.AnyAsync();
@@ -242,7 +192,7 @@ public class AreaRepository(AppDbContext context) : IAreaRepository
 
     }
 
-    public async Task<Pagination<AccessAreaDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    public async Task<Pagination<AccessAreaDto>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
     {
 
         var query = context.area.AsNoTracking().AsQueryable();
@@ -294,24 +244,7 @@ public class AreaRepository(AppDbContext context) : IAreaRepository
             .OrderByDescending(t => t.created_date)
             .Skip((param.PageNumber - 1) * param.PageSize)
             .Take(param.PageSize)
-            .Select(entity => new AccessAreaDto
-            {
-                // Base
-                LocationId = entity.location_id,
-                IsActive = entity.is_active,
-                component_id = entity.component_id,
-
-                // extend_desc
-                Name = entity.name,
-                MultiOccupancy = entity.multi_occ,
-                AccessControl = entity.access_control,
-                OccControl = entity.occ_control,
-                OccSet = entity.occ_set,
-                OccMax = entity.occ_max,
-                OccDown = entity.occ_down,
-                OccUp = entity.occ_up,
-                AreaFlag = entity.area_flag,
-            })
+            .Select(a => new AccessAreaDto(a.id, a.name, a.multi_occ, a.access_control, a.occ_control, a.occ_set, a.occ_max, a.occ_up, a.occ_down, a.area_flag, a.location_id, a.is_active))
             .ToListAsync();
 
 
@@ -328,8 +261,13 @@ public class AreaRepository(AppDbContext context) : IAreaRepository
         };
     }
 
-    public async Task<bool> IsAnyByComponentId(short component)
+    public async Task<bool> IsAnyById(int id)
     {
-        return await context.area.AnyAsync(x => x.component_id == component);
+        return await context.area.AnyAsync(x => x.id == id);
+    }
+
+    public async Task<bool> IsAnyByNameAsync(string name)
+    {
+        return await context.area.AnyAsync(x => x.name.Equals(name.Trim()));
     }
 }

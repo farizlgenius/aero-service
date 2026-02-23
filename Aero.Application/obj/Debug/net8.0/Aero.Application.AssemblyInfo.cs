@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Aero.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+28793a3c30cc33481eea3eedcd80d2d88ff1cf99")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3b4bc018146a444b5ee8796bc5df473d439b45dd")]
 [assembly: System.Reflection.AssemblyProductAttribute("Aero.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Aero.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

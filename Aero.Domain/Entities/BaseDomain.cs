@@ -5,12 +5,14 @@ namespace Aero.Domain.Entities;
 public class BaseDomain 
 {
     public int LocationId { get; private set; } = 1;
+    public bool IsActive { get; private set; } = true;
 
     public BaseDomain() { }
 
-    public BaseDomain(int location) 
+    public BaseDomain(int location,bool status) 
     {
         SetLocation(location);
+        IsActive = status;
     }
 
     private void SetLocation(int location) 
@@ -19,4 +21,6 @@ public class BaseDomain
 
         this.LocationId = location;
     }
+
+
 }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Aero.Infrastructure.Persistence.Entities
+namespace Aero.Infrastructure.Persistences.Entities
 {
     public sealed class MonitorGroupCommand
     {

@@ -19,4 +19,23 @@ public sealed class ScpSetting
   public short nMpg { get; set; }
   public short nCard { get; set; }
   public short nArea { get; set; }
+
+    public ScpSetting(short nMsp1Port,int nTransaction,short nSio,short nMp,short nCp,short nAcr,short nAlvl,short nTrgr,short nProc,short gmtOffset,short nTz,short nHol,short nMpg,short nCard,short nArea) 
+    {
+        this.nMsp1Port = nMsp1Port;
+        this.nTransaction = nTransaction;
+        this.nSio = nSio;
+        this.nMp = nMp;
+        this.nCp = nCp;
+        this.nAcr = nAcr;
+        this.nAlvl = nAlvl;
+        this.nTrgr = nTrgr;
+        this.nProc = nProc;
+        this.gmtOffset = gmtOffset;
+        this.nTz = nTz;
+        this.nHol = nHol;
+        this.nMpg = nMpg;
+        this.nCard = nCard;
+        this.nArea = nArea;
+    }
 }
