@@ -41,13 +41,13 @@ namespace Aero.Api.Controllers.V1
         [Authorize]
         public async Task<ActionResult<ResponseDto<AccessLevelDto>>> GetByComponentAsync(short component)
         {
-            var  res = await accesslevelService.GetByComponentIdAsync(component);
+            var  res = await accesslevelService.GetByIdAsync(component);
             return Ok(res);
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<AccessLevelDto>>> CreateAsync([FromBody] AccessLevelDto dto)
+        public async Task<ActionResult<ResponseDto<AccessLevelDto>>> CreateAsync([FromBody] CreateAccessLevelDto dto)
         {
             var res = await accesslevelService.CreateAsync(dto);
             return Ok(res);

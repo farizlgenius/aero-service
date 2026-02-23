@@ -9,7 +9,6 @@ namespace Aero.Application.DTOs
    
     public sealed record AccessLevelDto(
         int Id,
-        short DriverId,
         string Name,
         List<AccessLevelComponentDto> Components,
         int LocationId,

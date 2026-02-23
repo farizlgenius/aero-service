@@ -21,11 +21,14 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
                 data.LocationId
                );
             await context.access_level.AddAsync(en);
-            return await context.SaveChangesAsync();
+            var status = await context.SaveChangesAsync();
+        if (status <= 0) return -1;
+        return en.id;
+        
       }
 
 
-      public async Task<int> DeleteByIdAsync(short id)
+      public async Task<int> DeleteByIdAsync(int id)
       {
             var en = await context.access_level
             .Where(x => x.id == id)
@@ -42,13 +45,15 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
       {
         var en = await context.access_level
          .Where(x => x.id == data.Id)
-         .OrderBy(x => x.driver_id)
+         .OrderBy(x => x.id)
          .FirstOrDefaultAsync();
 
         if (en is null) return 0;
 
+        var driverids = data.Components.Select(x => x.DriverId).Distinct().ToList();
+
         var e = await context.access_level_component
-        .Where(x => x.access_level_id == data.DriverId)
+        .Where(x => driverids.Contains(x.access_level_id))
         .ToArrayAsync();
 
         context.access_level_component.RemoveRange(e);
@@ -59,7 +64,7 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
     }
 
 
-    public async Task<int> CountByLocationIdAndUpdateTimeAsync(short locationId, DateTime sync)
+    public async Task<int> CountByLocationIdAndUpdateTimeAsync(int locationId, DateTime sync)
     {
         var res = await context.access_level
         .AsNoTracking()
@@ -69,7 +74,7 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
         return res;
     }
 
-    public async Task<string> GetAcrNameByIdAndMacAsync(short id, string mac)
+    public async Task<string> GetAcrNameByIdAndMacAsync(int id, string mac)
     {
         var res = await context.door.AsNoTracking()
         .OrderBy(x => x.id)
@@ -88,13 +93,12 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
         .Select(x => new
         {
             x.id,
-            x.driver_id,
             x.name,
             components = x.components.Select(c => new AccessLevelComponent(c.driver_id, c.mac, c.door_id, c.acr_id, c.timezone_id)),
             x.location_id
         }).ToArrayAsync();
 
-        var res = data.Select(x => new AccessLevel(x.id,x.driver_id,x.name,x.components.ToList(),x.location_id)).ToList();
+        var res = data.Select(x => new AccessLevel(x.id,x.name,x.components.ToList(),x.location_id)).ToList();
 
         return res;
 
@@ -108,29 +112,27 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
         .Select(x => new
         {
             x.id,
-            x.driver_id,
             x.name,
             components = x.components.Select(c => new AccessLevelComponentDto(c.driver_id, c.mac, c.door_id, c.acr_id, c.timezone_id)),
             x.location_id,
             x.is_active
         }).ToArrayAsync();
 
-        var res = data.Select(x => new AccessLevelDto(x.id, x.driver_id, x.name, x.components.ToList(), x.location_id,x.is_active)).ToList();
+        var res = data.Select(x => new AccessLevelDto(x.id, x.name, x.components.ToList(), x.location_id,x.is_active)).ToList();
 
         return res;
 
     }
 
-    public async Task<AccessLevelDto> GetByIdAsync(short id)
+    public async Task<AccessLevelDto> GetByIdAsync(int id)
     {
         var data = await context.access_level
         .AsNoTracking()
-        .Where(x => x.driver_id == id)
-        .OrderBy(x => x.driver_id)
+        .Where(x => x.id == id)
+        .OrderBy(x => x.id)
          .Select(x => new
          {
              x.id,
-             x.driver_id,
              x.name,
              components = x.components.Select(c => new AccessLevelComponentDto(c.driver_id, c.mac, c.door_id, c.acr_id, c.timezone_id)),
              x.location_id,
@@ -139,12 +141,12 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
 
         if (data is null) return null;
 
-        var res = new AccessLevelDto(data.id, data.driver_id, data.name, data.components.ToList(), data.location_id, data.is_active);
+        var res = new AccessLevelDto(data.id,  data.name, data.components.ToList(), data.location_id, data.is_active);
 
         return res;
     }
 
-    public async Task<IEnumerable<AccessLevelDto>> GetByLocationIdAsync(short locationId)
+    public async Task<IEnumerable<AccessLevelDto>> GetByLocationIdAsync(int locationId)
     {
         var data = await context.access_level
         .AsNoTracking()
@@ -153,14 +155,13 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
         .Select(x => new
         {
             x.id,
-            x.driver_id,
             x.name,
             components = x.components.Select(c => new AccessLevelComponentDto(c.driver_id, c.mac, c.door_id, c.acr_id, c.timezone_id)),
             x.location_id,
             x.is_active
         }).ToArrayAsync();
 
-        var res = data.Select(x => new AccessLevelDto(x.id, x.driver_id, x.name, x.components.ToList(), x.location_id, x.is_active)).ToList();
+        var res = data.Select(x => new AccessLevelDto(x.id, x.name, x.components.ToList(), x.location_id, x.is_active)).ToList();
 
         return res;
     }
@@ -206,12 +207,12 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
         return expected;
     }
 
-    public async Task<string> GetTimezoneNameByIdAsync(short id)
+    public async Task<string> GetTimezoneNameByIdAsync(int id)
     {
         return await context.timezone.AsNoTracking().Where(x => x.id == id).Select(x => x.name).FirstOrDefaultAsync() ?? "";
     }
 
-    public async Task<Pagination<AccessLevelDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    public async Task<Pagination<AccessLevelDto>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
     {
 
         var query = context.access_level.AsNoTracking().AsQueryable();
@@ -265,7 +266,6 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
             .Select(x => new
             {
                 x.id,
-                x.driver_id,
                 x.name,
                 components = x.components.Select(c => new AccessLevelComponentDto(c.driver_id, c.mac, c.door_id, c.acr_id, c.timezone_id)),
                 x.location_id,
@@ -273,7 +273,7 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
             })
             .ToArrayAsync();
 
-        var res = data.Select(x => new AccessLevelDto(x.id, x.driver_id, x.name, x.components.ToList(), x.location_id, x.is_active)).ToList();
+        var res = data.Select(x => new AccessLevelDto(x.id, x.name, x.components.ToList(), x.location_id, x.is_active)).ToList();
 
 
         return new Pagination<AccessLevelDto>
@@ -303,10 +303,10 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
 
     public async Task<bool> IsAnyByNameAsync(string name)
     {
-
+        return await context.access_level.AsNoTracking().AnyAsync(x => x.name.Equals(name));
     }
 
-    public async Task<bool> IsAnyById(short id)
+    public async Task<bool> IsAnyById(int id)
     {
         return await context.access_level.AsNoTracking().AnyAsync(x => x.id == id);
     }

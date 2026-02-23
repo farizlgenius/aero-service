@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aero.Domain.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,7 @@ namespace Aero.Domain.Entities
         private void SetName(string name)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(name);
+            if (!RegexHelper.IsValidOnlyCharAndDigit(name)) throw new ArgumentException("Name invalid.");
             this.Name = name;
         }
         private void SetComponents(List<AccessLevelComponent> components)

@@ -1,3 +1,4 @@
+using Aero.Domain.Helpers;
 using System;
 
 namespace Aero.Domain.Entities;
@@ -10,7 +11,7 @@ public sealed class AccessLevel : BaseDomain
 
        public AccessLevel() { }
 
-    public AccessLevel(int id,short driverid,string name,List<AccessLevelComponent> components,int location) : base(location)
+    public AccessLevel(int id, string name, List<AccessLevelComponent> components, int location) : base(location)
     {
         SetId(id);
         SetName(name);
@@ -24,9 +25,13 @@ public sealed class AccessLevel : BaseDomain
     }
 
 
+
+
     private void SetName(string name) 
     {
+        
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        if (!RegexHelper.IsValidOnlyCharAndDigit(name)) throw new ArgumentException("Name invalid.");
         this.Name = name;
     }
     private void SetComponents(List<AccessLevelComponent> components) 

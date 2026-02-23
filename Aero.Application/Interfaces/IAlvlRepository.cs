@@ -8,9 +8,9 @@ namespace Aero.Application.Interface;
 
 public interface IAlvlRepository : IBaseRepository<AccessLevelDto,AccessLevel,CreateAccessLevel>
 {
-    Task<int> CountByLocationIdAndUpdateTimeAsync(short locationId, DateTime sync);
-    Task<string> GetAcrNameByIdAndMacAsync(short id, string mac);
-    Task<string> GetTimezoneNameByIdAsync(short id);
+    Task<int> CountByLocationIdAndUpdateTimeAsync(int locationId, DateTime sync);
+    Task<string> GetAcrNameByIdAndMacAsync(int id, string mac);
+    Task<string> GetTimezoneNameByIdAsync(int id);
     Task<IEnumerable<AccessLevel>> GetDomainAsync();
     
 }
