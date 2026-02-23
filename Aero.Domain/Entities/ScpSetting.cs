@@ -19,8 +19,9 @@ public sealed class ScpSetting
   public short nMpg { get; set; }
   public short nCard { get; set; }
   public short nArea { get; set; }
+    public short nCfmt { get; set; }
 
-    public ScpSetting(short nMsp1Port,int nTransaction,short nSio,short nMp,short nCp,short nAcr,short nAlvl,short nTrgr,short nProc,short gmtOffset,short nTz,short nHol,short nMpg,short nCard,short nArea) 
+    public ScpSetting(short nMsp1Port,int nTransaction,short nSio,short nMp,short nCp,short nAcr,short nAlvl,short nTrgr,short nProc,short gmtOffset,short nTz,short nHol,short nMpg,short nCard,short nArea,short nCfmt) 
     {
         this.nMsp1Port = nMsp1Port;
         this.nTransaction = nTransaction;
@@ -37,5 +38,6 @@ public sealed class ScpSetting
         this.nMpg = nMpg;
         this.nCard = nCard;
         this.nArea = nArea;
+        this.nCfmt = nCfmt;
     }
 }

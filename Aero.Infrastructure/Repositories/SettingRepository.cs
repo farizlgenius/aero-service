@@ -47,6 +47,6 @@ public class SettingRepository(AppDbContext context) : ISettingRepository
     public async Task<ScpSetting> GetScpSettingAsync()
     {
         var en = await context.scp_setting.FirstOrDefaultAsync();
-        return new ScpSetting(en.n_msp1_port,en.n_transaction,en.n_sio,en.n_mp,en.n_cp,en.n_acr,en.n_alvl,en.n_trgr,en.n_proc,en.gmt_offset,en.n_tz,en.n_hol,en.n_mpg,en.n_card,en.n_area);
+        return new ScpSetting(en.n_msp1_port,en.n_transaction,en.n_sio,en.n_mp,en.n_cp,en.n_acr,en.n_alvl,en.n_trgr,en.n_proc,en.gmt_offset,en.n_tz,en.n_hol,en.n_mpg,en.n_card,en.n_area,en.n_cfmt);
     }
 }

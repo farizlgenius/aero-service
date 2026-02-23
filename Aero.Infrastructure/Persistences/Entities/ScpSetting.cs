@@ -21,5 +21,6 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short n_mpg { get; set; }
         public short n_card { get; set; }
         public short n_area { get; set; }
+        public short n_cfmt { get; set; }
     }
 }

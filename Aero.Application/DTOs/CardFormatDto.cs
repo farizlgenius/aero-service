@@ -5,6 +5,8 @@ namespace Aero.Application.DTOs
 
 
     public sealed record CardFormatDto(
+        int Id,
+        short DriverId,
         string Name,
         short Fac,
         short Offset,

@@ -17,7 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Aero.Application.Services
 {
-    public class AuthService(IOptions<JwtSettings> settings, IQOperatorRepository qOper,IQRoleRepository qRole,IAuthRepository auth) : IAuthService
+    public class AuthService(IOptions<JwtSettings> settings, IOperatorRepository oper,IRoleRepository role,IAuthRepository auth) : IAuthService
     {
         private readonly string _secret = settings.Value.Secret;
         private readonly string _issuer = settings.Value.Issuer;
@@ -39,12 +39,12 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<TokenDtoWithRefresh>> LoginAsync(LoginDto model,string ip)
         {
 
-            var user = await qOper.GetByUsernameAsync(model.Username);
-            var hash = await qOper.GetPasswordByUsername(model.Username);
+            var user = await oper.GetByUsernameAsync(model.Username);
+            var hash = await oper.GetPasswordByUsername(model.Username);
 
             if (user is null) return ResponseHelper.NotFoundBuilder<TokenDtoWithRefresh>(["User not found."]);
 
-            var role = await qRole.GetByComponentIdAsync(user.RoleId);
+            var role = await role.GetByComponentIdAsync(user.RoleId);
 
             
 
@@ -85,8 +85,8 @@ namespace Aero.Application.Services
                 return ResponseHelper.Unauthorize<TokenDtoWithRefresh>(["Invalid refresh token"]);
             }
 
-            var user = await qOper.GetByUsernameAsync(rec.Username);
-            var role = await qRole.GetByComponentIdAsync(user.RoleId);
+            var user = await oper.GetByUsernameAsync(rec.Username);
+            var role = await role.GetByComponentIdAsync(user.RoleId);
 
             if (user is null) return ResponseHelper.NotFoundBuilder<TokenDtoWithRefresh>(["User not found."]);
 

@@ -6,7 +6,7 @@ using Aero.Application.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Aero.Api.Controllers.V1
+namespace Aero.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -102,7 +102,7 @@ namespace Aero.Api.Controllers.V1
                 Features = [],
                 RoleName = "",
                 RoleNo = 0
-            } : JsonSerializer.Deserialize<Aero.Application.DTOs.Role>(roleJson);
+            } : JsonSerializer.Deserialize<Role>(roleJson);
 
             var info = new TokenInfo
             {

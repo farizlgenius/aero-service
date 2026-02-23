@@ -1,12 +1,10 @@
-﻿
-
-using Aero.Application.DTOs;
+﻿using Aero.Application.DTOs;
 using Aero.Application.Interface;
 using Aero.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Aero.Api.Controllers.V1
+namespace Aero.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -38,7 +36,7 @@ namespace Aero.Api.Controllers.V1
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<bool>>> CreateAsync([FromBody] AccessAreaDto dto) 
+        public async Task<ActionResult<ResponseDto<bool>>> CreateAsync([FromBody] CreateAccessAreaDto dto) 
         {
             var res = await accessareaService.CreateAsync(dto);
             return Ok(res);

@@ -5,7 +5,7 @@ using Aero.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Aero.Api.Controllers.V1
+namespace Aero.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

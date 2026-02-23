@@ -6,7 +6,7 @@ using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Interface;
 
-public interface ICfmtRepository : IBaseRepository<CardFormatDto,CardFormat>
+public interface ICfmtRepository : IBaseRepository<CardFormatDto,CardFormat, CardFormat>
 {
     Task<int> CountByUpdateTimeAsync(DateTime sync);
 }

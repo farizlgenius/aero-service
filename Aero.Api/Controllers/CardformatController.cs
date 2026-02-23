@@ -4,9 +4,9 @@ using Aero.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Aero.Api.Controllers.V1
+namespace Aero.Api.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class CardFormatController(ICardFormatService cardFormatService) : ControllerBase
     {
@@ -20,7 +20,7 @@ namespace Aero.Api.Controllers.V1
             return Ok(res);
         }
 
-        [HttpGet("/api/v1/{location}/[controller]")]
+        [HttpGet("/api/{location}/[controller]")]
         [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<CardFormatDto>>>> GetByLocationIdAsync(short location)
         {
@@ -28,7 +28,7 @@ namespace Aero.Api.Controllers.V1
             return Ok(res);
         }
 
-        [HttpGet("/api/v1/{location}/[controller]/pagination")]
+        [HttpGet("/api/{location}/[controller]/pagination")]
         [Authorize]
         public async Task<ActionResult<ResponseDto<Pagination<CardFormatDto>>>> GetPaginationAsync([FromQuery] PaginationParamsWithFilter param,short location)
         {
@@ -40,7 +40,7 @@ namespace Aero.Api.Controllers.V1
         [Authorize]
         public async Task<ActionResult<ResponseDto<CardFormatDto>>> GetByComponentAsync(short component)
         {
-            var res = await cardFormatService.GetByComponentIdAsync(component);
+            var res = await cardFormatService.GetByIdAsync(component);
             return Ok(res);
         }
 

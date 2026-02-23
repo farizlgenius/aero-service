@@ -1,10 +1,9 @@
-﻿
-using Aero.Application.DTOs;
+﻿using Aero.Application.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace Aero.Api.Controllers.V1
+namespace Aero.Api.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]

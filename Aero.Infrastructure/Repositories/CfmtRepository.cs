@@ -18,11 +18,11 @@ public class CfmtRepository(AppDbContext context) : ICfmtRepository
            return await context.SaveChangesAsync();
       }
 
-      public async Task<int> DeleteByComponentIdAsync(short component)
+      public async Task<int> DeleteByIdAsync(int id)
       {
             var en = await context.card_format
-            .Where(x => x.component_id == component)
-            .OrderBy(x => x.component_id)
+            .Where(x => x.id == id)
+            .OrderBy(x => x.id)
             .FirstOrDefaultAsync();
 
             if(en is null) return 0;
@@ -31,16 +31,16 @@ public class CfmtRepository(AppDbContext context) : ICfmtRepository
             return await context.SaveChangesAsync();
       }
 
-      public async Task<int> UpdateAsync(CardFormat newData)
+      public async Task<int> UpdateAsync(CardFormat data)
       {
             var en = await context.card_format
-            .Where(x => x.component_id == newData.ComponentId)
-            .OrderBy(x => x.component_id)
+            .Where(x => x.id == data.Id)
+            .OrderBy(x => x.id)
             .FirstOrDefaultAsync();
 
             if(en is null) return 0;
 
-            CardFormatMapper.Update(en,newData);
+        en.Update(data);
 
             context.card_format.Update(en);
             return await context.SaveChangesAsync();
@@ -60,110 +60,44 @@ public class CfmtRepository(AppDbContext context) : ICfmtRepository
     {
         var res = await context.card_format
         .AsNoTracking()
-        .OrderBy(x => x.component_id)
-        .Select(x => new CardFormatDto
-        {
-            // Baes 
-            IsActive = x.is_active,
-            LocationId = x.location_id,
-
-            // extend_desc
-            Name = x.name,
-            ComponentId = x.component_id,
-            Facility = x.facility,
-            Bits = x.bits,
-            PeLn = x.pe_ln,
-            PeLoc = x.pe_loc,
-            PoLn = x.po_ln,
-            PoLoc = x.po_loc,
-            FcLn = x.fc_ln,
-            FcLoc = x.fc_loc,
-            ChLn = x.ch_ln,
-            ChLoc = x.ch_loc,
-            IcLn = x.ic_ln,
-            IcLoc = x.ic_loc,
-
-        })
+        .OrderBy(x => x.id)
+        .Select(c => new CardFormatDto(c.id,c.name,c.facility,c.offset,c.function_id,c.flags,c.bits,c.pe_ln,c.pe_loc,c.po_ln,c.po_loc,c.fc_ln,c.fc_loc,c.ch_ln,c.ch_loc,c.ic_ln,c.ic_loc,c.location_id,c.is_active))
         .ToArrayAsync();
 
         return res;
     }
 
-    public async Task<CardFormatDto> GetByComponentIdAsync(short componentId)
+    public async Task<CardFormatDto> GetByIdAsync(int id)
     {
         var res = await context.card_format
         .AsNoTracking()
-        .Where(x => x.component_id == componentId)
-        .OrderBy(x => x.component_id)
-        .Select(x => new CardFormatDto
-        {
-            // Baes 
-            IsActive = x.is_active,
-            LocationId = x.location_id,
-
-            // extend_desc
-            Name = x.name,
-            ComponentId = x.component_id,
-            Facility = x.facility,
-            Bits = x.bits,
-            PeLn = x.pe_ln,
-            PeLoc = x.pe_loc,
-            PoLn = x.po_ln,
-            PoLoc = x.po_loc,
-            FcLn = x.fc_ln,
-            FcLoc = x.fc_loc,
-            ChLn = x.ch_ln,
-            ChLoc = x.ch_loc,
-            IcLn = x.ic_ln,
-            IcLoc = x.ic_loc,
-
-        })
+        .Where(x => x.id == id)
+        .OrderBy(x => x.id)
+        .Select(c => new CardFormatDto(c.id, c.name, c.facility, c.offset, c.function_id, c.flags, c.bits, c.pe_ln, c.pe_loc, c.po_ln, c.po_loc, c.fc_ln, c.fc_loc, c.ch_ln, c.ch_loc, c.ic_ln, c.ic_loc, c.location_id, c.is_active))
         .FirstOrDefaultAsync();
 
         return res;
     }
 
-    public async Task<IEnumerable<CardFormatDto>> GetByLocationIdAsync(short locationId)
+    public async Task<IEnumerable<CardFormatDto>> GetByLocationIdAsync(int locationId)
     {
         var res = await context.card_format
        .AsNoTracking()
        .Where(x => x.location_id == locationId || x.location_id == 1)
-       .OrderBy(x => x.component_id)
-       .Select(x => new CardFormatDto
-       {
-           // Baes 
-           IsActive = x.is_active,
-           LocationId = x.location_id,
-
-           // extend_desc
-           Name = x.name,
-           ComponentId = x.component_id,
-           Facility = x.facility,
-           Bits = x.bits,
-           PeLn = x.pe_ln,
-           PeLoc = x.pe_loc,
-           PoLn = x.po_ln,
-           PoLoc = x.po_loc,
-           FcLn = x.fc_ln,
-           FcLoc = x.fc_loc,
-           ChLn = x.ch_ln,
-           ChLoc = x.ch_loc,
-           IcLn = x.ic_ln,
-           IcLoc = x.ic_loc,
-
-       })
+       .OrderBy(x => x.id)
+      .Select(c => new CardFormatDto(c.id, c.name, c.facility, c.offset, c.function_id, c.flags, c.bits, c.pe_ln, c.pe_loc, c.po_ln, c.po_loc, c.fc_ln, c.fc_loc, c.ch_ln, c.ch_loc, c.ic_ln, c.ic_loc, c.location_id, c.is_active))
        .ToArrayAsync();
 
         return res;
     }
 
-    public async Task<short> GetLowestUnassignedNumberAsync(int max, string mac)
+    public async Task<short> GetLowestUnassignedNumberAsync(int max)
     {
         if (max <= 0) return -1;
 
         var query = context.card_format
             .AsNoTracking()
-            .Select(x => x.component_id);
+            .Select(x => x.driver_id);
 
         // Handle empty table case quickly
         var hasAny = await query.AnyAsync();
@@ -186,7 +120,7 @@ public class CfmtRepository(AppDbContext context) : ICfmtRepository
         return expected;
     }
 
-    public async Task<Pagination<CardFormatDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    public async Task<Pagination<CardFormatDto>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
     {
 
         var query = context.card_format.AsNoTracking().AsQueryable();
@@ -242,29 +176,7 @@ public class CfmtRepository(AppDbContext context) : ICfmtRepository
             .OrderByDescending(t => t.created_date)
             .Skip((param.PageNumber - 1) * param.PageSize)
             .Take(param.PageSize)
-            .Select(x => new CardFormatDto
-            {
-                // Baes 
-                IsActive = x.is_active,
-                LocationId = x.location_id,
-
-                // extend_desc
-                Name = x.name,
-                ComponentId = x.component_id,
-                Facility = x.facility,
-                Bits = x.bits,
-                PeLn = x.pe_ln,
-                PeLoc = x.pe_loc,
-                PoLn = x.po_ln,
-                PoLoc = x.po_loc,
-                FcLn = x.fc_ln,
-                FcLoc = x.fc_loc,
-                ChLn = x.ch_ln,
-                ChLoc = x.ch_loc,
-                IcLn = x.ic_ln,
-                IcLoc = x.ic_loc,
-
-            })
+            .Select(c => new CardFormatDto(c.id, c.name, c.facility, c.offset, c.function_id, c.flags, c.bits, c.pe_ln, c.pe_loc, c.po_ln, c.po_loc, c.fc_ln, c.fc_loc, c.ch_ln, c.ch_loc, c.ic_ln, c.ic_loc, c.location_id, c.is_active))
             .ToListAsync();
 
 
@@ -281,8 +193,18 @@ public class CfmtRepository(AppDbContext context) : ICfmtRepository
         };
     }
 
-    public async Task<bool> IsAnyByComponentId(short component)
+    public async Task<bool> IsAnyById(int id)
     {
-        return await context.card_format.AnyAsync(x => x.component_id == component);
+        return await context.card_format.AnyAsync(x => x.id == id);
+    }
+
+    public Task<short> GetLowestUnassignedNumberByMacAsync(string mac, int max)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<bool> IsAnyByNameAsync(string name)
+    {
+        return await context.card_format.AnyAsync(x => x.name.Equals(name.Trim()));
     }
 }

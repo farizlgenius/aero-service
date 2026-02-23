@@ -1824,7 +1824,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             );
 
         modelBuilder.Entity<ScpSetting>().HasData(
-            new ScpSetting { id = 1, n_msp1_port = 3, n_transaction = 60000, n_sio = 33, n_mp = 615, n_cp = 388, n_acr = 64, n_alvl = 32000, n_trgr = 1024, n_proc = 1024, gmt_offset = -25200, n_tz = 255, n_hol = 255, n_mpg = 128, n_card = 200, n_area = 127 }
+            new ScpSetting { id = 1, n_msp1_port = 3, n_transaction = 60000, n_sio = 33, n_mp = 615, n_cp = 388, n_acr = 64, n_alvl = 32000, n_trgr = 1024, n_proc = 1024, gmt_offset = -25200, n_tz = 255, n_hol = 255, n_mpg = 128, n_card = 200, n_area = 127,n_cfmt=8 }
             );
 
 
