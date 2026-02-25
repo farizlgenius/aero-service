@@ -9,31 +9,31 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aero.Api.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class CardHolderController(ICardHolderService cardHolderService,IFileStorage file) : ControllerBase
+    public class UserController(IUserService cardHolderService,IFileStorage file) : ControllerBase
     {
 
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IEnumerable<CardHolderDto>>>> GetAsync()
+        public async Task<ActionResult<ResponseDto<IEnumerable<UserDto>>>> GetAsync()
         {
             var res = await cardHolderService.GetAsync();
             return Ok(res);
         }
 
-        [HttpGet("/api/v1/{location}/[controller]")]
+        [HttpGet("/api/{location}/[controller]")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IEnumerable<CardHolderDto>>>> GetByLocationIdAsync(short location)
+        public async Task<ActionResult<ResponseDto<IEnumerable<UserDto>>>> GetByLocationIdAsync(short location)
         {
             var res = await cardHolderService.GetByLocationIdAsync(location);
             return Ok(res);
         }
 
-        [HttpGet("/api/v1/{location}/[controller]/pagination")]
+        [HttpGet("/api/{location}/[controller]/pagination")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<Pagination<CardHolderDto>>>> GetPaginatinAsync( [FromQuery] PaginationParamsWithFilter param,short location)
+        public async Task<ActionResult<ResponseDto<Pagination<UserDto>>>> GetPaginatinAsync( [FromQuery] PaginationParamsWithFilter param,short location)
         {
             var res = await cardHolderService.GetPaginationAsync(param,location);
             return Ok(res);
@@ -41,7 +41,7 @@ namespace Aero.Api.Controllers
 
         [HttpGet("{userid}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<CardHolderDto>>> GetByComponentAsync(string userid)
+        public async Task<ActionResult<ResponseDto<UserDto>>> GetByComponentAsync(string userid)
         {
             var res = await cardHolderService.GetByUserIdAsync(userid);
             return Ok(res);
@@ -60,7 +60,7 @@ namespace Aero.Api.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<bool>>> CreateAsync([FromBody] CardHolderDto dto)
+        public async Task<ActionResult<ResponseDto<bool>>> CreateAsync([FromBody] UserDto dto)
         {
 
             var res = await cardHolderService.CreateAsync(dto);
@@ -89,7 +89,7 @@ namespace Aero.Api.Controllers
 
         [HttpDelete("{userid}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<CardHolderDto>>> DeleteAsync(string userid)
+        public async Task<ActionResult<ResponseDto<UserDto>>> DeleteAsync(string userid)
         {
             var res = await cardHolderService.DeleteAsync(userid);
             return Ok(res);
@@ -99,7 +99,7 @@ namespace Aero.Api.Controllers
 
         [HttpPut]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<CardHolderDto>>> UpdateAsync([FromBody] CardHolderDto dto)
+        public async Task<ActionResult<ResponseDto<UserDto>>> UpdateAsync([FromBody] UserDto dto)
         {
             var res = await cardHolderService.UpdateAsync(dto);
             return Ok(res);

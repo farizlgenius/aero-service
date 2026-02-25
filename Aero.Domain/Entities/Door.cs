@@ -4,10 +4,11 @@ namespace Aero.Domain.Entities;
 
 public sealed class Door : BaseDomain
 {
-      public short AcrId { get; set; }
+      public short DriverId { get; set; }
       public string Name { get; set; } = string.Empty;
       public short AccessConfig { get; set; }
       public short PairDoorNo { get; set; }
+    public string Mac { get; set; } = string.Empty;
       // Reader setting for Reader In
       public List<Reader> Readers { get; set; }
       public short ReaderOutConfiguration { get; set; }

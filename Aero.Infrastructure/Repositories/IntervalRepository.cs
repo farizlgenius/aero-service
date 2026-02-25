@@ -61,7 +61,7 @@ public class IntervalRepository(AppDbContext context) : IIntervalRepository
 
             // extend_desc
             ComponentId = x.component_id,
-            DaysDesc = x.days_desc,
+            DaysDesc = x.days_detail,
             StartTime = x.start_time,
             EndTime = x.end_time,
             Days = new DaysInWeekDto
@@ -269,7 +269,7 @@ public class IntervalRepository(AppDbContext context) : IIntervalRepository
                     var pattern = $"%{search}%";
 
                     query = query.Where(x =>
-                        EF.Functions.ILike(x.days_desc, pattern) ||
+                        EF.Functions.ILike(x.days_detail, pattern) ||
                         EF.Functions.ILike(x.start_time, pattern) ||
                         EF.Functions.ILike(x.end_time, pattern)
 
@@ -278,7 +278,7 @@ public class IntervalRepository(AppDbContext context) : IIntervalRepository
                 else // SQL Server
                 {
                     query = query.Where(x =>
-                        x.days_desc.Contains(search) ||
+                        x.days_detail.Contains(search) ||
                         x.start_time.Contains(search) ||
                         x.end_time.Contains(search)
                     );
@@ -316,7 +316,7 @@ public class IntervalRepository(AppDbContext context) : IIntervalRepository
 
                 // extend_desc
                 ComponentId = x.component_id,
-                DaysDesc = x.days_desc,
+                DaysDesc = x.days_detail,
                 StartTime = x.start_time,
                 EndTime = x.end_time,
                 Days = new DaysInWeekDto

@@ -5,21 +5,20 @@ using Aero.Domain.Interface;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class Location : IDatetime
+    public sealed class Location : BaseEntity,IDatetime
     {
-        [Key]
-        public int id { get; set; }
-        public string location_name { get; set; } = string.Empty;
+
+        public string name { get; set; } = string.Empty;
         public string description { get; set; } = string.Empty;
 
         // All HardwareComponent 
-        public ICollection<Hardware> hardwares { get; set; }
+        public ICollection<Device> hardwares { get; set; }
         public ICollection<Module> modules { get; set; }
         public ICollection<ControlPoint> control_points { get; set; }
         public ICollection<MonitorPoint> monitor_points { get; set; }
         public ICollection<AccessLevel> accesslevels { get; set; }
         public ICollection<AccessArea> areas { get; set; }
-        public ICollection<CardHolder> cardholders { get; set; }
+        public ICollection<User> cardholders { get; set; }
         public ICollection<Door> doors { get; set; }
         public ICollection<MonitorGroup> monitor_groups { get; set; }
         public ICollection<OperatorLocation> operator_locations { get; set; }
@@ -40,9 +39,18 @@ namespace Aero.Infrastructure.Persistences.Entities
         public ICollection<Role> roles { get; set; }
         public ICollection<CommandAudit> command_audit { get; set; }
 
-        public bool is_active { get; set; } = true;
-        public DateTime created_date { get; set; }
-        public DateTime updated_date { get; set; }
+
+        public Location(string name,string description,int location) : base(location)
+        {
+            this.name = name;
+            this.description = description;
+        }
+
+        public void Update(string name, string description) 
+        {
+            this.name = name;
+            this.description = description;
+        }
 
     }
 }

@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aero.Application.Services
 {
-    public class CredentialService(IQCredRepository qCred,ICredRepository rCred,IQHwRepository qHw,IHolderCommand holder, IServiceScopeFactory scopeFactory) : ICredentialService
+    public class CredentialService(IQCredRepository qCred,ICredRepository rCred,IQHwRepository qHw,IUserCommand holder, IServiceScopeFactory scopeFactory) : ICredentialService
     {
        
 

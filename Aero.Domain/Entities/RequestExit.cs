@@ -5,6 +5,7 @@ namespace Aero.Domain.Entities;
 public sealed class RequestExit : BaseDomain
 {
       public short ModuleId { get; set; }
+    public short DoorId { get; set; }
         public short InputNo { get; set; }
         public short InputMode { get; set; }
         public short Debounce { get; set; }

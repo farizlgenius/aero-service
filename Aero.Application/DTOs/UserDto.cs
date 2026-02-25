@@ -4,7 +4,7 @@ using Aero.Domain.Entities;
 namespace Aero.Application.DTOs
 {
 
-    public sealed record CardHolderDto(
+    public sealed record UserDto(
         string UserId,
         string Title,
         string FirstName,

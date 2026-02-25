@@ -7,7 +7,7 @@ namespace Aero.Infrastructure.Persistences.Entities
     {
         public string name { get;  set; } = string.Empty;
         public ICollection<AccessLevelComponent> components { get;  set;}
-        public ICollection<CardHolderAccessLevel> cardholder_access_levels { get;  set;}
+        public ICollection<UserAccessLevel> cardholder_access_levels { get;  set;}
 
         public AccessLevel(string name,List<AccessLevelComponent> component,int location) : base(location)
         {
@@ -22,10 +22,7 @@ namespace Aero.Infrastructure.Persistences.Entities
             updated_date = DateTime.UtcNow;
         }
 
-        public void ToggleStatus(bool status)
-        {
-            is_active = status;
-        }
+       
     }
 
 }

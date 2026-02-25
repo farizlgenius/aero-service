@@ -11,7 +11,7 @@ namespace Aero.Infrastructure.Persistences.Entities;
         public int id {get; set;}
         public short driver_id { get; set; }
         public string mac { get; set;} = string.Empty;
-        public Hardware hardware { get; set; }
+        public Device device { get; set; }
         public int door_id { get; set; }
         public short acr_id { get; set; }
         public Door door { get; set; }
@@ -39,4 +39,5 @@ namespace Aero.Infrastructure.Persistences.Entities;
             acr_id = data.AcrId;
             timezone_id = data.TimezoneId;
         }
+
     }

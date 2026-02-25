@@ -48,10 +48,7 @@ namespace Aero.Infrastructure.Persistences.Entities
 
         }
 
-        public void ToggleStatus(bool status)
-        {
-            this.is_active = status;
-        }
+       
     }
 
 

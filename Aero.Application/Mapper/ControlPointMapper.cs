@@ -11,7 +11,7 @@ public sealed class ControlPointMapper
             var res = new ControlPoint();
             // Base 
             MacBaseMapper.ToDomain(dto,res);
-            res.CpId = dto.CpId;
+            res.DriverId = dto.CpId;
             res.Name = dto.Name;
             res.ModuleId = dto.ModuleId;
             res.OutputNo = dto.OutputNo;

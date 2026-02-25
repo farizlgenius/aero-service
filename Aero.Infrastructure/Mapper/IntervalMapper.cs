@@ -13,7 +13,7 @@ public sealed class IntervalMapper
             // Base 
             NoMacBaseMapper.ToEf(dto,res);
             res.component_id = dto.ComponentId;
-            res.days_desc = dto.DaysDesc;
+            res.days_desc = dto.DaysDetail;
             res.start_time = dto.StartTime;
             res.end_time = dto.EndTime;
             res.days = new Infrastructure.Data.Entities.DaysInWeek
@@ -36,7 +36,7 @@ public sealed class IntervalMapper
             NoMacBaseMapper.Update(dto,en);
 
             // Detail
-            en.days_desc = dto.DaysDesc;
+            en.days_desc = dto.DaysDetail;
             en.start_time = dto.StartTime;
             en.end_time = dto.EndTime;
             en.days.sunday = dto.Days.Sunday;

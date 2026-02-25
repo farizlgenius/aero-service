@@ -42,7 +42,7 @@ namespace Aero.Application.Services
         ICpCommand cp,
         IMpgCommand mpg,
         IDoorCommand d,
-        IHolderCommand holder,
+        IUserCommand holder,
         INotificationPublisher publisher
         ) : IHardwareService
     {

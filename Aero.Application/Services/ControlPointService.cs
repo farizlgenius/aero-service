@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Aero.Api.Constants;
+﻿using Aero.Api.Constants;
 using Aero.Application.Constants;
 using Aero.Application.DTOs;
 using Aero.Application.Helpers;
@@ -8,34 +7,36 @@ using Aero.Application.Interfaces;
 using Aero.Application.Mapper;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
+using System.Net;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aero.Application.Services
 {
-    public sealed class ControlPointService(IQCpRepository qCp,IQHwRepository qHw,ICpCommand cp,ICpRepository rCp) : IControlPointService 
+    public sealed class ControlPointService(IHwRepository hw,ICpCommand cp,ICpRepository repo,ISettingRepository setting) : IControlPointService 
     {
         public async Task<ResponseDto<IEnumerable<ControlPointDto>>> GetAsync()
         {
-            var dtos = await qCp.GetAsync();
+            var dtos = await repo.GetAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<ControlPointDto>>(dtos);
         }
 
         public async Task<ResponseDto<IEnumerable<ControlPointDto>>> GetByLocationAsync(short location)
         {
-            var dtos = await qCp.GetByLocationIdAsync(location);
+            var dtos = await repo.GetByLocationIdAsync(location);
 
             return ResponseHelper.SuccessBuilder<IEnumerable<ControlPointDto>>(dtos);
         }
 
         private async Task<ResponseDto<IEnumerable<Mode>>> GetOfflineModeAsync()
         {
-            var dtos = await qCp.GetOfflineModeAsync();
+            var dtos = await repo.GetOfflineModeAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
 
         private async Task<ResponseDto<IEnumerable<Mode>>> GetRelayModeAsync()
         {
-            var dtos = await qCp.GetRelayModeAsync();
+            var dtos = await repo.GetRelayModeAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
 
@@ -43,7 +44,7 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<bool>> ToggleAsync(ToggleControlPointDto dto)
         {
             List<string> errors = new List<string>();
-            var id = await qHw.GetComponentIdFromMacAsync(dto.Mac);
+            var id = await hw.GetComponentIdFromMacAsync(dto.Mac);
             if(id == 0) return ResponseHelper.NotFoundBuilder<bool>();
             if (!cp.ControlPointCommand(id, dto.ComponentId, dto.Command))
             {
@@ -54,27 +55,33 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<IEnumerable<short>>> GetAvailableOpAsync(string mac, short ModuleId)
         {
-            var res = await qCp.GetAvailableOpAsync(mac,ModuleId);
+            var res = await repo.GetAvailableOpAsync(mac,ModuleId);
             return ResponseHelper.SuccessBuilder<IEnumerable<short>>(res);
         }
 
 
 
 
-        public async Task<ResponseDto<bool>> CreateAsync(ControlPointDto dto)
+        public async Task<ResponseDto<ControlPointDto>> CreateAsync(ControlPointDto dto)
         {
-            var componentId = await qCp.GetLowestUnassignedNumberAsync(10,"");
-            var cpId = await qCp.GetLowestUnassignedNumberAsync(10,dto.Mac);
+            // Check value in license here 
+            // ....to be implement
+
+            if (await repo.IsAnyByNameAsync(dto.Name.Trim())) return ResponseHelper.BadRequestName<ControlPointDto>();
+
+            var ScpSetting = await setting.GetScpSettingAsync();
+
+            var DriverId = await repo.GetLowestUnassignedNumberByMacAsync(dto.Mac, ScpSetting.nCp);
 
             if (componentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
-            short modeNo = await qCp.GetModeNoByOfflineAndRelayModeAsync(dto.OfflineMode,dto.RelayMode);
+            short modeNo = await repo.GetModeNoByOfflineAndRelayModeAsync(dto.OfflineMode,dto.RelayMode);
             
-            var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
+            var ScpId = await hw.GetComponentIdFromMacAsync(dto.Mac);
 
             var domain = ControlPointMapper.ToDomain(dto);
             domain.ComponentId = componentId;
-            domain.CpId = cpId;
+            domain.DriverId = cpId;
 
             if (!cp.OutputPointSpecification(ScpId, domain.ModuleId, domain.OutputNo, modeNo))
             {
@@ -88,9 +95,9 @@ namespace Aero.Application.Services
 
             }
 
-            var status = await rCp.AddAsync(domain);
+            var status = await repo.AddAsync(domain);
 
-            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<ControlPointDto>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
 
             return ResponseHelper.SuccessBuilder(true);
         }
@@ -98,18 +105,18 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<bool>> DeleteAsync(short component)
         {
 
-            if (!await qCp.IsAnyByComponentId(component)) return ResponseHelper.NotFoundBuilder<bool>();
+            if (!await repo.IsAnyById(component)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var dto = await qCp.GetByComponentIdAsync(component);
+            var dto = await repo.GetByIdAsync(component);
 
-            var scpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
+            var scpId = await hw.GetComponentIdFromMacAsync(dto.Mac);
 
             if (!cp.ControlPointConfiguration(scpId, -1, dto.CpId, dto.OutputNo, dto.DefaultPulse))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(dto.Mac,Command.CONTROL_CONFIG));
             }
 
-            var status = await rCp.DeleteByComponentIdAsync(component);
+            var status = await repo.DeleteByIdAsync(component);
 
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,[]);
 
@@ -119,23 +126,23 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<ControlPointDto>> UpdateAsync(ControlPointDto dto)
         {
 
-            if (!await qCp.IsAnyByComponentId(dto.ComponentId)) return ResponseHelper.NotFoundBuilder<ControlPointDto>();
+            if (!await repo.IsAnyById(dto.ComponentId)) return ResponseHelper.NotFoundBuilder<ControlPointDto>();
 
             var domain = ControlPointMapper.ToDomain(dto);
-            var scpId = await qHw.GetComponentIdFromMacAsync(domain.Mac);
-            short modeNo = await qCp.GetModeNoByOfflineAndRelayModeAsync(domain.OfflineMode,domain.RelayMode);
+            var scpId = await hw.GetComponentIdFromMacAsync(domain.Mac);
+            short modeNo = await repo.GetModeNoByOfflineAndRelayModeAsync(domain.OfflineMode,domain.RelayMode);
             if (!cp.OutputPointSpecification(scpId, domain.ModuleId, domain.OutputNo, modeNo))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<ControlPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.OUTPUT_SPEC));
             }
 
-            if (!cp.ControlPointConfiguration(scpId, domain.ModuleId, domain.CpId, domain.OutputNo, domain.DefaultPulse))
+            if (!cp.ControlPointConfiguration(scpId, domain.ModuleId, domain.DriverId, domain.OutputNo, domain.DefaultPulse))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<ControlPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.CONTROL_CONFIG));
             }
 
 
-            var status = await rCp.UpdateAsync(domain);
+            var status = await repo.UpdateAsync(domain);
 
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<ControlPointDto>(ResponseMessage.UPDATE_RECORD_UNSUCCESS,[]);
 
@@ -144,7 +151,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<bool>> GetStatusAsync(string mac, short component)
         {
-            var id = await qHw.GetComponentIdFromMacAsync(mac);
+            var id = await hw.GetComponentIdFromMacAsync(mac);
             if (!cp.GetCpStatus(id, component, 1))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.CP_STATUS));
@@ -167,7 +174,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<ControlPointDto>> GetByMacAndIdAsync(string Mac, short ComponentId)
         {
-           var dto = await qCp.GetByMacAndComponentIdAsync(Mac,ComponentId);
+           var dto = await repo.GetByMacAndComponentIdAsync(Mac,ComponentId);
 
             return ResponseHelper.SuccessBuilder<ControlPointDto>(dto);
         }
@@ -192,7 +199,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<Pagination<ControlPointDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
         {
-            var res = await qCp.GetPaginationAsync(param, location);
+            var res = await repo.GetPaginationAsync(param, location);
             return ResponseHelper.SuccessBuilder(res);
         }
     }

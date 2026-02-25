@@ -14,7 +14,7 @@ public sealed class DoorMapper
             // Base 
             MacBaseMapper.ToDomain(dto,res);
 
-            res.AcrId = dto.AcrId;
+            res.DriverId = dto.AcrId;
             res.Name = dto.Name;
             res.AccessConfig = dto.AccessConfig;
             res.PairDoorNo = dto.PairDoorNo;
@@ -134,7 +134,7 @@ public sealed class DoorMapper
         // Base 
         MacBaseMapper.ToDomain(dto, res);
 
-        res.AcrId = dto.AcrId;
+        res.DriverId = dto.AcrId;
         res.Name = dto.Name;
         res.AccessConfig = dto.AccessConfig;
         res.PairDoorNo = dto.PairDoorNo;

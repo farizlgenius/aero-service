@@ -11,8 +11,8 @@ namespace Aero.Application.Interface
         Task<ResponseDto<IEnumerable<ControlPointDto>>> GetByLocationAsync(short location);
         Task<ResponseDto<Pagination<ControlPointDto>>> GetPaginationAsync(PaginationParamsWithFilter param,short location);
         
-        Task<ResponseDto<bool>> CreateAsync(ControlPointDto dto);
-        Task<ResponseDto<bool>> DeleteAsync(short component);
+        Task<ResponseDto<ControlPointDto>> CreateAsync(ControlPointDto dto);
+        Task<ResponseDto<ControlPointDto>> DeleteAsync(short component);
         Task<ResponseDto<ControlPointDto>> UpdateAsync(ControlPointDto dto);
         Task<ResponseDto<bool>> GetStatusAsync(string mac, short component);
         Task<ResponseDto<IEnumerable<Mode>>> GetModeAsync(int param);

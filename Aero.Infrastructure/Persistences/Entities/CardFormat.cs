@@ -70,6 +70,8 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.po_loc = data.PoLoc;
             updated_date = DateTime.UtcNow;
         }
+        
+
 
 
     }

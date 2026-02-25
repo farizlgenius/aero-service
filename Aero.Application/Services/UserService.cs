@@ -11,25 +11,24 @@ using System.IO;
 
 namespace Aero.Application.Services
 {
-    public sealed class CardHolderService(
-        IQHolderRepository qHolder,
-        IQHwRepository qHw,
-        IHolderCommand holder,
-        IQCredRepository qCred,
-        IHolderRepository rHolder,
-        IHolderCommand hol,
-        ICredRepository rCred,
+    public sealed class UserService(
+        IHwRepository hw,
+        IUserCommand holder,
+        IUserRepository repo,
+        IUserCommand hol,
+        ICredRepository cred,
         IFileStorage file
-        ) : ICardHolderService
+        ) : IUserService
     {
 
 
-        public async Task<ResponseDto<bool>> CreateAsync(CardHolderDto dto)
+        public async Task<ResponseDto<bool>> CreateAsync(UserDto dto)
         {
-            if (string.IsNullOrEmpty(dto.UserId)) return ResponseHelper.BadRequest<bool>();
-            if (await qHolder.IsAnyByUserId(dto.UserId)) return ResponseHelper.Duplicate<bool>();
 
-            var ComponentId = await qHolder.GetLowestUnassignedNumberAsync(10,"");
+            if (string.IsNullOrEmpty(dto.UserId)) return ResponseHelper.BadRequest<bool>();
+            if (await repo.IsAnyByUserId(dto.UserId)) return ResponseHelper.Duplicate<bool>();
+
+            var ComponentId = await repo.GetLowestUnassignedNumberAsync(10,"");
             if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
             List<short> CredentialComponentId = new List<short>();
             List<string> errors = new List<string>();
@@ -43,16 +42,16 @@ namespace Aero.Application.Services
             {
                 foreach (var cred in domain.Credentials)
                 {
-                    CredentialComponentId.Add(await qCred.GetLowestUnassignedNumberAsync(10,""));
-                    cred.IssueCode = await qCred.GetLowestUnassignedIssueCodeByUserIdAsync(8, dto.UserId);
+                    CredentialComponentId.Add(await cred.GetLowestUnassignedNumberAsync(10,""));
+                    cred.IssueCode = await cred.GetLowestUnassignedIssueCodeByUserIdAsync(8, dto.UserId);
 
                     foreach (var component in alvl.Components)
                     {
 
-                        var id = await qHw.GetComponentIdFromMacAsync(component.Mac);
+                        var id = await hw.GetComponentIdFromMacAsync(component.Mac);
                         if (!holder.AccessDatabaseCardRecord(id, domain.Flag, cred.CardNo, cred.IssueCode, cred.Pin,domain.AccessLevels.Where(x => x.Components.Any(x => x.Mac.Equals(component.Mac))).Select(x => x.ComponentId).ToList(), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.ActiveDate), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.DeactiveDate)))
                         {
-                            errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id), Command.CARD_RECORD));
+                            errors.Add(MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync(id), Command.CARD_RECORD));
                         }
 
                     }
@@ -64,7 +63,7 @@ namespace Aero.Application.Services
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, errors);
 
-            var status = await rHolder.AddAsync(domain);
+            var status = await repo.AddAsync(domain);
 
             if (status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS, []);
 
@@ -74,11 +73,11 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<bool>> UploadImageAsync(string userid,Stream stream)
         {
             if (string.IsNullOrEmpty(userid)) return ResponseHelper.BadRequest<bool>();
-            if (!await qHolder.IsAnyByUserId(userid)) return ResponseHelper.NotFoundBuilder<bool>();
+            if (!await repo.IsAnyByUserId(userid)) return ResponseHelper.NotFoundBuilder<bool>();
 
             var path = await file.SaveUserAsync(stream,userid);
 
-            var status = await rHolder.UpdateImagePathAsync(path,userid);
+            var status = await repo.UpdateImagePathAsync(path,userid);
 
             if (status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS, []);
 
@@ -88,9 +87,9 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<bool>> DeleteAsync(string UserId)
         {
             List<string> errors = new List<string>();
-            if (!await qHolder.IsAnyByUserId(UserId)) return ResponseHelper.NotFoundBuilder<bool>();
+            if (!await repo.IsAnyByUserId(UserId)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var en = await qHolder.GetByUserIdAsync(UserId);
+            var en = await repo.GetByUserIdAsync(UserId);
 
             var domain = HolderMapper.ToDomain(en);
 
@@ -100,7 +99,7 @@ namespace Aero.Application.Services
                 {
                     foreach (var component in alvl.Components)
                     {
-                        var id = await qHw.GetComponentIdFromMacAsync(component.Mac);
+                        var id = await hw.GetComponentIdFromMacAsync(component.Mac);
                         if (!hol.CardDelete(id, cred.CardNo))
                         {
                             errors.Add(MessageBuilder.Unsuccess(component.Mac, Command.DELETE_CARD));
@@ -115,7 +114,7 @@ namespace Aero.Application.Services
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, errors);
 
-            var status = await rHolder.DeleteByUserIdAsync(UserId);
+            var status = await repo.DeleteByUserIdAsync(UserId);
 
             
 
@@ -128,7 +127,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<bool>> DeleteImageAsync(string userid)
         {
-            var en = await qHolder.GetByUserIdAsync(userid);
+            var en = await repo.GetByUserIdAsync(userid);
             if(en is null) return ResponseHelper.NotFoundBuilder<bool>();
 
             file.DeleteUserAsync(userid);
@@ -136,42 +135,42 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder<bool>(true);
         }
 
-        public async Task<ResponseDto<IEnumerable<CardHolderDto>>> GetAsync()
+        public async Task<ResponseDto<IEnumerable<UserDto>>> GetAsync()
         {
-            var dtos = await qHolder.GetAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<CardHolderDto>>(dtos);
+            var dtos = await repo.GetAsync();
+            return ResponseHelper.SuccessBuilder<IEnumerable<UserDto>>(dtos);
 
         }
 
-        public async Task<ResponseDto<IEnumerable<CardHolderDto>>> GetByLocationIdAsync(short location)
+        public async Task<ResponseDto<IEnumerable<UserDto>>> GetByLocationIdAsync(short location)
         {
-            var dtos = await qHolder.GetByLocationIdAsync(location);
+            var dtos = await repo.GetByLocationIdAsync(location);
 
-            return ResponseHelper.SuccessBuilder<IEnumerable<CardHolderDto>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<UserDto>>(dtos);
 
         }
 
-        public async Task<ResponseDto<CardHolderDto>> GetByUserIdAsync(string UserId)
+        public async Task<ResponseDto<UserDto>> GetByUserIdAsync(string UserId)
         {
-            var dto = await qHolder.GetByUserIdAsync(UserId);
+            var dto = await repo.GetByUserIdAsync(UserId);
 
             return ResponseHelper.SuccessBuilder(dto);
         }
 
-        public async Task<ResponseDto<Pagination<CardHolderDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        public async Task<ResponseDto<Pagination<UserDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
         {
-            var res = await qHolder.GetPaginationAsync(param,location);
+            var res = await repo.GetPaginationAsync(param,location);
             return ResponseHelper.SuccessBuilder(res);
         }
 
-        public async Task<ResponseDto<CardHolderDto>> UpdateAsync(CardHolderDto dto)
+        public async Task<ResponseDto<UserDto>> UpdateAsync(UserDto dto)
         {
             List<string> errors = new List<string>();
 
-            if (!await qHolder.IsAnyByUserId(dto.UserId)) return ResponseHelper.NotFoundBuilder<CardHolderDto>();
+            if (!await repo.IsAnyByUserId(dto.UserId)) return ResponseHelper.NotFoundBuilder<UserDto>();
             List<short> CredentialComponentId = new List<short>();
 
-            var en = await qHolder.GetByUserIdAsync(dto.UserId);
+            var en = await repo.GetByUserIdAsync(dto.UserId);
 
             var domain = HolderMapper.ToDomain(en);
 
@@ -181,7 +180,7 @@ namespace Aero.Application.Services
                 {
                     foreach (var component in alvl.Components)
                     {
-                        var id = await qHw.GetComponentIdFromMacAsync(component.Mac);
+                        var id = await hw.GetComponentIdFromMacAsync(component.Mac);
                         if (!hol.CardDelete(id, cred.CardNo))
                         {
                             errors.Add(MessageBuilder.Unsuccess(component.Mac, Command.DELETE_CARD));
@@ -195,9 +194,9 @@ namespace Aero.Application.Services
             domain = HolderMapper.ToDomain(dto);
 
 
-            var status = await rHolder.DeleteReferenceByUserIdAsync(dto.UserId);
+            var status = await repo.DeleteReferenceByUserIdAsync(dto.UserId);
 
-            if (status <= 0) return ResponseHelper.UnsuccessBuilder<CardHolderDto>(ResponseMessage.REMOVE_OLD_REF_UNSUCCESS, []);
+            if (status <= 0) return ResponseHelper.UnsuccessBuilder<UserDto>(ResponseMessage.REMOVE_OLD_REF_UNSUCCESS, []);
 
 
             // Send data 
@@ -205,16 +204,16 @@ namespace Aero.Application.Services
             {
                 foreach (var cred in domain.Credentials)
                 {
-                    CredentialComponentId.Add(await qCred.GetLowestUnassignedNumberAsync(10,""));
-                    cred.IssueCode = await qCred.GetLowestUnassignedIssueCodeByUserIdAsync(8, dto.UserId);
+                    CredentialComponentId.Add(await cred.GetLowestUnassignedNumberAsync(10,""));
+                    cred.IssueCode = await cred.GetLowestUnassignedIssueCodeByUserIdAsync(8, dto.UserId);
 
                     foreach (var component in alvl.Components)
                     {
 
-                        var id = await qHw.GetComponentIdFromMacAsync(component.Mac);
+                        var id = await hw.GetComponentIdFromMacAsync(component.Mac);
                         if (!holder.AccessDatabaseCardRecord(id, domain.Flag, cred.CardNo, cred.IssueCode, cred.Pin,domain.AccessLevels.Where(x => x.Components.Any(x => x.Mac.Equals(x))).Select(x => x.ComponentId).ToList(), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.ActiveDate), (int)UtilitiesHelper.DateTimeToElapeSecond(cred.DeactiveDate)))
                         {
-                            errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id), Command.CARD_RECORD));
+                            errors.Add(MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync(id), Command.CARD_RECORD));
                         }
 
                     }
@@ -222,10 +221,10 @@ namespace Aero.Application.Services
                 }
             }
 
-            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<CardHolderDto>(ResponseMessage.COMMAND_UNSUCCESS, errors);
-            status = await rHolder.UpdateAsync(domain);
-            if (status <= 0) return ResponseHelper.UnsuccessBuilder<CardHolderDto>(ResponseMessage.UPDATE_RECORD_UNSUCCESS, errors);
-            return ResponseHelper.SuccessBuilder<CardHolderDto>(dto);
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<UserDto>(ResponseMessage.COMMAND_UNSUCCESS, errors);
+            status = await repo.UpdateAsync(domain);
+            if (status <= 0) return ResponseHelper.UnsuccessBuilder<UserDto>(ResponseMessage.UPDATE_RECORD_UNSUCCESS, errors);
+            return ResponseHelper.SuccessBuilder<UserDto>(dto);
 
 
         }

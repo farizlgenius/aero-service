@@ -11,7 +11,7 @@ public sealed class IntervalMapper
             var res = new Interval();
             // Base
             NoMacBaseMapper.ToDomain(dto,res);
-            res.DaysDesc = dto.DaysDesc;
+            res.DaysDetail = dto.DaysDesc;
             res.StartTime = dto.StartTime;
             res.EndTime = dto.EndTime;
             res.Days = new Domain.Entities.DaysInWeek

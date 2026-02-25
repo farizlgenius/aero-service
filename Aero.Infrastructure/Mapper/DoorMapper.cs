@@ -13,7 +13,7 @@ public sealed class DoorMapper
             var en = new Aero.Infrastructure.Data.Entities.Door();
             MacBaseMapper.ToEf(data,en);
             en.component_id = data.ComponentId;
-            en.driver_id = data.AcrId;
+            en.driver_id = data.DriverId;
             en.name = data.Name;
             en.access_config =data.AccessConfig;
             en.pair_door_no = data.PairDoorNo;
@@ -158,7 +158,7 @@ public sealed class DoorMapper
       {
             // Base
             MacBaseMapper.Update(data,en);
-             en.driver_id = data.AcrId;
+             en.driver_id = data.DriverId;
             en.name = data.Name;
             en.access_config =data.AccessConfig;
             en.pair_door_no = data.PairDoorNo;

@@ -2,7 +2,7 @@ using System;
 
 namespace Aero.Domain.Entities;
 
-public sealed class Credential : NoMacBaseEntity
+public sealed class Credential : BaseDomain
 {
        public int Bits { get; set; }
         public int IssueCode { get; set; }
@@ -11,5 +11,5 @@ public sealed class Credential : NoMacBaseEntity
         public string Pin { get; set; } = string.Empty;
         public string ActiveDate { get; set; } = string.Empty;
         public string DeactiveDate { get; set; } = string.Empty;
-        //public CardHolderDto? card_holder { get; set; }
+        public User user { get; set; }
 }

@@ -22,9 +22,9 @@ public sealed class ProcedureMapper
                   LocationId = x.LocationId,
                   IsActive = true,
 
-                  ScpId = x.ScpId,
+                  DeviceId = x.ScpId,
                   ActionType = x.ActionType,
-                  ActionTypeDesc = x.ActionTypeDesc,
+                  ActionTypeDetail = x.ActionTypeDesc,
                   Arg1 = x.Arg1,
                   Arg2 = x.Arg2,
                   Arg3 = x.Arg3,

@@ -10,60 +10,60 @@ using Aero.Application.Interface;
 
 namespace Aero.Infrastructure.Repositories;
 
-public class HolderRepository(AppDbContext context) : IHolderRepository
+public class HolderRepository(AppDbContext context) : IUserRepository
 {
-      public async Task<int> AddAsync(CardHolder data)
+      public async Task<int> AddAsync(User data)
       {
             var en = HolderMapper.ToEf(data);
-            await context.cardholder.AddAsync(en);
+            await context.user.AddAsync(en);
             return await context.SaveChangesAsync();
       }
 
       public async Task<int> DeleteByComponentIdAsync(short component)
       {
-            var en = await context.cardholder
+            var en = await context.user
             .Where(x => x.component_id == component)
             .OrderBy(x => x.component_id)
             .FirstOrDefaultAsync();
 
             if(en is null) return 0;
 
-            context.cardholder.Remove(en);
+            context.user.Remove(en);
             return await context.SaveChangesAsync();
       }
 
       public async Task<int> DeleteByUserIdAsync(string UserId)
       {
-            var en = await context.cardholder
+            var en = await context.user
             .Where(x => x.user_id.Equals(UserId))
             .OrderBy(x => x.component_id)
             .FirstOrDefaultAsync();
 
             if(en is null) return 0;
 
-            context.cardholder.Remove(en);
+            context.user.Remove(en);
             return await context.SaveChangesAsync();
       }
 
       public async Task<int> DeleteReferenceByUserIdAsync(string UserId)
       {
            // Additionals
-           var additional = await context.cardholder_additional
-           .Where(x => x.holder_id.Equals(UserId))
+           var additional = await context.user_additional
+           .Where(x => x.user_id.Equals(UserId))
            .ToArrayAsync();
 
-            context.cardholder_additional.RemoveRange(additional);
+            context.user_additional.RemoveRange(additional);
 
             // Access Level
-            var access = await context.cardholder_access_level
-            .Where(x => x.holder_id.Equals(UserId))
+            var access = await context.user_access_level
+            .Where(x => x.user_id.Equals(UserId))
             .ToArrayAsync();
 
-            context.cardholder_access_level.RemoveRange(access);
+            context.user_access_level.RemoveRange(access);
 
             // Credentials
             var credential = await context.credential
-            .Where(x => x.cardholder_id.Equals(UserId))
+            .Where(x => x.user_id.Equals(UserId))
             .ToArrayAsync();
 
             context.credential.RemoveRange(credential);
@@ -71,9 +71,9 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
             return await context.SaveChangesAsync();
       }
 
-      public async Task<int> UpdateAsync(CardHolder newData)
+      public async Task<int> UpdateAsync(User newData)
       {
-            var en = await context.cardholder
+            var en = await context.user
             .Where(x => x.user_id.Equals(newData.UserId))
             .OrderBy(x => x.component_id)
             .FirstOrDefaultAsync();
@@ -86,13 +86,13 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
 
             HolderMapper.Update(en,newData);
 
-            context.cardholder.Update(en);
+            context.user.Update(en);
             return await context.SaveChangesAsync();
       }
 
     public async Task<int> UpdateImagePathAsync(string path,string userid)
     {
-        var en = await context.cardholder
+        var en = await context.user
             .Where(x => x.user_id.Equals(userid))
             .OrderBy(x => x.component_id)
             .FirstOrDefaultAsync();
@@ -100,14 +100,14 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
         if(en is null) return 0;
 
         en.image_path = path;
-        context.cardholder.Update(en);
+        context.user.Update(en);
         return await context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<CardHolderDto>> GetAsync()
+    public async Task<IEnumerable<UserDto>> GetAsync()
     {
 
-        var res = await context.cardholder
+        var res = await context.user
         .AsNoTracking()
         .OrderBy(x => x.created_date)
         .Select(c => new CardHolderDto
@@ -123,15 +123,15 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
             FirstName = c.first_name,
             MiddleName = c.middle_name,
             LastName = c.last_name,
-            Sex = c.sex,
+            Sex = c.gender,
             Email = c.email,
             Phone = c.phone,
             Company = c.company,
             Position = c.position,
             Department = c.department,
-            ImagePath = c.image_path,
+            ImagePath = c.image,
             Additionals = c.additionals
-            .Where(x => x.holder_id == c.user_id)
+            .Where(x => x.user_id == c.user_id)
             .Select(x => x.additional).ToList(),
             Credentials = c.credentials
             .Select(c => new CredentialDto
@@ -152,7 +152,7 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
                 //card_holder = entity.card_holder is not null ? CardHolderToDto(entity.card_holder) : null,
 
             }).ToList(),
-            AccessLevels = c.cardholder_access_levels.Select(x => new AccessLevelDto
+            AccessLevels = c.user_access_levels.Select(x => new AccessLevelDto
             {
                 ComponentId = x.accessLevel.component_id,
                 LocationId = x.accessLevel.location_id,
@@ -175,9 +175,9 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
         return res;
     }
 
-    public async Task<CardHolderDto> GetByComponentIdAsync(short componentId)
+    public async Task<UserDto> GetByComponentIdAsync(short componentId)
     {
-        var res = await context.cardholder
+        var res = await context.user
        .AsNoTracking()
        .Where(x => x.component_id == componentId)
        .OrderBy(x => x.created_date)
@@ -247,9 +247,9 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
         return res;
     }
 
-    public async Task<IEnumerable<CardHolderDto>> GetByLocationIdAsync(short locationId)
+    public async Task<IEnumerable<UserDto>> GetByLocationIdAsync(short locationId)
     {
-        var res = await context.cardholder
+        var res = await context.user
        .AsNoTracking()
        .Where(x => x.location_id == locationId || x.location_id == 1)
        .OrderBy(x => x.created_date)
@@ -266,15 +266,15 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
            FirstName = c.first_name,
            MiddleName = c.middle_name,
            LastName = c.last_name,
-           Sex = c.sex,
+           Sex = c.gender,
            Email = c.email,
            Phone = c.phone,
            Company = c.company,
            Position = c.position,
            Department = c.department,
-           ImagePath = c.image_path,
+           ImagePath = c.image,
            Additionals = c.additionals
-           .Where(x => x.holder_id == c.user_id)
+           .Where(x => x.user_id == c.user_id)
            .Select(x => x.additional).ToList(),
            Credentials = c.credentials
            .Select(c => new CredentialDto
@@ -295,7 +295,7 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
                //card_holder = entity.card_holder is not null ? CardHolderToDto(entity.card_holder) : null,
 
            }).ToList(),
-           AccessLevels = c.cardholder_access_levels.Select(x => new AccessLevelDto
+           AccessLevels = c.user_access_levels.Select(x => new AccessLevelDto
            {
                ComponentId = x.accessLevel.component_id,
                LocationId = x.accessLevel.location_id,
@@ -319,9 +319,9 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
         return res;
     }
 
-    public async Task<CardHolderDto> GetByUserIdAsync(string UserId)
+    public async Task<UserDto> GetByUserIdAsync(string UserId)
     {
-        var res = await context.cardholder
+        var res = await context.user
        .AsNoTracking()
        .Where(x => x.user_id.Equals(UserId))
        .OrderBy(x => x.created_date)
@@ -338,15 +338,15 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
            FirstName = c.first_name,
            MiddleName = c.middle_name,
            LastName = c.last_name,
-           Sex = c.sex,
+           Sex = c.gender,
            Email = c.email,
            Phone = c.phone,
            Company = c.company,
            Position = c.position,
            Department = c.department,
-           ImagePath = c.image_path,
+           ImagePath = c.image,
            Additionals = c.additionals
-           .Where(x => x.holder_id == c.user_id)
+           .Where(x => x.user_id == c.user_id)
            .Select(x => x.additional).ToList(),
            Credentials = c.credentials
            .Select(c => new CredentialDto
@@ -367,7 +367,7 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
                //card_holder = entity.card_holder is not null ? CardHolderToDto(entity.card_holder) : null,
 
            }).ToList(),
-           AccessLevels = c.cardholder_access_levels.Select(x => new AccessLevelDto
+           AccessLevels = c.user_access_levels.Select(x => new AccessLevelDto
            {
                ComponentId = x.accessLevel.component_id,
                LocationId = x.accessLevel.location_id,
@@ -394,7 +394,7 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
     {
         if (max <= 0) return -1;
 
-        var query = context.cardholder
+        var query = context.user
             .AsNoTracking()
             .Select(x => x.component_id);
 
@@ -426,10 +426,10 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
         throw new NotImplementedException();
     }
 
-    public async Task<Pagination<CardHolderDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    public async Task<Pagination<UserDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
     {
 
-        var query = context.cardholder.AsNoTracking().AsQueryable();
+        var query = context.user.AsNoTracking().AsQueryable();
 
 
         if (!string.IsNullOrWhiteSpace(param.Search))
@@ -448,7 +448,7 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
                         EF.Functions.ILike(x.first_name, pattern) ||
                         EF.Functions.ILike(x.middle_name, pattern) ||
                         EF.Functions.ILike(x.last_name, pattern) ||
-                        EF.Functions.ILike(x.sex, pattern) ||
+                        EF.Functions.ILike(x.gender, pattern) ||
                         EF.Functions.ILike(x.email, pattern) ||
                         EF.Functions.ILike(x.phone, pattern) ||
                         EF.Functions.ILike(x.company, pattern) ||
@@ -465,7 +465,7 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
                         x.first_name.Contains(search) ||
                         x.middle_name.Contains(search) ||
                         x.last_name.Contains(search) ||
-                        x.sex.Contains(search) ||
+                        x.gender.Contains(search) ||
                         x.email.Contains(search) ||
                         x.phone.Contains(search) ||
                         x.company.Contains(search) ||
@@ -511,15 +511,15 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
                 FirstName = c.first_name,
                 MiddleName = c.middle_name,
                 LastName = c.last_name,
-                Sex = c.sex,
+                Sex = c.gender,
                 Email = c.email,
                 Phone = c.phone,
                 Company = c.company,
                 Position = c.position,
                 Department = c.department,
-                ImagePath = c.image_path,
+                ImagePath = c.image,
                 Additionals = c.additionals
-                .Where(x => x.holder_id == c.user_id)
+                .Where(x => x.user_id == c.user_id)
                 .Select(x => x.additional).ToList(),
                 Credentials = c.credentials
                 .Select(c => new CredentialDto
@@ -540,7 +540,7 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
                     //card_holder = entity.card_holder is not null ? CardHolderToDto(entity.card_holder) : null,
 
                 }).ToList(),
-                AccessLevels = c.cardholder_access_levels.Select(x => new AccessLevelDto
+                AccessLevels = c.user_access_levels.Select(x => new AccessLevelDto
                 {
                     ComponentId = x.accessLevel.component_id,
                     LocationId = x.accessLevel.location_id,
@@ -561,7 +561,7 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
             .ToListAsync();
 
 
-        return new Pagination<CardHolderDto>
+        return new Pagination<UserDto>
         {
             Data = data,
             Page = new PaginationData
@@ -581,6 +581,6 @@ public class HolderRepository(AppDbContext context) : IHolderRepository
 
     public async Task<bool> IsAnyByUserId(string userid)
     {
-        return await context.cardholder.AnyAsync(x => x.user_id.Equals(userid));
+        return await context.user.AnyAsync(x => x.user_id.Equals(userid));
     }
 }

@@ -1,10 +1,11 @@
 using Aero.Application.DTOs;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
-using Aero.Infrastructure.Data;
+using Aero.Infrastructure.Persistences;
 using Aero.Infrastructure.Mapper;
 using Microsoft.EntityFrameworkCore;
 using System;
+using Aero.Application.Interface;
 
 namespace Aero.Infrastructure.Repositories;
 
@@ -91,7 +92,7 @@ public class TzRepository(AppDbContext context) : ITzRepository
 
                         // extend_desc
                         ComponentId = p.component_id,
-                        DaysDesc = p.days_desc,
+                        DaysDesc = p.days_detail,
                         StartTime = p.start_time,
                         EndTime = p.end_time,
                         Days = new DaysInWeekDto
@@ -189,7 +190,7 @@ public class TzRepository(AppDbContext context) : ITzRepository
 
                     // extend_desc
                     ComponentId = p.component_id,
-                    DaysDesc = p.days_desc,
+                    DaysDesc = p.days_detail,
                     StartTime = p.start_time,
                     EndTime = p.end_time,
                     Days = new DaysInWeekDto
@@ -349,7 +350,7 @@ public class TzRepository(AppDbContext context) : ITzRepository
 
                     // extend_desc
                     ComponentId = p.component_id,
-                    DaysDesc = p.days_desc,
+                    DaysDesc = p.days_detail,
                     StartTime = p.start_time,
                     EndTime = p.end_time,
                     Days = new DaysInWeekDto

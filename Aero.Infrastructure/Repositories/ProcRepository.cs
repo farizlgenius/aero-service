@@ -99,7 +99,7 @@ public sealed class ProcRepository(AppDbContext context) : IProcedureRepository
                IsActive = en.is_active,
 
                // Detail
-               ScpId = en.scp_id,
+               ScpId = en.device_id,
                ActionType = en.action_type,
                ActionTypeDesc = en.action_type_detail,
                Arg1 = en.arg1,
@@ -152,7 +152,7 @@ public sealed class ProcRepository(AppDbContext context) : IProcedureRepository
                 IsActive = en.is_active,
 
                 // Detail
-                ScpId = en.scp_id,
+                ScpId = en.device_id,
                 ActionType = en.action_type,
                 ActionTypeDesc = en.action_type_detail,
                 Arg1 = en.arg1,
@@ -277,7 +277,7 @@ public sealed class ProcRepository(AppDbContext context) : IProcedureRepository
                    IsActive = en.is_active,
 
                    // Detail
-                   ScpId = en.scp_id,
+                   ScpId = en.device_id,
                    ActionType = en.action_type,
                    ActionTypeDesc = en.action_type_detail,
                    Arg1 = en.arg1,

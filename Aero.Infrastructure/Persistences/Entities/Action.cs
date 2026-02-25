@@ -2,7 +2,7 @@
 {
     public sealed class Action : BaseEntity
     {
-        public short scp_id { get; set; }
+        public int device_id { get; set; }
         public short action_type { get; set; }
         public string action_type_detail { get; set; } = string.Empty;
         public short arg1 { get; set; } 
@@ -17,9 +17,9 @@
         public short procedure_id { get; set; }
         public Procedure procedure { get; set; }
 
-        public Action(short scp_id,short action_type, string action_type_detail,short arg1,short arg2,short arg3,short arg4,short arg5,short arg6,short arg7,string str_arg,short delay_time,short procedure_id,int location_id) : base(location_id)
+        public Action(short device_id,short action_type, string action_type_detail,short arg1,short arg2,short arg3,short arg4,short arg5,short arg6,short arg7,string str_arg,short delay_time,short procedure_id,int location_id) : base(location_id)
         {
-            this.scp_id = scp_id;
+            this.device_id = device_id;
             this.action_type = action_type;
             this.action_type_detail = action_type_detail;
             this.arg1 = arg1;
@@ -35,10 +35,24 @@
 
         }
 
-        public void Update()
+        public void Update(Aero.Domain.Entities.Action data)
         {
-
+            this.device_id = data.DeviceId;
+            this.action_type = data.ActionType;
+            this.action_type_detail = data.ActionTypeDetail;
+            this.arg1 = data.Arg1;
+            this.arg2 = data.Arg2;
+            this.arg3 = data.Arg3;
+            this.arg4 = data.Arg4;
+            this.arg5 = data.Arg5;
+            this.arg6 = data.Arg6;
+            this.arg7 = data.Arg7;
+            this.str_arg = data.StrArg;
+            this.delay_time = data.DelayTime;
+            this.procedure_id = data.ProcedureId;
         }
+
+       
 
     }
 }

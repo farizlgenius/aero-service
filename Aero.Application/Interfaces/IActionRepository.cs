@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Aero.Application.Interfaces
 {
-    public interface IActionRepository : IBaseRepository<ActionDto,Aero.Domain.Entities.Action>
+    public interface IActionRepository : IBaseRepository<ActionDto,Aero.Domain.Entities.Action, Aero.Domain.Entities.Action>
     {
         Task<int> CountByMacAndUpdateTimeAsync(string mac, DateTime sync);
     }

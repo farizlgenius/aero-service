@@ -6,7 +6,7 @@ using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Interface;
 
-public interface ITzRepository : IBaseRepository<TimeZoneDto,Timezone>
+public interface ITzRepository : IBaseRepository<TimeZoneDto,Timezone,Timezone>
 {
     Task<int> CountByLocationIdAndUpdateTimeAsync(short locationId, DateTime sync);
     Task<IEnumerable<Mode>> GetCommandAsync();

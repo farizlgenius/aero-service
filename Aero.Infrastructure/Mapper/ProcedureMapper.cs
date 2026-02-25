@@ -23,9 +23,9 @@ public sealed class ProcedureMapper
                         created_date = DateTime.UtcNow,
                         updated_date = DateTime.UtcNow,
 
-                        scp_id = x.ScpId,
+                        scp_id = x.DeviceId,
                         action_type = x.ActionType,
-                        action_type_desc = x.ActionTypeDesc,
+                        action_type_desc = x.ActionTypeDetail,
                         arg1 = x.Arg1,
                         arg2 = x.Arg2,
                         arg3 = x.Arg3,
@@ -56,9 +56,9 @@ public sealed class ProcedureMapper
                         created_date = DateTime.UtcNow,
                         updated_date = DateTime.UtcNow,
 
-                        scp_id = x.ScpId,
+                        scp_id = x.DeviceId,
                         action_type = x.ActionType,
-                        action_type_desc = x.ActionTypeDesc,
+                        action_type_desc = x.ActionTypeDetail,
                         arg1 = x.Arg1,
                         arg2 = x.Arg2,
                         arg3 = x.Arg3,

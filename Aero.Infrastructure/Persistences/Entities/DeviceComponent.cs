@@ -2,7 +2,7 @@
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class HardwareComponent 
+    public sealed class DeviceComponent 
     {
         [Key]
         public int id { get; set; }

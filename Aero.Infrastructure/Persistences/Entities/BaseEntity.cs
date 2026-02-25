@@ -20,5 +20,15 @@ namespace Aero.Infrastructure.Persistences.Entities
         {
             this.location_id = location_id;
         }
+
+        public void ChangeLocation(int locationId)
+        {
+            this.location_id = locationId;
+        }
+
+        public void ToggleStatus(bool status)
+        {
+            this.is_active = status;
+        }
     }
 }

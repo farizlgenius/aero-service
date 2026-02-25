@@ -1,4 +1,5 @@
-﻿using Aero.Domain.Entities;
+﻿using Aero.Application.Interfaces;
+using Aero.Domain.Entities;
 using Aero.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Aero.Application.Interface
 {
-    public interface ICmndRepository : IBaseRepository<CommandAuditDto,CommandAudit>
+    public interface ICmndRepository : IBaseRepository<CommandAudit,CommandAudit,CommandAudit>
     {
         Task<Pagination<CommandAudit>> GetCommandStatusAsync(PaginationParamsWithFilter pagination,short location);
     }

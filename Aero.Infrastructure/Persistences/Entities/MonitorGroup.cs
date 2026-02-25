@@ -10,6 +10,6 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short n_mp_count { get; set; }
         public ICollection<MonitorGroupList> n_mp_list { get; set; }
         public string mac { get; set; } = string.Empty;
-        public Hardware hardware { get; set; }
+        public Device device { get; set; }
     }
 }

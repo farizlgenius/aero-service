@@ -6,7 +6,7 @@ using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Interface;
 
-public interface ICpRepository : IBaseRepository<ControlPointDto,ControlPoint>
+public interface ICpRepository : IBaseRepository<ControlPointDto,ControlPoint,ControlPoint>
 {
     Task<IEnumerable<ControlPointDto>> GetByMacAsync(string mac);
     Task<short> GetModeNoByOfflineAndRelayModeAsync(short offlineMode, short relayMode);

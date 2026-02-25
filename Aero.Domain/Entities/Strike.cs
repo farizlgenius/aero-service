@@ -5,6 +5,7 @@ namespace Aero.Domain.Entities;
 public sealed class Strike : BaseDomain
 {
        public short ModuleId { get; set; }
+    public short DoorId { get; set; }
         public short OutputNo { get; set; }
         public short RelayMode { get; set; }
         public short OfflineMode { get; set; }

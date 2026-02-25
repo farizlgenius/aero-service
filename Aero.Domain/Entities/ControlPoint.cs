@@ -1,17 +1,73 @@
+using Aero.Domain.Helpers;
 using System;
+using System.Reflection;
 
 namespace Aero.Domain.Entities;
 
 public class ControlPoint : BaseDomain
 {
-        public short CpId {get; set;}
-       public string Name { get; set; } = string.Empty;
-        public short ModuleId { get; set; }
-        public string ModuleDescription { get; set; } = string.Empty;
-        public short OutputNo { get; set; }
-        public short RelayMode { get; set; }
-        public string RelayModeDescription { get; set; } = string.Empty;
-        public short OfflineMode { get; set; }
-        public string OfflineModeDescription { get; set; } = string.Empty;
-        public short DefaultPulse { get; set; } = 1;
+        public short DriverId {get; private set;}
+       public string Name { get; private set; } = string.Empty;
+        public short ModuleId { get; private set; }
+        public string ModuleDetail { get; private set; } = string.Empty;
+        public short OutputNo { get; private set; }
+        public short RelayMode { get; private set; }
+        public string RelayModeDetail { get; private set; } = string.Empty;
+        public short OfflineMode { get; private set; }
+        public string OfflineModeDetail { get; private set; } = string.Empty;
+        public short DefaultPulse { get; private set; } = 1;
+
+    public ControlPoint(short driverid,string name,short moduleid,string moduledetail,short outputno,short relaymode,string relaymodedetail,short offlinemode,string offlinemodedetail,short defaultpulse,int location,bool status) : base(location,status)
+    {
+        SetDriverId(driverid);
+        SetName(name);
+        SetModule(moduleid,moduledetail);
+        SetOutput(outputno);
+        SetRelay(relaymode,relaymodedetail);
+        SetOffline(offlinemode,offlinemodedetail);
+        if (defaultpulse < 0) throw new ArgumentException("Default pulse invalid.");
+    }
+
+    private void SetDriverId(short driver)
+    {
+        if (driver <= 0) throw new ArgumentException("Driver id invalid.");
+        DriverId = driver;
+    }
+
+    private void SetName(string name)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        if (!RegexHelper.IsValidName(name)) throw new ArgumentException("Name invalid.");
+        Name = name;
+    }
+
+    private void SetModule(short moduleid,string moduledetail) 
+    {
+        if (moduleid < 0) throw new ArgumentException("Module Id invalid.");
+        ArgumentException.ThrowIfNullOrWhiteSpace(moduledetail);
+        ModuleId = moduleid;
+        ModuleDetail = moduledetail;
+    }
+
+    private void SetOutput(short outputno)
+    {
+        if (outputno < 0) throw new ArgumentException("Output no invalid.");
+        OutputNo = outputno;
+    }
+
+    private void SetRelay(short relaymode,string relaymodedetail)
+    {
+        if (relaymode < 0) throw new ArgumentException("Relay mode invalid.");
+        ArgumentException.ThrowIfNullOrWhiteSpace(relaymodedetail);
+        RelayMode = relaymode;
+        RelayModeDetail = relaymodedetail;
+    }
+
+    private void SetOffline(short offlinemode, string offlinemodedetail)
+    {
+        if (offlinemode < 0) throw new ArgumentException("Offline mode invalid.");
+        ArgumentException.ThrowIfNullOrWhiteSpace(offlinemodedetail);
+        OfflineMode = offlinemode;
+        OfflineModeDetail = offlinemodedetail;
+    }
 }

@@ -20,39 +20,39 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
       public async Task<int> AddAsync(Hardware entity)
       {
             var ef = HardwareMapper.ToEf(entity);
-            await context.hardware.AddAsync(ef);
+            await context.device.AddAsync(ef);
             return await context.SaveChangesAsync();
       }
 
       public async Task<int> DeleteByComponentAsync(short component)
       {
-            var ef = await context.hardware
+            var ef = await context.device
             .Where(x => x.component_id == component)
             .OrderBy(x => x.component_id)
             .FirstOrDefaultAsync();
 
             if (ef is null) return 0;
 
-            context.hardware.Remove(ef);
+            context.device.Remove(ef);
             return await context.SaveChangesAsync();
       }
 
       public async Task<int> DeleteByMacAsync(string mac)
       {
-            var ef = await context.hardware
+            var ef = await context.device
             .Where(x => x.mac.Equals(mac))
             .OrderBy(x => x.component_id)
             .FirstOrDefaultAsync();
 
             if (ef is null) return 0;
 
-            context.hardware.Remove(ef);
+            context.device.Remove(ef);
             return await context.SaveChangesAsync();
       }
 
       public async Task<Hardware> GetByMacAsync(string mac)
       {
-            var res = await context.hardware
+            var res = await context.device
             .Where(x => x.mac.Equals(mac))
             .Select(hardware => new Hardware
             {
@@ -65,7 +65,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
                   // extend_desc
                   Name = hardware.name,
                   HardwareType = hardware.hardware_type,
-                  HardwareTypeDescription = hardware.hardware_type_desc,
+                  HardwareTypeDescription = hardware.hardware_type_detail,
                   Firmware = hardware.firmware,
                   Ip = hardware.ip,
                   Port = hardware.port,
@@ -130,7 +130,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
       public async Task<int> UpdateSyncStatusByMacAsync(string mac)
       {
-            var res = await context.hardware.
+            var res = await context.device.
             Where(x => x.mac.Equals(mac))
             .OrderBy(x => x.component_id)
             .FirstOrDefaultAsync();
@@ -140,13 +140,13 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
             res.updated_date = DateTime.UtcNow;
             res.last_sync = DateTime.UtcNow;
             res.is_upload = false;
-            context.hardware.Update(res);
+            context.device.Update(res);
             return await context.SaveChangesAsync();
       }
 
       public async Task<int> UpdateVerifyHardwareCofigurationMyMacAsync(string mac, bool status)
       {
-            var hardware = await context.hardware
+            var hardware = await context.device
             .Where(x => x.mac == mac)
             .FirstOrDefaultAsync();
 
@@ -155,13 +155,13 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
             hardware.updated_date = DateTime.UtcNow;
             hardware.is_upload = status;
 
-            context.hardware.Update(hardware);
+            context.device.Update(hardware);
             return await context.SaveChangesAsync();
       }
 
       public async Task<int> UpdateVerifyMemoryAllocateByComponentIdAsync(short component, bool isSync)
       {
-            var hw = await context.hardware.
+            var hw = await context.device.
             Where(x => x.component_id == component)
             .OrderBy(x => x.component_id)
             .FirstOrDefaultAsync();
@@ -169,7 +169,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
             if (hw is null) return 0;
             hw.is_reset = isSync;
             hw.updated_date = DateTime.UtcNow;
-            context.hardware.Update(hw);
+            context.device.Update(hw);
             return await context.SaveChangesAsync();
       }
 
@@ -184,7 +184,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
       public async Task<int> UpdateAsync(Hardware newData)
       {
-            var en = await context.hardware
+            var en = await context.device
             .Where(x => x.mac.Equals(newData.Mac) && x.component_id == newData.ComponentId)
             .OrderBy(x => x.component_id)
             .FirstOrDefaultAsync();
@@ -194,13 +194,13 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
             HardwareMapper.Update(en,newData);
 
-            context.hardware.Update(en);
+            context.device.Update(en);
             return await context.SaveChangesAsync();
       }
 
       public async Task UpdateIpAddressAsync(int ScpId, string ip)
       {
-            var hw = await context.hardware
+            var hw = await context.device
             .Where(x => x.component_id == (short)ScpId)
             .FirstOrDefaultAsync();
 
@@ -208,13 +208,13 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
             hw.ip = ip;
 
-            context.hardware.Update(hw);
+            context.device.Update(hw);
             await context.SaveChangesAsync();
       }
 
       public async Task UpdatePortAddressAsync(int ScpId, string port)
       {
-            var hw = await context.hardware
+            var hw = await context.device
             .Where(x => x.component_id == (short)ScpId)
             .FirstOrDefaultAsync();
 
@@ -222,13 +222,13 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
             hw.port = port;
 
-            context.hardware.Update(hw);
+            context.device.Update(hw);
             await context.SaveChangesAsync();
       }
 
     public async Task<IEnumerable<HardwareDto>> GetAsync()
     {
-        var dtos = await context.hardware
+        var dtos = await context.device
             .AsNoTracking()
             .Select(hardware => new HardwareDto
             {
@@ -241,7 +241,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
                 // extend_desc
                 Name = hardware.name,
                 HardwareType = hardware.hardware_type,
-                HardwareTypeDescription = hardware.hardware_type_desc,
+                HardwareTypeDescription = hardware.hardware_type_detail,
                 Firmware = hardware.firmware,
                 Ip = hardware.ip,
                 Port = hardware.port,
@@ -304,7 +304,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
     public async Task<HardwareDto> GetByComponentIdAsync(short componentId)
     {
-        var dto = await context.hardware
+        var dto = await context.device
             .AsNoTracking()
             .Where(x => x.component_id == componentId)
             .Select(hardware => new HardwareDto
@@ -382,7 +382,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
     public async Task<IEnumerable<HardwareDto>> GetByLocationIdAsync(short locationId)
     {
-        var dto = await context.hardware
+        var dto = await context.device
             .AsNoTracking()
             .Where(x => x.location_id == locationId || x.location_id == 1)
             .Select(hardware => new HardwareDto
@@ -396,7 +396,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
                 // extend_desc
                 Name = hardware.name,
                 HardwareType = hardware.hardware_type,
-                HardwareTypeDescription = hardware.hardware_type_desc,
+                HardwareTypeDescription = hardware.hardware_type_detail,
                 Firmware = hardware.firmware,
                 Ip = hardware.ip,
                 Port = hardware.port,
@@ -460,7 +460,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
     public async Task<HardwareDto> GetByMacAsync(string mac)
     {
-        var dto = await context.hardware
+        var dto = await context.device
             .AsNoTracking()
             .Where(x => x.mac.Equals(mac))
             .Select(hardware => new HardwareDto
@@ -474,7 +474,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
                 // extend_desc
                 Name = hardware.name,
                 HardwareType = hardware.hardware_type,
-                HardwareTypeDescription = hardware.hardware_type_desc,
+                HardwareTypeDescription = hardware.hardware_type_detail,
                 Firmware = hardware.firmware,
                 Ip = hardware.ip,
                 Port = hardware.port,
@@ -538,7 +538,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
     public async Task<short> GetComponentIdFromMacAsync(string mac)
     {
-        var res = await context.hardware
+        var res = await context.device
         .AsNoTracking()
         .Where(x => x.mac.Equals(mac))
         .OrderBy(x => x.component_id)
@@ -550,7 +550,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
     public async Task<string> GetMacFromComponentAsync(short component)
     {
-        var res = await context.hardware
+        var res = await context.device
         .AsNoTracking()
         .Where(x => x.component_id == component)
         .OrderBy(x => x.component_id)
@@ -590,7 +590,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
     public async Task<bool> IsAnyByComponentId(short component)
     {
-        return await context.hardware
+        return await context.device
         .AsNoTracking()
         .Where(x => x.component_id == component)
         .AnyAsync();
@@ -598,7 +598,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
     public async Task<bool> IsAnyByMac(string mac)
     {
-        return await context.hardware
+        return await context.device
         .AsNoTracking()
         .Where(x => x.mac.Equals(mac))
         .AnyAsync();
@@ -606,7 +606,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
     public async Task<bool> IsAnyModuleReferenceByMacAsync(string mac)
     {
-        return await context.hardware
+        return await context.device
         .AsNoTracking()
         .Include(x => x.modules)
         .Where(x => x.mac.Equals(mac))
@@ -615,7 +615,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
     public async Task<IEnumerable<(short ComponentId, string Mac)>> GetComponentAndMacAsync()
     {
-        var res = await context.hardware
+        var res = await context.device
             .AsNoTracking()
             .Select(x => new { x.component_id, x.mac })
             .ToArrayAsync();
@@ -625,7 +625,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
     public async Task<bool> IsAnyByMacAndComponent(string mac, short component)
     {
-        return await context.hardware.AnyAsync(x => x.mac.Equals(mac) && x.component_id == component);
+        return await context.device.AnyAsync(x => x.mac.Equals(mac) && x.component_id == component);
     }
 
     public async Task<IEnumerable<Mode>> GetHardwareTypeAsync()
@@ -645,7 +645,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
     public async Task<IEnumerable<short>> GetComponentIdByLocationIdAsync(short locationId)
     {
-        return await context.hardware.AsNoTracking()
+        return await context.device.AsNoTracking()
         .Where(x => x.location_id == locationId)
         .Select(x => x.component_id)
         .ToArrayAsync();
@@ -653,7 +653,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
     public async Task<IEnumerable<string>> GetMacsAsync()
     {
-        var res = await context.hardware
+        var res = await context.device
         .AsNoTracking()
         .Select(x => x.mac)
         .ToArrayAsync();
@@ -663,7 +663,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
     public async Task<IEnumerable<short>> GetComponentIdsAsync()
     {
-        var res = await context.hardware.AsNoTracking()
+        var res = await context.device.AsNoTracking()
         .Select(x => x.component_id)
         .ToArrayAsync();
 
@@ -1049,7 +1049,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
     {
         if (max <= 0) return -1;
 
-        var query = context.hardware
+        var query = context.device
             .AsNoTracking()
             .Select(x => x.component_id);
 
@@ -1086,7 +1086,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
     public async Task<string> GetNameByComponentIdAsync(short component)
     {
-        var res = await context.hardware.AsNoTracking()
+        var res = await context.device.AsNoTracking()
         .Where(x => x.component_id == component)
         .OrderBy(x => x.component_id)
         .Select(x => x.name)
@@ -1097,7 +1097,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
     public async Task<IEnumerable<short>> GetComponentIdsByLocationIdAsync(short locationid)
     {
-        return await context.hardware.AsNoTracking()
+        return await context.device.AsNoTracking()
             .Where(x => x.location_id == locationid)
             .Select(x => x.component_id)
             .ToArrayAsync();
@@ -1105,7 +1105,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
     public async Task<IEnumerable<string>> GetMacsByLocationIdAsync(short locationid)
     {
-        return await context.hardware.AsNoTracking()
+        return await context.device.AsNoTracking()
            .Where(x => x.location_id == locationid)
            .Select(x => x.mac)
            .ToArrayAsync();
@@ -1113,7 +1113,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
     public async Task<short> GetLocationIdFromMacAsync(string mac)
     {
-        return await context.hardware
+        return await context.device
             .AsNoTracking()
             .OrderBy(x => x.component_id)
             .Where(x => x.mac.Equals(mac))
@@ -1124,7 +1124,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
     public async Task<Pagination<HardwareDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
     {
 
-        var query = context.hardware.AsNoTracking().AsQueryable();
+        var query = context.device.AsNoTracking().AsQueryable();
 
 
         if (!string.IsNullOrWhiteSpace(param.Search))
@@ -1139,7 +1139,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
 
                     query = query.Where(x =>
                         EF.Functions.ILike(x.name, pattern) ||
-                        EF.Functions.ILike(x.hardware_type_desc, pattern) ||
+                        EF.Functions.ILike(x.hardware_type_detail, pattern) ||
                         EF.Functions.ILike(x.ip, pattern) ||
                         EF.Functions.ILike(x.mac, pattern) ||
                         EF.Functions.ILike(x.port, pattern) ||
@@ -1152,7 +1152,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
                 {
                     query = query.Where(x =>
                         x.name.Contains(search) ||
-                        x.hardware_type_desc.Contains(search) ||
+                        x.hardware_type_detail.Contains(search) ||
                         x.ip.Contains(search) ||
                         x.mac.Contains(search) ||
                         x.port.Contains(search) ||
@@ -1196,7 +1196,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
                 // extend_desc
                 Name = hardware.name,
                 HardwareType = hardware.hardware_type,
-                HardwareTypeDescription = hardware.hardware_type_desc,
+                HardwareTypeDescription = hardware.hardware_type_detail,
                 Firmware = hardware.firmware,
                 Ip = hardware.ip,
                 Port = hardware.port,

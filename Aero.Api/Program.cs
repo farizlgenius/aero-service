@@ -189,7 +189,7 @@ namespace AeroService
             builder.Services.AddScoped<ICpCommand,CpCommandService>();
             builder.Services.AddScoped<IDoorCommand,DoorCommandService>();
             builder.Services.AddScoped<IHolCommand,HolCommandService>();
-            builder.Services.AddScoped<IHolderCommand,HolderCommandService>();
+            builder.Services.AddScoped<IUserCommand,HolderCommandService>();
             builder.Services.AddScoped<IMpCommand,MpCommandService>();
             builder.Services.AddScoped<IMpgCommand,MpgCommandService>();
             builder.Services.AddScoped<IProcCommand,ProcCommandService>();
@@ -213,7 +213,7 @@ namespace AeroService
             builder.Services.AddScoped<IQCredRepository,QCredRepository>();
             builder.Services.AddScoped<IDoorRepository,DoorRepository>();
             builder.Services.AddScoped<IQDoorRepository,QDoorRepository>();
-            builder.Services.AddScoped<IHolderRepository,HolderRepository>();
+            builder.Services.AddScoped<IUserRepository,HolderRepository>();
             builder.Services.AddScoped<IQHolderRepository,QHolderRepository>();
             builder.Services.AddScoped<IHttpRepository,HttpRepository>();
             builder.Services.AddScoped<IHwRepository,HwRepository>();
@@ -265,7 +265,7 @@ namespace AeroService
             builder.Services.AddScoped<IModuleService, ModuleService>();
             builder.Services.AddScoped<IAeroCommandService, AeroCommandService>();
             builder.Services.AddScoped<ICredentialService, CredentialService>();
-            builder.Services.AddScoped<ICardHolderService, CardHolderService>();
+            builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IControlPointService, ControlPointService>();
             builder.Services.AddScoped<ILicenseService, LicenseService>();
             builder.Services.AddScoped<IAuthService, AuthService>();

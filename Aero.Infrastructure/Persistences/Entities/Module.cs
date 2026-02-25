@@ -20,7 +20,7 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short n_enc_key_status { get; set; }
         public string n_enc_key_status_desc { get; set; } = string.Empty;
         public string mac { get; set; } = string.Empty;
-        public Hardware hardware { get; set; }
+        public Device device { get; set; }
         // HardwareComponent 
         public ICollection<Reader>? readers { get; set; }
         public ICollection<Sensor>? sensors { get; set; }

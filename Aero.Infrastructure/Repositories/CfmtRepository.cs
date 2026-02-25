@@ -61,7 +61,7 @@ public class CfmtRepository(AppDbContext context) : ICfmtRepository
         var res = await context.card_format
         .AsNoTracking()
         .OrderBy(x => x.id)
-        .Select(c => new CardFormatDto(c.id,c.name,c.facility,c.offset,c.function_id,c.flags,c.bits,c.pe_ln,c.pe_loc,c.po_ln,c.po_loc,c.fc_ln,c.fc_loc,c.ch_ln,c.ch_loc,c.ic_ln,c.ic_loc,c.location_id,c.is_active))
+        .Select(c => new CardFormatDto(c.id, c.driver_id, c.name,c.facility,c.offset,c.function_id,c.flags,c.bits,c.pe_ln,c.pe_loc,c.po_ln,c.po_loc,c.fc_ln,c.fc_loc,c.ch_ln,c.ch_loc,c.ic_ln,c.ic_loc,c.location_id,c.is_active))
         .ToArrayAsync();
 
         return res;
@@ -73,7 +73,7 @@ public class CfmtRepository(AppDbContext context) : ICfmtRepository
         .AsNoTracking()
         .Where(x => x.id == id)
         .OrderBy(x => x.id)
-        .Select(c => new CardFormatDto(c.id, c.name, c.facility, c.offset, c.function_id, c.flags, c.bits, c.pe_ln, c.pe_loc, c.po_ln, c.po_loc, c.fc_ln, c.fc_loc, c.ch_ln, c.ch_loc, c.ic_ln, c.ic_loc, c.location_id, c.is_active))
+        .Select(c => new CardFormatDto(c.id, c.driver_id, c.name, c.facility, c.offset, c.function_id, c.flags, c.bits, c.pe_ln, c.pe_loc, c.po_ln, c.po_loc, c.fc_ln, c.fc_loc, c.ch_ln, c.ch_loc, c.ic_ln, c.ic_loc, c.location_id, c.is_active))
         .FirstOrDefaultAsync();
 
         return res;
@@ -85,7 +85,7 @@ public class CfmtRepository(AppDbContext context) : ICfmtRepository
        .AsNoTracking()
        .Where(x => x.location_id == locationId || x.location_id == 1)
        .OrderBy(x => x.id)
-      .Select(c => new CardFormatDto(c.id, c.name, c.facility, c.offset, c.function_id, c.flags, c.bits, c.pe_ln, c.pe_loc, c.po_ln, c.po_loc, c.fc_ln, c.fc_loc, c.ch_ln, c.ch_loc, c.ic_ln, c.ic_loc, c.location_id, c.is_active))
+      .Select(c => new CardFormatDto(c.id,c.driver_id, c.name, c.facility, c.offset, c.function_id, c.flags, c.bits, c.pe_ln, c.pe_loc, c.po_ln, c.po_loc, c.fc_ln, c.fc_loc, c.ch_ln, c.ch_loc, c.ic_ln, c.ic_loc, c.location_id, c.is_active))
        .ToArrayAsync();
 
         return res;
@@ -198,7 +198,7 @@ public class CfmtRepository(AppDbContext context) : ICfmtRepository
         return await context.card_format.AnyAsync(x => x.id == id);
     }
 
-    public Task<short> GetLowestUnassignedNumberByMacAsync(string mac, int max)
+    public async Task<short> GetLowestUnassignedNumberByMacAsync(string mac, int max)
     {
         throw new NotImplementedException();
     }

@@ -2,15 +2,16 @@ using System;
 using Aero.Application.DTOs;
 using Aero.Application.Interfaces;
 using Aero.Domain.Entities;
-using Aero.Infrastructure.Data;
+using Aero.Infrastructure.Persistences;
 using Aero.Infrastructure.Listenser;
 using Aero.Infrastructure.Mapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Aero.Application.Interface;
 
 namespace Aero.Infrastructure.Repositories;
 
-public class CredRepository(AppDbContext context,IQHwRepository qHw,IServiceScopeFactory factory) : ICredRepository
+public class CredRepository(AppDbContext context,IHwRepository qHw,IServiceScopeFactory factory) : ICredRepository
 {
       public async Task<int> AddAsync(Credential data)
       {
@@ -104,11 +105,11 @@ public class CredRepository(AppDbContext context,IQHwRepository qHw,IServiceScop
         return res;
     }
 
-    public async Task<IEnumerable<CredentialDto>> GetByLocationIdAsync(short locationId)
+    public async Task<IEnumerable<CredentialDto>> GetByLocationIdAsync(int locationId)
     {
         var res = await context.credential
         .AsNoTracking()
-        .OrderBy(x => x.component_id)
+        .OrderBy(x => x.id)
         .Where(x => x.location_id == locationId || x.location_id == 1)
         .Select(entity => new CredentialDto
         {
@@ -136,7 +137,7 @@ public class CredRepository(AppDbContext context,IQHwRepository qHw,IServiceScop
     {
         var res = await context.credential
         .AsNoTracking()
-        .Where(x => x.cardholder_id.Equals(UserId))
+        .Where(x => x.user_id.Equals(UserId))
         .Select(entity => new CredentialDto
         {
             // Base
@@ -277,14 +278,14 @@ public class CredRepository(AppDbContext context,IQHwRepository qHw,IServiceScop
         }
     }
 
-    public Task<Pagination<CredentialDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    public Task<Pagination<CredentialDto>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<bool> IsAnyByComponentId(short component)
+    public async Task<bool> IsAnyById(int id)
     {
-        return await context.credential.AnyAsync(x => x.component_id == component);
+        return await context.credential.AnyAsync(x => x.id == id);
     }
 
     public async Task<bool> IsAnyWithCardNumberAsync(long cardno)

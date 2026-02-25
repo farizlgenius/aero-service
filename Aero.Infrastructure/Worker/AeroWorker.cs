@@ -8,7 +8,7 @@ using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
 using Aero.Infrastructure.Adapter;
-using Aero.Infrastructure.Data;
+using Aero.Infrastructure.Persistences;
 using Aero.Infrastructure.Helpers;
 using Aero.Infrastructure.Services;
 using HID.Aero.ScpdNet.Wrapper;
@@ -31,7 +31,7 @@ namespace Aero.Infrastructure.Mapper
             await foreach (var message in queue.Reader.ReadAllAsync(stoppingToken))
             {
                 using var scope = scopeFactory.CreateScope();
-                var qhw = scope.ServiceProvider.GetRequiredService<IQHwRepository>();
+                var qhw = scope.ServiceProvider.GetRequiredService<IHwRepository>();
                 var rhw = scope.ServiceProvider.GetRequiredService<IHwRepository>();
                 var hw = scope.ServiceProvider.GetRequiredService<IHardwareService>();
                 var tran = scope.ServiceProvider.GetRequiredService<ITransactionService>();

@@ -4,6 +4,7 @@ namespace Aero.Application.DTOs
 {
 
     public sealed record ControlPointDto(
+        int Id,
         short DriverId,
         string Name,
         short ModuleId,
@@ -14,6 +15,7 @@ namespace Aero.Application.DTOs
         short OfflineMode,
         string OfflineModeDetail,
         short DefaultPulse,
+        string Mac,
         int LocationId,
         bool IsActive
         ) : BaseDto(LocationId,IsActive);

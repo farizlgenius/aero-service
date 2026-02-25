@@ -4,6 +4,7 @@ namespace Aero.Domain.Entities;
 
 public sealed class DaysInWeek
 {
+    public int IntervalId { get; set; }
   public bool Sunday { get; set; }
   public bool Monday { get; set; }
   public bool Tuesday { get; set; }

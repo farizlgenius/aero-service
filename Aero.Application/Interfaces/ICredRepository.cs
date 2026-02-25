@@ -5,7 +5,7 @@ using System;
 
 namespace Aero.Application.Interfaces;
 
-public interface ICredRepository : IBaseRepository<CredentialDto,Credential>
+public interface ICredRepository : IBaseRepository<CredentialDto,Credential,Credential>
 {
       Task<int> DeleteByCardNoAsync(long Cardno);
     Task ToggleScanCardAsync(ScanCardDto dto);

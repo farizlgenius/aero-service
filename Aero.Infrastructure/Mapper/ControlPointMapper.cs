@@ -11,14 +11,14 @@ public sealed class ControlPointMapper
             // Base 
             MacBaseMapper.ToEf(data,res);
             res.name = data.Name;
-            res.cp_id = data.CpId;
+            res.cp_id = data.DriverId;
             res.module_id = data.ModuleId;
-            res.module_desc = data.ModuleDescription;
+            res.module_desc = data.ModuleDetail;
             res.output_no = data.OutputNo;
             res.relay_mode = data.RelayMode;
-            res.relay_mode_desc  =data.RelayModeDescription;
+            res.relay_mode_desc  =data.RelayModeDetail;
             res.offline_mode = data.OfflineMode;
-            res.offline_mode_desc = data.OfflineModeDescription;
+            res.offline_mode_desc = data.OfflineModeDetail;
             res.default_pulse = data.DefaultPulse;
 
             return res;
@@ -27,14 +27,14 @@ public sealed class ControlPointMapper
       public static void Update(Aero.Infrastructure.Data.Entities.ControlPoint res, ControlPoint data){
             MacBaseMapper.Update(data,res);
             res.name = data.Name;
-            res.cp_id = data.CpId;
+            res.cp_id = data.DriverId;
             res.module_id = data.ModuleId;
-            res.module_desc = data.ModuleDescription;
+            res.module_desc = data.ModuleDetail;
             res.output_no = data.OutputNo;
             res.relay_mode = data.RelayMode;
-            res.relay_mode_desc = data.RelayModeDescription;
+            res.relay_mode_desc = data.RelayModeDetail;
             res.offline_mode = data.OfflineMode;
-            res.offline_mode_desc = data.OfflineModeDescription;
+            res.offline_mode_desc = data.OfflineModeDetail;
             res.default_pulse = data.DefaultPulse;
       }
 

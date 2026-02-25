@@ -362,9 +362,9 @@ public class CpRepository(AppDbContext context) : ICpRepository
 
                     query = query.Where(x =>
                         EF.Functions.ILike(x.name, pattern) ||
-                        EF.Functions.ILike(x.module_desc, pattern) ||
-                        EF.Functions.ILike(x.relay_mode_desc, pattern) ||
-                        EF.Functions.ILike(x.offline_mode_desc, pattern)
+                        EF.Functions.ILike(x.module_detail, pattern) ||
+                        EF.Functions.ILike(x.relaymode_detail, pattern) ||
+                        EF.Functions.ILike(x.offlinemode_detail, pattern)
 
                     );
                 }
@@ -372,9 +372,9 @@ public class CpRepository(AppDbContext context) : ICpRepository
                 {
                     query = query.Where(x =>
                         x.name.Contains(search) ||
-                        x.module_desc.Contains(search) ||
-                        x.relay_mode_desc.Contains(search) ||
-                        x.offline_mode_desc.Contains(search)
+                        x.module_detail.Contains(search) ||
+                        x.relaymode_detail.Contains(search) ||
+                        x.offlinemode_detail.Contains(search)
                     );
                 }
             }
@@ -406,7 +406,7 @@ public class CpRepository(AppDbContext context) : ICpRepository
              {
                  // Base
                  ComponentId = x.component_id,
-                 HardwareName = x.module.hardware.name,
+                 HardwareName = x.module.device.name,
                  Mac = x.module.mac,
                  LocationId = x.location_id,
                  IsActive = x.is_active,
@@ -418,10 +418,10 @@ public class CpRepository(AppDbContext context) : ICpRepository
                  ModuleDescription = x.module.model_desc,
                  //module_desc = x.module_desc,
                  OutputNo = x.output_no,
-                 RelayMode = x.relay_mode,
-                 RelayModeDescription = x.relay_mode_desc,
-                 OfflineMode = x.offline_mode,
-                 OfflineModeDescription = x.offline_mode_desc,
+                 RelayMode = x.relaymode,
+                 RelayModeDescription = x.relaymode_detail,
+                 OfflineMode = x.offlinemode,
+                 OfflineModeDescription = x.offlinemode_detail,
                  DefaultPulse = x.default_pulse,
              })
             .ToArrayAsync();

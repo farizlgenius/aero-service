@@ -5,13 +5,9 @@ using Aero.Domain.Interface;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class DaysInWeek : IDatetime
+    public sealed class DaysInWeek : BaseEntity,IDatetime
     {
-        [Key]
-        public int id { get; set; }
-        public bool is_active { get; set; } = true;
-        public DateTime created_date { get; set; }
-        public DateTime updated_date { get; set; }
+        public int interval_id { get; set; }
         public Interval interval { get; set; }
         public bool sunday { get; set; }
         public bool monday { get; set; }
@@ -20,5 +16,18 @@ namespace Aero.Infrastructure.Persistences.Entities
         public bool thursday { get; set; }
         public bool friday { get; set; }
         public bool saturday { get; set; }
+
+        public DaysInWeek(int interval_id,bool sun,bool mon,bool tue,bool wed,bool thur,bool fri,bool sat,int locaion) : base(locaion)
+        {
+            this.interval_id = interval_id;
+            this.sunday = sun;
+            this.monday = mon;
+            this.tuesday = tue;
+            this.wednesday = wed;
+            this.thursday = thur;
+            this.friday = fri;
+            this.saturday = sat;
+
+        }
     }
 }

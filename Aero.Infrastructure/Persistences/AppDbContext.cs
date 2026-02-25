@@ -1,15 +1,14 @@
 using System;
 using Aero.Infrastructure.Persistences.Entities;
 using Microsoft.EntityFrameworkCore;
-using Aero.Infrastructure.Persistence.Entities;
 
 namespace Aero.Infrastructure.Persistences;
 
 public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-
+   
     // New 
-    public DbSet<Hardware> hardware { get; set; }
+    public DbSet<Device> device { get; set; }
     public DbSet<Module> module { get; set; }
     public DbSet<Sensor> sensor { get; set; }
     public DbSet<RequestExit> request_exit { get; set; }
@@ -19,7 +18,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<Reader> reader { get; set; }
     public DbSet<AccessLevel> access_level { get; set; }
     public DbSet<ScpSetting> scp_setting { get; set; }
-    public DbSet<HardwareComponent> hardware_component { get; set; }
+    public DbSet<DeviceComponent> device_component { get; set; }
     public DbSet<CardFormat> card_format { get; set; }
     public DbSet<Aero.Infrastructure.Persistences.Entities.TimeZone> timezone { get; set; }
     public DbSet<Holiday> holiday { get; set; }
@@ -36,7 +35,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<ReaderConfigurationMode> reader_configuration_mode { get; set; }
     public DbSet<AntipassbackMode> antipassback_mode { get; set; }
     public DbSet<AccessLevelComponent> access_level_component { get; set; }
-    public DbSet<CardHolder> cardholder { get; set; }
+    public DbSet<User> user { get; set; }
     public DbSet<Credential> credential { get; set; }
     public DbSet<AccessArea> area { get; set; }
     public DbSet<TimeZoneInterval> timezone_interval { get; set; }
@@ -71,8 +70,8 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<Procedure> procedure { get; set; }
     public DbSet<Aero.Infrastructure.Persistences.Entities.Action> action { get; set; }
     public DbSet<Trigger> trigger { get; set; }
-    public DbSet<CardHolderAdditional> cardholder_additional { get; set; }
-    public DbSet<CardHolderAccessLevel> cardholder_access_level { get; set; }
+    public DbSet<UserAdditional> user_additional { get; set; }
+    public DbSet<UserAccessLevel> user_access_level { get; set; }
 
     public DbSet<ActionType> action_type { get; set; }
     public DbSet<TimeZoneCommand> timezone_command { get; set; }
@@ -81,26 +80,30 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<OperatorLocation> operator_location { get; set; }
     public DbSet<WeakPassword> weak_password { get; set; }
     public DbSet<PasswordRule> password_rule { get; set; }
-    public DbSet<HardwareType> hardware_type { get; set; }
     public DbSet<IdReport> id_report { get; set; }
     public DbSet<ModuleBaudrate> module_baudrate { get; set; }
     public DbSet<ModuleProtocol> module_protocol { get; set; }
     public DbSet<MonitorPointLogFunction> monitor_point_log_function { get; set; }
     public DbSet<CommandAudit> commnad_audit { get; set; }
     public DbSet<DaysInWeek> days_in_week { get; set; }
-    public DbSet<HardwareCredential> hardware_credential { get; set; }
+    public DbSet<DeviceCredential> device_credential { get; set; }
     public DbSet<TransactionFlag> transaction_flag { get; set; }
     public DbSet<TransactionSourceType> transaction_source_type { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<User>()
+       .Property(p => p.gender)
+       .HasConversion<string>();
+
+
         #region Location
 
         modelBuilder.Entity<Location>()
             .HasData(
-            new Location { id = 1,  location_name = "Shared", description = "Shared location" },
-            new Location { id = 2, location_name = "Main", description = "Main location" }
+            new Location { id = 1,  name = "Shared", description = "Shared location" },
+            new Location { id = 2, name = "Main", description = "Main location" }
             );
 
         modelBuilder.Entity<Location>()
@@ -282,53 +285,48 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         #region Hardware 
 
-        modelBuilder.Entity<HardwareType>()
-            .HasData(
-            new HardwareType { id = 1, component_id = 1, name = "HID Aero", description = "HID Intelligent Controller" },
-            new HardwareType { id = 2, component_id = 2, name = "HID Amico", description = "HID Face Terminal" }
-            );
 
-        modelBuilder.Entity<Hardware>()
+        modelBuilder.Entity<Device>()
             .HasMany(p => p.modules)
-            .WithOne(p => p.hardware)
+            .WithOne(p => p.device)
             .HasForeignKey(p => p.mac)
             .HasPrincipalKey(p => p.mac)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Hardware>()
+        modelBuilder.Entity<Device>()
             .HasMany(p => p.monitor_groups)
-            .WithOne(p => p.hardware)
+            .WithOne(p => p.device)
             .HasForeignKey(p => p.mac)
             .HasPrincipalKey(p => p.mac)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Hardware>()
+        modelBuilder.Entity<Device>()
             .HasMany(p => p.monitor_groups)
-            .WithOne(p => p.hardware)
+            .WithOne(p => p.device)
             .HasForeignKey(p => p.mac)
             .HasPrincipalKey(p => p.mac)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Hardware>()
+        modelBuilder.Entity<Device>()
             .HasMany(p => p.doors)
-            .WithOne(t => t.hardware)
+            .WithOne(t => t.device)
             .HasForeignKey(p => p.mac)
             .HasPrincipalKey(t => t.mac)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Hardware>()
+        modelBuilder.Entity<Device>()
             .HasMany(p => p.access_level_component)
-            .WithOne(p => p.hardware)
+            .WithOne(p => p.device)
             .HasForeignKey(p => p.mac)
             .HasPrincipalKey(p => p.mac)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<HardwareCredential>()
+        modelBuilder.Entity<DeviceCredential>()
             .HasKey(p => new { p.hardware_mac, p.hardware_credential_id });
 
-        modelBuilder.Entity<HardwareCredential>()
+        modelBuilder.Entity<DeviceCredential>()
             .HasOne(e => e.hardware)
-            .WithMany(e => e.hardware_credentials)
+            .WithMany(e => e.device_credentials)
             .HasForeignKey(e => e.hardware_credential_id)
             .HasPrincipalKey(e => e.driver_id)
             .OnDelete(DeleteBehavior.Restrict);
@@ -715,29 +713,29 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         #region User & Credentials
 
-        modelBuilder.Entity<CardHolderAccessLevel>()
-            .HasKey(x => new { x.accesslevel_id, x.holder_id });
+        modelBuilder.Entity<UserAccessLevel>()
+            .HasKey(x => new { x.accesslevel_id, x.user_id });
 
-        modelBuilder.Entity<CardHolderAccessLevel>()
+        modelBuilder.Entity<UserAccessLevel>()
             .HasOne(e => e.accessLevel)
             .WithMany(e => e.cardholder_access_levels)
             .HasForeignKey(e => e.accesslevel_id)
             .HasPrincipalKey(e => e.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<CardHolderAccessLevel>()
-            .HasOne(e => e.cardholder)
-            .WithMany(e => e.cardholder_access_levels)
-            .HasForeignKey(e => e.holder_id)
+        modelBuilder.Entity<UserAccessLevel>()
+            .HasOne(e => e.user)
+            .WithMany(e => e.user_access_levels)
+            .HasForeignKey(e => e.user_id)
             .HasPrincipalKey(e => e.user_id)
             .OnDelete(DeleteBehavior.Cascade);
 
 
 
-        modelBuilder.Entity<CardHolder>()
+        modelBuilder.Entity<User>()
             .HasMany(e => e.additionals)
-            .WithOne(e => e.card_holder)
-            .HasForeignKey(e => e.holder_id)
+            .WithOne(e => e.user)
+            .HasForeignKey(e => e.user_id)
             .HasPrincipalKey(e => e.user_id)
             .OnDelete(DeleteBehavior.Cascade);
 
@@ -1800,14 +1798,14 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         #region Component
 
-        modelBuilder.Entity<HardwareComponent>().HasData(
-            new HardwareComponent { id = 1, model_no = 196, name = "HID Aero X1100", n_input = 7, n_output = 4, n_reader = 4 },
-            new HardwareComponent { id = 2, model_no = 193, name = "HID Aero X100", n_input = 7, n_output = 4, n_reader = 4 },
-            new HardwareComponent { id = 3, model_no = 194, name = "HID Aero X200", n_input = 19, n_output = 2, n_reader = 0 },
-            new HardwareComponent { id = 4, model_no = 195, name = "HID Aero X300", n_input = 5, n_output = 12, n_reader = 0 },
-            new HardwareComponent { id = 5, model_no = 190, name = "VertX V100", n_input = 7, n_output = 4, n_reader = 2 },
-            new HardwareComponent { id = 6, model_no = 191, name = "VertX V200", n_input = 19, n_output = 2, n_reader = 0 },
-            new HardwareComponent { id = 7, model_no = 192, name = "VertX V300", n_input = 5, n_output = 12, n_reader = 0 }
+        modelBuilder.Entity<DeviceComponent>().HasData(
+            new DeviceComponent { id = 1, model_no = 196, name = "HID Aero X1100", n_input = 7, n_output = 4, n_reader = 4 },
+            new DeviceComponent { id = 2, model_no = 193, name = "HID Aero X100", n_input = 7, n_output = 4, n_reader = 4 },
+            new DeviceComponent { id = 3, model_no = 194, name = "HID Aero X200", n_input = 19, n_output = 2, n_reader = 0 },
+            new DeviceComponent { id = 4, model_no = 195, name = "HID Aero X300", n_input = 5, n_output = 12, n_reader = 0 },
+            new DeviceComponent { id = 5, model_no = 190, name = "VertX V100", n_input = 7, n_output = 4, n_reader = 2 },
+            new DeviceComponent { id = 6, model_no = 191, name = "VertX V200", n_input = 19, n_output = 2, n_reader = 0 },
+            new DeviceComponent { id = 7, model_no = 192, name = "VertX V300", n_input = 5, n_output = 12, n_reader = 0 }
          );
 
         #endregion

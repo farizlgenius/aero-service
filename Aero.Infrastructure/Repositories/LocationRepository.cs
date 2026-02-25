@@ -220,7 +220,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
         {
 
             ComponentId = x.component_id,
-            LocationName = x.location_name,
+            LocationName = x.name,
             Description = x.description,
         })
         .ToArrayAsync();
@@ -304,7 +304,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
     public async Task<bool> IsAnyByLocationNameAsync(string name)
     {
-        return await context.location.AnyAsync(x => x.location_name.Equals(name));
+        return await context.location.AnyAsync(x => x.name.Equals(name));
     }
 
     public async Task<Pagination<LocationDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
@@ -323,14 +323,14 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
                     var pattern = $"%{search}%";
 
                     query = query.Where(x =>
-                        EF.Functions.ILike(x.location_name, pattern) ||
+                        EF.Functions.ILike(x.name, pattern) ||
                         EF.Functions.ILike(x.description, pattern)
                     );
                 }
                 else // SQL Server
                 {
                     query = query.Where(x =>
-                        x.location_name.Contains(search) ||
+                        x.name.Contains(search) ||
                         x.description.Contains(search)
                     );
                 }
@@ -363,7 +363,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
             .Select(x => new LocationDto
             {
                 ComponentId = x.component_id,
-                LocationName = x.location_name,
+                LocationName = x.name,
                 Description = x.description
 
             })

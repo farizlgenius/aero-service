@@ -5,7 +5,7 @@ namespace Aero.Infrastructure.Mapper;
 
 public sealed class HolderMapper
 {
-      public static CardHolder ToEf(Aero.Domain.Entities.CardHolder data)
+      public static CardHolder ToEf(Aero.Domain.Entities.User data)
       {
             var res = new CardHolder();
             // Base 
@@ -27,7 +27,7 @@ public sealed class HolderMapper
                   holder_id = data.UserId,
                   additional = x
             }).ToArray();
-            res.image_path = data.ImagePath;
+            res.image_path = data.Image;
             res.credentials = data.Credentials is null || data.Credentials.Count <= 0 ? new List<Credential>() :  data.Credentials.Select(x => new Credential
             {
                   component_id = x.ComponentId,
@@ -49,7 +49,7 @@ public sealed class HolderMapper
             return res;
       }
 
-      public static void Update(Aero.Infrastructure.Data.Entities.CardHolder res,Aero.Domain.Entities.CardHolder data)
+      public static void Update(Aero.Infrastructure.Data.Entities.CardHolder res,Aero.Domain.Entities.User data)
       {
             // Base 
             NoMacBaseMapper.Update(data,res);
@@ -70,7 +70,7 @@ public sealed class HolderMapper
                   holder_id = data.UserId,
                   additional = x
             }).ToArray();
-            res.image_path = data.ImagePath;
+            res.image_path = data.Image;
             res.credentials = data.Credentials is null || data.Credentials.Count <= 0 ? new List<Credential>() :  data.Credentials.Select(x => new Credential
             {
                   component_id = x.ComponentId,

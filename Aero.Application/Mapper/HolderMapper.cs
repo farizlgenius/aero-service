@@ -6,7 +6,7 @@ namespace Aero.Application.Mapper;
 
 public sealed class HolderMapper
 {
-      public static CardHolder ToDomain(CardHolderDto dto)
+      public static User ToDomain(UserDto dto)
       {
             var res = new CardHolder();
             // Base 
@@ -22,7 +22,7 @@ public sealed class HolderMapper
             res.Company = dto.Company;
             res.Position = dto.Position;
             res.Department = dto.Department;
-            res.ImagePath = dto.ImagePath;
+            res.Image = dto.ImagePath;
             res.Flag = dto.Flag;
             res.Additionals = dto.Additionals;
             res.Credentials = dto.Credentials is null || dto.Credentials.Count <= 0 ? new List<Credential>() : dto.Credentials.Select(x => new Aero.Domain.Entities.Credential
