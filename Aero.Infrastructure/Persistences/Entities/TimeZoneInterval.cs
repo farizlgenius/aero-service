@@ -7,12 +7,17 @@ namespace Aero.Infrastructure.Persistences.Entities
     {
         [Key]
         public int id { get; set; }
-        public bool is_active { get; set; } = true;
-        public DateTime created_date { get; set; }
-        public DateTime updated_date { get; set; }
-        public short timezone_id {  get; set; }
+        public DateTime created_date { get; set; } = DateTime.UtcNow;
+        public DateTime updated_date { get; set; } = DateTime.UtcNow;
+        public int timezone_id { get; set; }
         public TimeZone timezone { get; set; }
         public int interval_id { get; set; }
         public Interval interval { get; set; }
+
+        public TimeZoneInterval(int timezone_id, int interval_id)
+        {
+            this.timezone_id = timezone_id;
+            this.interval_id = interval_id;
+        }
     }
 }

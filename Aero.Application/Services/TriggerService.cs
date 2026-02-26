@@ -12,27 +12,27 @@ using Aero.Domain.Interface;
 
 namespace Aero.Application.Services
 {
-    public sealed class TriggerService(IQTrigRepository qTrig,ITriggerRepository rTrig,IQHwRepository qHw,ITrigCommand trig) : ITriggerService
+    public sealed class TriggerService(IQTrigRepository qTrig, ITriggerRepository rTrig, IQHwRepository qHw, ITrigCommand trig) : ITriggerService
     {
         public async Task<ResponseDto<bool>> CreateAsync(TriggerDto dto)
         {
-            var ComponentId = await qTrig.GetLowestUnassignedNumberAsync(128,"");
-            var TrigId = await qTrig.GetLowestUnassignedNumberAsync(128,dto.Mac);
+            var ComponentId = await qTrig.GetLowestUnassignedNumberAsync(128, "");
+            var TrigId = await qTrig.GetLowestUnassignedNumberAsync(128, dto.Mac);
             if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
             var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
             if (ScpId == 0) return ResponseHelper.NotFoundBuilder<bool>();
 
             var domain = TriggerMapper.ToDomain(dto);
-            domain.TrigId = TrigId;
+            domain.DriverID = TrigId;
             domain.ComponentId = ComponentId;
 
-            if(!trig.TriggerSpecification(ScpId,domain,ComponentId))
+            if (!trig.TriggerSpecification(ScpId, domain, ComponentId))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.TRIG_SPEC));
             }
 
             var status = await rTrig.AddAsync(domain);
-            if(status <= 0)return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
+            if (status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS, []);
 
             return ResponseHelper.SuccessBuilder<bool>(true);
         }
@@ -88,7 +88,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<IEnumerable<Mode>>> GetDeviceBySourceAsync(short location, short source)
         {
-            var dtos = await rTrig.GetDeviceBySourceAsync(location,source);
+            var dtos = await rTrig.GetDeviceBySourceAsync(location, source);
 
             return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
         }
@@ -100,7 +100,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<Pagination<TriggerDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
         {
-            var res = await qTrig.GetPaginationAsync(param,location);
+            var res = await qTrig.GetPaginationAsync(param, location);
             return ResponseHelper.SuccessBuilder(res);
         }
     }

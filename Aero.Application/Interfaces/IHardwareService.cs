@@ -10,7 +10,7 @@ namespace Aero.Application.Interface
 {
     public interface IHardwareService
     {
-        Task<ResponseDto<Pagination<HardwareDto>>> GetPaginationAsync(PaginationParamsWithFilter param,short location);
+        Task<ResponseDto<Pagination<HardwareDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location);
         Task HandleFoundHardware(IScpReply message);
         Task<ResponseDto<IEnumerable<HardwareDto>>> GetAsync();
         Task<ResponseDto<IEnumerable<Mode>>> GetHardwareTypeAsync();
@@ -31,7 +31,7 @@ namespace Aero.Application.Interface
         Task<ResponseDto<bool>> SetTransactionAsync(string mac, short IsOn);
         Task<ResponseDto<IEnumerable<ResponseDto<bool>>>> SetRangeTransactionAsync(List<SetTranDto> tran);
         Task<bool> MappingHardwareAndAllocateMemory(short ScpId);
-        Task<List<VerifyHardwareDeviceConfigDto>> VerifyDeviceConfigurationAsync(Hardware hw);
+        Task<List<VerifyHardwareDeviceConfigDto>> VerifyDeviceConfigurationAsync(Device hw);
         Task<bool> VerifyHardwareConnection(short ScpId);
         Task VerifyAllocateHardwareMemoryAsync(IScpReply message);
         Task AssignPortAsync(IScpReply message);

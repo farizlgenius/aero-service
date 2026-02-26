@@ -23,19 +23,37 @@ namespace Aero.Infrastructure.Persistences.Entities
         public string serial_number { get; set; } = string.Empty;
         public bool port_one { get; set; } = false;
         public short protocol_one { get; set; }
-        public string protocol_one_desc { get; set; }= string.Empty;
+        public string protocol_one_detail { get; set; }= string.Empty;
         public short baudrate_one { get; set; }
         public bool port_two { get; set; } = false;
         public short protocol_two { get; set; }
-        public string protocol_two_desc { get; set; } = string.Empty;
+        public string protocol_two_detail { get; set; } = string.Empty;
         public short baudrate_two { get; set; }
         public bool is_upload { get; set; } = false;
         public bool is_reset { get; set; } = false;
         public DateTime last_sync { get; set; }
 
-        public Device(string name,short driver,int type,,int location) : base(location)
+        public Device(Aero.Domain.Entities.Device data) : base(data.LocationId)
         {
-
+            this.name = data.Name;
+            this.driver_id = data.DriverId;
+            this.hardware_type = data.HardwareType;
+            this.hardware_type_detail = data.HardwareTypeDetail;
+            this.mac = data.Mac;
+            this.ip = data.Ip;
+            this.port = data.Port;
+            this.firmware = data.Firmware;
+            this.serial_number = data.SerialNumber;
+            this.port_one = data.PortOne;
+            this.protocol_one = data.ProtocolOne;
+            this.protocol_one_detail = data.ProtocolOneDetail;
+            this.baudrate_one = data.BaudRateOne;
+            this.protocol_two_detail =  data.ProtocolTwoDetail;
+            this.protocol_two = data.ProtocolTwo;
+            this.baudrate_two = data.BaudRateTwo;
+            this.is_upload = data.IsUpload;
+            this.is_reset = data.IsReset;
+            this.last_sync = data.LastSync;
         }
     }
 }

@@ -9,8 +9,8 @@ public sealed class TriggerMapper
       public static Trigger ToDomain(TriggerDto dto)
       {
             var res = new Trigger();
-            MacBaseMapper.ToDomain(dto,res);
-            res.TrigId = dto.TranType;
+            MacBaseMapper.ToDomain(dto, res);
+            res.DriverID = dto.TranType;
             res.Name = dto.Name;
             res.Command = dto.Command;
             res.ProcedureId = dto.ProcedureId;
@@ -22,7 +22,7 @@ public sealed class TriggerMapper
                   Name = x.Name,
                   Value = x.Value,
                   Description = x.Description,
-                  
+
             }).ToList();
             res.TimeZone = dto.TimeZone;
 

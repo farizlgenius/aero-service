@@ -278,7 +278,8 @@ namespace Aero.Application.Services
                     if (!await alvl.AccessLevelConfigurationExtended(ScpId, domain.ComponentId, domain.ComponentId == 1 ? (short)0 : (short)1))
                     {
                         errors.Add(MessageBuilder.Unsuccess(mac, Command.ALVL_CONFIG));
-                    };
+                    }
+                    ;
                 }
                 else
                 {
@@ -451,7 +452,7 @@ namespace Aero.Application.Services
 
             var cards = await qHolder.GetAsync();
 
-            var cdomain = cards.Select(x => HolderMapper.ToDomain(x)).ToList(); 
+            var cdomain = cards.Select(x => HolderMapper.ToDomain(x)).ToList();
 
             foreach (var card in cdomain)
             {
@@ -515,7 +516,7 @@ namespace Aero.Application.Services
 
 
 
-        public async Task<List<VerifyHardwareDeviceConfigDto>> VerifyDeviceConfigurationAsync(Hardware hw)
+        public async Task<List<VerifyHardwareDeviceConfigDto>> VerifyDeviceConfigurationAsync(Device hw)
         {
             List<VerifyHardwareDeviceConfigDto> dev = new List<VerifyHardwareDeviceConfigDto>();
 
@@ -659,7 +660,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<bool>> CreateAsync(CreateHardwareDto dto)
         {
-            var ComponentId = await qModule.GetLowestUnassignedNumberAsync(10,"");
+            var ComponentId = await qModule.GetLowestUnassignedNumberAsync(10, "");
             if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
             var hardware = HardwareMapper.ToDomain(dto);
             hardware.Modules[0].ComponentId = ComponentId;
@@ -944,9 +945,9 @@ namespace Aero.Application.Services
 
         public async Task AssignIpAddressAsync(IScpReply message)
         {
-            if(await qHw.IsAnyByComponentId((short)message.ScpId))
+            if (await qHw.IsAnyByComponentId((short)message.ScpId))
             {
-                if (message.web_network is not null) await rHw.UpdateIpAddressAsync(message.ScpId,UtilitiesHelper.IntegerToIp(message.web_network.cIpAddr));
+                if (message.web_network is not null) await rHw.UpdateIpAddressAsync(message.ScpId, UtilitiesHelper.IntegerToIp(message.web_network.cIpAddr));
 
                 scp.GetWebConfigRead((short)message.ScpId, 3);
 
@@ -954,7 +955,7 @@ namespace Aero.Application.Services
             else
             {
 
-                if(message.web_network is not null) await qId.UpdateIpAddressAsync(message.ScpId,UtilitiesHelper.IntegerToIp(message.web_network.cIpAddr));
+                if (message.web_network is not null) await qId.UpdateIpAddressAsync(message.ScpId, UtilitiesHelper.IntegerToIp(message.web_network.cIpAddr));
 
                 scp.GetWebConfigRead((short)message.ScpId, 3);
             }
@@ -978,10 +979,11 @@ namespace Aero.Application.Services
                     {
                         port = message.web_host_comm_prim.ipserver.nPort.ToString();
                     }
-                };
+                }
+                ;
 
 
-                await rHw.UpdatePortAddressAsync((short)message.ScpId,port);
+                await rHw.UpdatePortAddressAsync((short)message.ScpId, port);
 
                 var dto = await qId.GetAsync();
 
@@ -1006,7 +1008,7 @@ namespace Aero.Application.Services
                 }
                 ;
 
-                await qId.UpdatePortAddressAsync((short)message.ScpId,port);
+                await qId.UpdatePortAddressAsync((short)message.ScpId, port);
 
                 var dto = await qId.GetAsync();
 
@@ -1018,7 +1020,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<Pagination<HardwareDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
         {
-            var res = await qHw.GetPaginationAsync(param,location);
+            var res = await qHw.GetPaginationAsync(param, location);
             return ResponseHelper.SuccessBuilder(res);
         }
     }

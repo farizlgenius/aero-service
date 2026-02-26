@@ -67,7 +67,7 @@ namespace Aero.Application.Services
             var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
 
             var domain = MonitorPointMapper.ToDomain(dto);
-            domain.MpId = mpid;
+            domain.DriverId = mpid;
             domain.ComponentId = componentId;
 
             if (!mp.InputPointSpecification(ScpId, dto.ModuleId, dto.InputNo, dto.InputMode, dto.Debounce, dto.HoldTime))
@@ -119,7 +119,7 @@ namespace Aero.Application.Services
                 return ResponseHelper.UnsuccessBuilderWithString<MonitorPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.INPUT_SPEC));
             }
 
-            if (!mp.MonitorPointConfiguration(ScpId, domain.ModuleId, domain.InputNo, domain.LogFunction, domain.MonitorPointMode, domain.DelayEntry, domain.DelayExit, domain.MpId))
+            if (!mp.MonitorPointConfiguration(ScpId, domain.ModuleId, domain.InputNo, domain.LogFunction, domain.MonitorPointMode, domain.DelayEntry, domain.DelayExit, domain.DriverId))
             {
                 return ResponseHelper.UnsuccessBuilderWithString<MonitorPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.MONITOR_CONFIG));
             }

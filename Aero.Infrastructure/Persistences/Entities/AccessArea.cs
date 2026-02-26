@@ -19,6 +19,8 @@ namespace Aero.Infrastructure.Persistences.Entities
         public ICollection<Door> door_in { get; set; }
         public ICollection<Door> door_out { get; set; }
 
+        public AccessArea(){}
+
         public AccessArea(short driver,string name,short multi_occ,short access_control,short occ_control,short occ_set,short occ_max,short occ_up,short occ_down,short area_flag,int location_id) : base(location_id) 
         {
             this.driver_id = driver_id;

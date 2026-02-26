@@ -416,28 +416,24 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .HasMany(p => p.sensors)
             .WithOne(p => p.module)
             .HasForeignKey(p => p.module_id)
-            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Module>()
             .HasMany(p => p.strikes)
             .WithOne(p => p.module)
             .HasForeignKey(p => p.module_id)
-            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Module>()
             .HasMany(p => p.readers)
             .WithOne(p => p.module)
             .HasForeignKey(p => p.module_id)
-            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Module>()
             .HasMany(p => p.request_exits)
             .WithOne(p => p.module)
             .HasForeignKey(p => p.module_id)
-            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
 
@@ -445,7 +441,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .HasMany(p => p.control_points)
             .WithOne(p => p.module)
             .HasForeignKey(p => p.module_id)
-            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
 
@@ -453,7 +448,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .HasMany(p => p.monitor_points)
             .WithOne(p => p.module)
             .HasForeignKey(p => p.module_id)
-            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<ModuleBaudrate>()
@@ -480,13 +474,12 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .HasMany(s => s.components)
             .WithOne(s => s.access_level)
             .HasForeignKey(p => p.access_level_id)
-            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
 
-        var NoAccess = new AccessLevel { id = 1, name = "No Access", driver_id = 1, location_id = 1, is_active = true };
+        var NoAccess = new AccessLevel { id = 1, name = "No Access", location_id = 1, is_active = true };
 
-        var FullAccess = new AccessLevel { id = 2, name = "Full Access", driver_id = 2, location_id = 1, is_active = true };
+        var FullAccess = new AccessLevel { id = 2, name = "Full Access",  location_id = 1, is_active = true };
 
 
         modelBuilder.Entity<AccessLevel>().HasData(
@@ -579,7 +572,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .HasMany(p => p.readers)
             .WithOne(p => p.door)
             .HasForeignKey(p => p.door_id)
-            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
 
@@ -587,28 +579,24 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .HasOne(p => p.sensor)
             .WithOne(p => p.sensor_door)
             .HasForeignKey<Sensor>(p => p.door_id)
-            .HasPrincipalKey<Door>(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Door>()
             .HasMany(p => p.request_exits)
             .WithOne(p => p.door)
             .HasForeignKey(p => p.door_id)
-            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Door>()
             .HasOne(p => p.strike)
             .WithOne(p => p.strike_door)
             .HasForeignKey<Strike>(p => p.door_id)
-            .HasPrincipalKey<Door>(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Door>()
             .HasMany(x => x.access_level_component)
             .WithOne(x => x.door)
             .HasForeignKey(x => x.door_id)
-            .HasPrincipalKey(x => x.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
             
 
@@ -720,7 +708,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .HasOne(e => e.accessLevel)
             .WithMany(e => e.cardholder_access_levels)
             .HasForeignKey(e => e.accesslevel_id)
-            .HasPrincipalKey(e => e.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<UserAccessLevel>()
@@ -1569,7 +1556,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<OperatorLocation>()
-            .HasOne(x => x.@operator)
+            .HasOne(x => x.Operators)
             .WithMany(x => x.operator_locations)
             .HasForeignKey(x => x.operator_id)
             .OnDelete(DeleteBehavior.Cascade);
@@ -1610,7 +1597,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         modelBuilder.Entity<Operator>()
             .HasData(
-                new Operator { id = 1,  user_id = "Administrator", user_name = "admin", password = "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY", email = "support@honorsupplying.com", title = "Mr.", first_name = "Administrator", middle_name = "", last_name = "", phone = "", image_path = "", role_id = 1}
+                new Operator { id = 1,  user_id = "Administrator", user_name = "admin", password = "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY", email = "support@honorsupplying.com", title = "Mr.", first_name = "Administrator", middle_name = "", last_name = "", phone = "", image = "", role_id = 1}
             );
 
         modelBuilder.Entity<OperatorLocation>()

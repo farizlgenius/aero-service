@@ -18,10 +18,11 @@ public sealed class Action : BaseDomain
         public short DelayTime { get; set; }
         public short ProcedureId { get; set; }
 
-    public Action(short scpid,short actiontype,string actiontypedetail,short arg1,short arg2,short arg3,short arg4,short arg5,short arg6,short arg7,short strarg,short delay)
+    public Action(short actionid,short actiontype,string actiontypedetail,short arg1,short arg2,short arg3,short arg4,short arg5,short arg6,short arg7,short strarg,short delay)
     {
-        this.DeviceId = scpid;
+        this.DeviceId = actionid;
         this.ActionType = actiontype;
+        
     }
 
 

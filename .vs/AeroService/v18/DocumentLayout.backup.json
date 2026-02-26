@@ -3,24 +3,28 @@
   "WorkspaceRootPath": "D:\\Aero\\AeroService\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\persistences\\entities\\controlpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\persistences\\entities\\controlpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\persistences\\entities\\module.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\persistences\\entities\\module.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|d:\\aero\\aeroservice\\aero.application\\dtos\\controlpointdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|solutionrelative:aero.application\\dtos\\controlpointdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\persistences\\entities\\location.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\persistences\\entities\\location.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|d:\\aero\\aeroservice\\aero.application\\services\\aerocommandservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|solutionrelative:aero.application\\services\\aerocommandservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\persistences\\entities\\keypair.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\persistences\\entities\\keypair.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|d:\\aero\\aeroservice\\aero.application\\services\\controlpointservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|solutionrelative:aero.application\\services\\controlpointservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{63FFA18D-3E41-7B71-6B81-933AAF55FA40}|Aero.Domain\\Aero.Domain.csproj|d:\\aero\\aeroservice\\aero.domain\\entities\\daysinweek.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{63FFA18D-3E41-7B71-6B81-933AAF55FA40}|Aero.Domain\\Aero.Domain.csproj|solutionrelative:aero.domain\\entities\\daysinweek.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|d:\\aero\\aeroservice\\aero.application\\services\\cardformatservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|solutionrelative:aero.application\\services\\cardformatservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\persistences\\entities\\inputmode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\persistences\\entities\\inputmode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\persistences\\entities\\idreport.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\persistences\\entities\\idreport.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -35,66 +39,79 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ControlPoint.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\ControlPoint.cs",
-              "RelativeDocumentMoniker": "Aero.Infrastructure\\Persistences\\Entities\\ControlPoint.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\ControlPoint.cs",
-              "RelativeToolTip": "Aero.Infrastructure\\Persistences\\Entities\\ControlPoint.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAsAAAAAAAAAA==",
+              "Title": "Module.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\Module.cs",
+              "RelativeDocumentMoniker": "Aero.Infrastructure\\Persistences\\Entities\\Module.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\Module.cs",
+              "RelativeToolTip": "Aero.Infrastructure\\Persistences\\Entities\\Module.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-24T05:09:53.981Z",
+              "WhenOpened": "2026-02-25T16:24:05.956Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "ControlPointDto.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Application\\DTOs\\ControlPointDto.cs",
-              "RelativeDocumentMoniker": "Aero.Application\\DTOs\\ControlPointDto.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Application\\DTOs\\ControlPointDto.cs",
-              "RelativeToolTip": "Aero.Application\\DTOs\\ControlPointDto.cs",
+              "Title": "Location.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\Location.cs",
+              "RelativeDocumentMoniker": "Aero.Infrastructure\\Persistences\\Entities\\Location.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\Location.cs",
+              "RelativeToolTip": "Aero.Infrastructure\\Persistences\\Entities\\Location.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-24T04:54:13.333Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "ControlPointService.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Application\\Services\\ControlPointService.cs",
-              "RelativeDocumentMoniker": "Aero.Application\\Services\\ControlPointService.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Application\\Services\\ControlPointService.cs",
-              "RelativeToolTip": "Aero.Application\\Services\\ControlPointService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAD8AAABBAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-24T04:48:30.349Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "CardFormatService.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Application\\Services\\CardFormatService.cs",
-              "RelativeDocumentMoniker": "Aero.Application\\Services\\CardFormatService.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Application\\Services\\CardFormatService.cs",
-              "RelativeToolTip": "Aero.Application\\Services\\CardFormatService.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAxwCAAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-24T04:48:04.288Z",
+              "WhenOpened": "2026-02-25T16:24:04.902Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "AeroCommandService.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Application\\Services\\AeroCommandService.cs",
-              "RelativeDocumentMoniker": "Aero.Application\\Services\\AeroCommandService.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Application\\Services\\AeroCommandService.cs",
-              "RelativeToolTip": "Aero.Application\\Services\\AeroCommandService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Title": "KeyPair.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\KeyPair.cs",
+              "RelativeDocumentMoniker": "Aero.Infrastructure\\Persistences\\Entities\\KeyPair.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\KeyPair.cs",
+              "RelativeToolTip": "Aero.Infrastructure\\Persistences\\Entities\\KeyPair.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-24T04:47:58.438Z",
+              "WhenOpened": "2026-02-25T16:24:02.999Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "DaysInWeek.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Domain\\Entities\\DaysInWeek.cs",
+              "RelativeDocumentMoniker": "Aero.Domain\\Entities\\DaysInWeek.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Domain\\Entities\\DaysInWeek.cs",
+              "RelativeToolTip": "Aero.Domain\\Entities\\DaysInWeek.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-25T16:18:41.193Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "InputMode.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\InputMode.cs",
+              "RelativeDocumentMoniker": "Aero.Infrastructure\\Persistences\\Entities\\InputMode.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\InputMode.cs",
+              "RelativeToolTip": "Aero.Infrastructure\\Persistences\\Entities\\InputMode.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-25T16:12:47.617Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "IdReport.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\IdReport.cs",
+              "RelativeDocumentMoniker": "Aero.Infrastructure\\Persistences\\Entities\\IdReport.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\IdReport.cs",
+              "RelativeToolTip": "Aero.Infrastructure\\Persistences\\Entities\\IdReport.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-25T16:12:39.372Z",
               "EditorCaption": ""
             }
           ]

@@ -7,7 +7,7 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short driver_id {get; set;}
         public string name { get; set; } = string.Empty;
         public Module module { get; set; }
-        public short module_id { get; set; }
+        public int module_id { get; set; }
         public string module_detail { get; set; } = string.Empty;
         public short output_no { get; set; }
         public short relaymode { get; set; }
@@ -17,7 +17,7 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short default_pulse { get; set; } = 1;
         public string mac { get; set; } = string.Empty;
 
-        public ControlPoint(short driver,string name,short module_id,string module_detail,short output_no,short relaymode,string relaymode_detail,short offlinemode,string offlinemode_detail,short defaultpulse,string mac,int location_id) : base(location_id) 
+        public ControlPoint(short driver,string name,int module_id,string module_detail,short output_no,short relaymode,string relaymode_detail,short offlinemode,string offlinemode_detail,short defaultpulse,string mac,int location_id) : base(location_id) 
         {
             this.driver_id = driver;
             this.name = name;

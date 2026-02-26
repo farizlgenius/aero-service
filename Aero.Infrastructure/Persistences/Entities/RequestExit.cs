@@ -5,15 +5,15 @@ namespace Aero.Infrastructure.Persistences.Entities
     public class RequestExit : BaseEntity
     {
         public Module module { get; set; }
-        public short door_id { get; set; }
+        public int door_id { get; set; }
         public Door door { get; set; }
-        public short module_id { get; set; }
+        public int module_id { get; set; }
         public short input_no { get; set; }
         public short input_mode { get; set; }
         public short debounce { get; set; }
         public short holdtime { get; set; }
         public short mask_timezone { get; set; } = 0;
-        public RequestExit(short module,short doorid,short input,short mode,short debounce,short holdtime,short mask,int location) : base(location)
+        public RequestExit(int module,int doorid,short input,short mode,short debounce,short holdtime,short mask,int location) : base(location)
         {
             this.module_id = module;
             this.door_id = doorid;

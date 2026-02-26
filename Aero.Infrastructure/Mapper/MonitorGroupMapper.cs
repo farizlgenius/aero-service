@@ -18,7 +18,7 @@ public sealed class MonitorGroupMapper
                  {
                        point_type = x.PointType,
                        point_number = x.PointNumber,
-                       point_type_desc = x.PointTypeDesc
+                       point_type_desc = x.PointTypeDetail
                  })
                  .ToList();
             return res;
@@ -35,7 +35,7 @@ public sealed class MonitorGroupMapper
                   {
                         point_type = x.PointType,
                         point_number = x.PointNumber,
-                        point_type_desc = x.PointTypeDesc
+                        point_type_desc = x.PointTypeDetail
                   })
                   .ToList();
       }

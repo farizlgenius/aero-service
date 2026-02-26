@@ -19,7 +19,7 @@ namespace Aero.Infrastructure.Persistences.Entities;
         public TimeZone timezone { get; set; }
 
         // Reference 
-        public short access_level_id {get; set;}
+        public int access_level_id {get; set;}
         public AccessLevel access_level {get; set;}
 
         public AccessLevelComponent(short driver,string mac,int doorid,short acrid,short timezone) 

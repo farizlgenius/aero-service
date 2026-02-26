@@ -13,7 +13,7 @@ using System.Net;
 
 namespace Aero.Application.Services
 {
-    public class TimeZoneService(IQTzRepository qTz,IQHwRepository qHw,ITzCommand tz,ITzRepository rTz) : ITimeZoneService
+    public class TimeZoneService(IQTzRepository qTz, IQHwRepository qHw, ITzCommand tz, ITzRepository rTz) : ITimeZoneService
     {
         public async Task<ResponseDto<IEnumerable<TimeZoneDto>>> GetAsync()
         {
@@ -32,33 +32,33 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<bool>> CreateAsync(TimeZoneDto dto)
         {
             List<string> errors = new List<string>();
-            var ComponentId = await qTz.GetLowestUnassignedNumberAsync(10,"");
-            var TimezoneId = await qTz.GetLowestUnassignedNumberAsync(10,"");
+            var ComponentId = await qTz.GetLowestUnassignedNumberAsync(10, "");
+            var TimezoneId = await qTz.GetLowestUnassignedNumberAsync(10, "");
             if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
 
             var timezone = TimezoneMapper.ToDomain(dto);
             timezone.ComponentId = ComponentId;
-            timezone.TimezoneId = TimezoneId;
+            timezone.DriverId = TimezoneId;
 
-            
+
             var ids = await qHw.GetComponentIdByLocationIdAsync(dto.LocationId);
 
             foreach (var id in ids)
             {
                 long active = UtilitiesHelper.DateTimeToElapeSecond(dto.ActiveTime);
                 long deactive = UtilitiesHelper.DateTimeToElapeSecond(dto.DeactiveTime);
-                if (!tz.ExtendedTimeZoneActSpecification(id, timezone,timezone.Intervals is null ? [] : timezone.Intervals , (int)active, (int)deactive))
+                if (!tz.ExtendedTimeZoneActSpecification(id, timezone, timezone.Intervals is null ? [] : timezone.Intervals, (int)active, (int)deactive))
                 {
-                   errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id), Command.TIMEZONE_SPEC));
+                    errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id), Command.TIMEZONE_SPEC));
                 }
             }
-            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, errors);
 
 
             var status = await rTz.AddAsync(timezone);
 
-            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,errors);
+            if (status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS, errors);
 
             return ResponseHelper.SuccessBuilder(true);
         }
@@ -66,23 +66,23 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<bool>> DeleteAsync(short component)
         {
             List<string> errors = new List<string>();
-            
-            if(!await qTz.IsAnyByComponentId(component)) return ResponseHelper.NotFoundBuilder<bool>();
+
+            if (!await qTz.IsAnyByComponentId(component)) return ResponseHelper.NotFoundBuilder<bool>();
 
             var hw = await qHw.GetComponentIdsAsync();
-            foreach(var id in hw)
+            foreach (var id in hw)
             {
-                if (!tz.TimeZoneControl(id,component,3))
+                if (!tz.TimeZoneControl(id, component, 3))
                 {
-                   errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id),Command.TZ_CONTROL));
+                    errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id), Command.TZ_CONTROL));
                 }
             }
 
-            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, errors);
 
             var status = await rTz.DeleteByComponentIdAsync(component);
 
-            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,errors);
+            if (status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS, errors);
 
             return ResponseHelper.SuccessBuilder<bool>(true);
         }
@@ -102,16 +102,16 @@ namespace Aero.Application.Services
                 long deactive = UtilitiesHelper.DateTimeToElapeSecond(dto.DeactiveTime);
                 if (!tz.ExtendedTimeZoneActSpecification(id, domain, domain.Intervals.ToList(), (int)active, (int)deactive))
                 {
-                   errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id), Command.TIMEZONE_SPEC));
+                    errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id), Command.TIMEZONE_SPEC));
                 }
             }
-            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<TimeZoneDto>(ResponseMessage.COMMAND_UNSUCCESS,errors);
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<TimeZoneDto>(ResponseMessage.COMMAND_UNSUCCESS, errors);
 
             var data = TimezoneMapper.ToDomain(dto);
 
             var status = await rTz.UpdateAsync(data);
 
-            if(status <= 0) return ResponseHelper.UnsuccessBuilder<TimeZoneDto>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,errors);
+            if (status <= 0) return ResponseHelper.UnsuccessBuilder<TimeZoneDto>(ResponseMessage.DELETE_DATABASE_UNSUCCESS, errors);
 
             return ResponseHelper.SuccessBuilder(dto);
         }
@@ -155,7 +155,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<Pagination<TimeZoneDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
         {
-            var res = await qTz.GetPaginationAsync(param,location);
+            var res = await qTz.GetPaginationAsync(param, location);
             return ResponseHelper.SuccessBuilder(res);
         }
     }

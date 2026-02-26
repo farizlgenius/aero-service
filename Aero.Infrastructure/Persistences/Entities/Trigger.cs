@@ -3,9 +3,9 @@ using Aero.Domain.Interfaces;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class Trigger : BaseEntity,IDriverId,IMac
+    public sealed class Trigger : BaseEntity, IDriverId, IMac
     {
-        public short driver_id {get; set;}
+        public short driver_id { get; set; }
         public string name { get; set; } = string.Empty;
         public short command { get; set; }
         public short procedure_id { get; set; }
@@ -13,10 +13,25 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short source_number { get; set; }
         public short tran_type { get; set; }
         public string mac { get; set; } = string.Empty;
-        public Device hardware { get; set; }
+        public Device device { get; set; }
         public ICollection<TriggerTranCode> code_map { get; set; }
         public short timezone { get; set; }
         public Procedure procedure { get; set; }
+
+        public Trigger(Aero.Domain.Entities.Trigger data) : base(data.LocationId)
+        {
+            this.driver_id = data.DriverId;
+            this.name = data.Name;
+            this.command = data.Command;
+            this.procedure_id = data.ProcedureId;
+            this.source_type = data.SourceType;
+            this.source_number = data.SourceNumber;
+            this.tran_type = data.TranType;
+            this.mac = data.Mac;
+            this.code_map = data.CodeMap.Select(x => new TriggerTranCode(x)).ToList();
+            this.timezone = data.TimeZone;
+
+        }
 
     }
 }

@@ -11,11 +11,13 @@ namespace Aero.Domain.Entities
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public int DepartmentId {get;set;}
 
-        public Position(string name, string description, int location, bool status) : base(location, status)
+        public Position(string name, string description,int departmentId,int location, bool status) : base(location, status)
         {
             SetName(name);
             this.Description = description;
+            SetDepartmentId(departmentId);
         }
 
         private void SetName(string name)
@@ -23,6 +25,12 @@ namespace Aero.Domain.Entities
             ArgumentException.ThrowIfNullOrWhiteSpace(name);
             if (!RegexHelper.IsValidName(name)) throw new ArgumentException("Name invalid.");
             this.Name = name.Trim();
+        }
+
+        private void SetDepartmentId(int department)
+        {
+            if(department <= 0) throw new ArgumentException("Deparment invalid.");
+            DepartmentId = department;
         }
     }
 }

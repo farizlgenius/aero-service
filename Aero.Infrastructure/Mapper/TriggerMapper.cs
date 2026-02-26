@@ -8,8 +8,8 @@ public class TriggerMapper
       public static Aero.Infrastructure.Data.Entities.Trigger ToEf(Aero.Domain.Entities.Trigger data)
       {
             var res = new Aero.Infrastructure.Data.Entities.Trigger();
-            MacBaseMapper.ToEf(data,res);
-            res.driver_id = data.TrigId;
+            MacBaseMapper.ToEf(data, res);
+            res.driver_id = data.DriverID;
             res.name = data.Name;
             res.procedure_id = data.ProcedureId;
             res.source_type = data.SourceType;
@@ -24,6 +24,6 @@ public class TriggerMapper
             }).ToList();
             res.timezone = data.TimeZone;
             return res;
-            
+
       }
 }

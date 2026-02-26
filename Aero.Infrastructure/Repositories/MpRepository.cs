@@ -48,7 +48,7 @@ public sealed class MpRepository(AppDbContext context) : IMpRepository
       public async Task<int> UpdateAsync(MonitorPoint newData)
       {
             var en = await context.monitor_point
-            .Where(x => x.component_id == newData.ComponentId && x.mp_id == newData.MpId && x.mac.Equals(newData.Mac))
+            .Where(x => x.component_id == newData.ComponentId && x.mp_id == newData.DriverId && x.mac.Equals(newData.Mac))
             .OrderBy(x => x.component_id)
             .FirstOrDefaultAsync();
 

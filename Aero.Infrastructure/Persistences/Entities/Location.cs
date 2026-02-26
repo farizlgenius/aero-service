@@ -5,9 +5,10 @@ using Aero.Domain.Interface;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class Location : BaseEntity,IDatetime
+    public sealed class Location : IDatetime
     {
-
+        [Key]
+        public int id { get; set; }
         public string name { get; set; } = string.Empty;
         public string description { get; set; } = string.Empty;
 
@@ -38,9 +39,12 @@ namespace Aero.Infrastructure.Persistences.Entities
         public ICollection<IdReport> idreports { get; set; }
         public ICollection<Role> roles { get; set; }
         public ICollection<CommandAudit> command_audit { get; set; }
+        public bool is_active { get; set; } = true;
+        public DateTime created_date { get; set;} = DateTime.UtcNow;
+        public DateTime updated_date { get; set; } = DateTime.UtcNow;
 
-
-        public Location(string name,string description,int location) : base(location)
+        public Location(){}
+        public Location(string name,string description) 
         {
             this.name = name;
             this.description = description;

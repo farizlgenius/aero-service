@@ -6,9 +6,16 @@ namespace Aero.Infrastructure.Persistences.Entities
     public sealed class Role : BaseEntity
     {
 
-        public string name { get; set; } =string.Empty;
+        public string name { get; set; } = string.Empty;
         public ICollection<FeatureRole> feature_roles { get; set; }
         public ICollection<Operator> operators { get; set; }
+
+        public Role(){}
+
+        public Role(int location_id) : base(location_id)
+        {
+
+        }
 
     }
 }

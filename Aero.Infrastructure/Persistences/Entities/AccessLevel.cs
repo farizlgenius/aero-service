@@ -6,8 +6,10 @@ namespace Aero.Infrastructure.Persistences.Entities
     public sealed class AccessLevel : BaseEntity,IDbFunc<Aero.Domain.Entities.AccessLevel>
     {
         public string name { get;  set; } = string.Empty;
-        public ICollection<AccessLevelComponent> components { get;  set;}
-        public ICollection<UserAccessLevel> cardholder_access_levels { get;  set;}
+        public ICollection<AccessLevelComponent>? components { get;  set;} 
+        public ICollection<UserAccessLevel>? cardholder_access_levels { get;  set;}
+
+        public AccessLevel(){}
 
         public AccessLevel(string name,List<AccessLevelComponent> component,int location) : base(location)
         {

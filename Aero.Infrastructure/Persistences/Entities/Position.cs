@@ -12,11 +12,18 @@ namespace Aero.Infrastructure.Persistences.Entities
         public string description { get; set;  } = string.Empty;
         public int department_id { get; set; }
         public Department department { get; set; }
-        public Position(string name,string description,int departmentId,int location) : base(location)
+        public Position(Aero.Domain.Entities.Position data) : base(data.LocationId)
         {
-            this.name = name;
-            this.description = description;
-            this.department_id = departmentId;
+            this.name = data.Name;
+            this.description = data.Description;
+            this.department_id = data.DepartmentId;
+        }
+
+        public void Update(Aero.Domain.Entities.Position data) 
+        {
+            this.name = data.Name;
+            this.description = data.Description;
+            this.department_id = data.DepartmentId;
         }
     }
 }

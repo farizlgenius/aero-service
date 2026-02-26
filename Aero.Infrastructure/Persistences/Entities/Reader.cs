@@ -7,9 +7,9 @@ namespace Aero.Infrastructure.Persistences.Entities
 {
     public sealed class Reader : BaseEntity,IMac
     {
-        public short module_id { get; set; }
+        public int module_id { get; set; }
         public Module module { get; set; }
-        public short door_id { get; set; }
+        public int door_id { get; set; }
         public Door door { get; set; }
         public short reader_no { get; set; }
         public short data_format { get; set; } = 0x01;
@@ -24,7 +24,7 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short osdp_secure_channel { get; set; }
         public string mac { get; set; } = string.Empty;
 
-        public Reader(short module,short doorid,short reader,short datadormat,short keypad,short leddrivermode,DoorDirection direction,bool osdpflag,short baudrate,short discover,short tracing,short address,short secure,string mac,int location) : base(location) 
+        public Reader(int module,int doorid,short reader,short datadormat,short keypad,short leddrivermode,DoorDirection direction,bool osdpflag,short baudrate,short discover,short tracing,short address,short secure,string mac,int location) : base(location) 
         {
             this.module_id = module;
             this.door_id = doorid;

@@ -7,7 +7,7 @@ namespace Aero.Infrastructure.Mapper;
 
 public static class HardwareMapper
 {
-      public static Hardware ToEf(Aero.Domain.Entities.Hardware domain)
+      public static Hardware ToEf(Aero.Domain.Entities.Device domain)
       {
             var date = DateTime.UtcNow;
             return new Hardware
@@ -17,7 +17,7 @@ public static class HardwareMapper
                   location_id = domain.LocationId,
                   name = domain.Name,
                   hardware_type = domain.HardwareType,
-                  hardware_type_desc = domain.HardwareTypeDescription,
+                  hardware_type_desc = domain.HardwareTypeDetail,
                   modules = new List<Module>
                 {
                     new Module
@@ -59,9 +59,9 @@ public static class HardwareMapper
                   is_reset = false,
                   port_one = domain.PortOne,
                   protocol_one = domain.ProtocolOne,
-                  protocol_one_desc = domain.ProtocolOneDescription,
+                  protocol_one_desc = domain.ProtocolOneDetail,
                   port_two = domain.PortTwo,
-                  protocol_two_desc = domain.ProtocolTwoDescription,
+                  protocol_two_desc = domain.ProtocolTwoDetail,
                   protocol_two = domain.ProtocolTwo,
                   baudrate_one = domain.BaudRateOne,
                   baudrate_two = domain.BaudRateTwo,
@@ -71,9 +71,9 @@ public static class HardwareMapper
             };
       }
 
-      public static Aero.Domain.Entities.Hardware ToDomain(Hardware ef)
+      public static Aero.Domain.Entities.Device ToDomain(Hardware ef)
       {
-            return new Aero.Domain.Entities.Hardware
+            return new Aero.Domain.Entities.Device
             {
                   // Base 
                   ComponentId = ef.component_id,
@@ -84,7 +84,7 @@ public static class HardwareMapper
                   // extend_desc
                   Name = ef.name,
                   HardwareType = ef.hardware_type,
-                  HardwareTypeDescription = ef.hardware_type_desc,
+                  HardwareTypeDetail = ef.hardware_type_desc,
                   Firmware = ef.firmware,
                   Ip = ef.ip,
                   Port = ef.port,
@@ -95,7 +95,7 @@ public static class HardwareMapper
                   {
                         // Base 
                         ComponentId = d.component_id,
-                        
+
                         HardwareName = ef.name,
                         Mac = ef.mac,
                         LocationId = d.location_id,
@@ -103,18 +103,18 @@ public static class HardwareMapper
 
                         // extend_desc
                         Model = d.model,
-                        ModelDescription = d.model_desc,
+                        ModelDetail = d.model_desc,
                         Revision = d.revision,
                         SerialNumber = d.serial_number,
                         nHardwareId = d.n_hardware_id,
-                        nHardwareIdDescription = d.n_hardware_id_desc,
+                        nHardwareIdDetail = d.n_hardware_id_desc,
                         nHardwareRev = d.n_hardware_rev,
                         nProductId = d.n_product_id,
                         nProductVer = d.n_product_ver,
                         nEncConfig = d.n_enc_config,
-                        nEncConfigDescription = d.n_enc_config_desc,
+                        nEncConfigDetail = d.n_enc_config_desc,
                         nEncKeyStatus = d.n_enc_key_status,
-                        nEncKeyStatusDescription = d.n_enc_key_status_desc,
+                        nEncKeyStatusDetail = d.n_enc_key_status_desc,
                         Readers = null,
                         Sensors = null,
                         Strikes = null,
@@ -133,17 +133,17 @@ public static class HardwareMapper
                   }).ToList(),
                   PortOne = ef.port_one,
                   ProtocolOne = ef.protocol_one,
-                  ProtocolOneDescription = ef.protocol_one_desc,
+                  ProtocolOneDetail = ef.protocol_one_desc,
                   PortTwo = ef.port_two,
-                  ProtocolTwoDescription = ef.protocol_two_desc,
+                  ProtocolTwoDetail = ef.protocol_two_desc,
                   ProtocolTwo = ef.protocol_two,
                   BaudRateOne = ef.baudrate_one,
                   BaudRateTwo = ef.baudrate_two,
             };
       }
 
-      public static void Update(Hardware en, Aero.Domain.Entities.Hardware hw)
-        {
+      public static void Update(Hardware en, Aero.Domain.Entities.Device hw)
+      {
             // Base 
             en.mac = hw.Mac;
             en.updated_date = DateTime.UtcNow;
@@ -151,18 +151,18 @@ public static class HardwareMapper
             // Detail 
             en.name = hw.Name;
             en.hardware_type = hw.HardwareType;
-            en.hardware_type_desc = hw.HardwareTypeDescription;
+            en.hardware_type_desc = hw.HardwareTypeDetail;
             en.ip = hw.Ip;
             en.port = hw.Port;
             en.firmware = hw.Firmware;
             en.serial_number = hw.SerialNumber;
             en.port_one = hw.PortOne;
             en.protocol_one = hw.ProtocolOne;
-            en.protocol_one_desc = hw.ProtocolOneDescription;
+            en.protocol_one_desc = hw.ProtocolOneDetail;
             en.port_two = hw.PortTwo;
-            en.protocol_two_desc = hw.ProtocolTwoDescription;
+            en.protocol_two_desc = hw.ProtocolTwoDetail;
             en.protocol_two = hw.ProtocolTwo;
             en.baudrate_one = hw.BaudRateOne;
             en.baudrate_two = hw.BaudRateTwo;
-        }
+      }
 }

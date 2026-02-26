@@ -415,7 +415,7 @@ public class CpRepository(AppDbContext context) : ICpRepository
                  Name = x.name,
                  ModuleId = x.module_id,
                  CpId = x.cp_id,
-                 ModuleDescription = x.module.model_desc,
+                 ModuleDescription = x.module.model_detail,
                  //module_desc = x.module_desc,
                  OutputNo = x.output_no,
                  RelayMode = x.relaymode,

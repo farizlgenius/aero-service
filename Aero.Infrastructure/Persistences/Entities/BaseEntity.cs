@@ -16,6 +16,8 @@ namespace Aero.Infrastructure.Persistences.Entities
         public DateTime created_date { get; set;} = DateTime.UtcNow;
         public DateTime updated_date { get; set; } = DateTime.UtcNow;
 
+        public BaseEntity(){}
+
         public BaseEntity(int location_id)
         {
             this.location_id = location_id;

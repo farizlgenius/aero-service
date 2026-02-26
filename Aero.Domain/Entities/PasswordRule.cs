@@ -4,6 +4,7 @@ namespace Aero.Domain.Entities;
 
 public sealed class PasswordRule
 {
+  public int Id {get; set;}
       public int Len { get; set; }
         public bool IsLower { get; set; }
         public bool IsUpper { get; set; }

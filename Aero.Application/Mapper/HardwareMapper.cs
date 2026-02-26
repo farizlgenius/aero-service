@@ -7,23 +7,23 @@ namespace Aero.Application.Mapper;
 
 public class HardwareMapper
 {
-    public static Hardware ToDomain(CreateHardwareDto dto)
+    public static Device ToDomain(CreateHardwareDto dto)
     {
-        return new Hardware
+        return new Device
         {
             ComponentId = dto.ComponentId,
             Mac = dto.Mac,
             LocationId = dto.LocationId,
             Name = dto.Name,
             HardwareType = dto.HardwareType,
-            HardwareTypeDescription = dto.HardwareTypeDescription,
+            HardwareTypeDetail = dto.HardwareTypeDescription,
             Modules = new List<Module>
                 {
                     new Module
                     {
                         // Base 
                         ComponentId = dto.ComponentId,
-                        SioId = 0,
+                        DriverId = 0,
                         Mac = dto.Mac,
                         LocationId = dto.LocationId,
                         IsActive = dto.IsActive,
@@ -31,14 +31,14 @@ public class HardwareMapper
                         // updated_date = Created,
 
                         // extend_desc
-                        ModelDescription = "Internal",
+                        ModelDetail = "Internal",
                         Model = (short)Domain.Enums.Model.AeroX1100,
                         Revision=dto.Firmware,
                         SerialNumber = dto.SerialNumber,
                         nHardwareId = 217,
-                        nHardwareIdDescription = "HID Aero X1100",
+                        nHardwareIdDetail = "HID Aero X1100",
                         Address = -1,
-                        AddressDescription = "Internal",
+                        AddressDetail = "Internal",
                         Port = 3,
                         nInput = (short)InputComponents.HIDAeroX1100,
                         nOutput = (short)OutputComponents.HIDAeroX1100,
@@ -58,9 +58,9 @@ public class HardwareMapper
             IsReset = false,
             PortOne = dto.PortOne,
             ProtocolOne = dto.ProtocolOne,
-            ProtocolOneDescription = dto.ProtocolOneDescription,
+            ProtocolOneDetail = dto.ProtocolOneDescription,
             PortTwo = dto.PortTwo,
-            ProtocolTwoDescription = dto.ProtocolTwoDescription,
+            ProtocolTwoDetail = dto.ProtocolTwoDescription,
             ProtocolTwo = dto.ProtocolTwo,
             BaudRateOne = dto.BaudRateOne,
             BaudRateTwo = dto.BaudRateTwo,
@@ -70,23 +70,23 @@ public class HardwareMapper
         };
     }
 
-    public static Hardware ToDomain(HardwareDto dto)
+    public static Device ToDomain(HardwareDto dto)
     {
-        return new Hardware
+        return new Device
         {
             ComponentId = dto.ComponentId,
             Mac = dto.Mac,
             LocationId = dto.LocationId,
             Name = dto.Name,
             HardwareType = dto.HardwareType,
-            HardwareTypeDescription = dto.HardwareTypeDescription,
+            HardwareTypeDetail = dto.HardwareTypeDescription,
             Modules = new List<Module>
                 {
                     new Module
                     {
                         // Base 
                         ComponentId = 1,
-                        SioId = 0,
+                        DriverId = 0,
                         Mac = dto.Mac,
                         LocationId = dto.LocationId,
                         IsActive = dto.IsActive,
@@ -94,14 +94,14 @@ public class HardwareMapper
                         // updated_date = Created,
 
                         // extend_desc
-                        ModelDescription = "Internal",
+                        ModelDetail = "Internal",
                         Model = (short)Domain.Enums.Model.AeroX1100,
                         Revision=dto.Firmware,
                         SerialNumber = dto.SerialNumber,
                         nHardwareId = 217,
-                        nHardwareIdDescription = "HID Aero X1100",
+                        nHardwareIdDetail = "HID Aero X1100",
                         Address = -1,
-                        AddressDescription = "Internal",
+                        AddressDetail = "Internal",
                         Port = 3,
                         nInput = (short)InputComponents.HIDAeroX1100,
                         nOutput = (short)OutputComponents.HIDAeroX1100,
@@ -121,9 +121,9 @@ public class HardwareMapper
             IsReset = false,
             PortOne = dto.PortOne,
             ProtocolOne = dto.ProtocolOne,
-            ProtocolOneDescription = dto.ProtocolOneDescription,
+            ProtocolOneDetail = dto.ProtocolOneDescription,
             PortTwo = dto.PortTwo,
-            ProtocolTwoDescription = dto.ProtocolTwoDescription,
+            ProtocolTwoDetail = dto.ProtocolTwoDescription,
             ProtocolTwo = dto.ProtocolTwo,
             BaudRateOne = dto.BaudRateOne,
             BaudRateTwo = dto.BaudRateTwo,

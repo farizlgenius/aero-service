@@ -11,5 +11,12 @@ namespace Aero.Infrastructure.Persistences.Entities
         public string description { get; set; } = string.Empty;
         public short trigger_id { get; set; }
         public Trigger trigger { get; set; }
+
+        public TriggerTranCode(Aero.Domain.Entities.TransactionCode data)
+        {
+            this.value = data.Value;
+            this.name = data.Name;
+            this.description = data.Description;
+        }
     }
 }

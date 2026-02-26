@@ -9,7 +9,7 @@ public sealed class ProcedureMapper
       {
             return new Aero.Infrastructure.Data.Entities.Procedure
             {
-                  proc_id = data.ProcId,
+                  proc_id = data.DriverId,
                   component_id = data.ComponentId,
                   name = data.Name,
                   location_id = data.LocationId,

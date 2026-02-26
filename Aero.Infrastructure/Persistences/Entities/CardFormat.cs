@@ -27,7 +27,7 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short ic_ln { get; set; }
         public short ic_loc { get; set; }
 
-
+        public CardFormat(){}
         public CardFormat(string name,short driver,short fac,short offset,short function,short flags,short bits,short peLn,short peLoc,short poLn,short poLoc,short fcLn,short fcLoc,short chLn,short chLoc,short icLn,short icLoc,int location_id) : base(location_id)
         {
             this.name = name;

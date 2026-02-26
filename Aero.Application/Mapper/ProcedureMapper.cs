@@ -10,7 +10,7 @@ public sealed class ProcedureMapper
       {
             var res = new Procedure();
             MacBaseMapper.ToDomain(dto,res);
-            res.ProcId = dto.ProcId;
+            res.DriverId = dto.ProcId;
             res.Name = dto.Name;
             res.Actions = dto.Actions
             .Select(x => new Aero.Domain.Entities.Action
