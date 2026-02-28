@@ -15,7 +15,7 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
       {
             await context.access_level_component.AddAsync(new Persistences.Entities.AccessLevelComponent
             {
-                mac = data.Mac,
+                mac = data.DeviceId,
                 alvl_id = (short)(data.AccessLevelComponents.Count() == 0 ? -1 : data.AccessLevelComponents.ElementAt(0).AlvlId),
                 door_id = data.ComponentId,
                 acr_id = data.DriverId,
@@ -30,7 +30,7 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
       public async Task<int> ChangeDoorModeAsync(string mac,short component,short acr,short mode)
       {
             var en = await context.door
-            .Where(x => x.driver_id == acr && x.mac == mac && x.component_id == component)
+            .Where(x => x.driver_id == acr && x.device_id == mac && x.component_id == component)
             .OrderBy(x => x.component_id)
             .FirstOrDefaultAsync();
 
@@ -88,7 +88,7 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
     {
         var res = await context.door
         .AsNoTracking()
-        .Where(x => x.mac.Equals(mac) && x.updated_date > sync)
+        .Where(x => x.device_id.Equals(mac) && x.updated_date > sync)
         .CountAsync();
 
         return res;
@@ -257,13 +257,13 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
     {
         var reader = await context.module
             .AsNoTracking()
-            .Where(cp => cp.component_id == component && cp.mac == mac)
+            .Where(cp => cp.component_id == component && cp.device_id == mac)
             .Select(cp => (short)cp.n_reader)
             .FirstOrDefaultAsync();
 
         var rdrNos = await context.reader
             .AsNoTracking()
-            .Where(cp => cp.module_id == component && cp.module.mac == mac)
+            .Where(cp => cp.module_id == component && cp.module.device_id == mac)
             .Select(x => x.reader_no)
             .ToArrayAsync();
 
@@ -574,7 +574,7 @@ MaskHeldOpen = x.is_held_mask,
     {
         var res = await context.door
         .AsNoTracking()
-        .Where(x => x.mac.Equals(mac))
+        .Where(x => x.device_id.Equals(mac))
         .OrderBy(x => x.component_id)
         .Select(x => new DoorDto
         {
@@ -766,7 +766,7 @@ MaskHeldOpen = x.is_held_mask,
 
         var query = context.door
             .AsNoTracking()
-            .Where(x => x.mac == mac)
+            .Where(x => x.device_id == mac)
             .Select(x => x.component_id);
 
         // Handle empty table case quickly
@@ -1009,8 +1009,8 @@ MaskHeldOpen = x.is_held_mask,
 
                     query = query.Where(x =>
                         EF.Functions.ILike(x.name, pattern) ||
-                        EF.Functions.ILike(x.mac, pattern) ||
-                        EF.Functions.ILike(x.mac, pattern)
+                        EF.Functions.ILike(x.device_id, pattern) ||
+                        EF.Functions.ILike(x.device_id, pattern)
 
                     );
                 }
@@ -1018,8 +1018,8 @@ MaskHeldOpen = x.is_held_mask,
                 {
                     query = query.Where(x =>
                         x.name.Contains(search) ||
-                        x.mac.Contains(search) ||
-                        x.mac.Contains(search)
+                        x.device_id.Contains(search) ||
+                        x.device_id.Contains(search)
                     );
                 }
             }
@@ -1052,7 +1052,7 @@ MaskHeldOpen = x.is_held_mask,
                  // Base 
 
                  ComponentId = x.component_id,
-                 Mac = x.mac,
+                 Mac = x.device_id,
                  LocationId = x.location_id,
                  IsActive = x.is_active,
 
@@ -1068,7 +1068,7 @@ MaskHeldOpen = x.is_held_mask,
                         // Base
 
                         ComponentId = x.component_id,
-                        Mac = x.module.mac,
+                        Mac = x.module.device_id,
                         HardwareName = x.module.device.name,
                         LocationId = x.location_id,
                         IsActive = x.is_active,
@@ -1095,7 +1095,7 @@ MaskHeldOpen = x.is_held_mask,
                  {
                      // Base 
                      ComponentId = x.strike.component_id,
-                     Mac = x.strike.module.mac,
+                     Mac = x.strike.module.device_id,
                      HardwareName = x.strike.module.device.name,
                      LocationId = x.location_id,
                      IsActive = x.is_active,
@@ -1117,7 +1117,7 @@ MaskHeldOpen = x.is_held_mask,
 
                      // Base 
                      ComponentId = x.sensor.component_id,
-                     Mac = x.sensor.module.mac,
+                     Mac = x.sensor.module.device_id,
                      HardwareName = x.sensor.module.device.name,
                      LocationId = x.sensor.location_id,
                      IsActive = x.sensor.is_active,
@@ -1139,7 +1139,7 @@ MaskHeldOpen = x.is_held_mask,
                         // Base
 
                         ComponentId = x.component_id,
-                        Mac = x.module.mac,
+                        Mac = x.module.device_id,
                         HardwareName = x.module.device.name,
                         LocationId = x.location_id,
                         IsActive = x.is_active,

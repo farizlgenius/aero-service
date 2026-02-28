@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Aero.Domain.Interfaces
 {
-    public interface IMac
+    public interface IDeviceId
     {
-        public string mac { get; }
+        public int device_id { get; }
     }
 }

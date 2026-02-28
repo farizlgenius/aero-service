@@ -3,11 +3,7 @@
 
 namespace Aero.Application.DTOs
 {
-    public sealed class IntervalDto : NoMacBaseEntity
-    {
-        public DaysInWeekDto Days { get; set; }
-        public string DaysDesc { get; set; } = string.Empty;
-        public string StartTime { get; set; } = string.Empty;   
-        public string EndTime { get; set; } = string.Empty;
-    }
+
+
+    public sealed record IntervalDto(int Id,DaysInWeekDto Days,string DaysDetail,string Start,string End,int LocationId,bool Status) : BaseDto(LocationId,Status);
 }

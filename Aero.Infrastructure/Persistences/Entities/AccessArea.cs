@@ -1,6 +1,7 @@
 ﻿
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
@@ -18,6 +19,8 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short area_flag { get; set; }
         public ICollection<Door> door_in { get; set; }
         public ICollection<Door> door_out { get; set; }
+        public int device_id { get; set; }
+        public Device device { get; set; }
 
         public AccessArea(){}
 
@@ -33,6 +36,20 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.occ_up = occ_up;
             this.occ_down = occ_down;
             this.area_flag = area_flag;
+        }
+
+        public AccessArea(Aero.Domain.Entities.AccessArea data)
+        {
+            this.driver_id = data.DriverId;
+            this.name = data.Name;
+            this.multi_occ = data.MultiOccupancy;
+            this.access_control = data.AccessControl;
+            this.occ_control = data.OccControl;
+            this.occ_set = data.OccSet;
+            this.occ_max = data.OccMax;
+            this.occ_up = data.OccUp;
+            this.occ_down = data.OccDown;
+            this.area_flag = data.AreaFlag;
         }
 
         public void Update(Aero.Domain.Entities.AccessArea data)

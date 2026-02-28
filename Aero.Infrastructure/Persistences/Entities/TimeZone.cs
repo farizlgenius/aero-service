@@ -17,7 +17,7 @@ namespace Aero.Infrastructure.Persistences.Entities
 
         public TimeZone(){}
 
-        public TimeZone(Aero.Domain.Entities.Timezone data) : base(data.LocationId)
+        public TimeZone(Aero.Domain.Entities.TimeZone data) : base(data.LocationId)
         {
             this.driver_id = data.DriverId;
             this.name = data.Name;

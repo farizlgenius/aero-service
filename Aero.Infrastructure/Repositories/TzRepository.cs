@@ -6,29 +6,28 @@ using Aero.Infrastructure.Mapper;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Aero.Application.Interface;
+using Aero.Infrastructure.Persistences.Entities;
 
 namespace Aero.Infrastructure.Repositories;
 
 public class TzRepository(AppDbContext context) : ITzRepository
 {
-      public async Task<int> AddAsync(Timezone data,short ComponentId)
-      {     
-            data.ComponentId = ComponentId;
-            await context.timezone.AddAsync(TimezoneMapper.ToEf(data));
-            return await context.SaveChangesAsync();
+
+
+      public async Task<int> AddAsync(Aero.Domain.Entities.TimeZone data)
+      {
+        var en = new Aero.Infrastructure.Persistences.Entities.TimeZone(data);
+        await context.timezone.AddAsync(en);
+        var record = await context.SaveChangesAsync();
+        if (record <= 0) return -1;
+        return en.id;
       }
 
-      public async Task<int> AddAsync(Timezone data)
-      {
-        await context.timezone.AddAsync(TimezoneMapper.ToEf(data));
-        return await context.SaveChangesAsync();
-    }
-
-      public async Task<int> DeleteByComponentIdAsync(short component)
+      public async Task<int> DeleteByIdAsync(int id)
       {
             var en = await context.timezone
-            .Where(x => x.component_id == component)
-            .OrderBy(x => x.component_id)
+            .Where(x => x.id == id)
+            .OrderBy(x => x.id)
             .FirstOrDefaultAsync();
 
             if(en is null) return 0;
@@ -37,11 +36,11 @@ public class TzRepository(AppDbContext context) : ITzRepository
             return await context.SaveChangesAsync();
       }
 
-      public async Task<int> UpdateAsync(Timezone d)
+      public async Task<int> UpdateAsync(Domain.Entities.TimeZone d)
       {
             var en = await context.timezone
-            .Where(x => x.component_id == d.ComponentId)
-            .OrderBy(x => x.component_id)
+            .Where(x => x.id == d.Id)
+            .OrderBy(x => x.id)
             .FirstOrDefaultAsync();
 
             if(en is null) return 0;
@@ -67,180 +66,288 @@ public class TzRepository(AppDbContext context) : ITzRepository
         return res;
     }
 
+    public async Task<TimeZoneDto> GetByLocationAndNameAsync(string name,int locationId)
+    {
+        var data = await context.timezone
+        .AsNoTracking()
+        .Where(x => x.name.Equals(name) && x.location_id == locationId)
+        .OrderBy(x => x.id)
+        .Select(t => new
+        {
+            t.id,
+            t.driver_id,
+            t.name,
+            t.mode,
+            t.active_time,
+            t.deactive_time,
+            intervals = t.timezone_intervals.Select(i => new
+            {
+                days = new
+                {
+                    sun = i.interval.days.sunday,
+                    mon = i.interval.days.monday,
+                    tue = i.interval.days.tuesday,
+                    wed = i.interval.days.wednesday,
+                    thu = i.interval.days.thursday,
+                    fri = i.interval.days.friday,
+                    sat = i.interval.days.saturday
+                },
+                i.interval.days_detail,
+                i.interval.start_time,
+                i.interval.end_time,
+                i.interval.location_id,
+                i.interval.is_active
+
+            }),
+            t.location_id,
+            t.is_active
+        }
+        )
+        .FirstOrDefaultAsync();
+
+        var res = new TimeZoneDto(
+                data.id,
+                data.driver_id,
+                data.name,
+                data.mode,
+                data.active_time,
+                data.deactive_time,
+                data.intervals.Select(
+                    i => new IntervalDto(
+                        new DaysInWeekDto(
+                            i.days.sun,
+                            i.days.mon,
+                            i.days.tue,
+                            i.days.wed,
+                            i.days.thu,
+                            i.days.fri,
+                            i.days.sat
+                            ),
+                        i.days_detail,
+                        i.start_time,
+                        i.end_time,
+                        i.location_id,
+                        i.is_active
+                        )).ToList(),
+                data.location_id,
+                data.is_active
+                );
+
+        return res;
+
+    }
+
     public async Task<IEnumerable<TimeZoneDto>> GetAsync()
     {
-        var res = await context.timezone
+        var data = await context.timezone
         .AsNoTracking()
-        .Select(x => new TimeZoneDto
+        .Select(t => new
         {
-            // Base
-            IsActive = x.is_active,
+            t.id,
+            t.driver_id,
+            t.name,
+            t.mode,
+            t.active_time,
+            t.deactive_time,
+            intervals = t.timezone_intervals.Select(i => new
+            {
+                days = new
+                {
+                    sun = i.interval.days.sunday,
+                    mon = i.interval.days.monday,
+                    tue = i.interval.days.tuesday,
+                    wed = i.interval.days.wednesday,
+                    thu = i.interval.days.thursday,
+                    fri = i.interval.days.friday,
+                    sat = i.interval.days.saturday
+                },
+                i.interval.days_detail,
+                i.interval.start_time,
+                i.interval.end_time,
+                i.interval.location_id,
+                i.interval.is_active
 
-            // extend_desc
-            ComponentId = x.component_id,
-            Name = x.name,
-            Mode = x.mode,
-            ActiveTime = x.active_time,
-            DeactiveTime = x.deactive_time,
-            Intervals = x.timezone_intervals
-                    .Select(s => s.interval)
-                    .Select(p => new IntervalDto
-                    {
-                        // Base 
-                        IsActive = p.is_active,
-                        LocationId = p.location_id,
-
-                        // extend_desc
-                        ComponentId = p.component_id,
-                        DaysDesc = p.days_detail,
-                        StartTime = p.start_time,
-                        EndTime = p.end_time,
-                        Days = new DaysInWeekDto
-                        {
-                            Sunday = p.days.sunday,
-                            Monday = p.days.monday,
-                            Tuesday = p.days.tuesday,
-                            Wednesday = p.days.wednesday,
-                            Thursday = p.days.thursday,
-                            Friday = p.days.friday,
-                            Saturday = p.days.saturday
-                        }
-
-                    })
-                    .ToList(),
-
-        })
+              }),
+            t.location_id,
+            t.is_active
+        }
+        )
         .ToArrayAsync();
 
+        var res = data.Select(
+            t => new TimeZoneDto(
+                t.id,
+                t.driver_id,
+                t.name,
+                t.mode,
+                t.active_time,
+                t.deactive_time,
+                t.intervals.Select(
+                    i => new IntervalDto(
+                        new DaysInWeekDto(
+                            i.days.sun,
+                            i.days.mon,
+                            i.days.tue,
+                            i.days.wed,
+                            i.days.thu,
+                            i.days.fri,
+                            i.days.sat
+                            ),
+                        i.days_detail,
+                        i.start_time,
+                        i.end_time,
+                        i.location_id,
+                        i.is_active
+                        )).ToList(),
+                t.location_id,
+                t.is_active
+                )
+            ).ToArray();
+
         return res;
     }
 
-    public async Task<TimeZoneDto> GetByComponentIdAsync(short componentId)
+    public async Task<TimeZoneDto> GetByIdAsync(int id)
     {
-        var res = await context.timezone
-    .AsNoTracking()
-    .Where(x => x.component_id == componentId)
-    .Select(x => new TimeZoneDto
-    {
-        // Base
-        IsActive = x.is_active,
-
-        // extend_desc
-        ComponentId = x.component_id,
-        Name = x.name,
-        Mode = x.mode,
-        ActiveTime = x.active_time,
-        DeactiveTime = x.deactive_time,
-        Intervals = x.timezone_intervals
-                .Select(s => s.interval)
-                .Select(p => new IntervalDto
+        var data = await context.timezone
+        .AsNoTracking()
+        .Where(x => x.id == id)
+        .Select(t => new
+        {
+            t.id,
+            t.driver_id,
+            t.name,
+            t.mode,
+            t.active_time,
+            t.deactive_time,
+            intervals = t.timezone_intervals.Select(i => new
+            {
+                days = new
                 {
-                    // Base 
-                    IsActive = p.is_active,
-                    LocationId = p.location_id,
+                    sun = i.interval.days.sunday,
+                    mon = i.interval.days.monday,
+                    tue = i.interval.days.tuesday,
+                    wed = i.interval.days.wednesday,
+                    thu = i.interval.days.thursday,
+                    fri = i.interval.days.friday,
+                    sat = i.interval.days.saturday
+                },
+                i.interval.days_detail,
+                i.interval.start_time,
+                i.interval.end_time,
+                i.interval.location_id,
+                i.interval.is_active
 
-                    // extend_desc
-                    ComponentId = p.component_id,
-                    DaysDesc = p.days_desc,
-                    StartTime = p.start_time,
-                    EndTime = p.end_time,
-                    Days = new DaysInWeekDto
-                    {
-                        Sunday = p.days.sunday,
-                        Monday = p.days.monday,
-                        Tuesday = p.days.tuesday,
-                        Wednesday = p.days.wednesday,
-                        Thursday = p.days.thursday,
-                        Friday = p.days.friday,
-                        Saturday = p.days.saturday
-                    }
-
-                })
-                .ToList(),
-
-    })
+            }),
+            t.location_id,
+            t.is_active
+            }
+        )
     .FirstOrDefaultAsync();
 
-        return res;
-    }
-
-    public async Task<IEnumerable<TimeZoneDto>> GetByLocationIdAsync(short locationId)
-    {
-        var res = await context.timezone
-    .AsNoTracking()
-    .Where(x => x.location_id == locationId || x.location_id == 1)
-    .Select(x => new TimeZoneDto
-    {
-        // Base
-        IsActive = x.is_active,
-
-        // extend_desc
-        ComponentId = x.component_id,
-        Name = x.name,
-        Mode = x.mode,
-        ActiveTime = x.active_time,
-        DeactiveTime = x.deactive_time,
-        Intervals = x.timezone_intervals
-                .Select(s => s.interval)
-                .Select(p => new IntervalDto
-                {
-                    // Base 
-                    IsActive = p.is_active,
-                    LocationId = p.location_id,
-
-                    // extend_desc
-                    ComponentId = p.component_id,
-                    DaysDesc = p.days_detail,
-                    StartTime = p.start_time,
-                    EndTime = p.end_time,
-                    Days = new DaysInWeekDto
-                    {
-                        Sunday = p.days.sunday,
-                        Monday = p.days.monday,
-                        Tuesday = p.days.tuesday,
-                        Wednesday = p.days.wednesday,
-                        Thursday = p.days.thursday,
-                        Friday = p.days.friday,
-                        Saturday = p.days.saturday
-                    }
-
-                })
-                .ToList(),
-
-    })
-    .ToArrayAsync();
+        var res = new TimeZoneDto(
+                data.id,
+                data.driver_id,
+                data.name,
+                data.mode,
+                data.active_time,
+                data.deactive_time,
+                data.intervals.Select(
+                    i => new IntervalDto(
+                        new DaysInWeekDto(
+                            i.days.sun,
+                            i.days.mon,
+                            i.days.tue,
+                            i.days.wed,
+                            i.days.thu,
+                            i.days.fri,
+                            i.days.sat
+                            ),
+                        i.days_detail,
+                        i.start_time,
+                        i.end_time,
+                        i.location_id,
+                        i.is_active
+                        )).ToList(),
+                data.location_id,
+                data.is_active
+                );
 
         return res;
     }
 
-    public async Task<short> GetLowestUnassignedNumberAsync(int max, string mac)
+    public async Task<IEnumerable<TimeZoneDto>> GetByLocationIdAsync(int locationId)
     {
-        if (max <= 0) return -1;
-
-        var query = context.timezone
+        var data = await context.timezone
             .AsNoTracking()
-            .Select(x => x.component_id);
+            .Where(x => x.location_id == locationId || x.location_id == 1)
+            .Select(t => new
+            {
+                t.id,
+                t.driver_id,
+                t.name,
+                t.mode,
+                t.active_time,
+                t.deactive_time,
+                intervals = t.timezone_intervals.Select(i => new
+                {
+                    days = new
+                    {
+                        sun = i.interval.days.sunday,
+                        mon = i.interval.days.monday,
+                        tue = i.interval.days.tuesday,
+                        wed = i.interval.days.wednesday,
+                        thu = i.interval.days.thursday,
+                        fri = i.interval.days.friday,
+                        sat = i.interval.days.saturday
+                    },
+                    i.interval.days_detail,
+                    i.interval.start_time,
+                    i.interval.end_time,
+                    i.interval.location_id,
+                    i.interval.is_active
 
-        // Handle empty table case quickly
-        var hasAny = await query.AnyAsync();
-        if (!hasAny)
-            return 1; // start at 1 if table is empty
+                }),
+                t.location_id,
+                t.is_active
+            }
+                )
+            .ToArrayAsync();
 
-        // Load all numbers into memory (only the column, so it's lightweight)
-        var numbers = await query.Distinct().OrderBy(x => x).ToListAsync();
+        var res = data.Select(
+            t => new TimeZoneDto(
+                t.id,
+                t.driver_id,
+                t.name,
+                t.mode,
+                t.active_time,
+                t.deactive_time,
+                t.intervals.Select(
+                    i => new IntervalDto(
+                        new DaysInWeekDto(
+                            i.days.sun,
+                            i.days.mon,
+                            i.days.tue,
+                            i.days.wed,
+                            i.days.thu,
+                            i.days.fri,
+                            i.days.sat
+                            ),
+                        i.days_detail,
+                        i.start_time,
+                        i.end_time,
+                        i.location_id,
+                        i.is_active
+                        )).ToList(),
+                t.location_id,
+                t.is_active
+                )
+            ).ToArray();
 
-        short expected = 1;
-        foreach (var num in numbers)
-        {
-            if (num != expected)
-                return expected; // found the lowest missing number
-            expected++;
-        }
-
-        // If none missing in sequence, return next number
-        if (expected > max) return -1;
-        return expected;
+        return res;
     }
+
+   
 
     public async Task<IEnumerable<Mode>> GetCommandAsync()
     {
@@ -255,9 +362,9 @@ public class TzRepository(AppDbContext context) : ITzRepository
         return dtos;
     }
 
-    public async Task<bool> IsAnyByComponentId(short component)
+    public async Task<bool> IsAnyById(int id)
     {
-        return await context.timezone.AnyAsync(x => x.component_id == component);
+        return await context.timezone.AnyAsync(x => x.id == id);
     }
 
     public async Task<IEnumerable<Mode>> GetModeAsync()
@@ -273,7 +380,7 @@ public class TzRepository(AppDbContext context) : ITzRepository
         return dtos;
     }
 
-    public async Task<Pagination<TimeZoneDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    public async Task<Pagination<TimeZoneDto>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
     {
 
         var query = context.timezone.AsNoTracking().AsQueryable();
@@ -329,51 +436,74 @@ public class TzRepository(AppDbContext context) : ITzRepository
             .OrderByDescending(t => t.created_date)
             .Skip((param.PageNumber - 1) * param.PageSize)
             .Take(param.PageSize)
-           .Select(x => new TimeZoneDto
+           .Select(t => new
            {
-               // Base
-               IsActive = x.is_active,
+               t.id,
+               t.driver_id,
+               t.name,
+               t.mode,
+               t.active_time,
+               t.deactive_time,
+               intervals = t.timezone_intervals.Select(i => new
+               {
+                   days = new
+                   {
+                       sun = i.interval.days.sunday,
+                       mon = i.interval.days.monday,
+                       tue = i.interval.days.tuesday,
+                       wed = i.interval.days.wednesday,
+                       thu = i.interval.days.thursday,
+                       fri = i.interval.days.friday,
+                       sat = i.interval.days.saturday
+                   },
+                   i.interval.days_detail,
+                   i.interval.start_time,
+                   i.interval.end_time,
+                   i.interval.location_id,
+                   i.interval.is_active
 
-               // extend_desc
-               ComponentId = x.component_id,
-               Name = x.name,
-               Mode = x.mode,
-               ActiveTime = x.active_time,
-               DeactiveTime = x.deactive_time,
-               Intervals = x.timezone_intervals
-                .Select(s => s.interval)
-                .Select(p => new IntervalDto
-                {
-                    // Base 
-                    IsActive = p.is_active,
-                    LocationId = p.location_id,
+               }),
+               t.location_id,
+               t.is_active
+           }
+                )
+            .ToArrayAsync();
 
-                    // extend_desc
-                    ComponentId = p.component_id,
-                    DaysDesc = p.days_detail,
-                    StartTime = p.start_time,
-                    EndTime = p.end_time,
-                    Days = new DaysInWeekDto
-                    {
-                        Sunday = p.days.sunday,
-                        Monday = p.days.monday,
-                        Tuesday = p.days.tuesday,
-                        Wednesday = p.days.wednesday,
-                        Thursday = p.days.thursday,
-                        Friday = p.days.friday,
-                        Saturday = p.days.saturday
-                    }
 
-                })
-                .ToList(),
-
-           })
-            .ToListAsync();
+        var res = data.Select(
+            t => new TimeZoneDto(
+                t.id,
+                t.driver_id,
+                t.name,
+                t.mode,
+                t.active_time,
+                t.deactive_time,
+                t.intervals.Select(
+                    i => new IntervalDto(
+                        new DaysInWeekDto(
+                            i.days.sun,
+                            i.days.mon,
+                            i.days.tue,
+                            i.days.wed,
+                            i.days.thu,
+                            i.days.fri,
+                            i.days.sat
+                            ),
+                        i.days_detail,
+                        i.start_time,
+                        i.end_time,
+                        i.location_id,
+                        i.is_active
+                        )).ToList(),
+                t.location_id,
+                t.is_active
+                )
+            ).ToArray();
 
 
         return new Pagination<TimeZoneDto>
         {
-            Data = data,
+            Data = res,
             Page = new PaginationData
             {
                 TotalCount = count,
@@ -382,5 +512,36 @@ public class TzRepository(AppDbContext context) : ITzRepository
                 TotalPage = (int)Math.Ceiling(count / (double)param.PageSize)
             }
         };
+    }
+
+    public async Task<short> GetLowestUnassignedNumberAsync(int max)
+    {
+        var query = context.timezone
+                .AsNoTracking()
+                .Select(x => x.driver_id);
+
+        // Handle empty table case quickly
+        var hasAny = await query.AnyAsync();
+        if (!hasAny)
+            return 1; // start at 1 if table is empty
+
+        // Load all numbers into memory (only the column, so it's lightweight)
+        var numbers = await query.Distinct().OrderBy(x => x).ToListAsync();
+
+        short expected = 1;
+        foreach (var num in numbers)
+        {
+            if (num != expected)
+                return expected; // found the lowest missing number
+            expected++;
+        }
+
+        // If none missing in sequence, return next number
+        return expected;
+    }
+
+    public async Task<bool> IsAnyByNameAsync(string name)
+    {
+        return await context.timezone.AnyAsync(x => x.name.Equals(name));
     }
 }

@@ -4,10 +4,7 @@ using Aero.Domain.Entities;
 
 namespace Aero.Application.DTOs
 {
-    public sealed class RoleDto 
-    {
-        public short ComponentId { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public List<FeatureDto> Features { get; set; } = new List<FeatureDto>();
-    }
+
+
+    public sealed record RoleDto(int Id,short DriverId,string Name,List<FeatureDto> Features,int LocationId,bool Status) : BaseDto(LocationId,Status);
 }

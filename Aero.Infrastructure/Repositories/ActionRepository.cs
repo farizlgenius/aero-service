@@ -18,7 +18,7 @@ public sealed class ActionRepository(AppDbContext context) : IActionRepository
       {
             var res = await context.action
             .AsNoTracking()
-            .Where(x => x.procedure.trigger.mac.Equals(mac) && x.updated_date > sync)
+            .Where(x => x.procedure.trigger.device_id.Equals(mac) && x.updated_date > sync)
             .CountAsync();
 
             return res;

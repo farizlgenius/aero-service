@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aero.Application.Interface
+namespace Aero.Application.Interfaces
 {
     public interface IScpReplyNAK
     {

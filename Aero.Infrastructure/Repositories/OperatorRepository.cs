@@ -1,32 +1,32 @@
 using Aero.Application.DTOs;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
-using Aero.Infrastructure.Data;
 using Aero.Infrastructure.Mapper;
+using Aero.Infrastructure.Persistences;
+using Aero.Infrastructure.Persistences.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aero.Infrastructure.Repositories;
 
 public class OperatorRepository(AppDbContext context) : IOperatorRepository
 {
-      public async Task<int> AddAsync(Operator data)
+      public async Task<int> AddAsync(Aero.Domain.Entities.Operator data)
       {
-            throw new NotImplementedException();
+        var en = new Aero.Infrastructure.Persistences.Entities.Operator(data);
+        await context.@operator.AddAsync(en);
+        var record = await context.SaveChangesAsync();
+        if (record <= 0) return -1;
+        return en.id;
       }
 
-      public async Task<int> AddAsync(CreateOperator dto)
-      {
-            var en = OperatorMapper.ToEf(dto);
-            await context.@operator.AddAsync(en);
-            return await context.SaveChangesAsync();
-      }
 
-      public async Task<int> DeleteByComponentIdAsync(short component)
+      public async Task<int> DeleteByIdAsync(int id)
       {
            var en = await context.@operator
-           .Where(x => x.component_id == component)
-           .OrderBy(x => x.component_id)
+           .Where(x => x.id == id)
+           .OrderBy(x => x.id)
            .FirstOrDefaultAsync();
 
            if(en is null) return 0;
@@ -35,27 +35,25 @@ public class OperatorRepository(AppDbContext context) : IOperatorRepository
            return await context.SaveChangesAsync();
       }
 
-      public Task<int> UpdateAsync(Operator newData)
+      public async Task<int> UpdateAsync(Aero.Domain.Entities.Operator data)
       {
-            throw new NotImplementedException();
-      }
+        var en = await context.@operator
+        .Include(x => x.operator_locations)
+        .Where(x => x.user_name.Equals(data.Username))
+        .OrderBy(x => x.id)
+        .FirstOrDefaultAsync();
 
-      public async Task<int> UpdateAsync(CreateOperator data)
-      {
-            var en = await context.@operator
-            .Include(x => x.operator_locations)
-            .Where(x => x.user_name.Equals(data.Username))
-            .OrderBy(x => x.component_id)
-            .FirstOrDefaultAsync();
+        if (en is null) return 0;
 
-            if(en is null) return 0;
+        context.operator_location.RemoveRange(en.operator_locations);
 
-            context.operator_location.RemoveRange(en.operator_locations);
+        en.Update(data);
 
-            context.@operator.Update(en);
-            return await context.SaveChangesAsync();
+        context.@operator.Update(en);
+        return await context.SaveChangesAsync();
+    }
 
-      }
+
 
       public async Task<int> UpdatePasswordAsync(string username, string password)
       {
@@ -73,125 +71,152 @@ public class OperatorRepository(AppDbContext context) : IOperatorRepository
 
     public async Task<IEnumerable<OperatorDto>> GetAsync()
     {
-        var dto = await context.@operator
+        var data = await context.@operator
            .AsNoTracking()
-           .Select(x => new OperatorDto
+           .Select(o => 
+           new
            {
-               LocationIds = x.operator_locations.Select(x => x.location.component_id).ToList(),
-               IsActive = x.is_active,
-
-               // extend_desc 
-               ComponentId = x.component_id,
-               Username = x.user_name,
-               Email = x.email,
-               Title = x.title,
-               FirstName = x.first_name,
-               MiddleName = x.middle_name,
-               LastName = x.last_name,
-               Phone = x.phone,
-               Image = x.image_path,
-               RoleId = x.role_id,
+               o.id,
+               o.user_id,
+               o.user_name,
+               o.email,
+               o.title,
+               o.first_name,
+               o.middle_name,
+               o.last_name,
+               o.phone,
+               o.image,
+               o.role_id,
+               locationd = o.operator_locations.Select(l => l.location_id),
+               o.is_active
            })
            .ToArrayAsync();
 
-        return dto;
+        var res = data.Select(o => new OperatorDto(o.id, o.user_id, o.user_name, o.email, o.title, o.first_name, o.middle_name, o.last_name, o.phone, o.image, o.role_id, o.locationd.ToList(), o.is_active)).ToList();
+
+        return res;
     }
 
-    public Task<OperatorDto> GetByComponentIdAsync(short componentId)
+    public async Task<OperatorDto> GetByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        var o = await context.@operator
+             .AsNoTracking()
+             .OrderBy(x => x.id)
+             .Select(o =>
+               new
+               {
+                   o.id,
+                   o.user_id,
+                   o.user_name,
+                   o.email,
+                   o.title,
+                   o.first_name,
+                   o.middle_name,
+                   o.last_name,
+                   o.phone,
+                   o.image,
+                   o.role_id,
+                   locationd = o.operator_locations.Select(l => l.location_id),
+                   o.is_active
+               })
+             .FirstOrDefaultAsync();
+
+        return new OperatorDto(o.id, o.user_id, o.user_name, o.email, o.title, o.first_name, o.middle_name, o.last_name, o.phone, o.image, o.role_id, o.locationd.ToList(), o.is_active);
     }
 
-    public async Task<IEnumerable<OperatorDto>> GetByLocationIdAsync(short locationId)
+    public async Task<IEnumerable<OperatorDto>> GetByLocationIdAsync(int locationId)
     {
-        var dto = await context.@operator
+        var data = await context.@operator
             .AsNoTracking()
             .Where(x => x.operator_locations.Any(x => x.location_id == locationId || x.location_id == 1))
-            .Select(x => new OperatorDto
-            {
-                LocationIds = x.operator_locations.Select(x => x.location.component_id).ToList(),
-                IsActive = x.is_active,
-
-                // extend_desc 
-                ComponentId = x.component_id,
-                Username = x.user_name,
-                Email = x.email,
-                Title = x.title,
-                FirstName = x.first_name,
-                MiddleName = x.middle_name,
-                LastName = x.last_name,
-                Phone = x.phone,
-                Image = x.image_path,
-                RoleId = x.role_id,
-            })
+            .Select(o =>
+               new
+               {
+                   o.id,
+                   o.user_id,
+                   o.user_name,
+                   o.email,
+                   o.title,
+                   o.first_name,
+                   o.middle_name,
+                   o.last_name,
+                   o.phone,
+                   o.image,
+                   o.role_id,
+                   locationd = o.operator_locations.Select(l => l.location_id),
+                   o.is_active
+               })
             .ToArrayAsync();
 
-        return dto;
+        var res = data.Select(o => new OperatorDto(o.id, o.user_id, o.user_name, o.email, o.title, o.first_name, o.middle_name, o.last_name, o.phone, o.image, o.role_id, o.locationd.ToList(), o.is_active)).ToList();
+
+        return res;
     }
 
     public async Task<OperatorDto> GetByUsernameAsync(string username)
     {
-        var dto = await context.@operator
+        var o = await context.@operator
              .AsNoTracking()
+             .OrderBy(x => x.id)
              .Where(o => o.user_name.Equals(username))
-             .Select(x => new OperatorDto
-             {
-                 LocationIds = x.operator_locations.Select(x => x.location.component_id).ToList(),
-                 IsActive = x.is_active,
-
-                 // extend_desc 
-                 ComponentId = x.component_id,
-                 Username = x.user_name,
-                 Email = x.email,
-                 Title = x.title,
-                 FirstName = x.first_name,
-                 MiddleName = x.middle_name,
-                 LastName = x.last_name,
-                 Phone = x.phone,
-                 Image = x.image_path,
-                 RoleId = x.role_id,
-             })
+             .Select(o =>
+               new
+               {
+                   o.id,
+                   o.user_id,
+                   o.user_name,
+                   o.email,
+                   o.title,
+                   o.first_name,
+                   o.middle_name,
+                   o.last_name,
+                   o.phone,
+                   o.image,
+                   o.role_id,
+                   locationd = o.operator_locations.Select(l => l.location_id),
+                   o.is_active
+               })
              .FirstOrDefaultAsync();
 
-        return dto;
+        return new OperatorDto(o.id, o.user_id, o.user_name, o.email, o.title, o.first_name, o.middle_name, o.last_name, o.phone, o.image, o.role_id, o.locationd.ToList(), o.is_active);
 
     }
 
-    public async Task<short> GetLowestUnassignedNumberAsync(int max, string mac)
-    {
-        if (max <= 0) return -1;
+    //public async Task<short> GetLowestUnassignedNumberAsync(int max, string mac)
+    //{
+    //    if (max <= 0) return -1;
 
-        var query = context.@operator
-            .AsNoTracking()
-            .Select(x => x.component_id);
+    //    var query = context.@operator
+    //        .AsNoTracking()
+    //        .Select(x => x.component_id);
 
-        // Handle empty table case quickly
-        var hasAny = await query.AnyAsync();
-        if (!hasAny)
-            return 1; // start at 1 if table is empty
+    //    // Handle empty table case quickly
+    //    var hasAny = await query.AnyAsync();
+    //    if (!hasAny)
+    //        return 1; // start at 1 if table is empty
 
-        // Load all numbers into memory (only the column, so it's lightweight)
-        var numbers = await query.Distinct().OrderBy(x => x).ToListAsync();
+    //    // Load all numbers into memory (only the column, so it's lightweight)
+    //    var numbers = await query.Distinct().OrderBy(x => x).ToListAsync();
 
-        short expected = 1;
-        foreach (var num in numbers)
-        {
-            if (num != expected)
-                return expected; // found the lowest missing number
-            expected++;
-        }
+    //    short expected = 1;
+    //    foreach (var num in numbers)
+    //    {
+    //        if (num != expected)
+    //            return expected; // found the lowest missing number
+    //        expected++;
+    //    }
 
-        // If none missing in sequence, return next number
-        if (expected > max) return -1;
-        return expected;
-    }
+    //    // If none missing in sequence, return next number
+    //    if (expected > max) return -1;
+    //    return expected;
+    //}
 
     public async Task<string> GetPasswordByUsername(string username)
     {
         return await context.@operator.AsNoTracking().Where(x => x.user_name.Equals(username)).Select(x => x.password).FirstOrDefaultAsync() ?? "";
     }
 
-    public async Task<Pagination<OperatorDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    public async Task<Pagination<OperatorDto>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
     {
         var query = context.@operator.AsNoTracking().AsQueryable();
 
@@ -256,29 +281,32 @@ public class OperatorRepository(AppDbContext context) : IOperatorRepository
             .OrderByDescending(t => t.created_date)
             .Skip((param.PageNumber - 1) * param.PageSize)
             .Take(param.PageSize)
-            .Select(x => new OperatorDto
-            {
-                LocationIds = x.operator_locations.Select(x => x.location.component_id).ToList(),
-                IsActive = x.is_active,
-
-                // extend_desc 
-                ComponentId = x.component_id,
-                Username = x.user_name,
-                Email = x.email,
-                Title = x.title,
-                FirstName = x.first_name,
-                MiddleName = x.middle_name,
-                LastName = x.last_name,
-                Phone = x.phone,
-                Image = x.image_path,
-                RoleId = x.role_id,
-            })
+            .Select(o =>
+               new
+               {
+                   o.id,
+                   o.user_id,
+                   o.user_name,
+                   o.email,
+                   o.title,
+                   o.first_name,
+                   o.middle_name,
+                   o.last_name,
+                   o.phone,
+                   o.image,
+                   o.role_id,
+                   locationd = o.operator_locations.Select(l => l.location_id),
+                   o.is_active
+               })
             .ToListAsync();
+
+        var res = data.Select(o => new OperatorDto(o.id, o.user_id, o.user_name, o.email, o.title, o.first_name, o.middle_name, o.last_name, o.phone, o.image, o.role_id, o.locationd.ToList(), o.is_active)).ToList();
+
 
 
         return new Pagination<OperatorDto>
         {
-            Data = data,
+            Data = res,
             Page = new PaginationData
             {
                 TotalCount = count,
@@ -289,13 +317,18 @@ public class OperatorRepository(AppDbContext context) : IOperatorRepository
         };
     }
 
-    public async Task<bool> IsAnyByComponentId(short component)
+    public async Task<bool> IsAnyById(int id)
     {
-        return await context.@operator.AnyAsync(x => x.component_id == component);
+        return await context.@operator.AnyAsync(x => x.id == id);
     }
 
     public async Task<bool> IsAnyByUsernameAsync(string name)
     {
         return await context.@operator.AnyAsync(x => x.user_name.Equals(name));
+    }
+
+    public async Task<bool> IsAnyByNameAsync(string name)
+    {
+        return await context.@operator.AnyAsync(x => x.first_name.Equals(name));
     }
 }

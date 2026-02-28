@@ -25,6 +25,7 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.name = data.Name;
             this.description = data.Description;
             this.company_id = data.Company.Id;
+            this.updated_date = DateTime.UtcNow;
         }
     }
 }

@@ -1,6 +1,5 @@
 using Aero.Application.DTOs;
 using Aero.Application.Interface;
-using Aero.Application.Mapper;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Infrastructure.Persistences;
@@ -13,11 +12,11 @@ namespace Aero.Infrastructure.Repositories;
 
 public class AlvlRepository(AppDbContext context) : IAlvlRepository
 {
-      public async Task<int> AddAsync(CreateAccessLevel data)
+      public async Task<int> AddAsync(AccessLevel data)
       {
             var en = new Aero.Infrastructure.Persistences.Entities.AccessLevel(
                 data.Name,
-                data.Components.Select(x => new Aero.Infrastructure.Persistences.Entities.AccessLevelComponent(x.DriverId,x.Mac,x.DoorId,x.AcrId,x.TimezoneId)).ToList(),
+                data.Components.Select(x => new Aero.Infrastructure.Persistences.Entities.AccessLevelComponent(x.DriverId,x.DeviceId,x.DoorId,x.AcrId,x.TimezoneId)).ToList(),
                 data.LocationId
                );
             await context.access_level.AddAsync(en);
@@ -74,11 +73,11 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
         return res;
     }
 
-    public async Task<string> GetAcrNameByIdAndMacAsync(int id, string mac)
+    public async Task<string> GetAcrNameByIdAndDeviceIdAsync(int id, int deviceId)
     {
         var res = await context.door.AsNoTracking()
         .OrderBy(x => x.id)
-        .Where(x => x.id == id && x.mac == mac)
+        .Where(x => x.id == id && x.device_id == deviceId)
         .Select(x => x.name)
         .FirstOrDefaultAsync();
 
@@ -94,11 +93,12 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
         {
             x.id,
             x.name,
-            components = x.components.Select(c => new AccessLevelComponent(c.driver_id, c.mac, c.door_id, c.acr_id, c.timezone_id)),
-            x.location_id
+            components = x.components.Select(c => new AccessLevelComponent(c.driver_id, c.device_id, c.door_id, c.acr_id, c.timezone_id)),
+            x.location_id,
+            x.is_active
         }).ToArrayAsync();
 
-        var res = data.Select(x => new AccessLevel(x.id,x.name,x.components.ToList(),x.location_id)).ToList();
+        var res = data.Select(x => new AccessLevel(x.id,x.name,x.components.ToList(),x.location_id,x.is_active)).ToList();
 
         return res;
 
@@ -113,7 +113,7 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
         {
             x.id,
             x.name,
-            components = x.components.Select(c => new AccessLevelComponentDto(c.driver_id, c.mac, c.door_id, c.acr_id, c.timezone_id)),
+            components = x.components.Select(c => new AccessLevelComponentDto(c.driver_id, c.device_id, c.door_id, c.acr_id, c.timezone_id)),
             x.location_id,
             x.is_active
         }).ToArrayAsync();
@@ -134,7 +134,7 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
          {
              x.id,
              x.name,
-             components = x.components.Select(c => new AccessLevelComponentDto(c.driver_id, c.mac, c.door_id, c.acr_id, c.timezone_id)),
+             components = x.components.Select(c => new AccessLevelComponentDto(c.driver_id, c.device_id, c.door_id, c.acr_id, c.timezone_id)),
              x.location_id,
              x.is_active
          }).FirstOrDefaultAsync();
@@ -156,7 +156,7 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
         {
             x.id,
             x.name,
-            components = x.components.Select(c => new AccessLevelComponentDto(c.driver_id, c.mac, c.door_id, c.acr_id, c.timezone_id)),
+            components = x.components.Select(c => new AccessLevelComponentDto(c.driver_id, c.device_id, c.door_id, c.acr_id, c.timezone_id)),
             x.location_id,
             x.is_active
         }).ToArrayAsync();
@@ -171,19 +171,19 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
         var res = await context.access_level
         .AsNoTracking()
         .OrderBy(x => x.id)
-        .Where(x => x.components.Any(x => x.mac.Equals(mac)))
-        .SelectMany(x => x.components.Select(x => new AccessLevelComponent(x.driver_id,x.mac,x.door_id,x.acr_id,x.timezone_id))).ToArrayAsync();
+        .Where(x => x.components.Any(x => x.device_id.Equals(mac)))
+        .SelectMany(x => x.components.Select(x => new AccessLevelComponent(x.driver_id,x.device_id, x.door_id,x.acr_id,x.timezone_id))).ToArrayAsync();
 
         return res;
     }
 
-    public async Task<short> GetLowestUnassignedNumberAsync(int max, string mac)
+    public async Task<short> GetLowestUnassignedNumberAsync(int max, int driverid)
     {
         if (max <= 0) return -1;
 
         var query = context.access_level
             .AsNoTracking()
-            .Where(x => x.components.Any(x => x.mac == mac))
+            .Where(x => x.components.Any(x => x.driver_id == driverid))
             .SelectMany(x => x.components.Select(x => x.driver_id));
 
         // Handle empty table case quickly
@@ -267,7 +267,7 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
             {
                 x.id,
                 x.name,
-                components = x.components.Select(c => new AccessLevelComponentDto(c.driver_id, c.mac, c.door_id, c.acr_id, c.timezone_id)),
+                components = x.components.Select(c => new AccessLevelComponentDto(c.driver_id, c.device_id, c.door_id, c.acr_id, c.timezone_id)),
                 x.location_id,
                 x.is_active
             })

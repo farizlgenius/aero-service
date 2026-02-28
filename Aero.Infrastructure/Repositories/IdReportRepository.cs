@@ -8,11 +8,10 @@ using Aero.Infrastructure.Persistences.Entities;
 using Aero.Infrastructure.Mapper;
 using Microsoft.EntityFrameworkCore;
 using System;
-using Aero.DomaApplicationin.Interfaces;
 
 namespace Aero.Infrastructure.Repositories;
 
-public class IdReportRepository(AppDbContext context) : IQIdReportRepository
+public class IdReportRepository(AppDbContext context) : IIdReportRepository
 {
       public async Task<int> AddAsync(IScpReply message)
       {
@@ -48,7 +47,7 @@ public class IdReportRepository(AppDbContext context) : IQIdReportRepository
             return await GetAsync(en.location_id);
       }
 
-      public async Task<IEnumerable<IdReportDto>> GetAsync(short location)
+      public async Task<IEnumerable<IdReportDto>> GetAsync(int location)
       {
             var dtos = await context.id_report
                .AsNoTracking()
@@ -90,12 +89,12 @@ public class IdReportRepository(AppDbContext context) : IQIdReportRepository
         return dtos;
     }
 
-    public Task<IdReportDto> GetByComponentIdAsync(short componentId)
+    public Task<IdReportDto> GetByIdAsync(int id)
       {
             throw new NotImplementedException();
       }
 
-      public Task<IEnumerable<IdReportDto>> GetByLocationIdAsync(short locationId)
+      public Task<IEnumerable<IdReportDto>> GetByLocationIdAsync(int locationId)
       {
             throw new NotImplementedException();
       }
@@ -122,7 +121,7 @@ public class IdReportRepository(AppDbContext context) : IQIdReportRepository
             return dtos;
       }
 
-      public async Task<int> GetCountAsync(short location)
+      public async Task<int> GetCountAsync(int location)
       {
             return await context.id_report.CountAsync();
       }
@@ -132,12 +131,12 @@ public class IdReportRepository(AppDbContext context) : IQIdReportRepository
             throw new NotImplementedException();
       }
 
-    public Task<Pagination<IdReportDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    public Task<Pagination<IdReportDto>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> IsAnyByComponentId(short component)
+    public Task<bool> IsAnyById(int id)
       {
             throw new NotImplementedException();
       }
@@ -152,6 +151,7 @@ public class IdReportRepository(AppDbContext context) : IQIdReportRepository
             var en = await context.id_report.Where(x => x.mac.Equals(UtilitiesHelper.ByteToHex(message.id.mac_addr)) && x.scp_id == message.id.scp_id).FirstOrDefaultAsync();
 
             if(en is null) return 0;
+            
             IdReportMapper.Update(en,message);
 
             context.id_report.Update(en);

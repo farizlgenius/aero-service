@@ -1,3 +1,4 @@
+using Aero.Domain.Enums;
 using System;
 
 namespace Aero.Domain.Entities;
@@ -8,7 +9,8 @@ public sealed class Door : BaseDomain
       public string Name { get; set; } = string.Empty;
       public short AccessConfig { get; set; }
       public short PairDoorNo { get; set; }
-    public string Mac { get; set; } = string.Empty;
+    public DoorDirection Direction { get; set; }
+    public int DeviceId { get; set; } 
       // Reader setting for Reader In
       public List<Reader> Readers { get; set; }
       public short ReaderOutConfiguration { get; set; }

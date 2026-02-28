@@ -1,4 +1,5 @@
 using System;
+using Aero.Application.Interfaces;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using HID.Aero.ScpdNet.Wrapper;

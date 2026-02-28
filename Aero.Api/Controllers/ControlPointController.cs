@@ -38,7 +38,7 @@ namespace Aero.Api.Controllers
         [HttpGet("{mac}/{id}")]
         public async Task<ActionResult<ResponseDto<ControlPointDto>>> GetByComponentAsync(string mac,short id)
         {
-            var res = await service.GetByMacAndIdAsync(mac,id);
+            var res = await service.GetByDeviceAndIdAsync(mac,id);
             return StatusCode((int)res.code, res);
         }
 

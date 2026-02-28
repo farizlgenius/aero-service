@@ -220,7 +220,7 @@ namespace Aero.Infrastructure.Mapper
                         case (int)enSCPReplyType.enSCPReplyCommStatus:
                             hw = scope.ServiceProvider.GetRequiredService<IHardwareService>();
                             var scp = scope.ServiceProvider.GetRequiredService<IScpCommand>();
-                            var qId = scope.ServiceProvider.GetRequiredService<IQIdReportRepository>();
+                            var qId = scope.ServiceProvider.GetRequiredService<IIdReportRepository>();
                             if (message.comm.status != 2)
                             {
                                 var reports = await qId.DeletePendingRecordAsync((short)message.ScpId);

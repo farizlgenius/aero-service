@@ -39,21 +39,23 @@ namespace Aero.Infrastructure.Persistences.Entities
         public ICollection<IdReport> idreports { get; set; }
         public ICollection<Role> roles { get; set; }
         public ICollection<CommandAudit> command_audit { get; set; }
+        public ICollection<Company> companies { get; set; }
         public bool is_active { get; set; } = true;
         public DateTime created_date { get; set;} = DateTime.UtcNow;
         public DateTime updated_date { get; set; } = DateTime.UtcNow;
 
         public Location(){}
-        public Location(string name,string description) 
+        public Location(Aero.Domain.Entities.Location data) 
         {
-            this.name = name;
-            this.description = description;
+            this.name = data.Name;
+            this.description = data.Description;
         }
 
-        public void Update(string name, string description) 
+        public void Update(Aero.Domain.Entities.Location data) 
         {
-            this.name = name;
-            this.description = description;
+            this.name = data.Name;
+            this.description = data.Description;
+            this.updated_date = DateTime.UtcNow;
         }
 
     }

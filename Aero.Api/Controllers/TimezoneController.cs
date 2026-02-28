@@ -54,7 +54,7 @@ namespace Aero.Api.Controllers
         [Authorize]
         public async Task<ActionResult<ResponseDto<TimeZoneDto>>> DeleteAsync(short component)
         {
-            var res = await service.DeleteAsync(component);
+            var res = await service.DeleteByIdAsync(component);
             return Ok(res);
         }
 
@@ -62,7 +62,7 @@ namespace Aero.Api.Controllers
         [Authorize]
         public async Task<ActionResult<ResponseDto<TimeZoneDto>>> GetByComponentAsync(short component)
         {
-            var res = await service.GetByComponentIdAsync(component);
+            var res = await service.GetByIdAsync(component);
             return Ok(res);
         }
 

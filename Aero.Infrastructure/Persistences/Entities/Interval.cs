@@ -22,12 +22,22 @@ namespace Aero.Infrastructure.Persistences.Entities
 
         }
 
+        public Interval(Aero.Domain.Entities.Interval data)
+        {
+            this.days = new DaysInWeek(data.Id, data.Days.Sunday, data.Days.Monday, data.Days.Tuesday, data.Days.Wednesday, data.Days.Thursday, data.Days.Friday, data.Days.Saturday, data.LocationId);
+            this.days_detail = data.DaysDetail;
+            this.start_time = data.StartTime;
+            this.end_time = data.EndTime;
+
+        }
+
         public void Update(Aero.Domain.Entities.Interval data)
         {
             this.days = new DaysInWeek(data.Id, data.Days.Sunday, data.Days.Monday, data.Days.Tuesday, data.Days.Wednesday, data.Days.Thursday, data.Days.Friday, data.Days.Saturday, data.LocationId);
             this.days_detail = data.DaysDetail;
             this.start_time = data.StartTime;
             this.end_time = data.EndTime;
+            this.updated_date = DateTime.UtcNow;
 
         }
 

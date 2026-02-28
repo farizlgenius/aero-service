@@ -1,10 +1,11 @@
 using Aero.Application.DTOs;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
-using Aero.Infrastructure.Data;
+using Aero.Infrastructure.Persistences;
 using Aero.Infrastructure.Mapper;
 using Microsoft.EntityFrameworkCore;
 using System;
+using Aero.Application.Interface;
 
 namespace Aero.Infrastructure.Repositories;
 
@@ -12,15 +13,18 @@ public class HolRepository(AppDbContext context) : IHolRepository
 {
       public async Task<int> AddAsync(Holiday data)
       {
-            await context.holiday.AddAsync(HolidayMapper.ToEf(data));
-            return await context.SaveChangesAsync();
+            var en = new Aero.Infrastructure.Persistences.Entities.Holiday(data.DriverId,data.Name,data.Year,data.Month,data.Day,data.Extend,data.TypeMask,data.LocationId);
+            await context.holiday.AddAsync(en);
+            var record = await context.SaveChangesAsync();
+        if (record <= 0) return -1;
+        return en.id;
       }
 
-      public async Task<int> DeleteByComponentIdAsync(short component)
+      public async Task<int> DeleteByIdAsync(int id)
       {
             var en = await context.holiday
-            .Where(x => x.component_id == component)
-            .OrderBy(x => x.component_id)
+            .Where(x => x.id == id)
+            .OrderBy(x => x.id)
             .FirstOrDefaultAsync();
 
             if(en is null) return 0;
@@ -29,29 +33,16 @@ public class HolRepository(AppDbContext context) : IHolRepository
             return await context.SaveChangesAsync();
       }
 
-      public async Task<Holiday> GetByComponentIdAsync(short component)
-      {
-            var res = await context.holiday.AsNoTracking()
-            .Where(x => x.component_id == component)
-            .Select(p => new Holiday 
-            {
-                // Base
-                LocationId = p.location_id,
-                IsActive = p.is_active,
+      //public async Task<Holiday> GetByIdAsync(int id)
+      //{
+      //      var res = await context.holiday.AsNoTracking()
+      //      .Where(x => x.id == id)
+      //      .OrderBy(x => x.id)
+      //      .Select(h => new HolidayDto())
+      //      .FirstOrDefaultAsync();
 
-                // extend_desc
-                Day = p.day,
-                Month = p.month,
-                Year = p.year,
-                Extend = p.extend,
-                TypeMask = p.type_mask
-
-            })
-            .OrderBy(x => x.ComponentId)
-            .FirstOrDefaultAsync();
-
-            return res;
-      }
+      //      return res;
+      //}
 
       public async Task<int> RemoveAllAsync()
       {
@@ -60,22 +51,22 @@ public class HolRepository(AppDbContext context) : IHolRepository
             return await context.SaveChangesAsync();
       }
 
-      public async Task<int> UpdateAsync(Holiday newData)
+      public async Task<int> UpdateAsync(Holiday data)
       {
             var en = await context.holiday
-            .Where(x => x.component_id == newData.ComponentId)
-            .OrderBy(x => x.component_id)
+            .Where(x => x.id == data.Id)
+            .OrderBy(x => x.id)
             .FirstOrDefaultAsync();
 
-            if(en is null) return 0; 
+            if(en is null) return 0;
 
-            HolidayMapper.Update(en,newData);
+            en.Update(data);
 
             context.holiday.Update(en);
             return await context.SaveChangesAsync();
       }
 
-    public async Task<int> CountByLocationIdAndUpdateTimeAsync(short locationId, DateTime sync)
+    public async Task<int> CountByLocationIdAndUpdateTimeAsync(int locationId, DateTime sync)
     {
         var res = await context.holiday
         .AsNoTracking()
@@ -89,79 +80,40 @@ public class HolRepository(AppDbContext context) : IHolRepository
     {
         var res = await context.holiday
         .AsNoTracking()
-        .Select(p => new HolidayDto
-        {
-            // Base
-            ComponentId = p.component_id,
-            LocationId = p.location_id,
-            IsActive = p.is_active,
-
-            // extend_desc
-            Day = p.day,
-            Month = p.month,
-            Year = p.year,
-            Extend = p.extend,
-            TypeMask = p.type_mask
-
-        }).ToArrayAsync();
+        .Select(h => new HolidayDto(h.id,h.driver_id,h.name,h.year,h.month,h.day,h.extend,h.type_mask,h.location_id,h.is_active))
+        .ToArrayAsync();
 
         return res;
     }
 
-    public async Task<HolidayDto> GetByComponentIdAsync(short component)
+    public async Task<HolidayDto> GetByIdAsync(int id)
     {
         var res = await context.holiday
         .AsNoTracking()
-        .Where(p => p.component_id == component).Select(p => new HolidayDto
-        {
-            // Base
-            ComponentId = p.component_id,
-            LocationId = p.location_id,
-            IsActive = p.is_active,
-
-            // extend_desc
-            Day = p.day,
-            Month = p.month,
-            Year = p.year,
-            Extend = p.extend,
-            TypeMask = p.type_mask
-
-        }).FirstOrDefaultAsync();
+        .Where(x => x.id == id)
+        .Select(h => new HolidayDto(h.id, h.driver_id, h.name, h.year, h.month, h.day, h.extend, h.type_mask, h.location_id, h.is_active))
+        .FirstOrDefaultAsync();
 
         return res;
     }
 
-    public async Task<IEnumerable<HolidayDto>> GetByLocationIdAsync(short locationId)
+    public async Task<IEnumerable<HolidayDto>> GetByLocationIdAsync(int locationId)
     {
         var res = await context.holiday
         .AsNoTracking()
         .Where(p => p.location_id == locationId || p.location_id == locationId)
-        .Select(p => new HolidayDto
-        {
-            // Base
-            ComponentId = p.component_id,
-            LocationId = p.location_id,
-            IsActive = p.is_active,
-
-            // extend_desc
-            Day = p.day,
-            Month = p.month,
-            Year = p.year,
-            Extend = p.extend,
-            TypeMask = p.type_mask
-
-        }).ToArrayAsync();
+        .Select(h => new HolidayDto(h.id, h.driver_id, h.name, h.year, h.month, h.day, h.extend, h.type_mask, h.location_id, h.is_active)).ToArrayAsync();
 
         return res;
     }
 
-    public async Task<short> GetLowestUnassignedNumberAsync(int max, string mac)
+    public async Task<short> GetLowestUnassignedNumberAsync(int max)
     {
         if (max <= 0) return -1;
 
         var query = context.holiday
             .AsNoTracking()
-            .Select(x => x.component_id);
+            .Select(x => x.driver_id);
 
         // Handle empty table case quickly
         var hasAny = await query.AnyAsync();
@@ -184,7 +136,7 @@ public class HolRepository(AppDbContext context) : IHolRepository
         return expected;
     }
 
-    public async Task<Pagination<HolidayDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    public async Task<Pagination<HolidayDto>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
     {
 
         var query = context.holiday.AsNoTracking().AsQueryable();
@@ -240,21 +192,7 @@ public class HolRepository(AppDbContext context) : IHolRepository
             .OrderByDescending(t => t.created_date)
             .Skip((param.PageNumber - 1) * param.PageSize)
             .Take(param.PageSize)
-            .Select(p => new HolidayDto
-            {
-                // Base
-                ComponentId = p.component_id,
-                LocationId = p.location_id,
-                IsActive = p.is_active,
-
-                // extend_desc
-                Day = p.day,
-                Month = p.month,
-                Year = p.year,
-                Extend = p.extend,
-                TypeMask = p.type_mask
-
-            })
+            .Select(h => new HolidayDto(h.id, h.driver_id, h.name, h.year, h.month, h.day, h.extend, h.type_mask, h.location_id, h.is_active))
             .ToListAsync();
 
 
@@ -271,13 +209,18 @@ public class HolRepository(AppDbContext context) : IHolRepository
         };
     }
 
-    public async Task<bool> IsAnyByComponentId(short component)
+    public async Task<bool> IsAnyById(int id)
     {
-        return await context.holiday.AnyAsync(x => x.component_id == component);
+        return await context.holiday.AnyAsync(x => x.id == id);
     }
 
     public async Task<bool> IsAnyWithSameDataAsync(short day, short month, short year)
     {
         return await context.holiday.AnyAsync(u => u.day == day && u.month == month && u.year == year);
+    }
+
+    public async Task<bool> IsAnyByNameAsync(string name)
+    {
+        return await context.holiday.AnyAsync(x => x.name.Equals(name));
     }
 }

@@ -4,8 +4,10 @@ using Aero.Domain.Interfaces;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class Procedure : BaseEntity,IDriverId
+    public sealed class Procedure : BaseEntity,IDriverId,IDeviceId
     {
+        public int device_id { get; set; }
+        public Device device { get; set; }
 
         public short driver_id { get; set; }
         public string name { get; set; } = string.Empty;
@@ -15,9 +17,17 @@ namespace Aero.Infrastructure.Persistences.Entities
 
         public Procedure(Aero.Domain.Entities.Procedure data) : base(data.LocationId)
         {
+            this.device_id = data.DeviceId;
             this.driver_id = data.DriverId;
             this.name = data.Name;
             this.trigger_id = data.TriggerId;
+        }
+
+        public void Update(Aero.Domain.Entities.Procedure data) 
+        {
+            this.name = data.Name;
+            this.trigger_id = data.TriggerId;
+            this.updated_date = DateTime.UtcNow;
         }
 
 

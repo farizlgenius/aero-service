@@ -1,8 +1,9 @@
 ﻿using Aero.Domain.Entities;
+using Aero.Domain.Interfaces;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public class RequestExit : BaseEntity
+    public class RequestExit : BaseEntity,IDeviceId
     {
         public Module module { get; set; }
         public int door_id { get; set; }
@@ -13,8 +14,11 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short debounce { get; set; }
         public short holdtime { get; set; }
         public short mask_timezone { get; set; } = 0;
-        public RequestExit(int module,int doorid,short input,short mode,short debounce,short holdtime,short mask,int location) : base(location)
+        public int device_id { get; set; }
+        public Device device { get; set; }
+        public RequestExit(int device,int module,int doorid,short input,short mode,short debounce,short holdtime,short mask,int location) : base(location)
         {
+            this.device_id = device;
             this.module_id = module;
             this.door_id = doorid;
             this.input_no = input;
@@ -24,8 +28,9 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.mask_timezone = mask;
         }
 
-        public void Update(Aero.Domain.Entities.RequestExit data)
+        public RequestExit(Aero.Domain.Entities.RequestExit data)
         {
+            this.device_id = data.DeviceId;
             this.module_id = data.InputMode;
             this.door_id = data.DoorId;
             this.input_no = data.InputNo;
@@ -33,6 +38,19 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.debounce = data.Debounce;
             this.holdtime = data.HoldTime;
             this.mask_timezone = data.MaskTimeZone;
+        }
+
+        public void Update(Aero.Domain.Entities.RequestExit data)
+        {
+            this.device_id = data.DeviceId;
+            this.module_id = data.InputMode;
+            this.door_id = data.DoorId;
+            this.input_no = data.InputNo;
+            this.input_mode = data.InputMode;
+            this.debounce = data.Debounce;
+            this.holdtime = data.HoldTime;
+            this.mask_timezone = data.MaskTimeZone;
+            this.updated_date = DateTime.UtcNow;
         }
     }
 }

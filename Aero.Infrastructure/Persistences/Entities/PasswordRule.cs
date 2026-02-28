@@ -33,6 +33,7 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.is_digit = data.IsDigit;
             this.is_symbol = data.IsSymbol;
             this.weaks = data.Weaks.Select(w => new WeakPassword(w,data.Id)).ToList();
+           
         }
     }
 }

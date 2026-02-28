@@ -2,20 +2,6 @@
 
 namespace Aero.Application.DTOs
 {
-    public sealed class CreateOperatorDto 
-    {
-        public short ComponentId { get; set; }
-        public string UserId { get; set; } = string.Empty;
-        public string Username { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string Title { get; set; } = string.Empty;
-        public string FirstName { get; set; } = string.Empty;
-        public string MiddleName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public string Phone { get; set; } = string.Empty;
-        public string ImagePath { get; set; } = string.Empty;
-        public short RoleId { get; set; }
-        public List<short> LocationIds { get; set; } = new List<short>();
-    }
+
+    public sealed record CreateOperatorDto(int Id, string UserId, string Username,string Password, string Email, string title, string Firstname, string Middlename, string Lastname, string Phone, string Image, short Role, List<int> LocationIds, bool IsActive);
 }

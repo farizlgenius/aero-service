@@ -24,7 +24,7 @@ namespace Aero.Api.Controllers
         [Authorize]
         public async Task<ActionResult<ResponseDto<HolidayDto>>> GetByComponentAsync(short component)
         {
-            var res = await service.GetByComponentIdAsync(component);
+            var res = await service.GetByIdAsync(component);
             return  Ok(res);
         }
 

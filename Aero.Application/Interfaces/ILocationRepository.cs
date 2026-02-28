@@ -9,5 +9,5 @@ public interface ILocationRepository : IBaseRepository<LocationDto,Aero.Domain.E
 {
     Task<IEnumerable<LocationDto>> GetLocationsByListIdAsync(LocationRangeDto dto);
     Task<bool> IsAnyByLocationNameAsync(string name);
-    Task<List<string>> CheckRelateReferenceByComponentIdAsync(short component);
+    Task<List<string>> CheckRelateReferenceByIdAsync(int id);
 }

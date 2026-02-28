@@ -9,7 +9,8 @@ namespace Aero.Application.Interface;
 public interface IHolRepository : IBaseRepository<HolidayDto,Holiday>
 {
       Task<int> RemoveAllAsync();
-      Task<Aero.Domain.Entities.Holiday> GetByComponentIdAsync(short component);
-    Task<int> CountByLocationIdAndUpdateTimeAsync(short locationId, DateTime sync);
+      //Task<Aero.Domain.Entities.Holiday> GetByIdAsync(int id);
+    Task<int> CountByLocationIdAndUpdateTimeAsync(int locationId, DateTime sync);
     Task<bool> IsAnyWithSameDataAsync(short day, short month, short year);
+    Task<short> GetLowestUnassignedNumberAsync(int max);
 }

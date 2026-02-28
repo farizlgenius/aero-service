@@ -14,13 +14,13 @@ namespace Aero.Domain.Helpers
         public static short GetLowestUnassignedNumberAsync<TEntity>(
             IQueryable<TEntity> source,
             string mac,
-            int max) where TEntity : class , IDriverId,IMac
+            int max) where TEntity : class , IDriverId,IDeviceId
         {
             if (max <= 0)
                 return -1;
 
             var numbers = source
-                .Where(x => x.mac.Equals(mac))
+                .Where(x => x.device_id.Equals(mac))
                 .Select(x => x.driver_id)
                 .Where(n => n > 0 && n <= max)
                 .Distinct()

@@ -8,6 +8,7 @@ namespace Aero.Application.Interface;
 
 public interface IRoleRepository : IBaseRepository<RoleDto,Aero.Domain.Entities.Role>
 {
-    Task<bool> IsAnyByNameAsync(string name);
-    Task<bool> IsAnyReferenceByComponentIdAsync(short component);
+    Task<bool> IsAnyReferenceByIdAsync(int id);
+    Task<short> GetLowestUnassignedNumberAsync(int max);
+    Task<short> GetLowestUnassignedNumberAsync();
 }

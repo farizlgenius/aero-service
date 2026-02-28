@@ -3,28 +3,20 @@
   "WorkspaceRootPath": "D:\\Aero\\AeroService\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\persistences\\entities\\module.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\persistences\\entities\\module.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\repositories\\intervalrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\repositories\\intervalrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\persistences\\entities\\location.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\persistences\\entities\\location.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|d:\\aero\\aeroservice\\aero.application\\services\\timezoneservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|solutionrelative:aero.application\\services\\timezoneservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\persistences\\entities\\keypair.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\persistences\\entities\\keypair.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|d:\\aero\\aeroservice\\aero.application\\interfaces\\iintervalrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|solutionrelative:aero.application\\interfaces\\iintervalrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{63FFA18D-3E41-7B71-6B81-933AAF55FA40}|Aero.Domain\\Aero.Domain.csproj|d:\\aero\\aeroservice\\aero.domain\\entities\\daysinweek.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{63FFA18D-3E41-7B71-6B81-933AAF55FA40}|Aero.Domain\\Aero.Domain.csproj|solutionrelative:aero.domain\\entities\\daysinweek.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\persistences\\entities\\inputmode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\persistences\\entities\\inputmode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\persistences\\entities\\idreport.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\persistences\\entities\\idreport.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|d:\\aero\\aeroservice\\aero.application\\services\\intervalservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|solutionrelative:aero.application\\services\\intervalservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -39,79 +31,53 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Module.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\Module.cs",
-              "RelativeDocumentMoniker": "Aero.Infrastructure\\Persistences\\Entities\\Module.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\Module.cs",
-              "RelativeToolTip": "Aero.Infrastructure\\Persistences\\Entities\\Module.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAuAAAAAAAAAA==",
+              "Title": "IntervalRepository.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Repositories\\IntervalRepository.cs",
+              "RelativeDocumentMoniker": "Aero.Infrastructure\\Repositories\\IntervalRepository.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Repositories\\IntervalRepository.cs",
+              "RelativeToolTip": "Aero.Infrastructure\\Repositories\\IntervalRepository.cs",
+              "ViewState": "AgIAADQBAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-25T16:24:05.956Z",
+              "WhenOpened": "2026-02-27T09:45:50.554Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Location.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\Location.cs",
-              "RelativeDocumentMoniker": "Aero.Infrastructure\\Persistences\\Entities\\Location.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\Location.cs",
-              "RelativeToolTip": "Aero.Infrastructure\\Persistences\\Entities\\Location.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "TimeZoneService.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Application\\Services\\TimeZoneService.cs",
+              "RelativeDocumentMoniker": "Aero.Application\\Services\\TimeZoneService.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Application\\Services\\TimeZoneService.cs",
+              "RelativeToolTip": "Aero.Application\\Services\\TimeZoneService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACsAAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-25T16:24:04.902Z",
+              "WhenOpened": "2026-02-27T09:45:17.535Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "KeyPair.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\KeyPair.cs",
-              "RelativeDocumentMoniker": "Aero.Infrastructure\\Persistences\\Entities\\KeyPair.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\KeyPair.cs",
-              "RelativeToolTip": "Aero.Infrastructure\\Persistences\\Entities\\KeyPair.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "IIntervalRepository.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Application\\Interfaces\\IIntervalRepository.cs",
+              "RelativeDocumentMoniker": "Aero.Application\\Interfaces\\IIntervalRepository.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Application\\Interfaces\\IIntervalRepository.cs",
+              "RelativeToolTip": "Aero.Application\\Interfaces\\IIntervalRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-25T16:24:02.999Z",
+              "WhenOpened": "2026-02-27T09:44:21.537Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "DaysInWeek.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Domain\\Entities\\DaysInWeek.cs",
-              "RelativeDocumentMoniker": "Aero.Domain\\Entities\\DaysInWeek.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Domain\\Entities\\DaysInWeek.cs",
-              "RelativeToolTip": "Aero.Domain\\Entities\\DaysInWeek.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAnAAAAAAAAAA==",
+              "Title": "IntervalService.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Application\\Services\\IntervalService.cs",
+              "RelativeDocumentMoniker": "Aero.Application\\Services\\IntervalService.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Application\\Services\\IntervalService.cs",
+              "RelativeToolTip": "Aero.Application\\Services\\IntervalService.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAACgAAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-25T16:18:41.193Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "InputMode.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\InputMode.cs",
-              "RelativeDocumentMoniker": "Aero.Infrastructure\\Persistences\\Entities\\InputMode.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\InputMode.cs",
-              "RelativeToolTip": "Aero.Infrastructure\\Persistences\\Entities\\InputMode.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-25T16:12:47.617Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "IdReport.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\IdReport.cs",
-              "RelativeDocumentMoniker": "Aero.Infrastructure\\Persistences\\Entities\\IdReport.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\IdReport.cs",
-              "RelativeToolTip": "Aero.Infrastructure\\Persistences\\Entities\\IdReport.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-25T16:12:39.372Z",
+              "WhenOpened": "2026-02-27T09:43:03.896Z",
               "EditorCaption": ""
             }
           ]

@@ -1,6 +1,7 @@
 ﻿
-using System.ComponentModel.DataAnnotations;
 using Aero.Domain.Interface;
+using System.ComponentModel.DataAnnotations;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace Aero.Infrastructure.Persistences.Entities
@@ -27,7 +28,33 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.thursday = thur;
             this.friday = fri;
             this.saturday = sat;
+            
 
+        }
+
+        public DaysInWeek(Aero.Domain.Entities.DaysInWeek data) 
+        {
+            this.interval_id = data.IntervalId;
+            this.sunday = data.Sunday;
+            this.monday = data.Monday;
+            this.tuesday = data.Tuesday;
+            this.wednesday = data.Wednesday;
+            this.thursday = data.Thursday;
+            this.friday = data.Friday;
+            this.saturday = data.Saturday;
+        }
+
+        public void Update(Aero.Domain.Entities.DaysInWeek data)
+        {
+            this.interval_id = data.IntervalId;
+            this.sunday = data.Sunday;
+            this.monday = data.Monday;
+            this.tuesday = data.Tuesday;
+            this.wednesday = data.Wednesday;
+            this.thursday = data.Thursday;
+            this.friday = data.Friday;
+            this.saturday = data.Saturday;
+            this.updated_date = DateTime.UtcNow;
         }
     }
 }

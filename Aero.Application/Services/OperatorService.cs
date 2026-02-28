@@ -1,5 +1,4 @@
 ﻿
-using System.Net;
 using Aero.Application.Constants;
 using Aero.Application.DTOs;
 using Aero.Application.Helpers;
@@ -9,56 +8,61 @@ using Aero.Application.Mapper;
 using Aero.Domain.Entities;
 using Aero.Domain.Helpers;
 using Aero.Domain.Interface;
+using System.Net;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aero.Application.Services
 {
-    public sealed class OperatorService(IQOperatorRepository qOper,IOperatorRepository rOper) : IOperatorService
+    public sealed class OperatorService(IOperatorRepository repo) : IOperatorService
     {
-        public async Task<ResponseDto<bool>> CreateAsync(CreateOperatorDto dto)
+        public async Task<ResponseDto<OperatorDto>> CreateAsync(CreateOperatorDto dto)
         {
-            if (string.IsNullOrEmpty(dto.Password)) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.PASSWORD_UNASSIGN, []);
-            if (await qOper.IsAnyByUsernameAsync(dto.Username)) return ResponseHelper.Duplicate<bool>();
+            // Check value in license here 
+            // ....to be implement
 
-            var ComponentId = await qOper.GetLowestUnassignedNumberAsync(10,"");
-            if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
-            var domain = OperatorMapper.ToDomain(dto);
-            domain.ComponentId = ComponentId;
-            domain.Password = EncryptHelper.HashPassword(dto.Password);
+            if (string.IsNullOrEmpty(dto.Password)) return ResponseHelper.UnsuccessBuilder<OperatorDto>(ResponseMessage.PASSWORD_UNASSIGN, []);
+            if (await repo.IsAnyByUsernameAsync(dto.Username)) return ResponseHelper.Duplicate<OperatorDto>();
 
-            var status = await rOper.AddAsync(domain);
-            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
+            //var ComponentId = await repo.GetLowestUnassignedNumberAsync(10,"");
+            //if (ComponentId == -1) return ResponseHelper.ExceedLimit<OperatorDto>();
 
-            return ResponseHelper.SuccessBuilder<bool>(true);
+            var domain = new Operator(dto.UserId,dto.Username,dto.Password,dto.Email,dto.title,dto.Firstname,dto.Middlename,dto.Lastname,dto.Phone,dto.Image,dto.Role,dto.LocationIds);
+
+            var status = await repo.AddAsync(domain);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<OperatorDto>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
+
+            return ResponseHelper.SuccessBuilder<OperatorDto>(await repo.GetByIdAsync(status));
 
         }
 
-        public async Task<ResponseDto<bool>> DeleteByIdAsync(short component)
+        public async Task<ResponseDto<OperatorDto>> DeleteByIdAsync(int id)
         {
+            var en = await repo.GetByIdAsync(id);
+            if (en is null) return ResponseHelper.NotFoundBuilder<OperatorDto>();
 
-            if (!await qOper.IsAnyByComponentId(component)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var status = await rOper.DeleteByComponentIdAsync(component);
-            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,[]);
+            var status = await repo.DeleteByIdAsync(id);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<OperatorDto>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,[]);
 
-            return ResponseHelper.SuccessBuilder<bool>(true);
+            return ResponseHelper.SuccessBuilder<OperatorDto>(en);
 
         }
 
-        public async Task<ResponseDto<IEnumerable<ResponseDto<bool>>>> DeleteRangeAsync(List<short> dtos)
+        public async Task<ResponseDto<IEnumerable<OperatorDto>>> DeleteRangeAsync(List<int> dtos)
         {
             bool flag = true;
-            List<ResponseDto<bool>> data = new List<ResponseDto<bool>>();
+            List<OperatorDto> data = new List<OperatorDto>();
             foreach(var dto in dtos)
             {
                 var re = await DeleteByIdAsync(dto);
                 if (re.code != HttpStatusCode.OK) flag = false;
-                data.Add(re);
+                if(re.data is not null) data.Add(re.data);
             }
 
-            if (!flag) return ResponseHelper.UnsuccessBuilder<IEnumerable<ResponseDto<bool>>>(data);
+            if (!flag) return ResponseHelper.UnsuccessBuilder<IEnumerable<OperatorDto>>(data);
 
-            var res = ResponseHelper.SuccessBuilder<IEnumerable<ResponseDto<bool>>>(data);
+            var res = ResponseHelper.SuccessBuilder<IEnumerable<OperatorDto>>(data);
 
             return res;
         }
@@ -66,40 +70,40 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<IEnumerable<OperatorDto>>> GetAsync()
         {
            
-            var dto = await qOper.GetAsync();
+            var dto = await repo.GetAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<OperatorDto>>(dto);
         }
 
-        public async Task<ResponseDto<IEnumerable<OperatorDto>>> GetByLocationAsync(short location)
+        public async Task<ResponseDto<IEnumerable<OperatorDto>>> GetByLocationAsync(int location)
         {
-            var dto = await qOper.GetByLocationIdAsync(location);
+            var dto = await repo.GetByLocationIdAsync(location);
             return ResponseHelper.SuccessBuilder<IEnumerable<OperatorDto>>(dto);
         }
 
         public async Task<ResponseDto<OperatorDto>> GetByUsernameAsync(string Username)
         {
             
-           var dto = await qOper.GetByUsernameAsync(Username);
+           var dto = await repo.GetByUsernameAsync(Username);
                 
             return ResponseHelper.SuccessBuilder<OperatorDto>(dto);
         }
 
-        public async Task<ResponseDto<Pagination<OperatorDto>>> GetPaginationAsync(PaginationParamsWithFilter param,short location)
+        public async Task<ResponseDto<Pagination<OperatorDto>>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
         {
-            var dtos = await qOper.GetPaginationAsync(param,location);
+            var dtos = await repo.GetPaginationAsync(param,location);
             return ResponseHelper.SuccessBuilder<Pagination<OperatorDto>>(dtos);
         }
 
         public async Task<ResponseDto<OperatorDto>> UpdateAsync(CreateOperatorDto dto)
         {
-            if(!await qOper.IsAnyByUsernameAsync(dto.Username)) return ResponseHelper.NotFoundBuilder<OperatorDto>();
+            if(!await repo.IsAnyByUsernameAsync(dto.Username)) return ResponseHelper.NotFoundBuilder<OperatorDto>();
 
-            var domain = OperatorMapper.ToDomain(dto);
+            var domain = new Operator(dto.UserId, dto.Username, dto.Password, dto.Email, dto.title, dto.Firstname, dto.Middlename, dto.Lastname, dto.Phone, dto.Image, dto.Role, dto.LocationIds);
 
-            var status = await rOper.UpdateAsync(domain);
+            var status = await repo.UpdateAsync(domain);
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<OperatorDto>(ResponseMessage.UPDATE_RECORD_UNSUCCESS,[]);
 
-            var res = await qOper.GetByUsernameAsync(dto.Username);
+            var res = await repo.GetByUsernameAsync(dto.Username);
 
             return ResponseHelper.SuccessBuilder(res);
         }
@@ -107,15 +111,15 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<bool>> UpdatePasswordAsync(PasswordDto dto)
         {
 
-            if (!await qOper.IsAnyByUsernameAsync(dto.Username)) return ResponseHelper.NotFoundBuilder<bool>();
+            if (!await repo.IsAnyByUsernameAsync(dto.Username)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var pass = await qOper.GetPasswordByUsername(dto.Username);
+            var pass = await repo.GetPasswordByUsername(dto.Username);
     
             if (!EncryptHelper.VerifyPassword(dto.Old,pass)) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.UNSUCCESS, [ResponseMessage.OLD_PASSPORT_INCORRECT]);
 
             var newPass = EncryptHelper.HashPassword(dto.New);
             
-            var status = await rOper.UpdatePasswordAsync(dto.Username,newPass);
+            var status = await repo.UpdatePasswordAsync(dto.Username,newPass);
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.UPDATE_RECORD_UNSUCCESS,[]);
 
             return ResponseHelper.SuccessBuilder<bool>(true);

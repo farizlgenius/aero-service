@@ -6,7 +6,7 @@ using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Interface;
 
-public interface IAreaRepository : IBaseRepository<AccessAreaDto,AccessArea,AccessArea>
+public interface IAreaRepository : IBaseRepository<AccessAreaDto,AccessArea>
 {
     Task<int> CountByLocationIdAndUpdateTimeAsync(int locationId, DateTime sync);
     Task<IEnumerable<ModeDto>> GetCommandAsync();
@@ -14,4 +14,5 @@ public interface IAreaRepository : IBaseRepository<AccessAreaDto,AccessArea,Acce
     Task<IEnumerable<ModeDto>> GetOccupancyControlOptionAsync();
     Task<IEnumerable<ModeDto>> GetAreaFlagOptionAsync();
     Task<IEnumerable<ModeDto>> GetMultiOccupancyOptionAsync();
+    Task<short> GetLowestUnassignedNumberAsync(int max);
 }

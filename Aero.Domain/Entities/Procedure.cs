@@ -4,6 +4,7 @@ namespace Aero.Domain.Entities;
 
 public sealed class Procedure : BaseDomain
 {
+    public int DeviceId { get; set; }
       public short DriverId {get; set;}
       public int TriggerId {get; set;}
       public string Name { get; set; } = string.Empty;

@@ -27,6 +27,7 @@ namespace Aero.Infrastructure.Persistences.Entities
         public string image { get; set; } = string.Empty;
         public ICollection<Credential> credentials { get; set; }
         public ICollection<UserAccessLevel> user_access_levels { get; set; }
+        public ICollection<UserDevice> user_device { get; set; }
 
         public User(string userid,string title,string firstname,string middlename,string lastname,Gender gender,string email,string phone,int company_id,int department_id,int position_id,short flag,List<string> additionals,string image,List<Credential> cred,List<short> user_accesslevel,int location) : base(location) 
         {

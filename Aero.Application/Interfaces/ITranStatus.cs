@@ -1,6 +1,6 @@
 using System;
 
-namespace Aero.Application.Interface;
+namespace Aero.Application.Interfaces;
 
 public interface ITranStatus
 {

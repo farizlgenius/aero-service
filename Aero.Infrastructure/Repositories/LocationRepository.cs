@@ -13,16 +13,18 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 {
       public async Task<int> AddAsync(Aero.Domain.Entities.Location data)
       {
-            var en = LocationMapper.ToEf(data);
+        var en = new Aero.Infrastructure.Persistences.Entities.Location(data);
             await context.location.AddAsync(en);
-            return await context.SaveChangesAsync();
+            var rec = await context.SaveChangesAsync();
+            if (rec <= 0) return -1;
+            return en.id;
       }
 
-      public async Task<int> DeleteByComponentIdAsync(short component)
+      public async Task<int> DeleteByIdAsync(int id)
       {
             var en = await context.location
-            .OrderBy(x => x.component_id)
-            .Where(x => x.component_id == component)
+            .OrderBy(x => x.id)
+            .Where(x => x.id == id)
             .FirstOrDefaultAsync();
 
             if(en is null) return 0;
@@ -31,27 +33,27 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
             return await context.SaveChangesAsync();
       }
 
-      public async Task<int> UpdateAsync(Location newData)
+      public async Task<int> UpdateAsync(Aero.Domain.Entities.Location data)
       {
             var en = await context.location
-            .OrderBy(x => x.component_id)
-            .Where(x => x.component_id == newData.ComponentId)
+            .OrderBy(x => x.id)
+            .Where(x => x.id == data.Id)
             .FirstOrDefaultAsync();
 
             if(en is null) return 0;
 
-            LocationMapper.Update(newData,en);
+        en.Update(data);
 
             context.location.Update(en);
             return await context.SaveChangesAsync();
       }
 
-    public async Task<List<string>> CheckRelateReferenceByComponentIdAsync(short component)
+    public async Task<List<string>> CheckRelateReferenceByIdAsync(int id)
     {
         List<string> errors = new List<string>();
         // hardware
         if (await context.location
-            .AnyAsync(x => x.component_id == component && x.hardwares.Count() > 0)
+            .AnyAsync(x => x.id == id && x.hardwares.Count() > 0)
             )
         {
             errors.Add("Found relate hardware");
@@ -59,7 +61,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
         // modules
         if (await context.location
-            .AnyAsync(x => x.component_id == component && x.modules.Count() > 0)
+            .AnyAsync(x => x.id == id && x.modules.Count() > 0)
             )
         {
             errors.Add("Found relate modules");
@@ -67,7 +69,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
         // CP
         if (await context.location
-            .AnyAsync(x => x.component_id == component && x.control_points.Count() > 0)
+            .AnyAsync(x => x.id == id && x.control_points.Count() > 0)
             )
         {
             errors.Add("Found relate control point");
@@ -75,7 +77,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
         // MP
         if (await context.location
-            .AnyAsync(x => x.component_id == component && x.monitor_points.Count() > 0)
+            .AnyAsync(x => x.id == id && x.monitor_points.Count() > 0)
             )
         {
             errors.Add("Found relate control point");
@@ -83,7 +85,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
         // ALVL
         if (await context.location
-            .AnyAsync(x => x.component_id == component && x.accesslevels.Count() > 0)
+            .AnyAsync(x => x.id == id && x.accesslevels.Count() > 0)
             )
         {
             errors.Add("Found relate access level");
@@ -91,7 +93,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
         // AREA
         if (await context.location
-            .AnyAsync(x => x.component_id == component && x.areas.Count() > 0)
+            .AnyAsync(x => x.id == id && x.areas.Count() > 0)
             )
         {
             errors.Add("Found relate access level");
@@ -99,7 +101,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
         // Card Holders
         if (await context.location
-            .AnyAsync(x => x.component_id == component && x.cardholders.Count() > 0)
+            .AnyAsync(x => x.id == id && x.cardholders.Count() > 0)
             )
         {
             errors.Add("Found relate card holder");
@@ -107,7 +109,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
         // door 
         if (await context.location
-            .AnyAsync(x => x.component_id == component && x.doors.Count() > 0)
+            .AnyAsync(x => x.id == id && x.doors.Count() > 0)
             )
         {
             errors.Add("Found relate door");
@@ -115,7 +117,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
         // MPG 
         if (await context.location
-            .AnyAsync(x => x.component_id == component && x.monitor_groups.Count() > 0)
+            .AnyAsync(x => x.id == id && x.monitor_groups.Count() > 0)
             )
         {
             errors.Add("Found relate monitor group");
@@ -123,7 +125,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
         // operator 
         if (await context.location
-            .AnyAsync(x => x.component_id == component && x.operator_locations.Count() > 1)
+            .AnyAsync(x => x.id == id && x.operator_locations.Count() > 1)
             )
         {
             errors.Add("Found relate operator");
@@ -131,7 +133,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
         // Holiday 
         if (await context.location
-            .AnyAsync(x => x.component_id == component && x.holidays.Count() > 0)
+            .AnyAsync(x => x.id == id && x.holidays.Count() > 0)
             )
         {
             errors.Add("Found relate holiday");
@@ -139,7 +141,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
         // Cred 
         if (await context.location
-            .AnyAsync(x => x.component_id == component && x.credentials.Count() > 0)
+            .AnyAsync(x => x.id == id && x.credentials.Count() > 0)
             )
         {
             errors.Add("Found relate credential");
@@ -147,7 +149,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
         // reader 
         if (await context.location
-            .AnyAsync(x => x.component_id == component && x.readers.Count() > 0)
+            .AnyAsync(x => x.id == id && x.readers.Count() > 0)
             )
         {
             errors.Add("Found relate reader");
@@ -155,7 +157,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
         // rex 
         if (await context.location
-            .AnyAsync(x => x.component_id == component && x.request_exits.Count() > 0)
+            .AnyAsync(x => x.id == id && x.request_exits.Count() > 0)
             )
         {
             errors.Add("Found relate rex");
@@ -163,7 +165,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
         // strk 
         if (await context.location
-            .AnyAsync(x => x.component_id == component && x.strikes.Count() > 0)
+            .AnyAsync(x => x.id == id && x.strikes.Count() > 0)
             )
         {
             errors.Add("Found relate strike");
@@ -171,7 +173,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
         // proc 
         if (await context.location
-            .AnyAsync(x => x.component_id == component && x.procedures.Count() > 0)
+            .AnyAsync(x => x.id == id && x.procedures.Count() > 0)
             )
         {
             errors.Add("Found relate procedure");
@@ -179,7 +181,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
         // ac 
         if (await context.location
-            .AnyAsync(x => x.component_id == component && x.actions.Count() > 0)
+            .AnyAsync(x => x.id == id && x.actions.Count() > 0)
             )
         {
             errors.Add("Found relate procedure");
@@ -187,7 +189,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
         // trigger 
         if (await context.location
-            .AnyAsync(x => x.component_id == component && x.triggers.Count() > 0)
+            .AnyAsync(x => x.id == id && x.triggers.Count() > 0)
             )
         {
             errors.Add("Found relate trigger");
@@ -195,7 +197,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
         // interval 
         if (await context.location
-            .AnyAsync(x => x.component_id == component && x.intervals.Count() > 0)
+            .AnyAsync(x => x.id == id && x.intervals.Count() > 0)
             )
         {
             errors.Add("Found relate interval");
@@ -203,7 +205,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
         // timezone 
         if (await context.location
-            .AnyAsync(x => x.component_id == component && x.timezones.Count() > 0)
+            .AnyAsync(x => x.id == id && x.timezones.Count() > 0)
             )
         {
             errors.Add("Found relate timezone");
@@ -216,36 +218,25 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
     {
         var res = await context.location
         .AsNoTracking()
-        .Select(x => new LocationDto
-        {
-
-            ComponentId = x.component_id,
-            LocationName = x.name,
-            Description = x.description,
-        })
+        .Select(l => new LocationDto(l.id,l.name,l.description,l.is_active))
         .ToArrayAsync();
 
         return res;
     }
 
-    public async Task<LocationDto> GetByComponentIdAsync(short componentId)
+    public async Task<LocationDto> GetByIdAsync(int id)
     {
         var res = await context.location
        .AsNoTracking()
-       .OrderBy(x => x.component_id)
-       .Where(x => x.component_id == componentId)
-       .Select(x => new LocationDto
-       {
-           ComponentId = x.component_id,
-           LocationName = x.location_name,
-           Description = x.description,
-       })
+       .OrderBy(x => x.id)
+       .Where(x => x.id == id)
+       .Select(l => new LocationDto(l.id, l.name, l.description, l.is_active))
        .FirstOrDefaultAsync();
 
         return res;
     }
 
-    public async Task<IEnumerable<LocationDto>> GetByLocationIdAsync(short locationId)
+    public async Task<IEnumerable<LocationDto>> GetByLocationIdAsync(int locationId)
     {
         throw new NotImplementedException();
     }
@@ -254,14 +245,9 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
     {
         var dtos = await context.location
             .AsNoTracking()
-            .OrderBy(x => x.component_id)
-            .Where(x => dto.locationIds.Contains(x.component_id))
-            .Select(x => new LocationDto
-            {
-                ComponentId = x.component_id,
-                LocationName = x.location_name,
-                Description = x.description,
-            })
+            .OrderBy(x => x.id)
+            .Where(x => dto.locationIds.Contains(x.id))
+            .Select(l => new LocationDto(l.id, l.name, l.description, l.is_active))
             .ToArrayAsync();
 
         return dtos;
@@ -273,7 +259,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 
         var query = context.location
             .AsNoTracking()
-            .Select(x => x.component_id);
+            .Select(x => x.id);
 
         // Handle empty table case quickly
         var hasAny = await query.AnyAsync();
@@ -297,9 +283,9 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
     }
 
 
-    public async Task<bool> IsAnyByComponentId(short component)
+    public async Task<bool> IsAnyById(int id)
     {
-        return await context.location.AnyAsync(x => x.component_id == component);
+        return await context.location.AnyAsync(x => x.id == id);
     }
 
     public async Task<bool> IsAnyByLocationNameAsync(string name)
@@ -307,7 +293,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
         return await context.location.AnyAsync(x => x.name.Equals(name));
     }
 
-    public async Task<Pagination<LocationDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    public async Task<Pagination<LocationDto>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
     {
         var query = context.location.AsNoTracking().AsQueryable();
 
@@ -338,7 +324,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
         }
 
 
-        query = query.Where(x => x.component_id != 1);
+        query = query.Where(x => x.id != 1);
 
         if (param.StartDate != null)
         {
@@ -360,13 +346,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
             .OrderByDescending(t => t.created_date)
             .Skip((param.PageNumber - 1) * param.PageSize)
             .Take(param.PageSize)
-            .Select(x => new LocationDto
-            {
-                ComponentId = x.component_id,
-                LocationName = x.name,
-                Description = x.description
-
-            })
+            .Select(l => new LocationDto(l.id, l.name, l.description, l.is_active))
             .ToListAsync();
 
 
@@ -381,5 +361,10 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
                 TotalPage = (int)Math.Ceiling(count / (double)param.PageSize)
             }
         };
+    }
+
+    public async Task<bool> IsAnyByNameAsync(string name)
+    {
+        return await context.location.AnyAsync(x => x.name.Equals(name));
     }
 }

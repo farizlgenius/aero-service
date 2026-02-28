@@ -1,18 +1,22 @@
 ﻿
 using Aero.Domain.Entities;
+using Aero.Domain.Enums;
 using Aero.Domain.Interfaces;
 using System.Security.AccessControl;
 using static System.Net.WebRequestMethods;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class Door : BaseEntity,IMac,IDriverId
+    public sealed class Door : BaseEntity,IDeviceId,IDriverId
     {
         public short driver_id {get; set;}
         public string name { get; set; } = string.Empty;   
         public short access_config { get; set; }
         public short pair_door_no { get; set; }
-        public string mac { get; set; } = string.Empty;
+        public int device_id { get; set; }
+
+        // Door Direction
+        public DoorDirection direction { get; set; }
         public Device device { get; set; }
         // Reader setting for Reader In / Reader Out
         public ICollection<Reader> readers { get; set; }
@@ -60,7 +64,7 @@ namespace Aero.Infrastructure.Persistences.Entities
         public bool is_force_mask { get; set; } = false;
         public ICollection<AccessLevelComponent> access_level_component { get; set; }
 
-        public Door(short driver,string name,short accessconfig,short pair_door_no,string mac,int location,List<Aero.Domain.Entities.Reader> readers,short readeroutconfig,Aero.Domain.Entities.Strike k,Aero.Domain.Entities.Sensor s,List<Aero.Domain.Entities.RequestExit> rexs
+        public Door(short driver,string name,short accessconfig,DoorDirection direction,short pair_door_no,int device_id,int location,List<Aero.Domain.Entities.Reader> readers,short readeroutconfig,Aero.Domain.Entities.Strike k,Aero.Domain.Entities.Sensor s,List<Aero.Domain.Entities.RequestExit> rexs
             ,short cardformat
             ,short antipassbackmode,
             short antipassbackin,
@@ -82,8 +86,9 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.name = name;
             this.access_config = accessconfig;
             this.pair_door_no = pair_door_no;
-            this.mac = mac;
-            this.readers = readers.Select(r => new Reader(r.ModuleId,r.DoorId,r.ReaderNo,r.DataFormat,r.KeypadMode,r.LedDriveMode,r.Direction,r.OsdpFlag,r.OsdpBaudrate,r.OsdpDiscover,r.OsdpTracing,r.OsdpAddress,r.OsdpSecureChannel,r.Mac,r.LocationId)).ToList();
+            this.device_id = device_id;
+            this.direction = direction;
+            this.readers = readers.Select(r => new Reader(r.ModuleId,r.DoorId,r.ReaderNo,r.DataFormat,r.KeypadMode,r.LedDriveMode,r.OsdpFlag,r.OsdpBaudrate,r.OsdpDiscover,r.OsdpTracing,r.OsdpAddress,r.OsdpSecureChannel,r.DeviceId,r.LocationId)).ToList();
             this.reader_out_config = readeroutconfig;
             this.strike = new Strike(k.ModuleId,k.DoorId,k.OutputNo,k.RelayMode,k.OfflineMode,k.StrkMax,k.StrkMin,k.StrkMode,k.LocationId);
             this.sensor = new Sensor(s.ModuleId,s.DoorId,s.InputNo,s.InputMode,s.Debounce,s.HoldTime,s.DcHeld,s.LocationId);
@@ -127,8 +132,9 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.name = data.Name;
             this.access_config = data.AccessConfig;
             this.pair_door_no = data.PairDoorNo;
-            this.mac = data.Mac;
-            this.readers = data.Readers.Select(r => new Reader(r.ModuleId, r.DoorId, r.ReaderNo, r.DataFormat, r.KeypadMode, r.LedDriveMode, r.Direction, r.OsdpFlag, r.OsdpBaudrate, r.OsdpDiscover, r.OsdpTracing, r.OsdpAddress, r.OsdpSecureChannel, r.Mac, r.LocationId)).ToList();
+            this.device_id = data.DeviceId;
+            this.direction = data.Direction;
+            this.readers = data.Readers.Select(r => new Reader(r.ModuleId, r.DoorId, r.ReaderNo, r.DataFormat, r.KeypadMode, r.LedDriveMode, r.OsdpFlag, r.OsdpBaudrate, r.OsdpDiscover, r.OsdpTracing, r.OsdpAddress, r.OsdpSecureChannel, r.DeviceId, r.LocationId)).ToList();
             this.reader_out_config = data.ReaderOutConfiguration;
             this.strike = new Strike(data.Strk.ModuleId, data.Strk.DoorId, data.Strk.OutputNo, data.Strk.RelayMode, data.Strk.OfflineMode, data.Strk.StrkMax, data.Strk.StrkMin, data.Strk.StrkMode, data.Strk.LocationId);
             this.sensor = new Sensor(data.Sensor.ModuleId, data.Sensor.DoorId, data.Sensor.InputNo, data.Sensor.InputMode, data.Sensor.Debounce, data.Sensor.HoldTime, data.Sensor.DcHeld, data.Sensor.LocationId);

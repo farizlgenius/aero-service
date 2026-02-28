@@ -1,5 +1,6 @@
 using Aero.Domain.Helpers;
 using System;
+using System.Net.Http.Headers;
 using System.Reflection;
 
 namespace Aero.Domain.Entities;
@@ -8,7 +9,7 @@ public class ControlPoint : BaseDomain
 {
         public short DriverId {get; private set;}
        public string Name { get; private set; } = string.Empty;
-        public short ModuleId { get; private set; }
+        public int ModuleId { get; private set; }
         public string ModuleDetail { get; private set; } = string.Empty;
         public short OutputNo { get; private set; }
         public short RelayMode { get; private set; }
@@ -16,8 +17,9 @@ public class ControlPoint : BaseDomain
         public short OfflineMode { get; private set; }
         public string OfflineModeDetail { get; private set; } = string.Empty;
         public short DefaultPulse { get; private set; } = 1;
+        public int DeviceId { get; private set; }
 
-    public ControlPoint(short driverid,string name,short moduleid,string moduledetail,short outputno,short relaymode,string relaymodedetail,short offlinemode,string offlinemodedetail,short defaultpulse,int location,bool status) : base(location,status)
+    public ControlPoint(short driverid,string name,int moduleid,string moduledetail,short outputno,short relaymode,string relaymodedetail,short offlinemode,string offlinemodedetail,short defaultpulse,int deviceId,int location,bool status) : base(location,status)
     {
         SetDriverId(driverid);
         SetName(name);
@@ -25,7 +27,13 @@ public class ControlPoint : BaseDomain
         SetOutput(outputno);
         SetRelay(relaymode,relaymodedetail);
         SetOffline(offlinemode,offlinemodedetail);
+        SetDeviceId(deviceId);
         if (defaultpulse < 0) throw new ArgumentException("Default pulse invalid.");
+    }
+
+    private void SetId(int id)
+    {
+        if (id <= 0) throw new ArgumentException("Id invalid.");
     }
 
     private void SetDriverId(short driver)
@@ -41,7 +49,7 @@ public class ControlPoint : BaseDomain
         Name = name;
     }
 
-    private void SetModule(short moduleid,string moduledetail) 
+    private void SetModule(int moduleid,string moduledetail) 
     {
         if (moduleid < 0) throw new ArgumentException("Module Id invalid.");
         ArgumentException.ThrowIfNullOrWhiteSpace(moduledetail);
@@ -69,5 +77,11 @@ public class ControlPoint : BaseDomain
         ArgumentException.ThrowIfNullOrWhiteSpace(offlinemodedetail);
         OfflineMode = offlinemode;
         OfflineModeDetail = offlinemodedetail;
+    }
+
+    private void SetDeviceId(int device)
+    {
+        if (device < 0) throw new ArgumentException("Device id invalid.");
+        this.DeviceId = device;
     }
 }

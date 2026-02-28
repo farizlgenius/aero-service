@@ -13,7 +13,7 @@ public sealed class Trigger : BaseDomain
   public short TranType { get; set; }
   public List<TransactionCode> CodeMap { get; set; } = new List<TransactionCode>();
   public short TimeZone { get; set; }
-  public string Mac { get; set; } = string.Empty;
+  public int DeviceId { get; set; } 
   public Device Device { get; set; }
   public Procedure Procedure { get; set; } = new Procedure();
 }

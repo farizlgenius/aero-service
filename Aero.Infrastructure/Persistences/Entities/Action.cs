@@ -3,6 +3,7 @@
     public sealed class Action : BaseEntity
     {
         public int device_id { get; set; }
+        public Device device { get; set; }
         public short action_type { get; set; }
         public string action_type_detail { get; set; } = string.Empty;
         public short arg1 { get; set; } 
@@ -35,6 +36,24 @@
 
         }
 
+        public Action(Aero.Domain.Entities.Action data) : base(data.LocationId)
+        {
+            this.device_id = data.DeviceId;
+            this.action_type = data.ActionType;
+            this.action_type_detail = data.ActionTypeDetail;
+            this.arg1 = data.Arg1;
+            this.arg2 = data.Arg2;
+            this.arg3 = data.Arg3;
+            this.arg4 = data.Arg4;
+            this.arg5 = data.Arg5;
+            this.arg6 = data.Arg6;
+            this.arg7 = data.Arg7;
+            this.str_arg = data.StrArg;
+            this.delay_time = data.DelayTime;
+            this.procedure_id = data.ProcedureId;
+            this.updated_date = DateTime.UtcNow;
+        }
+
         public void Update(Aero.Domain.Entities.Action data)
         {
             this.device_id = data.DeviceId;
@@ -50,6 +69,7 @@
             this.str_arg = data.StrArg;
             this.delay_time = data.DelayTime;
             this.procedure_id = data.ProcedureId;
+            this.updated_date = DateTime.UtcNow;
         }
 
        

@@ -3,40 +3,16 @@
   "WorkspaceRootPath": "D:\\Aero\\AeroService\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\persistences\\entities\\monitorpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\persistences\\entities\\monitorpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{63FFA18D-3E41-7B71-6B81-933AAF55FA40}|Aero.Domain\\Aero.Domain.csproj|d:\\aero\\aeroservice\\aero.domain\\entities\\feature.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{63FFA18D-3E41-7B71-6B81-933AAF55FA40}|Aero.Domain\\Aero.Domain.csproj|solutionrelative:aero.domain\\entities\\feature.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{63FFA18D-3E41-7B71-6B81-933AAF55FA40}|Aero.Domain\\Aero.Domain.csproj|d:\\aero\\aeroservice\\aero.domain\\entities\\monitorpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{63FFA18D-3E41-7B71-6B81-933AAF55FA40}|Aero.Domain\\Aero.Domain.csproj|solutionrelative:aero.domain\\entities\\monitorpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|d:\\aero\\aeroservice\\aero.application\\services\\roleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|solutionrelative:aero.application\\services\\roleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\persistences\\entities\\monitorgrouptype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\persistences\\entities\\monitorgrouptype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\persistences\\entities\\monitorgrouplist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\persistences\\entities\\monitorgrouplist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\persistences\\entities\\monitorgroupcommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\persistences\\entities\\monitorgroupcommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\persistences\\entities\\monitorgroup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\persistences\\entities\\monitorgroup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\persistences\\entities\\modulebaudrate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\persistences\\entities\\modulebaudrate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|d:\\aero\\aeroservice\\aero.infrastructure\\persistences\\entities\\moduleprotocol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0405502-6ECE-3960-267A-8E71D1953795}|Aero.Infrastructure\\Aero.Infrastructure.csproj|solutionrelative:aero.infrastructure\\persistences\\entities\\moduleprotocol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63FFA18D-3E41-7B71-6B81-933AAF55FA40}|Aero.Domain\\Aero.Domain.csproj|d:\\aero\\aeroservice\\aero.domain\\entities\\monitorgroup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{63FFA18D-3E41-7B71-6B81-933AAF55FA40}|Aero.Domain\\Aero.Domain.csproj|solutionrelative:aero.domain\\entities\\monitorgroup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|d:\\aero\\aeroservice\\aero.application\\services\\timezoneservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{447A19D1-3AB3-ECC7-F2A5-E78F48EE7A3E}|Aero.Application\\Aero.Application.csproj|solutionrelative:aero.application\\services\\timezoneservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -46,123 +22,45 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "MonitorPoint.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Domain\\Entities\\MonitorPoint.cs",
-              "RelativeDocumentMoniker": "Aero.Domain\\Entities\\MonitorPoint.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Domain\\Entities\\MonitorPoint.cs",
-              "RelativeToolTip": "Aero.Domain\\Entities\\MonitorPoint.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAqwBYAAAAzAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-26T03:35:18.725Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "MonitorPoint.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\MonitorPoint.cs",
-              "RelativeDocumentMoniker": "Aero.Infrastructure\\Persistences\\Entities\\MonitorPoint.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\MonitorPoint.cs",
-              "RelativeToolTip": "Aero.Infrastructure\\Persistences\\Entities\\MonitorPoint.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACkAAAAgAAAAAAAAAA==",
+              "Title": "Feature.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Domain\\Entities\\Feature.cs",
+              "RelativeDocumentMoniker": "Aero.Domain\\Entities\\Feature.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Domain\\Entities\\Feature.cs",
+              "RelativeToolTip": "Aero.Domain\\Entities\\Feature.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-26T03:34:24.52Z",
+              "WhenOpened": "2026-02-27T17:13:25.17Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "MonitorGroupType.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\MonitorGroupType.cs",
-              "RelativeDocumentMoniker": "Aero.Infrastructure\\Persistences\\Entities\\MonitorGroupType.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\MonitorGroupType.cs",
-              "RelativeToolTip": "Aero.Infrastructure\\Persistences\\Entities\\MonitorGroupType.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "TimeZoneService.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Application\\Services\\TimeZoneService.cs",
+              "RelativeDocumentMoniker": "Aero.Application\\Services\\TimeZoneService.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Application\\Services\\TimeZoneService.cs",
+              "RelativeToolTip": "Aero.Application\\Services\\TimeZoneService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAABAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-26T03:34:22.704Z",
+              "WhenOpened": "2026-02-27T17:11:24.466Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "MonitorGroupList.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\MonitorGroupList.cs",
-              "RelativeDocumentMoniker": "Aero.Infrastructure\\Persistences\\Entities\\MonitorGroupList.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\MonitorGroupList.cs",
-              "RelativeToolTip": "Aero.Infrastructure\\Persistences\\Entities\\MonitorGroupList.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "RoleService.cs",
+              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Application\\Services\\RoleService.cs",
+              "RelativeDocumentMoniker": "Aero.Application\\Services\\RoleService.cs",
+              "ToolTip": "D:\\Aero\\AeroService\\Aero.Application\\Services\\RoleService.cs",
+              "RelativeToolTip": "Aero.Application\\Services\\RoleService.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABwAAABkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-26T03:34:21.549Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "MonitorGroupCommand.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\MonitorGroupCommand.cs",
-              "RelativeDocumentMoniker": "Aero.Infrastructure\\Persistences\\Entities\\MonitorGroupCommand.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\MonitorGroupCommand.cs",
-              "RelativeToolTip": "Aero.Infrastructure\\Persistences\\Entities\\MonitorGroupCommand.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-26T03:34:20.663Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "MonitorGroup.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\MonitorGroup.cs",
-              "RelativeDocumentMoniker": "Aero.Infrastructure\\Persistences\\Entities\\MonitorGroup.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\MonitorGroup.cs",
-              "RelativeToolTip": "Aero.Infrastructure\\Persistences\\Entities\\MonitorGroup.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-26T03:34:14.328Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "MonitorGroup.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Domain\\Entities\\MonitorGroup.cs",
-              "RelativeDocumentMoniker": "Aero.Domain\\Entities\\MonitorGroup.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Domain\\Entities\\MonitorGroup.cs",
-              "RelativeToolTip": "Aero.Domain\\Entities\\MonitorGroup.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAwAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-26T03:26:02.884Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "ModuleProtocol.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\ModuleProtocol.cs",
-              "RelativeDocumentMoniker": "Aero.Infrastructure\\Persistences\\Entities\\ModuleProtocol.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\ModuleProtocol.cs",
-              "RelativeToolTip": "Aero.Infrastructure\\Persistences\\Entities\\ModuleProtocol.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-26T03:25:21.453Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "ModuleBaudrate.cs",
-              "DocumentMoniker": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\ModuleBaudrate.cs",
-              "RelativeDocumentMoniker": "Aero.Infrastructure\\Persistences\\Entities\\ModuleBaudrate.cs",
-              "ToolTip": "D:\\Aero\\AeroService\\Aero.Infrastructure\\Persistences\\Entities\\ModuleBaudrate.cs",
-              "RelativeToolTip": "Aero.Infrastructure\\Persistences\\Entities\\ModuleBaudrate.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-26T03:25:18.447Z",
+              "WhenOpened": "2026-02-27T16:10:24.031Z",
               "EditorCaption": ""
             }
           ]

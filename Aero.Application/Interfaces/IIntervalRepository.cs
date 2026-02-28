@@ -8,9 +8,9 @@ namespace Aero.Application.Interface;
 
 public interface IIntervalRepository : IBaseRepository<IntervalDto,Interval>
 {
-    Task<bool> IsAnyOnEachDays(IntervalDto dto);
-    Task<bool> IsAnyReferenceByComponentAsync(short component);
-    Task<IEnumerable<short>> GetTimezoneIntervalIdByIntervalComponentIdAsync(short component);
-    Task<IEnumerable<IntervalDto>> GetIntervalFromTimezoneComponentIdAsync(short component);
+    Task<bool> IsAnyOnEachDays(CreateIntervalDto dto);
+    Task<bool> IsAnyReferenceByIdAsync(int id);
+    Task<IEnumerable<int>> GetTimezoneIntervalIdByIntervalIdAsync(int id);
+    Task<IEnumerable<IntervalDto>> GetIntervalFromTimezoneIdAsync(int id);
     Task<int> CountByLocationIdAndUpdateTimeAsync(short locationId, DateTime sync);
 }

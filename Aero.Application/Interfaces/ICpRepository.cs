@@ -6,13 +6,14 @@ using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Interface;
 
-public interface ICpRepository : IBaseRepository<ControlPointDto,ControlPoint,ControlPoint>
+public interface ICpRepository : IBaseRepository<ControlPointDto,ControlPoint>
 {
-    Task<IEnumerable<ControlPointDto>> GetByMacAsync(string mac);
+    Task<IEnumerable<ControlPointDto>> GetByDeviceId(int device);
     Task<short> GetModeNoByOfflineAndRelayModeAsync(short offlineMode, short relayMode);
     Task<int> CountByMacAndUpdateTimeAsync(string mac, DateTime sync);
-    Task<IEnumerable<Mode>> GetOfflineModeAsync();
-    Task<IEnumerable<Mode>> GetRelayModeAsync();
-    Task<IEnumerable<short>> GetAvailableOpAsync(string mac, short ModuleId);
-    Task<ControlPointDto> GetByMacAndComponentIdAsync(string mac, short component);
+    Task<IEnumerable<ModeDto>> GetOfflineModeAsync();
+    Task<IEnumerable<ModeDto>> GetRelayModeAsync();
+    Task<IEnumerable<short>> GetAvailableOpAsync(int deviceId, short ModuleId);
+    Task<ControlPointDto> GetByDeviceAndIdAsync(int deviceId, int id);
+    Task<short> GetLowestUnassignedNumberAsync(int max, int device_id);
 }

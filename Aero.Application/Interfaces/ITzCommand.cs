@@ -5,6 +5,6 @@ namespace Aero.Application.Interfaces;
 
 public interface ITzCommand
 {
-  bool ExtendedTimeZoneActSpecification(short ScpId, Timezone dto, List<Interval> intervals, int activeTime, int deactiveTime);
+  bool ExtendedTimeZoneActSpecification(short ScpId, Domain.Entities.TimeZone dto);
   bool TimeZoneControl(short ScpId,short Component,short Command);
 }

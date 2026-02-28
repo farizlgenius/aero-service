@@ -4,6 +4,7 @@ namespace Aero.Domain.Entities;
 
 public class MonitorPoint : BaseDomain
 {
+    public int DeviceId { get; set; }
   public short DriverId {get; set;}
       public string Name { get; set; } = string.Empty;
         public short ModuleId { get; set; }
@@ -20,5 +21,5 @@ public class MonitorPoint : BaseDomain
         public short DelayEntry { get; set; } = -1;
         public short DelayExit { get; set; } = -1;
         public bool IsMask { get; set; }
-    public string Mac { get; set; } = string.Empty;
+
 }

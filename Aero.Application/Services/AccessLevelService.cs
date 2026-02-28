@@ -4,7 +4,6 @@ using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
-using Aero.Application.Mapper;
 using Aero.Domain.Entities;
 using Aero.Domain.Helpers;
 using Aero.Domain.Interface;
@@ -140,7 +139,7 @@ namespace Aero.Application.Services
 
         public async Task<string> GetAcrName(string mac, int component)
         {
-            return await repo.GetAcrNameByIdAndMacAsync(component,mac) ?? "";
+            return await repo.GetAcrNameByIdAndDeviceIdAsync(component,mac) ?? "";
         }
 
         public async Task<string> GetTzName(int component)

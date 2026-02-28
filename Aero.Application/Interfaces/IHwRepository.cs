@@ -6,7 +6,7 @@ using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Interface;
 
-public interface IHwRepository : IBaseRepository<HardwareDto, Device, CreateHardwareDto>
+public interface IHwRepository : IBaseRepository<HardwareDto, Device>
 {
   Task<Device> GetDomainByMacAsync(string mac);
   Task<int> DeleteByMacAsync(string mac);
@@ -17,7 +17,7 @@ public interface IHwRepository : IBaseRepository<HardwareDto, Device, CreateHard
   Task UpdateIpAddressAsync(int ScpId, string ip);
   Task UpdatePortAddressAsync(int ScpId, string port);
   Task<short> GetLocationIdFromMacAsync(string mac);
-  Task<IEnumerable<short>> GetComponentIdsByLocationIdAsync(short locationid);
+  Task<IEnumerable<short>> GetDriverIdsByLocationIdAsync(short locationid);
   Task<IEnumerable<string>> GetMacsByLocationIdAsync(short locationid);
   Task<HardwareDto> GetByMacAsync(string mac);
   Task<bool> IsAnyByMac(string mac);
@@ -28,7 +28,7 @@ public interface IHwRepository : IBaseRepository<HardwareDto, Device, CreateHard
   Task<ScpSetting> GetScpSettingAsync();
   Task<IEnumerable<(short ComponentId, string Mac)>> GetComponentAndMacAsync();
   Task<IEnumerable<Mode>> GetHardwareTypeAsync();
-  Task<IEnumerable<short>> GetComponentIdByLocationIdAsync(short location);
+  Task<IEnumerable<short>> GetDriverIdByLocationIdAsync(int location);
   Task<IEnumerable<string>> GetMacsAsync();
   Task<IEnumerable<short>> GetComponentIdsAsync();
   Task<List<MemoryDto>> CheckAllocateMemoryAsync(IScpReply message);

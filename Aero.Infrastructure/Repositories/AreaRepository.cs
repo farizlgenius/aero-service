@@ -1,6 +1,5 @@
 using Aero.Application.DTOs;
 using Aero.Application.Interface;
-using Aero.Application.Mapper;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Infrastructure.Persistences;
@@ -58,29 +57,19 @@ public class AreaRepository(AppDbContext context) : IAreaRepository
         return res;
     }
 
-    public async Task<IEnumerable<Mode>> GetAccessControlOptionAsync()
+    public async Task<IEnumerable<ModeDto>> GetAccessControlOptionAsync()
     {
         var dto = await context.area_access_control
-            .Select(x => new Mode
-            {
-                Name = x.name,
-                Value = x.value,
-                Description = x.description
-            })
+            .Select(m => new ModeDto(m.name,m.value,m.description))
             .ToArrayAsync();
 
         return dto;
     }
 
-    public async Task<IEnumerable<Mode>> GetAreaFlagOptionAsync()
+    public async Task<IEnumerable<ModeDto>> GetAreaFlagOptionAsync()
     {
         var dto = await context.area_flag
-          .Select(x => new Mode
-          {
-              Name = x.name,
-              Value = x.value,
-              Description = x.description
-          })
+          .Select(m => new ModeDto(m.name, m.value, m.description))
           .ToArrayAsync();
 
         return dto;
@@ -90,7 +79,7 @@ public class AreaRepository(AppDbContext context) : IAreaRepository
     {
         var res = await context.area
         .AsNoTracking()
-        .Select(a => new AccessAreaDto(a.id,a.name,a.multi_occ,a.access_control,a.occ_control,a.occ_set,a.occ_max,a.occ_up,a.occ_down,a.area_flag,a.location_id,a.is_active))
+        .Select(a => new AccessAreaDto(a.id,a.driver_id, a.name,a.multi_occ,a.access_control,a.occ_control,a.occ_set,a.occ_max,a.occ_up,a.occ_down,a.area_flag,a.location_id,a.is_active))
         .ToArrayAsync();
 
         return res;
@@ -102,7 +91,7 @@ public class AreaRepository(AppDbContext context) : IAreaRepository
         .AsNoTracking()
         .Where(x => x.id == id)
         .OrderBy(x => x.id)
-        .Select(a => new AccessAreaDto(a.id, a.name, a.multi_occ, a.access_control, a.occ_control, a.occ_set, a.occ_max, a.occ_up, a.occ_down, a.area_flag,a.location_id,a.is_active))
+        .Select(a => new AccessAreaDto(a.id,a.driver_id, a.name, a.multi_occ, a.access_control, a.occ_control, a.occ_set, a.occ_max, a.occ_up, a.occ_down, a.area_flag,a.location_id,a.is_active))
         .FirstOrDefaultAsync();
 
         return res;
@@ -114,27 +103,22 @@ public class AreaRepository(AppDbContext context) : IAreaRepository
         .AsNoTracking()
         .Where(x => x.location_id == locationId || x.location_id == 1)
         .OrderBy(x => x.id)
-        .Select(a => new AccessAreaDto(a.id, a.name, a.multi_occ, a.access_control, a.occ_control, a.occ_set, a.occ_max, a.occ_up, a.occ_down, a.area_flag, a.location_id, a.is_active))
+        .Select(a => new AccessAreaDto(a.id,a.driver_id, a.name, a.multi_occ, a.access_control, a.occ_control, a.occ_set, a.occ_max, a.occ_up, a.occ_down, a.area_flag, a.location_id, a.is_active))
         .ToArrayAsync();
 
         return res;
     }
 
-    public async Task<IEnumerable<Mode>> GetCommandAsync()
+    public async Task<IEnumerable<ModeDto>> GetCommandAsync()
     {
         var dto = await context.access_area_command
-            .Select(x => new Mode
-            {
-                Name = x.name,
-                Value = x.value,
-                Description = x.description
-            })
+           .Select(m => new ModeDto(m.name, m.value, m.description))
             .ToArrayAsync();
 
         return dto;
     }
 
-    public async Task<short> GetLowestUnassignedNumberAsync(int max, string mac)
+    public async Task<short> GetLowestUnassignedNumberAsync(int max)
     {
         if (max <= 0) return -1;
 
@@ -163,29 +147,19 @@ public class AreaRepository(AppDbContext context) : IAreaRepository
         return expected;
     }
 
-    public async Task<IEnumerable<Mode>> GetMultiOccupancyOptionAsync()
+    public async Task<IEnumerable<ModeDto>> GetMultiOccupancyOptionAsync()
     {
         var dto = await context.multi_occupancy
-           .Select(x => new Mode
-           {
-               Name = x.name,
-               Value = x.value,
-               Description = x.description
-           })
+           .Select(m => new ModeDto(m.name, m.value, m.description))
            .ToArrayAsync();
 
         return dto;
     }
 
-    public async Task<IEnumerable<Mode>> GetOccupancyControlOptionAsync()
+    public async Task<IEnumerable<ModeDto>> GetOccupancyControlOptionAsync()
     {
         var dto = await context.occupancy_control
-           .Select(x => new Mode
-           {
-               Name = x.name,
-               Value = x.value,
-               Description = x.description
-           })
+           .Select(m => new ModeDto(m.name, m.value, m.description))
            .ToArrayAsync();
 
         return dto;
@@ -244,7 +218,7 @@ public class AreaRepository(AppDbContext context) : IAreaRepository
             .OrderByDescending(t => t.created_date)
             .Skip((param.PageNumber - 1) * param.PageSize)
             .Take(param.PageSize)
-            .Select(a => new AccessAreaDto(a.id, a.name, a.multi_occ, a.access_control, a.occ_control, a.occ_set, a.occ_max, a.occ_up, a.occ_down, a.area_flag, a.location_id, a.is_active))
+            .Select(a => new AccessAreaDto(a.id,a.driver_id,a.name, a.multi_occ, a.access_control, a.occ_control, a.occ_set, a.occ_max, a.occ_up, a.occ_down, a.area_flag, a.location_id, a.is_active))
             .ToListAsync();
 
 

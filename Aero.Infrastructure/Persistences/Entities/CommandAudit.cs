@@ -7,7 +7,7 @@ namespace Aero.Infrastructure.Persistences.Entities
     public sealed class CommandAudit : BaseEntity
     {
         public int tag_no { get; set; }
-        public int scp_id { get; set; }
+        public int device_id { get; set; }
         public string? mac { get; set; } = string.Empty;
         public string? command { get; set; } = string.Empty;
         public bool is_success { get; set; }
@@ -18,7 +18,7 @@ namespace Aero.Infrastructure.Persistences.Entities
         public CommandAudit(int tagno,int scp_id,string mac,string command,bool is_success,bool is_pending,string nak_reason,int nake_desc_code, int location) : base(location)
         {
             this.tag_no = tagno;
-            this.scp_id = scp_id;
+            this.device_id = scp_id;
             this.mac = mac;
             this.command = command;
             this.is_success = is_success;

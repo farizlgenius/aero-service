@@ -118,7 +118,7 @@ namespace Aero.Application.Services
 
             foreach (var reader in domain.Readers)
             {
-                if (string.IsNullOrEmpty(reader.Mac)) continue;
+                if (string.IsNullOrEmpty(reader.DeviceId)) continue;
                 short readerInOsdpFlag = 0x00;
                 short readerLedDriveMode = 0;
                 if (reader.OsdpFlag)
@@ -138,12 +138,12 @@ namespace Aero.Application.Services
 
                 // Reader In Config
 
-                var ReaderInId = await qHw.GetComponentIdFromMacAsync(reader.Mac);
+                var ReaderInId = await qHw.GetComponentIdFromMacAsync(reader.DeviceId);
                 var ReaderComponentId = await qDoor.GetLowestUnassignedReaderNumberNoLimitAsync();
                 reader.ComponentId = ReaderComponentId;
                 if (!door.ReaderSpecification(ReaderInId, reader.ModuleId, reader.ReaderNo, reader.DataFormat, reader.KeypadMode, readerLedDriveMode, readerInOsdpFlag))
                 {
-                    return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.READER_SPEC));
+                    return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.DeviceId, Command.READER_SPEC));
                 }
             }
 
@@ -155,7 +155,7 @@ namespace Aero.Application.Services
             var StrikeId = await qHw.GetComponentIdFromMacAsync(domain.Strk.Mac);
             if (!cp.OutputPointSpecification(StrikeId, domain.Strk.ModuleId, domain.Strk.OutputNo, domain.Strk.RelayMode))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.OUTPUT_SPEC));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.DeviceId, Command.OUTPUT_SPEC));
             }
 
             // door sensor Config
@@ -164,7 +164,7 @@ namespace Aero.Application.Services
             domain.Sensor.ComponentId = SensorComponentId;
             if (!mp.InputPointSpecification(SensorId, domain.Sensor.ModuleId, domain.Sensor.InputNo, domain.Sensor.InputMode, domain.Sensor.Debounce, domain.Sensor.HoldTime))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.INPUT_SPEC));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.DeviceId, Command.INPUT_SPEC));
             }
 
             foreach (var rex in domain.RequestExits)
@@ -175,13 +175,13 @@ namespace Aero.Application.Services
                 rex.ComponentId = rexComponentId;
                 if (!mp.InputPointSpecification(Rex0Id, rex.ModuleId, rex.InputNo, rex.InputMode, rex.Debounce, rex.HoldTime))
                 {
-                    return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.INPUT_SPEC));
+                    return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.DeviceId, Command.INPUT_SPEC));
                 }
             }
 
             if (!door.AccessControlReaderConfiguration(ScpId, AcrId, domain))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.ACR_CONFIG));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.DeviceId, Command.ACR_CONFIG));
             }
 
             var status = await rDoor.AddAsync(domain);
@@ -200,11 +200,11 @@ namespace Aero.Application.Services
             var dto = await qDoor.GetByComponentIdAsync(component);
             var domain = DoorMapper.ToDeleteDomain(dto);
 
-            var ScpId = await qHw.GetComponentIdFromMacAsync(domain.Mac);
+            var ScpId = await qHw.GetComponentIdFromMacAsync(domain.DeviceId);
 
             if (!door.AccessControlReaderConfiguration(ScpId, domain.ComponentId, domain))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.ACR_CONFIG));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.DeviceId, Command.ACR_CONFIG));
             }
 
             // 
@@ -222,7 +222,7 @@ namespace Aero.Application.Services
 
             foreach (var reader in domain.Readers)
             {
-                if (string.IsNullOrEmpty(reader.Mac)) continue;
+                if (string.IsNullOrEmpty(reader.DeviceId)) continue;
                 short readerInOsdpFlag = 0x00;
                 short readerLedDriveMode = 0;
                 if (reader.OsdpFlag)
@@ -243,7 +243,7 @@ namespace Aero.Application.Services
                 // Reader In Config
                 if (!door.ReaderSpecification(reader.ComponentId, reader.ModuleId, reader.ReaderNo, reader.DataFormat, reader.KeypadMode, readerLedDriveMode, readerInOsdpFlag))
                 {
-                    return ResponseHelper.UnsuccessBuilderWithString<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.READER_SPEC));
+                    return ResponseHelper.UnsuccessBuilderWithString<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.DeviceId, Command.READER_SPEC));
                 }
             }
 
@@ -251,14 +251,14 @@ namespace Aero.Application.Services
             var StrikeId = await qHw.GetComponentIdFromMacAsync(domain.Strk.Mac);
             if (!cp.OutputPointSpecification(StrikeId, domain.Strk.ModuleId, domain.Strk.OutputNo, domain.Strk.RelayMode))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.OUTPUT_SPEC));
+                return ResponseHelper.UnsuccessBuilderWithString<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.DeviceId, Command.OUTPUT_SPEC));
             }
 
             // door sensor Config
             var SensorId = await qHw.GetComponentIdFromMacAsync(domain.Sensor.Mac);
             if (!mp.InputPointSpecification(SensorId, domain.Sensor.ModuleId,domain.Sensor.InputNo, domain.Sensor.InputMode, domain.Sensor.Debounce, domain.Sensor.HoldTime))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.INPUT_SPEC));
+                return ResponseHelper.UnsuccessBuilderWithString<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.DeviceId, Command.INPUT_SPEC));
             }
 
             foreach (var rex in domain.RequestExits)
@@ -266,13 +266,13 @@ namespace Aero.Application.Services
                 if (string.IsNullOrEmpty(rex.Mac)) continue;
                 if (!mp.InputPointSpecification(rex.ComponentId, rex.ModuleId, rex.InputNo, rex.InputMode, rex.Debounce, rex.HoldTime))
                 {
-                    return ResponseHelper.UnsuccessBuilderWithString<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.INPUT_SPEC));
+                    return ResponseHelper.UnsuccessBuilderWithString<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.DeviceId, Command.INPUT_SPEC));
                 }
             }
 
-            if (!door.AccessControlReaderConfiguration(await qHw.GetComponentIdFromMacAsync(domain.Mac), dto.AcrId, domain))
+            if (!door.AccessControlReaderConfiguration(await qHw.GetComponentIdFromMacAsync(domain.DeviceId), dto.AcrId, domain))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.ACR_MODE));
+                return ResponseHelper.UnsuccessBuilderWithString<DoorDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.DeviceId, Command.ACR_MODE));
             }
 
             var status = await rDoor.UpdateAsync(domain);

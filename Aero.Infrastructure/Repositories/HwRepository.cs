@@ -643,11 +643,11 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
         return res;
     }
 
-    public async Task<IEnumerable<short>> GetComponentIdByLocationIdAsync(short locationId)
+    public async Task<IEnumerable<short>> GetDriverIdByLocationIdAsync(int locationId)
     {
         return await context.device.AsNoTracking()
         .Where(x => x.location_id == locationId)
-        .Select(x => x.component_id)
+        .Select(x => x.driver_id)
         .ToArrayAsync();
     }
 
@@ -1095,7 +1095,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
         return res;
     }
 
-    public async Task<IEnumerable<short>> GetComponentIdsByLocationIdAsync(short locationid)
+    public async Task<IEnumerable<short>> GetDriverIdsByLocationIdAsync(short locationid)
     {
         return await context.device.AsNoTracking()
             .Where(x => x.location_id == locationid)

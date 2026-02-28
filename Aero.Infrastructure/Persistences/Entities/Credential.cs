@@ -33,6 +33,20 @@ namespace Aero.Infrastructure.Persistences.Entities
             
         }
 
+        public Credential(Aero.Domain.Entities.Credential data) : base(data.LocationId)
+        {
+            this.bits = data.Bits;
+            this.issue_code = data.IssueCode;
+            this.fac_code = data.FacilityCode;
+            this.card_no = data.CardNo;
+            this.active_date = data.ActiveDate;
+            this.deactive_date = data.DeactiveDate;
+            this.user_id = data.user.UserId;
+            this.pin = pin;
+            this.updated_date = DateTime.UtcNow;
+
+        }
+
         public void Update(Aero.Domain.Entities.Credential data)
         {
             this.bits = data.Bits;
@@ -43,6 +57,7 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.deactive_date = data.DeactiveDate;
             this.user_id = data.user.UserId;
             this.pin = pin;
+            this.updated_date = DateTime.UtcNow;
 
         }
     }

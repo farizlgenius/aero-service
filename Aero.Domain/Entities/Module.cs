@@ -4,6 +4,7 @@ namespace Aero.Domain.Entities;
 
 public sealed class Module : BaseDomain
 {
+    public int DeviceId { get; set; }
     public short DriverId { get; set; }
       public short Model { get; set; }
       public string ModelDetail { get; set; } = string.Empty;

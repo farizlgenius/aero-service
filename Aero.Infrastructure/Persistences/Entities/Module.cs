@@ -3,7 +3,7 @@ using Aero.Domain.Interfaces;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class Module : BaseEntity,IMac,IDriverId
+    public sealed class Module : BaseEntity,IDeviceId,IDriverId
     {
         public short driver_id { get; set; }
         public short model { get; set; }
@@ -19,7 +19,7 @@ namespace Aero.Infrastructure.Persistences.Entities
         public string n_enc_config_detail { get; set; } = string.Empty;
         public short n_enc_key_status { get; set; }
         public string n_enc_key_status_detail { get; set; } = string.Empty;
-        public string mac { get; set; } = string.Empty;
+        public int device_id { get; set; } 
         public Device device { get; set; }
         // HardwareComponent 
         public ICollection<Reader>? readers { get; set; }
@@ -42,6 +42,7 @@ namespace Aero.Infrastructure.Persistences.Entities
         public Module(Aero.Domain.Entities.Module data) : base(data.LocationId)
         {
             this.driver_id = data.DriverId;
+            this.device_id = data.DeviceId;
             this.model = data.Model;
             this.model_detail = data.ModelDetail;
             this.revision = data.Revision;
@@ -55,7 +56,7 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.n_enc_config_detail = data.nEncConfigDetail;
             this.n_enc_key_status = data.nEncKeyStatus;
             this.n_enc_key_status_detail = data.nEncKeyStatusDetail;
-            this.mac = this.mac;
+            this.device_id = this.device_id;
             this.address = data.Address;
             this.address_detail = data.AddressDetail;
             this.port = data.Port;
@@ -70,6 +71,7 @@ namespace Aero.Infrastructure.Persistences.Entities
 
         public void Update(Aero.Domain.Entities.Module data) 
         {
+            this.device_id = data.DeviceId;
             this.model = data.Model;
             this.model_detail = data.ModelDetail;
             this.revision = data.Revision;

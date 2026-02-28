@@ -89,6 +89,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<DeviceCredential> device_credential { get; set; }
     public DbSet<TransactionFlag> transaction_flag { get; set; }
     public DbSet<TransactionSourceType> transaction_source_type { get; set; }
+    public DbSet<UserDevice> user_device { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -289,46 +290,105 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
         modelBuilder.Entity<Device>()
             .HasMany(p => p.modules)
             .WithOne(p => p.device)
-            .HasForeignKey(p => p.mac)
-            .HasPrincipalKey(p => p.mac)
+           .HasForeignKey(p => p.device_id)
+            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Device>()
             .HasMany(p => p.monitor_groups)
             .WithOne(p => p.device)
-            .HasForeignKey(p => p.mac)
-            .HasPrincipalKey(p => p.mac)
+            .HasForeignKey(p => p.device_id)
+            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Device>()
             .HasMany(p => p.monitor_groups)
             .WithOne(p => p.device)
-            .HasForeignKey(p => p.mac)
-            .HasPrincipalKey(p => p.mac)
+            .HasForeignKey(p => p.device_id)
+            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Device>()
             .HasMany(p => p.doors)
             .WithOne(t => t.device)
-            .HasForeignKey(p => p.mac)
-            .HasPrincipalKey(t => t.mac)
+            .HasForeignKey(p => p.device_id)
+            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Device>()
             .HasMany(p => p.access_level_component)
             .WithOne(p => p.device)
-            .HasForeignKey(p => p.mac)
-            .HasPrincipalKey(p => p.mac)
+            .HasForeignKey(p => p.device_id)
+            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
+        modelBuilder.Entity<Device>()
+            .HasMany(p => p.actions)
+            .WithOne(p => p.device)
+            .HasForeignKey(p => p.device_id)
+            .HasPrincipalKey(p => p.driver_id)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Device>()
+            .HasMany(p => p.monitor_points)
+            .WithOne(p => p.device)
+            .HasForeignKey(p => p.device_id)
+            .HasPrincipalKey(p => p.driver_id)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Device>()
+           .HasMany(p => p.control_points)
+           .WithOne(p => p.device)
+           .HasForeignKey(p => p.device_id)
+           .HasPrincipalKey(p => p.driver_id)
+           .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Device>()
+          .HasMany(p => p.readers)
+          .WithOne(p => p.device)
+          .HasForeignKey(p => p.device_id)
+          .HasPrincipalKey(p => p.driver_id)
+          .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Device>()
+          .HasMany(p => p.sensors)
+          .WithOne(p => p.device)
+          .HasForeignKey(p => p.device_id)
+          .HasPrincipalKey(p => p.driver_id)
+          .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Device>()
+          .HasMany(p => p.strikes)
+          .WithOne(p => p.device)
+          .HasForeignKey(p => p.device_id)
+          .HasPrincipalKey(p => p.driver_id)
+          .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Device>()
+          .HasMany(p => p.request_exits)
+          .WithOne(p => p.device)
+          .HasForeignKey(p => p.device_id)
+          .HasPrincipalKey(p => p.driver_id)
+          .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder.Entity<DeviceCredential>()
-            .HasKey(p => new { p.hardware_mac, p.hardware_credential_id });
+            .HasKey(p => new { p.device_id, p.credential_id });
 
         modelBuilder.Entity<DeviceCredential>()
             .HasOne(e => e.hardware)
             .WithMany(e => e.device_credentials)
-            .HasForeignKey(e => e.hardware_credential_id)
+            .HasForeignKey(e => e.credential_id)
             .HasPrincipalKey(e => e.driver_id)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<UserDevice>()
+            .HasKey(p => new { p.device_id, p.user_id });
+
+        modelBuilder.Entity<UserDevice>()
+            .HasOne(x => x.device)
+            .WithMany(a => a.user_device)
+            .HasForeignKey(a => a.device_id)
+            .HasPrincipalKey(a => a.driver_id)
             .OnDelete(DeleteBehavior.Restrict);
 
 
@@ -416,24 +476,28 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .HasMany(p => p.sensors)
             .WithOne(p => p.module)
             .HasForeignKey(p => p.module_id)
+            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Module>()
             .HasMany(p => p.strikes)
             .WithOne(p => p.module)
             .HasForeignKey(p => p.module_id)
+            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Module>()
             .HasMany(p => p.readers)
             .WithOne(p => p.module)
             .HasForeignKey(p => p.module_id)
+            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Module>()
             .HasMany(p => p.request_exits)
             .WithOne(p => p.module)
             .HasForeignKey(p => p.module_id)
+            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
 
@@ -441,6 +505,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .HasMany(p => p.control_points)
             .WithOne(p => p.module)
             .HasForeignKey(p => p.module_id)
+            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
 
@@ -448,6 +513,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .HasMany(p => p.monitor_points)
             .WithOne(p => p.module)
             .HasForeignKey(p => p.module_id)
+            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<ModuleBaudrate>()

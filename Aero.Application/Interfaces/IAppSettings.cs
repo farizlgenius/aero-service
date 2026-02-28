@@ -1,4 +1,5 @@
 using System;
+using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Interfaces;
 

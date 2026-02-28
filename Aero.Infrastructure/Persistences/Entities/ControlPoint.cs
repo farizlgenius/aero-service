@@ -2,7 +2,7 @@
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class ControlPoint : BaseEntity, IMac,IDriverId
+    public sealed class ControlPoint : BaseEntity, IDeviceId,IDriverId
     {
         public short driver_id {get; set;}
         public string name { get; set; } = string.Empty;
@@ -15,9 +15,10 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short offlinemode { get; set; }
         public string offlinemode_detail { get; set; } = string.Empty;
         public short default_pulse { get; set; } = 1;
-        public string mac { get; set; } = string.Empty;
+        public int device_id { get; set; }
+        public Device device { get; set; }
 
-        public ControlPoint(short driver,string name,int module_id,string module_detail,short output_no,short relaymode,string relaymode_detail,short offlinemode,string offlinemode_detail,short defaultpulse,string mac,int location_id) : base(location_id) 
+        public ControlPoint(short driver,string name,int module_id,string module_detail,short output_no,short relaymode,string relaymode_detail,short offlinemode,string offlinemode_detail,short defaultpulse,int device,int location_id) : base(location_id) 
         {
             this.driver_id = driver;
             this.name = name;
@@ -29,7 +30,22 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.offlinemode = offlinemode;
             this.offlinemode_detail = offlinemode_detail;
             this.default_pulse = defaultpulse;
-            this.mac = mac;
+            this.device_id = device;
+        }
+
+        public ControlPoint(Aero.Domain.Entities.ControlPoint data) : base(data.LocationId)
+        {
+            this.driver_id = data.DriverId;
+            this.name = data.Name;
+            this.module_id = data.ModuleId;
+            this.module_detail = data.ModuleDetail;
+            this.output_no = data.OutputNo;
+            this.relaymode = data.RelayMode;
+            this.relaymode_detail = data.RelayModeDetail;
+            this.offlinemode = data.OfflineMode;
+            this.offlinemode_detail = data.OfflineModeDetail;
+            this.default_pulse = data.DefaultPulse;
+            this.device_id = data.DeviceId;
         }
 
         public void Update(Aero.Domain.Entities.ControlPoint data) 
@@ -43,6 +59,7 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.offlinemode = data.OfflineMode;
             this.offlinemode_detail = data.OfflineModeDetail;
             this.default_pulse = data.DefaultPulse;
+            this.updated_date = DateTime.Now;
         }
 
         

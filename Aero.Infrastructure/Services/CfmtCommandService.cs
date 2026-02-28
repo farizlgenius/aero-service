@@ -1,5 +1,6 @@
 using System;
 using Aero.Application.DTOs;
+using Aero.Application.Interface;
 using Aero.Application.Interfaces;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
@@ -8,7 +9,7 @@ using HID.Aero.ScpdNet.Wrapper;
 
 namespace Aero.Infrastructure.Services;
 
-public sealed class CfmtCommandService(ICmndRepository cmnd,IQHwRepository qHw) : BaseAeroCommand,ICfmtCommand
+public sealed class CfmtCommandService(ICmndRepository cmnd,IHwRepository qHw) : BaseAeroCommand,ICfmtCommand
 {
       public async Task<bool> CardFormatterConfiguration(short ScpId, short FormatNo, short facility, short offset, short function_id, short flags, short bits, short pe_ln, short pe_loc, short po_ln, short po_loc, short fc_ln, short fc_loc, short ch_ln, short ch_loc, short ic_ln, short ic_loc)
       {
@@ -72,7 +73,7 @@ public sealed class CfmtCommandService(ICmndRepository cmnd,IQHwRepository qHw) 
             CC_SCP_CFMT cc = new CC_SCP_CFMT();
             cc.lastModified = 0;
             cc.nScpID = ScpId;
-            cc.number = dto.ComponentId;
+            cc.number = dto.DriverId;
             cc.facility = dto.Facility;
             cc.offset = 0;
             cc.function_id = funtionId;

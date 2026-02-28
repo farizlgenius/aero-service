@@ -4,7 +4,6 @@ using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
-using Aero.Application.Mapper;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
@@ -90,9 +89,10 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<CardFormatDto>> UpdateAsync(CardFormatDto dto)
         {
             List<string> errors = new List<string>();
-            if (!await repo.IsAnyById(dto.Id)) return ResponseHelper.NotFoundBuilder<CardFormatDto>();
+            var en = await repo.GetByIdAsync(dto.Id);
+            if (en is null) return ResponseHelper.NotFoundBuilder<CardFormatDto>();
             var macs = await hw.GetMacsAsync();
-            var domain = CardFormatMapper.ToDomain(dto);
+            var domain = new CardFormat(dto.DriverId,dto.Name,dto.Fac,dto.Offset,dto.FuncId,dto.Flag,dto.Bits,dto.PeLn,dto.PeLoc,dto.PoLn,dto.PoLoc,dto.FcLn,dto.FcLoc,dto.ChLn,dto.ChLoc,dto.IcLn,dto.IcLoc);
             foreach (var mac in macs)
             {
                 var id = await hw.GetComponentIdFromMacAsync(mac);

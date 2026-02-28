@@ -15,10 +15,10 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace Aero.Application.Services
 {
     public class HardwareService(
-        IQHwRepository qHw,
+        IHwRepository qHw,
         IHwRepository rHw,
-        IQModuleRepository qModule,
-        IQTzRepository qTz,
+        IModuleRepository qModule,
+        ITzRepository qTz,
         IQAlvlRepository qAlvl,
         IQCfmtRepository qCfmt,
         IQCpRepository qCp,

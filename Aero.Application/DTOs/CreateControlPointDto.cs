@@ -1,10 +1,12 @@
-﻿using Aero.Domain.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Aero.Application.DTOs
 {
-
-    public sealed record ControlPointDto(
-        int Id,
+    public sealed record CreateControlPointDto(
         short DriverId,
         string Name,
         int ModuleId,
@@ -18,5 +20,5 @@ namespace Aero.Application.DTOs
         int DeviceId,
         int LocationId,
         bool IsActive
-        ) : BaseDto(LocationId,IsActive);
+        ) : BaseDto(LocationId, IsActive);
 }

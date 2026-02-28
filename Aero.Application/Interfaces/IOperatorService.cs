@@ -7,14 +7,14 @@ namespace Aero.Application.Interface
     public interface IOperatorService
     {
         Task<ResponseDto<IEnumerable<OperatorDto>>> GetAsync();
-        Task<ResponseDto<IEnumerable<OperatorDto>>> GetByLocationAsync(short location);
-        Task<ResponseDto<bool>> CreateAsync(CreateOperatorDto dto);
-        Task<ResponseDto<bool>> DeleteByIdAsync(short component);
+        Task<ResponseDto<IEnumerable<OperatorDto>>> GetByLocationAsync(int id);
+        Task<ResponseDto<OperatorDto>> CreateAsync(CreateOperatorDto dto);
+        Task<ResponseDto<OperatorDto>> DeleteByIdAsync(int id);
         Task<ResponseDto<OperatorDto>> UpdateAsync(CreateOperatorDto dto);
         Task<ResponseDto<OperatorDto>> GetByUsernameAsync(string username);
         Task<ResponseDto<bool>> UpdatePasswordAsync(PasswordDto dto);
-        Task<ResponseDto<IEnumerable<ResponseDto<bool>>>> DeleteRangeAsync(List<short> dtos);
-        Task<ResponseDto<Pagination<OperatorDto>>> GetPaginationAsync(PaginationParamsWithFilter param,short location);
+        Task<ResponseDto<IEnumerable<OperatorDto>>> DeleteRangeAsync(List<int> dtos);
+        Task<ResponseDto<Pagination<OperatorDto>>> GetPaginationAsync(PaginationParamsWithFilter param,int location);
 
 
     }

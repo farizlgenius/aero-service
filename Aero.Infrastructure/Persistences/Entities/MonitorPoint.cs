@@ -2,8 +2,10 @@
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class MonitorPoint : BaseEntity,IDriverId,IMac
+    public sealed class MonitorPoint : BaseEntity,IDriverId,IDeviceId
     {
+        public int device_id { get; set; }
+        public Device device { get; set; }
         public short driver_id {get; set;}
         public string name { get; set; } = string.Empty;
         public int module_id { get; set; }
@@ -20,10 +22,10 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short delay_entry { get; set; } = -1;
         public short delay_exit { get; set; } = -1;
         public bool is_mask { get; set; }
-        public string mac { get; set; } = string.Empty;
 
         public MonitorPoint(Aero.Domain.Entities.MonitorPoint data) : base(data.LocationId)
         {
+            this.device_id = data.DeviceId;
             this.driver_id = data.DriverId;
             this.name = data.Name;
             this.module_id = data.ModuleId;
@@ -39,11 +41,12 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.delay_entry = data.DelayEntry;
             this.delay_exit = data.DelayExit;
             this.is_mask = data.IsMask;
-            this.mac = data.Mac;
+
         }
 
         public void Update(Aero.Domain.Entities.MonitorPoint data) 
         {
+            this.device_id = data.DeviceId;
             this.driver_id = data.DriverId;
             this.name = data.Name;
             this.module_id = data.ModuleId;
@@ -59,7 +62,8 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.delay_entry = data.DelayEntry;
             this.delay_exit = data.DelayExit;
             this.is_mask = data.IsMask;
-            this.mac = data.Mac;
+            this.updated_date = DateTime.UtcNow;
+
         }
     }
 }
