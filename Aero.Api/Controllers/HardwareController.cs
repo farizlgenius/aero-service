@@ -48,7 +48,7 @@ namespace Aero.Api.Controllers
 
         [HttpGet("status/{mac}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<HardwareStatus>>> GetStatusAsync(string mac)
+        public async Task<ActionResult<ResponseDto<HardwareStatusDto>>> GetStatusAsync(string mac)
         {
             var res = await service.GetStatusAsync(mac);
             return Ok(res);
@@ -64,7 +64,7 @@ namespace Aero.Api.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<HardwareDto>>> CreateAsync([FromBody] CreateHardwareDto dto)
+        public async Task<ActionResult<ResponseDto<HardwareDto>>> CreateAsync([FromBody] CreateDeviceDto dto)
         {
             var res = await service.CreateAsync(dto);
             return Ok(res);

@@ -1,7 +1,6 @@
 using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interfaces;
-using Aero.DomaApplicationin.Interfaces;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Infrastructure.Persistences;
@@ -17,18 +16,20 @@ namespace Aero.Infrastructure.Repositories;
 
 public sealed class HwRepository(AppDbContext context) : IHwRepository
 {
-    public async Task<int> AddAsync(Device entity)
+    public async Task<int> AddAsync(Device data)
     {
-        var ef = HardwareMapper.ToEf(entity);
-        await context.device.AddAsync(ef);
-        return await context.SaveChangesAsync();
+        var en = new Aero.Infrastructure.Persistences.Entities.Device(data);
+        await context.device.AddAsync(en);
+        var rec = await context.SaveChangesAsync();
+        if (rec <= 0) return -1;
+        return en.id;
     }
 
-    public async Task<int> DeleteByComponentAsync(short component)
+    public async Task<int> DeleteByIdAsync(int id)
     {
         var ef = await context.device
-        .Where(x => x.component_id == component)
-        .OrderBy(x => x.component_id)
+        .Where(x => x.id == id)
+        .OrderBy(x => x.id)
         .FirstOrDefaultAsync();
 
         if (ef is null) return 0;
@@ -41,7 +42,7 @@ public sealed class HwRepository(AppDbContext context) : IHwRepository
     {
         var ef = await context.device
         .Where(x => x.mac.Equals(mac))
-        .OrderBy(x => x.component_id)
+        .OrderBy(x => x.id)
         .FirstOrDefaultAsync();
 
         if (ef is null) return 0;

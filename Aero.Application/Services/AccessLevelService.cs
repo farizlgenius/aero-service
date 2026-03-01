@@ -42,20 +42,22 @@ namespace Aero.Application.Services
 
             List<string> errors = new List<string>();
 
-            var domain = new CreateAccessLevel(
+            var domain = new AccessLevel(
                 dto.Name,
-                dto.Components.Select(x => new AccessLevelComponent(x.DriverId,x.Mac,x.DoorId,x.AcrId,x.TimeZoneId)).ToList(),
-                dto.LocationId);
+                dto.Components.Select(x => new AccessLevelComponent(x.DriverId,x.DeviceId,x.DoorId,x.AcrId,x.TimeZoneId)).ToList(),
+                dto.LocationId,
+                dto.IsActive
+                );
 
-            var macs = domain.Components.Select(x => x.Mac).Distinct();
+            var ids = domain.Components.Select(x => x.DeviceId).Distinct();
 
-            for(int i = 0;i < macs.Count(); i++)
+            for(int i = 0;i < ids.Count(); i++)
             {
-                var DriverId = await repo.GetLowestUnassignedNumberByMacAsync(macs.ElementAt(i), ScpSetting.nAlvl);
+                var DriverId = await repo.GetLowestUnassignedNumberAsync(ScpSetting.nAlvl,ids.ElementAt(i));
                 domain.Components.ElementAt(i).SetDriverId(DriverId); 
-                if (!await alvl.AccessLevelConfigurationExtended(await hw.GetComponentIdFromMacAsync(macs.ElementAt(i)), DriverId, domain))
+                if (!await alvl.AccessLevelConfigurationExtended((short)ids.ElementAt(i), DriverId, domain))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(macs.ElementAt(i), Command.ALVL_CONFIG));
+                    errors.Add(MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync((short)ids.ElementAt(i)), Command.ALVL_CONFIG));
 
                 }
             }
@@ -77,10 +79,9 @@ namespace Aero.Application.Services
 
             foreach (var component in domain.Components)
             {
-                var ScpId = await hw.GetComponentIdFromMacAsync(component.Mac);
-                if (!await alvl.AccessLevelConfigurationExtended(ScpId,component.DriverId, 0))
+                if (!await alvl.AccessLevelConfigurationExtended((short)component.DeviceId,component.DriverId, 0))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(component.Mac, Command.ALVL_CONFIG));
+                    errors.Add(MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync((short)component.DeviceId), Command.ALVL_CONFIG));
                 }
             }
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<AccessLevelDto>(ResponseMessage.COMMAND_UNSUCCESS,errors);
@@ -95,16 +96,16 @@ namespace Aero.Application.Services
             List<string> errors = new List<string>();
             if (!await repo.IsAnyById(dto.Id)) return ResponseHelper.NotFoundBuilder<AccessLevelDto>();
 
-            var domain = new AccessLevel(dto.Id,dto.Name,dto.Components.Select(c => new AccessLevelComponent(c.DriverId,c.Mac,c.DoorId,c.AcrId,c.TimeZoneId)).ToList(),dto.LocationId,dto.IsActive);
-            var macs = domain.Components.Select(x => x.Mac).Distinct();
+            var domain = new AccessLevel(dto.Name,dto.Components.Select(c => new AccessLevelComponent(c.DriverId,c.DeviceId,c.DoorId,c.AcrId,c.TimeZoneId)).ToList(),dto.LocationId,dto.IsActive);
+            var ids = domain.Components.Select(x => x.DeviceId).Distinct();
 
-            for (int i = 0; i < macs.Count(); i++)
+            for (int i = 0; i < ids.Count(); i++)
             {
                 //var AlvlId = await qAlvl.GetLowestUnassignedNumberAsync(10, macs.ElementAt(i));
                 //domain.Components.ElementAt(i).AlvlId = AlvlId;
-                if (!await alvl.AccessLevelConfigurationExtended(await hw.GetComponentIdFromMacAsync(macs.ElementAt(i)),domain.Components.Where(x => x.Mac.Equals(macs.ElementAt(i))).Select(x => x.DriverId).FirstOrDefault(),domain))
+                if (!await alvl.AccessLevelConfigurationExtended((short)ids.ElementAt(i),domain.Components.Where(x => x.DeviceId == ids.ElementAt(i)).Select(x => x.DriverId).FirstOrDefault(),domain))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(macs.ElementAt(i), Command.ALVL_CONFIG));
+                    errors.Add(MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync((short)ids.ElementAt(i)), Command.ALVL_CONFIG));
 
                 }
             }
@@ -137,9 +138,9 @@ namespace Aero.Application.Services
         }
 
 
-        public async Task<string> GetAcrName(string mac, int component)
+        public async Task<string> GetAcrName(int  device, int component)
         {
-            return await repo.GetAcrNameByIdAndDeviceIdAsync(component,mac) ?? "";
+            return await repo.GetAcrNameByIdAndDeviceIdAsync(component,device) ?? "";
         }
 
         public async Task<string> GetTzName(int component)

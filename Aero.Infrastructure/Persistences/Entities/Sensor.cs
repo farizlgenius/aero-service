@@ -7,9 +7,9 @@ namespace Aero.Infrastructure.Persistences.Entities
     public sealed class Sensor : BaseEntity,IDeviceId
     {
         public Module module { get; set; }
-        public int door_id { get; set; }
+        public short door_id { get; set; }
         public Door sensor_door { get; set; }
-        public int module_id { get; set; }
+        public short module_id { get; set; }
         public short input_no { get; set; }
         public short input_mode { get; set; }
         public short debounce { get; set; }
@@ -18,7 +18,7 @@ namespace Aero.Infrastructure.Persistences.Entities
         public int device_id { get; set; }
         public Device device { get; set; }
 
-        public Sensor(int device,int module,int doorid,short inputno,short inputmode,short debounce,short holdtime,short dcheld,int location) : base(location) 
+        public Sensor(int device,short module,short doorid,short inputno,short inputmode,short debounce,short holdtime,short dcheld,int location) : base(location) 
         {
             this.device_id = device;
             this.module_id = module;

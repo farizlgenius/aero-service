@@ -16,6 +16,8 @@ namespace Aero.Infrastructure.Persistences.Entities
         public bool is_delete { get; set; }
         public bool is_action { get; set; }
 
+        public FeatureRole(){}
+
         public FeatureRole(int feature,short role,bool allow,bool create,bool modify,bool delete,bool action)
         {
             this.feature_id = feature;

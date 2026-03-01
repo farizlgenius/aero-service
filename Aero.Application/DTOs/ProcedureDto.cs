@@ -1,12 +1,5 @@
-﻿
 using Aero.Domain.Entities;
 
-namespace Aero.Application.DTOs
-{
-    public sealed class ProcedureDto : BaseDomain
-    {
-        public short ProcId {get; set;}
-        public string Name { get; set; } = string.Empty;
-        public List<ActionDto> Actions { get; set; } = new List<ActionDto>();
-    }
-}
+namespace Aero.Application.DTOs;
+
+public sealed record ProcedureDto(short ProcId, string Name, List<ActionDto> Actions,int LocationId,bool IsActive) : BaseDto(LocationId,IsActive);

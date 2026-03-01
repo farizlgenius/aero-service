@@ -12,7 +12,7 @@ namespace Aero.Application.Interface
         Task<ResponseDto<AccessLevelDto>> CreateAsync(CreateAccessLevelDto dto);
         Task<ResponseDto<AccessLevelDto>> DeleteAsync(int id);
         Task<ResponseDto<AccessLevelDto>> UpdateAsync(AccessLevelDto dto);
-        Task<string> GetAcrName(string mac, int id);
+        Task<string> GetAcrName(int device, int id);
         Task<string> GetTzName(int id);
 
     }

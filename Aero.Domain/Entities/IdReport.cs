@@ -1,3 +1,4 @@
+using Aero.Domain.Helpers;
 using System;
 
 namespace Aero.Domain.Entities;
@@ -32,4 +33,49 @@ public sealed class IdReport
       public string Port { get; set; } = string.Empty;
     public int LocationId { get; set; }
 
+    public IdReport() { }
+
+    public IdReport(short deviceId, short deviceVer, short softwareRevMajor, short softwareRevMinor, string firmware, int serialNumber, int ramSize, int ramFree, DateTimeOffset eSec, int dbMax, int dbActive, byte dipSwitchPowerup, byte dipSwitchCurrent, short scpId, short firmwareAdvisory, short scpIn1, short scpIn2, short nOemCode, byte configFlag, string mac, byte tlsStatus, byte operMode, short scpIn3, int cumulativeBldCnt, string ip, string port, int locationId)
+    {
+        DeviceId = deviceId;
+        DeviceVer = deviceVer;
+        SoftwareRevMajor = softwareRevMajor;
+        SoftwareRevMinor = softwareRevMinor;
+        Firmware = ValidateRequiredString(firmware, nameof(firmware));
+        SerialNumber = serialNumber;
+        RamSize = ramSize;
+        RamFree = ramFree;
+        ESec = eSec;
+        DbMax = dbMax;
+        DbActive = dbActive;
+        DipSwitchPowerup = dipSwitchPowerup;
+        DipSwitchCurrent = dipSwitchCurrent;
+        ScpId = scpId;
+        FirmwareAdvisory = firmwareAdvisory;
+        ScpIn1 = scpIn1;
+        ScpIn2 = scpIn2;
+        NOemCode = nOemCode;
+        ConfigFlag = configFlag;
+        Mac = ValidateRequiredString(mac, nameof(mac));
+        TlsStatus = tlsStatus;
+        OperMode = operMode;
+        ScpIn3 = scpIn3;
+        CumulativeBldCnt = cumulativeBldCnt;
+        Ip = ValidateRequiredString(ip, nameof(ip));
+        Port = ValidateRequiredString(port, nameof(port));
+        LocationId = locationId;
+    }
+
+    private static string ValidateRequiredString(string value, string field)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(value, field);
+        var trimmed = value.Trim();
+        var sanitized = trimmed.Replace("-", string.Empty).Replace("_", string.Empty).Replace(".", string.Empty).Replace(":", string.Empty).Replace("/", string.Empty);
+        if (!RegexHelper.IsValidName(trimmed) && !RegexHelper.IsValidOnlyCharAndDigit(sanitized))
+        {
+            throw new ArgumentException($"{field} invalid.", field);
+        }
+
+        return value;
+    }
 }

@@ -43,7 +43,7 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
       public async Task<int> UpdateAsync(AccessLevel data)
       {
         var en = await context.access_level
-         .Where(x => x.id == data.Id)
+         .Where(x => x.name.Equals(data.Name))
          .OrderBy(x => x.id)
          .FirstOrDefaultAsync();
 
@@ -52,7 +52,7 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
         var driverids = data.Components.Select(x => x.DriverId).Distinct().ToList();
 
         var e = await context.access_level_component
-        .Where(x => driverids.Contains(x.access_level_id))
+        .Where(x => driverids.Contains((short)x.access_level_id))
         .ToArrayAsync();
 
         context.access_level_component.RemoveRange(e);
@@ -98,7 +98,7 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
             x.is_active
         }).ToArrayAsync();
 
-        var res = data.Select(x => new AccessLevel(x.id,x.name,x.components.ToList(),x.location_id,x.is_active)).ToList();
+        var res = data.Select(x => new AccessLevel(x.name,x.components.ToList(),x.location_id,x.is_active)).ToList();
 
         return res;
 

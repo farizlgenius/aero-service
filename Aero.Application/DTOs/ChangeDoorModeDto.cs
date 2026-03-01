@@ -3,8 +3,8 @@
 
 
     public sealed record ChangeDoorModeDto(
-        short DriverId,
-        string Mac,
+        int DeviceId,
+        int DriverId,
         short Mode
         );
 }

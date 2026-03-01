@@ -1,9 +1,3 @@
-﻿namespace Aero.Application.DTOs
-{
-    public sealed class TokenDto
-    {
-        public DateTime TimeStamp { get; set; }
-        public string AccessToken { get; set; } = string.Empty;
-        public int ExpireInMinute {  get; set; }
-    }
-}
+namespace Aero.Application.DTOs;
+
+public sealed record TokenDto(DateTime TimeStamp, string AccessToken, int ExpireInMinute);

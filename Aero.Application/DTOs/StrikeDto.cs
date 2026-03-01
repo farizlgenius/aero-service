@@ -1,15 +1,5 @@
-﻿using Aero.Domain.Entities;
+using Aero.Domain.Entities;
 
-namespace Aero.Application.DTOs
-{
-    public sealed class StrikeDto : BaseDomain
-    {
-        public short ModuleId { get; set; }
-        public short OutputNo { get; set; }
-        public short RelayMode { get; set; }
-        public short OfflineMode { get; set; }
-        public short StrkMax { get; set; }
-        public short StrkMin { get; set; }
-        public short StrkMode { get; set; }
-    }
-}
+namespace Aero.Application.DTOs;
+
+public sealed record StrikeDto(int DeviceId,short DoorId,short ModuleId, short OutputNo, short RelayMode, short OfflineMode, short StrkMax, short StrkMin, short StrkMode,int LocationId,bool IsActive) : BaseDto(LocationId,IsActive);

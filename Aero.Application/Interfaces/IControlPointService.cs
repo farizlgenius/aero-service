@@ -14,12 +14,12 @@ namespace Aero.Application.Interface
         Task<ResponseDto<ControlPointDto>> CreateAsync(CreateControlPointDto dto);
         Task<ResponseDto<ControlPointDto>> DeleteAsync(int id);
         Task<ResponseDto<ControlPointDto>> UpdateAsync(ControlPointDto dto);
-        Task<ResponseDto<bool>> GetStatusAsync(string mac, int id);
+        Task<ResponseDto<bool>> GetStatusAsync(int deviceId, int driverId);
         Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param);
         Task<ResponseDto<ControlPointDto>> GetByDeviceAndIdAsync(int device, int id);
         Task<ResponseDto<bool>> ToggleAsync(ToggleControlPointDto cpTriggerDto);
         Task<ResponseDto<IEnumerable<short>>> GetAvailableOpAsync(int deviceId, int id);
-        Task<ResponseDto<IEnumerable<ResponseDto<bool>>>> DeleteRangeAsync(List<int> ids);
+        Task<ResponseDto<IEnumerable<ControlPointDto>>> DeleteRangeAsync(List<int> ids);
 
     }
 }

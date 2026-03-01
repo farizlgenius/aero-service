@@ -10,7 +10,7 @@ public interface IHwRepository : IBaseRepository<HardwareDto, Device>
 {
   Task<Device> GetDomainByMacAsync(string mac);
   Task<int> DeleteByMacAsync(string mac);
-  Task<int> DeleteByComponentAsync(short component);
+  Task<int> DeleteByIdAsync(short component);
   Task<int> UpdateSyncStatusByMacAsync(string mac);
   Task<int> UpdateVerifyMemoryAllocateByComponentIdAsync(short component, bool isSync);
   Task<int> UpdateVerifyHardwareCofigurationMyMacAsync(string mac, bool status);

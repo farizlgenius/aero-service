@@ -53,9 +53,9 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder(true);
         }
 
-        public async Task<ResponseDto<IEnumerable<short>>> GetAvailableOpAsync(int deviceId, short ModuleId)
+        public async Task<ResponseDto<IEnumerable<short>>> GetAvailableOpAsync(int deviceId, int ModuleId)
         {
-            var res = await repo.GetAvailableOpAsync(deviceId, ModuleId);
+            var res = await repo.GetAvailableOpAsync(deviceId, (short)ModuleId);
             return ResponseHelper.SuccessBuilder<IEnumerable<short>>(res);
         }
 
@@ -146,12 +146,11 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder(dto);
         }
 
-        public async Task<ResponseDto<bool>> GetStatusAsync(string mac, short component)
+        public async Task<ResponseDto<bool>> GetStatusAsync(int deviceId, int driverId)
         {
-            var id = await hw.GetComponentIdFromMacAsync(mac);
-            if (!cp.GetCpStatus(id, component, 1))
+            if (!cp.GetCpStatus((short)deviceId, driverId, 1))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.CP_STATUS));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync((short)deviceId),Command.CP_STATUS));
             }
             return ResponseHelper.SuccessBuilder(true);
         }
@@ -176,7 +175,7 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder<ControlPointDto>(dto);
         }
 
-        public async Task<ResponseDto<IEnumerable<ControlPointDto>>> DeleteRangeAsync(List<short> components)
+        public async Task<ResponseDto<IEnumerable<ControlPointDto>>> DeleteRangeAsync(List<int> components)
         {
             bool flag = true;
             List<ControlPointDto> data = new List<ControlPointDto>();
@@ -194,7 +193,7 @@ namespace Aero.Application.Services
             return res;
         }
 
-        public async Task<ResponseDto<Pagination<ControlPointDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        public async Task<ResponseDto<Pagination<ControlPointDto>>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
         {
             var res = await repo.GetPaginationAsync(param, location);
             return ResponseHelper.SuccessBuilder(res);

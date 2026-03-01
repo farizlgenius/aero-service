@@ -23,19 +23,19 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short reader_out_config { get; set; }
 
         // Strike setting for strike
-        public Strike strike {  get; set; }
+        public Strike? strike {  get; set; }
 
         //sensor setting for sensor
-        public Sensor sensor { get; set; }
+        public Sensor? sensor { get; set; }
         
         //sensor setting for rex0 / rex1
         public ICollection<RequestExit>? request_exits { get; set; }
         public short card_format { get; set; } = 255;
         public short antipassback_mode { get; set; }
-        public short? antipassback_in { get; set; }
+        public short antipassback_in { get; set; }
         public short area_in_id {get; set;}
         public AccessArea? area_in { get; set; }
-        public short? antipassback_out { get; set; }
+        public short antipassback_out { get; set; }
         public short area_out_id {get; set;}
         public AccessArea? area_out { get; set; }
         public short spare_tag { get; set; }
@@ -90,9 +90,9 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.direction = direction;
             this.readers = readers.Select(r => new Reader(r.ModuleId,r.DoorId,r.ReaderNo,r.DataFormat,r.KeypadMode,r.LedDriveMode,r.OsdpFlag,r.OsdpBaudrate,r.OsdpDiscover,r.OsdpTracing,r.OsdpAddress,r.OsdpSecureChannel,r.DeviceId,r.LocationId)).ToList();
             this.reader_out_config = readeroutconfig;
-            this.strike = new Strike(k.ModuleId,k.DoorId,k.OutputNo,k.RelayMode,k.OfflineMode,k.StrkMax,k.StrkMin,k.StrkMode,k.LocationId);
-            this.sensor = new Sensor(s.ModuleId,s.DoorId,s.InputNo,s.InputMode,s.Debounce,s.HoldTime,s.DcHeld,s.LocationId);
-            this.request_exits = rexs.Select(x => new RequestExit(x.ModuleId,x.DoorId,x.InputNo,x.InputMode,x.Debounce,x.HoldTime,x.MaskTimeZone,x.LocationId)).ToList();
+            this.strike = new Strike(k.DeviceId,k.ModuleId,k.DoorId,k.OutputNo,k.RelayMode,k.OfflineMode,k.StrkMax,k.StrkMin,k.StrkMode,k.LocationId);
+            this.sensor = new Sensor(s.DeviceId,s.ModuleId,s.DoorId,s.InputNo,s.InputMode,s.Debounce,s.HoldTime,s.DcHeld,s.LocationId);
+            this.request_exits = rexs.Select(x => new RequestExit(x.DeviceId,x.ModuleId,x.DoorId,x.InputNo,x.InputMode,x.Debounce,x.HoldTime,x.MaskTimeZone,x.LocationId)).ToList();
             this.card_format = cardformat;
             this.antipassback_mode = antipassbackmode;
             this.antipassback_in = antipassbackin;
@@ -136,9 +136,9 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.direction = data.Direction;
             this.readers = data.Readers.Select(r => new Reader(r.ModuleId, r.DoorId, r.ReaderNo, r.DataFormat, r.KeypadMode, r.LedDriveMode, r.OsdpFlag, r.OsdpBaudrate, r.OsdpDiscover, r.OsdpTracing, r.OsdpAddress, r.OsdpSecureChannel, r.DeviceId, r.LocationId)).ToList();
             this.reader_out_config = data.ReaderOutConfiguration;
-            this.strike = new Strike(data.Strk.ModuleId, data.Strk.DoorId, data.Strk.OutputNo, data.Strk.RelayMode, data.Strk.OfflineMode, data.Strk.StrkMax, data.Strk.StrkMin, data.Strk.StrkMode, data.Strk.LocationId);
-            this.sensor = new Sensor(data.Sensor.ModuleId, data.Sensor.DoorId, data.Sensor.InputNo, data.Sensor.InputMode, data.Sensor.Debounce, data.Sensor.HoldTime, data.Sensor.DcHeld, data.Sensor.LocationId);
-            this.request_exits = data.RequestExits.Select(x => new RequestExit(x.ModuleId, x.DoorId, x.InputNo, x.InputMode, x.Debounce, x.HoldTime, x.MaskTimeZone, x.LocationId)).ToList();
+            this.strike = new Strike(data.DeviceId,data.Strk.ModuleId, data.Strk.DoorId, data.Strk.OutputNo, data.Strk.RelayMode, data.Strk.OfflineMode, data.Strk.StrkMax, data.Strk.StrkMin, data.Strk.StrkMode, data.Strk.LocationId);
+            this.sensor = new Sensor(data.DeviceId,data.Sensor.ModuleId, data.Sensor.DoorId, data.Sensor.InputNo, data.Sensor.InputMode, data.Sensor.Debounce, data.Sensor.HoldTime, data.Sensor.DcHeld, data.Sensor.LocationId);
+            this.request_exits = data.RequestExits.Select(x => new RequestExit(x.DeviceId,x.ModuleId, x.DoorId, x.InputNo, x.InputMode, x.Debounce, x.HoldTime, x.MaskTimeZone, x.LocationId)).ToList();
             this.card_format = data.CardFormat;
             this.antipassback_mode = data.AntiPassbackMode;
             this.antipassback_in = data.AntiPassBackIn;

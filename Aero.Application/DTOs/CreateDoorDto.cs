@@ -1,17 +1,14 @@
-﻿
+using System;
+using Aero.Domain.Enums;
 
-using Aero.Domain.Entities;
+namespace Aero.Application.DTOs;
 
-namespace Aero.Application.DTOs
-{
-   public sealed record DoorDto(
-    int Id,
+public sealed record CreateDoorDto(
     int DeviceId,
-    short DriverId,
     string Name,
     short AccessConfig,
     short PairDoorNo,
-    int Direction,
+    int direction,
 
     List<ReaderDto> Readers,
     short ReaderOutConfiguration,
@@ -54,9 +51,8 @@ namespace Aero.Application.DTOs
 
     bool MaskHeldOpen,
     bool MaskForceOpen,
-    List<AccessLevelComponent> AccessLevelComponents,
+    List<AccessLevelComponentDto> AccessLevelComponents,
 
     int LocationId,
     bool IsActive
 ) : BaseDto(LocationId,IsActive);
-}

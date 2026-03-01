@@ -8,22 +8,23 @@ namespace Aero.Application.Interface;
 
 public interface IDoorRepository : IBaseRepository<DoorDto,Door>
 {
-      Task<int> ChangeDoorModeAsync(string mac,short component,short acr,short mode);
-    Task<IEnumerable<DoorDto>> GetByMacAsync(string mac);
-    Task<short> GetLowestUnassignedRexNumberAsync();
-    Task<int> CountByMacAndUpdateTimeAsync(string mac, DateTime sync);
-    Task<IEnumerable<Mode>> GetReaderModeAsync();
-    Task<IEnumerable<Mode>> GetStrikeModeAsync();
-    Task<IEnumerable<Mode>> GetDoorModeAsync();
-    Task<IEnumerable<Mode>> GetApbModeAsync();
-    Task<IEnumerable<short>> GetAvailableReaderFromMacAndComponentIdAsync(string mac, short component);
-    Task<IEnumerable<Mode>> GetReaderOutModeAsync();
-    Task<short> GetLowestUnassignedNumberByMacAsync(string mac, int max);
-    Task<short> GetLowestUnassignedReaderNumberNoLimitAsync();
-    Task<short> GetLowestUnassignedSensorNumberNoLimitAsync();
-    Task<short> GetLowestUnassignedStrikeNumberNoLimitAsync();
-    Task<IEnumerable<Mode>> GetDoorAccessControlFlagAsync();
-    Task<IEnumerable<Mode>> GetDoorSpareFlagAsync();
-    Task<IEnumerable<Mode>> GetOsdpBaudrateAsync();
-    Task<IEnumerable<Mode>> GetOsdpAddressAsync();
+      Task<int> ChangeDoorModeAsync(int deviceId,short driverid,short mode);
+    Task<IEnumerable<DoorDto>> GetByDeviceIdAsync(int id);
+    // Task<short> GetLowestUnassignedRexNumberAsync();
+    Task<short> GetLowestUnassignedNumberByDeviceIdAsync(int max,int device);
+    Task<int> CountByDeviceIdAndUpdateTimeAsync(int device, DateTime sync);
+    Task<IEnumerable<ModeDto>> GetReaderModeAsync();
+    Task<IEnumerable<ModeDto>> GetStrikeModeAsync();
+    Task<IEnumerable<ModeDto>> GetDoorModeAsync();
+    Task<IEnumerable<ModeDto>> GetApbModeAsync();
+    Task<IEnumerable<short>> GetAvailableReaderFromDeviceIdAndDriverIdAsync(int device, int driver);
+    Task<IEnumerable<ModeDto>> GetReaderOutModeAsync();
+    // Task<short> GetLowestUnassignedNumberByMacAsync(string mac, int max);
+    // Task<short> GetLowestUnassignedReaderNumberNoLimitAsync();
+    // Task<short> GetLowestUnassignedSensorNumberNoLimitAsync();
+    // Task<short> GetLowestUnassignedStrikeNumberNoLimitAsync();
+    Task<IEnumerable<ModeDto>> GetDoorAccessControlFlagAsync();
+    Task<IEnumerable<ModeDto>> GetDoorSpareFlagAsync();
+    Task<IEnumerable<ModeDto>> GetOsdpBaudrateAsync();
+    Task<IEnumerable<ModeDto>> GetOsdpAddressAsync();
 }

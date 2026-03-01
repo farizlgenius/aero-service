@@ -1,25 +1,5 @@
-﻿using Aero.Domain.Entities;
+using Aero.Domain.Entities;
 
-namespace Aero.Application.DTOs
-{
-    public sealed class MonitorPointDto : BaseDomain
-    {
-        public short MpId {get; set;}
-        public string Name { get; set; } = string.Empty;
-        public short ModuleId { get; set; }
-        public string ModuleDescription { get; set; } = string.Empty;
-        public short InputNo { get; set; }
-        public short InputMode { get; set; }
-        public string InputModeDescription { get; set; } = string.Empty;
-        public short Debounce { get; set; }
-        public short HoldTime { get; set; }
-        public short LogFunction { get; set; } = 1;
-        public string LogFunctionDescription { get; set; } = string.Empty;
-        public short MonitorPointMode { get; set; } = -1;
-        public string MonitorPointModeDescription { get; set; } = string.Empty;
-        public short DelayEntry { get; set; } = -1;
-        public short DelayExit { get; set; } = -1;
-        public bool IsMask { get; set; }
-    }
+namespace Aero.Application.DTOs;
 
-}
+public sealed record MonitorPointDto(short MpId, string Name, short ModuleId, string ModuleDescription, short InputNo, short InputMode, string InputModeDescription, short Debounce, short HoldTime, short LogFunction, string LogFunctionDescription, short MonitorPointMode, string MonitorPointModeDescription, short DelayEntry, short DelayExit, bool IsMask,int LocationId,bool IsActive): BaseDto(LocationId,IsActive);

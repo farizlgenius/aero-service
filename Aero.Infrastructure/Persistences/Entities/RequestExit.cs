@@ -6,9 +6,9 @@ namespace Aero.Infrastructure.Persistences.Entities
     public class RequestExit : BaseEntity,IDeviceId
     {
         public Module module { get; set; }
-        public int door_id { get; set; }
+        public short door_id { get; set; }
         public Door door { get; set; }
-        public int module_id { get; set; }
+        public short module_id { get; set; }
         public short input_no { get; set; }
         public short input_mode { get; set; }
         public short debounce { get; set; }
@@ -16,7 +16,7 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short mask_timezone { get; set; } = 0;
         public int device_id { get; set; }
         public Device device { get; set; }
-        public RequestExit(int device,int module,int doorid,short input,short mode,short debounce,short holdtime,short mask,int location) : base(location)
+        public RequestExit(int device,short module,short doorid,short input,short mode,short debounce,short holdtime,short mask,int location) : base(location)
         {
             this.device_id = device;
             this.module_id = module;

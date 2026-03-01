@@ -7,8 +7,8 @@ namespace Aero.Infrastructure.Persistences.Entities
     public sealed class AccessLevel : BaseEntity,IDbFunc<Aero.Domain.Entities.AccessLevel>
     {
         public string name { get;  set; } = string.Empty;
-        public ICollection<AccessLevelComponent>? components { get;  set;} 
-        public ICollection<UserAccessLevel>? cardholder_access_levels { get;  set;}
+        public ICollection<AccessLevelComponent> components { get;  set;} = new List<AccessLevelComponent>();
+        public ICollection<UserAccessLevel>? cardholder_access_levels { get;  set;} = new List<UserAccessLevel>();
 
         public AccessLevel(){}
 
@@ -21,13 +21,13 @@ namespace Aero.Infrastructure.Persistences.Entities
         public AccessLevel(Aero.Domain.Entities.AccessLevel data)
         {
             name = data.Name;
-            components = data.Components.Select(x => new AccessLevelComponent(x.DriverId, x.Mac, x.DoorId, x.AcrId, x.TimezoneId)).ToList();
+            components = data.Components.Select(x => new AccessLevelComponent(x.DriverId, x.DeviceId, x.DoorId, x.AcrId, x.TimezoneId)).ToList();
         }
 
         public void Update(Aero.Domain.Entities.AccessLevel data)
         {
             name = data.Name;
-            components = data.Components.Select(x => new AccessLevelComponent(x.DriverId,x.Mac,x.DoorId,x.AcrId,x.TimezoneId)).ToList();
+            components = data.Components.Select(x => new AccessLevelComponent(x.DriverId,x.DeviceId,x.DoorId,x.AcrId,x.TimezoneId)).ToList();
             updated_date = DateTime.UtcNow;
         }
 

@@ -1,9 +1,3 @@
-﻿namespace Aero.Application.DTOs
-{
-    public class TransactionFlagDto
-    {
-        public string Topic { get; set; } = string.Empty;
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-    }
-}
+namespace Aero.Application.DTOs;
+
+public record TransactionFlagDto(string Topic, string Name, string Description);

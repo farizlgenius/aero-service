@@ -41,7 +41,7 @@ public class CredRepository(AppDbContext context,IHwRepository qHw,IServiceScope
             return await context.SaveChangesAsync();
       }
 
-      public async Task<int> DeleteByComponentIdAsync(short component)
+      public async Task<int> DeleteByIdAsync(int id)
       {
             throw new NotImplementedException();
       }
@@ -55,52 +55,19 @@ public class CredRepository(AppDbContext context,IHwRepository qHw,IServiceScope
     {
         var res = await context.credential
         .AsNoTracking()
-        .Select(entity => new CredentialDto
-        {
-            // Base
-            LocationId = entity.location_id,
-            IsActive = entity.is_active,
-
-            // extend_desc
-            ComponentId = entity.component_id,
-            Bits = entity.bits,
-            IssueCode = entity.issue_code,
-            FacilityCode = entity.fac_code,
-            CardNo = entity.card_no,
-            Pin = entity.pin,
-            ActiveDate = entity.active_date,
-            DeactiveDate = entity.deactive_date,
-            //card_holder = entity.card_holder is not null ? CardHolderToDto(entity.card_holder) : null,
-
-        }).ToArrayAsync();
+        .Select(c => new CredentialDto(c.bits,c.issue_code,c.fac_code,c.card_no,c.pin ?? "",c.active_date,c.deactive_date))
+        .ToArrayAsync();
 
         return res;
     }
 
-    public async Task<CredentialDto> GetByComponentIdAsync(short componentId)
+    public async Task<CredentialDto> GetByIdAsync(int id)
     {
         var res = await context.credential
         .AsNoTracking()
-        .OrderBy(x => x.component_id)
-        .Where(x => x.component_id == componentId)
-        .Select(entity => new CredentialDto
-        {
-            // Base
-            LocationId = entity.location_id,
-            IsActive = entity.is_active,
-
-            // extend_desc
-            ComponentId = entity.component_id,
-            Bits = entity.bits,
-            IssueCode = entity.issue_code,
-            FacilityCode = entity.fac_code,
-            CardNo = entity.card_no,
-            Pin = entity.pin,
-            ActiveDate = entity.active_date,
-            DeactiveDate = entity.deactive_date,
-            //card_holder = entity.card_holder is not null ? CardHolderToDto(entity.card_holder) : null,
-
-        }).FirstOrDefaultAsync();
+        .OrderBy(x => x.id)
+        .Where(x => x.id == id)
+        .Select(c => new CredentialDto(c.bits,c.issue_code,c.fac_code,c.card_no,c.pin ?? "",c.active_date,c.deactive_date)).FirstOrDefaultAsync();
 
         return res;
     }
@@ -111,24 +78,7 @@ public class CredRepository(AppDbContext context,IHwRepository qHw,IServiceScope
         .AsNoTracking()
         .OrderBy(x => x.id)
         .Where(x => x.location_id == locationId || x.location_id == 1)
-        .Select(entity => new CredentialDto
-        {
-            // Base
-            LocationId = entity.location_id,
-            IsActive = entity.is_active,
-
-            // extend_desc
-            ComponentId = entity.component_id,
-            Bits = entity.bits,
-            IssueCode = entity.issue_code,
-            FacilityCode = entity.fac_code,
-            CardNo = entity.card_no,
-            Pin = entity.pin,
-            ActiveDate = entity.active_date,
-            DeactiveDate = entity.deactive_date,
-            //card_holder = entity.card_holder is not null ? CardHolderToDto(entity.card_holder) : null,
-
-        }).ToArrayAsync();
+       .Select(c => new CredentialDto(c.bits,c.issue_code,c.fac_code,c.card_no,c.pin ?? "",c.active_date,c.deactive_date)).ToArrayAsync();
 
         return res;
     }
@@ -138,24 +88,7 @@ public class CredRepository(AppDbContext context,IHwRepository qHw,IServiceScope
         var res = await context.credential
         .AsNoTracking()
         .Where(x => x.user_id.Equals(UserId))
-        .Select(entity => new CredentialDto
-        {
-            // Base
-            LocationId = entity.location_id,
-            IsActive = entity.is_active,
-
-            // extend_desc
-            ComponentId = entity.component_id,
-            Bits = entity.bits,
-            IssueCode = entity.issue_code,
-            FacilityCode = entity.fac_code,
-            CardNo = entity.card_no,
-            Pin = entity.pin,
-            ActiveDate = entity.active_date,
-            DeactiveDate = entity.deactive_date,
-            //card_holder = entity.card_holder is not null ? CardHolderToDto(entity.card_holder) : null,
-
-        }).ToArrayAsync();
+       .Select(c => new CredentialDto(c.bits,c.issue_code,c.fac_code,c.card_no,c.pin ?? "",c.active_date,c.deactive_date)).ToArrayAsync();
 
         return res;
 
@@ -164,24 +97,19 @@ public class CredRepository(AppDbContext context,IHwRepository qHw,IServiceScope
     public async Task<List<string>> GetCardHolderFullnameAndUserIdByCardNoAsync(double cardno)
     {
         var res = await context.credential.AsNoTracking()
-        .OrderBy(x => x.component_id)
+        .OrderBy(x => x.id)
         .Where(x => x.card_no == cardno)
-        .Select(x => new List<string> { $"{x.cardholder.title} {x.cardholder.first_name} {x.cardholder.middle_name} {x.cardholder.last_name}", x.cardholder_id })
+        .Select(x => new List<string> { $"{x.user.title} {x.user.first_name} {x.user.middle_name} {x.user.last_name}", x.user_id })
         .FirstOrDefaultAsync() ?? new List<string> { "", "" };
 
         return res;
 
     }
 
-    public async Task<IEnumerable<Mode>> GetCredentialFlagAsync()
+    public async Task<IEnumerable<ModeDto>> GetCredentialFlagAsync()
     {
         var dtos = await context.credential_flag
-            .Select(flag => new Mode
-            {
-                Name = flag.name,
-                Description = flag.description,
-                Value = flag.value,
-            })
+            .Select(m => new ModeDto(m.name,m.value,m.description))
             .ToArrayAsync();
 
         return dtos;
@@ -217,15 +145,14 @@ public class CredRepository(AppDbContext context,IHwRepository qHw,IServiceScope
     }
 
 
-    public async Task<short> GetLowestUnassignedNumberAsync(int max, string mac)
+    public async Task<short> GetLowestUnassignedNumberAsync(int max, int driverid)
     {
-        if (string.IsNullOrEmpty(mac))
-        {
-            if (max <= 0) return -1;
+         if (max <= 0) return -1;
 
             var query = context.monitor_point
                 .AsNoTracking()
-                .Select(x => x.component_id);
+                .Where(x => x.driver_id == driverid)
+                .Select(x => x.id);
 
             // Handle empty table case quickly
             var hasAny = await query.AnyAsync();
@@ -246,36 +173,6 @@ public class CredRepository(AppDbContext context,IHwRepository qHw,IServiceScope
             // If none missing in sequence, return next number
             if (expected > max) return -1;
             return expected;
-        }
-        else
-        {
-            if (max <= 0) return -1;
-
-            var query = context.monitor_point
-                .AsNoTracking()
-                .Where(x => x.mac == mac)
-                .Select(x => x.component_id);
-
-            // Handle empty table case quickly
-            var hasAny = await query.AnyAsync();
-            if (!hasAny)
-                return 1; // start at 1 if table is empty
-
-            // Load all numbers into memory (only the column, so it's lightweight)
-            var numbers = await query.Distinct().OrderBy(x => x).ToListAsync();
-
-            short expected = 1;
-            foreach (var num in numbers)
-            {
-                if (num != expected)
-                    return expected; // found the lowest missing number
-                expected++;
-            }
-
-            // If none missing in sequence, return next number
-            if (expected > max) return -1;
-            return expected;
-        }
     }
 
     public Task<Pagination<CredentialDto>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
@@ -292,4 +189,9 @@ public class CredRepository(AppDbContext context,IHwRepository qHw,IServiceScope
     {
         return await context.credential.AsNoTracking().AnyAsync(x => x.card_no == cardno);
     }
+
+      public Task<bool> IsAnyByNameAsync(string name)
+      {
+            throw new NotImplementedException();
+      }
 }

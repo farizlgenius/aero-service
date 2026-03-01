@@ -3,26 +3,27 @@ using Aero.Domain.Entities;
 
 namespace Aero.Application.DTOs
 {
-    public sealed class HardwareDto : BaseDomain
-    {
-        public string Name { get; set; } = string.Empty;
-        public int HardwareType { get; set; }
-        public string HardwareTypeDescription { get; set; } = string.Empty;
-        public string Ip { get; set; } = string.Empty;
-        public string Firmware { get; set; } = string.Empty;
-        public string Port { get; set; } = string.Empty;
-        public List<ModuleDto> Modules { get; set; }
-        public string SerialNumber { get; set; } = string.Empty;
-        public bool IsUpload { get; set; } = false;
-        public bool IsReset { get; set; } = false;
-        public bool PortOne { get; set; } = false;
-        public short ProtocolOne { get; set; }
-        public string ProtocolOneDescription { get; set; } = string.Empty;
-        public short BaudRateOne { get; set; }
-        public bool PortTwo { get; set; } = false;
-        public short ProtocolTwo { get; set; }
-        public string ProtocolTwoDescription { get; set; } = string.Empty;
-        public short BaudRateTwo { get; set; }
-        public DateTime LastSync { get; set; }
-    }
+    public sealed record HardwareDto(
+    string Name,
+    int HardwareType,
+    string HardwareTypeDescription,
+    string Ip,
+    string Firmware,
+    string Port,
+    List<ModuleDto> Modules,
+    string SerialNumber,
+    bool IsUpload,
+    bool IsReset,
+    bool PortOne,
+    short ProtocolOne,
+    string ProtocolOneDescription,
+    short BaudRateOne,
+    bool PortTwo,
+    short ProtocolTwo,
+    string ProtocolTwoDescription,
+    short BaudRateTwo,
+    DateTime LastSync,
+    int LocationId,
+    bool IsActive
+) : BaseDto(LocationId,IsActive);
 }

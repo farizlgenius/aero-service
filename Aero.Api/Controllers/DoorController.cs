@@ -41,7 +41,7 @@ namespace Aero.Api.Controllers
         [Authorize]
         public async Task<ActionResult<ResponseDto<DoorDto>>> GetByMacAsync(string mac)
         {
-            var res = await doorService.GetByMacAsync(mac);
+            var res = await doorService.GetByDeviceIdAsync(mac);
             return Ok(res);
 
         }

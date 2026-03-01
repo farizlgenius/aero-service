@@ -1,7 +1,3 @@
-﻿namespace Aero.Application.DTOs
-{
-    public sealed class UploadHardwareConfigDto
-    {
-        public string Mac { get; set; } = string.Empty;
-    }
-}
+namespace Aero.Application.DTOs;
+
+public sealed record UploadHardwareConfigDto(string Mac);

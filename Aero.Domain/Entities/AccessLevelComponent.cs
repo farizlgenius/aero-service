@@ -3,7 +3,7 @@ using System;
 
 namespace Aero.Domain.Entities;
 
-public sealed class AccessLevelComponent()
+public sealed class AccessLevelComponent
 {
     public short DriverId { get; private set; }
     public int DeviceId {get; private set;} 
