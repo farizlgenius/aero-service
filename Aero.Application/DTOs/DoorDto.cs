@@ -54,7 +54,6 @@ namespace Aero.Application.DTOs
 
     bool MaskHeldOpen,
     bool MaskForceOpen,
-    List<AccessLevelComponent> AccessLevelComponents,
 
     int LocationId,
     bool IsActive

@@ -48,9 +48,8 @@ public sealed class Door : BaseDomain
     public short DfOfFilterTime { get; set; }
     public bool MaskHeldOpen { get; set; }
     public bool MaskForceOpen { get; set; }
-    public List<AccessLevelComponent> AccessLevelComponents { get; set; } = new List<AccessLevelComponent>();
 
-    public Door(int Id,short driverId, string name, short accessConfig, short pairDoorNo, DoorDirection direction, int deviceId, List<Reader> readers, short readerOutConfiguration, Strike strk, Sensor sensor, List<RequestExit> requestExits, short cardFormat, short antiPassbackMode, short antiPassBackIn, short areaInId, short antiPassBackOut, short areaOutId, short spareTags, short accessControlFlags, short mode, string modeDesc, short offlineMode, string offlineModeDesc, short defaultMode, string defaultModeDesc, short defaultLedMode, short preAlarm, short antiPassbackDelay, short strkT2, short dcHeld2, short strkFollowPulse, short strkFollowDelay, short nExtFeatureType, short ilPBSio, short ilPBNumber, short ilPBLongPress, short ilPBOutSio, short ilPBOutNum, short dfOfFilterTime, bool maskHeldOpen, bool maskForceOpen, List<AccessLevelComponent> accessLevelComponents)
+    public Door(int Id,short driverId, string name, short accessConfig, short pairDoorNo, DoorDirection direction, int deviceId, List<Reader> readers, short readerOutConfiguration, Strike strk, Sensor sensor, List<RequestExit> requestExits, short cardFormat, short antiPassbackMode, short antiPassBackIn, short areaInId, short antiPassBackOut, short areaOutId, short spareTags, short accessControlFlags, short mode, string modeDesc, short offlineMode, string offlineModeDesc, short defaultMode, string defaultModeDesc, short defaultLedMode, short preAlarm, short antiPassbackDelay, short strkT2, short dcHeld2, short strkFollowPulse, short strkFollowDelay, short nExtFeatureType, short ilPBSio, short ilPBNumber, short ilPBLongPress, short ilPBOutSio, short ilPBOutNum, short dfOfFilterTime, bool maskHeldOpen, bool maskForceOpen)
     {
         this.Id = Id;
         DriverId = driverId;
@@ -94,7 +93,6 @@ public sealed class Door : BaseDomain
         DfOfFilterTime = dfOfFilterTime;
         MaskHeldOpen = maskHeldOpen;
         MaskForceOpen = maskForceOpen;
-        AccessLevelComponents = accessLevelComponents ?? throw new ArgumentNullException(nameof(accessLevelComponents));
     }
 
     private static string ValidateRequiredString(string value, string field)

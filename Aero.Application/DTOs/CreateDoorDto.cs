@@ -51,7 +51,6 @@ public sealed record CreateDoorDto(
 
     bool MaskHeldOpen,
     bool MaskForceOpen,
-    List<AccessLevelComponentDto> AccessLevelComponents,
 
     int LocationId,
     bool IsActive

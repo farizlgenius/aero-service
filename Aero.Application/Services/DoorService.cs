@@ -121,8 +121,7 @@ namespace Aero.Application.Services
             dto.AreaInId,dto.AntiPassBackOut,dto.AreaOutId,dto.SpareTags,dto.AccessControlFlags,dto.Mode,dto.ModeDesc,
             dto.OfflineMode,dto.OfflineModeDesc,dto.DefaultMode,dto.DefaultModeDesc,dto.DefaultLEDMode,dto.PreAlarm,dto.AntiPassbackDelay,
             dto.StrkT2,dto.DcHeld2,dto.StrkFollowPulse,dto.StrkFollowDelay,dto.nExtFeatureType,dto.IlPBSio,dto.IlPBNumber,dto.IlPBLongPress,dto.IlPBOutSio,
-            dto.IlPBOutNum,dto.DfOfFilterTime,dto.MaskHeldOpen,dto.MaskForceOpen,
-            dto.AccessLevelComponents.Select(x => new AccessLevelComponent(x.DriverId,x.DeviceId,x.DoorId,x.AcrId,x.TimeZoneId)).ToList()
+            dto.IlPBOutNum,dto.DfOfFilterTime,dto.MaskHeldOpen,dto.MaskForceOpen
             );
 
             foreach (var reader in domain.Readers)
@@ -213,8 +212,7 @@ namespace Aero.Application.Services
             dto.AreaInId,dto.AntiPassBackOut,dto.AreaOutId,dto.SpareTags,dto.AccessControlFlags,dto.Mode,dto.ModeDesc,
             dto.OfflineMode,dto.OfflineModeDesc,dto.DefaultMode,dto.DefaultModeDesc,dto.DefaultLEDMode,dto.PreAlarm,dto.AntiPassbackDelay,
             dto.StrkT2,dto.DcHeld2,dto.StrkFollowPulse,dto.StrkFollowDelay,dto.nExtFeatureType,dto.IlPBSio,dto.IlPBNumber,dto.IlPBLongPress,dto.IlPBOutSio,
-            dto.IlPBOutNum,dto.DfOfFilterTime,dto.MaskHeldOpen,dto.MaskForceOpen,
-            dto.AccessLevelComponents.Select(x => new AccessLevelComponent(x.DriverId,x.DeviceId,x.DoorId,x.AcrId,x.TimezoneId)).ToList()
+            dto.IlPBOutNum,dto.DfOfFilterTime,dto.MaskHeldOpen,dto.MaskForceOpen
             );
 
 
@@ -246,8 +244,7 @@ namespace Aero.Application.Services
             dto.AreaInId,dto.AntiPassBackOut,dto.AreaOutId,dto.SpareTags,dto.AccessControlFlags,dto.Mode,dto.ModeDesc,
             dto.OfflineMode,dto.OfflineModeDesc,dto.DefaultMode,dto.DefaultModeDesc,dto.DefaultLEDMode,dto.PreAlarm,dto.AntiPassbackDelay,
             dto.StrkT2,dto.DcHeld2,dto.StrkFollowPulse,dto.StrkFollowDelay,dto.nExtFeatureType,dto.IlPBSio,dto.IlPBNumber,dto.IlPBLongPress,dto.IlPBOutSio,
-            dto.IlPBOutNum,dto.DfOfFilterTime,dto.MaskHeldOpen,dto.MaskForceOpen,
-            dto.AccessLevelComponents.Select(x => new AccessLevelComponent(x.DriverId,x.DeviceId,x.DoorId,x.AcrId,x.TimezoneId)).ToList()
+            dto.IlPBOutNum,dto.DfOfFilterTime,dto.MaskHeldOpen,dto.MaskForceOpen
             );
 
             foreach (var reader in domain.Readers)
