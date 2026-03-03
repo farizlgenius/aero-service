@@ -5,7 +5,8 @@ namespace Aero.Application.DTOs
 
 
     public sealed record ActionDto(
-        short ScpId,
+        int Id,
+        int DeviceId,
         short ActionType,
         string ActionDetail,
         short Arg1,
@@ -17,6 +18,7 @@ namespace Aero.Application.DTOs
         short Arg7,
         string StrArg,
         short DelayTime,
+        int ProcedureId,
         int LocationId,
         bool IsActive
         ) : BaseDto(LocationId,IsActive);

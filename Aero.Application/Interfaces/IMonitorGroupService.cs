@@ -9,12 +9,12 @@ namespace Aero.Application.Interface
     {
         Task<ResponseDto<IEnumerable<MonitorGroupDto>>> GetAsync();
         Task<ResponseDto<Pagination<MonitorGroupDto>>> GetPaginationAsync(PaginationParamsWithFilter param,short location);
-        Task<ResponseDto<IEnumerable<Mode>>> GetCommandAsync();
-        Task<ResponseDto<IEnumerable<Mode>>> GetTypeAsync();
+        Task<ResponseDto<IEnumerable<ModeDto>>> GetCommandAsync();
+        Task<ResponseDto<IEnumerable<ModeDto>>> GetTypeAsync();
         Task<ResponseDto<IEnumerable<MonitorGroupDto>>> GetByLocationAsync(short location);
         Task<ResponseDto<bool>> MonitorGroupCommandAsync(MonitorGroupCommandDto dto);
-        Task<ResponseDto<bool>> CreateAsync(MonitorGroupDto dto);
-        Task<ResponseDto<bool>> DeleteAsync(string mac,short component);
+        Task<ResponseDto<MonitorGroupDto>> CreateAsync(MonitorGroupDto dto);
+        Task<ResponseDto<MonitorGroupDto>> DeleteAsync(int id);
         Task<ResponseDto<MonitorGroupDto>> UpdateAsync(MonitorGroupDto dto);
     }
 }

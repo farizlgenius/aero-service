@@ -12,16 +12,18 @@ public sealed class ProcRepository(AppDbContext context) : IProcedureRepository
 {
     public async Task<int> AddAsync(Procedure data)
     {
-        var en = ProcedureMapper.ToEf(data);
+        var en = new Aero.Infrastructure.Persistences.Entities.Procedure(data);
         await context.procedure.AddAsync(en);
-        return await context.SaveChangesAsync();
+        var rec = await context.SaveChangesAsync();
+        if(rec <= 0) return -1;
+        return en.id;
     }
 
-    public async Task<int> DeleteByComponentIdAsync(short component)
+    public async Task<int> DeleteByIdAsync(int id)
     {
         var en = await context.procedure
-        .Where(x => x.component_id == component)
-        .OrderBy(x => x.component_id)
+        .Where(x => x.id == id)
+        .OrderBy(x => x.id)
         .FirstOrDefaultAsync();
 
         if (en is null) return 0;
@@ -30,19 +32,19 @@ public sealed class ProcRepository(AppDbContext context) : IProcedureRepository
         return await context.SaveChangesAsync();
     }
 
-    public async Task<int> UpdateAsync(Procedure newData)
+    public async Task<int> UpdateAsync(Procedure data)
     {
         var en = await context.procedure
         .Include(x => x.actions)
-        .Where(x => x.component_id == newData.ComponentId)
-        .OrderBy(x => x.component_id)
+        .Where(x => x.id == data.Id)
+        .OrderBy(x => x.id)
         .FirstOrDefaultAsync();
 
         if (en is null) return 0;
 
         context.action.RemoveRange(en.actions);
 
-        ProcedureMapper.Update(newData, en);
+        en.Update(data);
 
         context.procedure.Update(en);
         return await context.SaveChangesAsync();
@@ -50,26 +52,22 @@ public sealed class ProcRepository(AppDbContext context) : IProcedureRepository
 
     }
 
-    public async Task<int> CountByMacAndUpdateTimeAsync(string mac, DateTime sync)
+    public async Task<int> CountByDeviceIdAndUpdateTimeAsync(int device, DateTime sync)
     {
         var res = await context.procedure
         .AsNoTracking()
-        .Where(x => x.trigger.hardware_mac.Equals(mac) && x.updated_date > sync)
+        .Where(x => x.device_id == device && x.updated_date > sync)
         .CountAsync();
 
         return res;
     }
 
-    public async Task<IEnumerable<Mode>> GetActionTypeAsync()
+    public async Task<IEnumerable<ModeDto>> GetActionTypeAsync()
     {
         var dtos = await context.action_type
             .AsNoTracking()
-            .Select(x => new Mode
-            {
-                Name = x.name,
-                Value = x.value,
-                Description = x.description,
-            }).ToArrayAsync();
+            .Select(x => new ModeDto(x.name,x.value,x.description))
+            .ToArrayAsync();
 
         return dtos;
     }
@@ -78,44 +76,32 @@ public sealed class ProcRepository(AppDbContext context) : IProcedureRepository
     {
         var dtos = await context.procedure
            .AsNoTracking()
-           .Select(x => new ProcedureDto
-           {
-               // Base
-               ComponentId = x.component_id,
-               Mac = x.trigger.hardware_mac,
-               HardwareName = x.trigger.device.name,
-               LocationId = x.location_id,
-               IsActive = x.is_active,
-
-               // Detail
-               Name = x.name,
-               Actions = x.actions
-           .Select(en => new ActionDto
-           {
-               // Base
-               ComponentId = en.component_id,
-               Mac = x.trigger.hardware_mac,
-               LocationId = en.location_id,
-               IsActive = en.is_active,
-
-               // Detail
-               ScpId = en.device_id,
-               ActionType = en.action_type,
-               ActionTypeDesc = en.action_type_detail,
-               Arg1 = en.arg1,
-               Arg2 = en.arg2,
-               Arg3 = en.arg3,
-               Arg4 = en.arg4,
-               Arg5 = en.arg5,
-               Arg6 = en.arg6,
-               Arg7 = en.arg7,
-               StrArg = en.str_arg,
-               DelayTime = en.delay_time,
-           })
-           .ToList()
-
-
-           })
+           .Select(x => new ProcedureDto(
+            x.id,
+            x.device_id,
+            x.driver_id,
+            x.name,
+            x.trigger_id,
+            x.actions.Select(a => new ActionDto(
+                a.id,
+                a.device_id,
+                a.action_type,
+                a.action_type_detail,
+                a.arg1,
+                a.arg2,
+                a.arg3,
+                a.arg4,
+                a.arg5,
+                a.arg6,
+                a.arg7,
+                a.str_arg,
+                a.delay_time,
+                a.procedure_id,
+                a.location_id,
+                a.is_active
+                )).ToList(),
+            x.location_id,
+            x.is_active))
            .ToArrayAsync();
 
         return dtos;
@@ -126,61 +112,50 @@ public sealed class ProcRepository(AppDbContext context) : IProcedureRepository
         throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<ProcedureDto>> GetByLocationIdAsync(short locationId)
+    public async Task<IEnumerable<ProcedureDto>> GetByLocationIdAsync(int locationId)
     {
         var dtos = await context.procedure
             .AsNoTracking()
             .Where(x => x.location_id == locationId || x.location_id == 1)
-            .Select(x => new ProcedureDto
-            {
-                // Base
-                ComponentId = x.component_id,
-                Mac = x.trigger.hardware_mac,
-                HardwareName = x.trigger.device.name,
-                LocationId = x.location_id,
-                IsActive = x.is_active,
-
-                // Detail
-                Name = x.name,
-                Actions = x.actions
-            .Select(en => new ActionDto
-            {
-                // Base
-                ComponentId = en.component_id,
-                Mac = x.trigger.hardware_mac,
-                LocationId = en.location_id,
-                IsActive = en.is_active,
-
-                // Detail
-                ScpId = en.device_id,
-                ActionType = en.action_type,
-                ActionTypeDesc = en.action_type_detail,
-                Arg1 = en.arg1,
-                Arg2 = en.arg2,
-                Arg3 = en.arg3,
-                Arg4 = en.arg4,
-                Arg5 = en.arg5,
-                Arg6 = en.arg6,
-                Arg7 = en.arg7,
-                StrArg = en.str_arg,
-                DelayTime = en.delay_time,
-            })
-            .ToList()
-
-
-            })
+            .Select(x => new ProcedureDto(
+            x.id,
+            x.device_id,
+            x.driver_id,
+            x.name,
+            x.trigger_id,
+            x.actions.Select(a => new ActionDto(
+                a.id,
+                a.device_id,
+                a.action_type,
+                a.action_type_detail,
+                a.arg1,
+                a.arg2,
+                a.arg3,
+                a.arg4,
+                a.arg5,
+                a.arg6,
+                a.arg7,
+                a.str_arg,
+                a.delay_time,
+                a.procedure_id,
+                a.location_id,
+                a.is_active
+                )).ToList(),
+            x.location_id,
+            x.is_active))
             .ToArrayAsync();
 
         return dtos;
     }
 
-    public async Task<short> GetLowestUnassignedNumberAsync(int max, string mac)
+    public async Task<short> GetLowestUnassignedNumberAsync(int max, int device)
     {
         if (max <= 0) return -1;
 
         var query = context.procedure
             .AsNoTracking()
-            .Select(x => x.component_id);
+            .Where(x => x.device_id == device)
+            .Select(x => x.driver_id);
 
         // Handle empty table case quickly
         var hasAny = await query.AnyAsync();
@@ -204,7 +179,7 @@ public sealed class ProcRepository(AppDbContext context) : IProcedureRepository
 
     }
 
-    public async Task<Pagination<ProcedureDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    public async Task<Pagination<ProcedureDto>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
     {
 
         var query = context.procedure.AsNoTracking().AsQueryable();
@@ -256,44 +231,32 @@ public sealed class ProcRepository(AppDbContext context) : IProcedureRepository
             .OrderByDescending(t => t.created_date)
             .Skip((param.PageNumber - 1) * param.PageSize)
             .Take(param.PageSize)
-            .Select(x => new ProcedureDto
-            {
-                // Base
-                ComponentId = x.component_id,
-                Mac = x.trigger.hardware_mac,
-                HardwareName = x.trigger.device.name,
-                LocationId = x.location_id,
-                IsActive = x.is_active,
-
-                // Detail
-                Name = x.name,
-                Actions = x.actions
-               .Select(en => new ActionDto
-               {
-                   // Base
-                   ComponentId = en.component_id,
-                   Mac = x.trigger.hardware_mac,
-                   LocationId = en.location_id,
-                   IsActive = en.is_active,
-
-                   // Detail
-                   ScpId = en.device_id,
-                   ActionType = en.action_type,
-                   ActionTypeDesc = en.action_type_detail,
-                   Arg1 = en.arg1,
-                   Arg2 = en.arg2,
-                   Arg3 = en.arg3,
-                   Arg4 = en.arg4,
-                   Arg5 = en.arg5,
-                   Arg6 = en.arg6,
-                   Arg7 = en.arg7,
-                   StrArg = en.str_arg,
-                   DelayTime = en.delay_time,
-               })
-               .ToList()
-
-
-            })
+            .Select(x => new ProcedureDto(
+            x.id,
+            x.device_id,
+            x.driver_id,
+            x.name,
+            x.trigger_id,
+            x.actions.Select(a => new ActionDto(
+                a.id,
+                a.device_id,
+                a.action_type,
+                a.action_type_detail,
+                a.arg1,
+                a.arg2,
+                a.arg3,
+                a.arg4,
+                a.arg5,
+                a.arg6,
+                a.arg7,
+                a.str_arg,
+                a.delay_time,
+                a.procedure_id,
+                a.location_id,
+                a.is_active
+                )).ToList(),
+            x.location_id,
+            x.is_active))
             .ToListAsync();
 
 
@@ -310,8 +273,25 @@ public sealed class ProcRepository(AppDbContext context) : IProcedureRepository
         };
     }
 
-    public Task<bool> IsAnyByComponentId(short component)
+    public Task<bool> IsAnyByIdAasync(int component)
     {
         throw new NotImplementedException();
     }
+
+
+      public Task<bool> IsAnyByIdAsync(int id)
+      {
+            throw new NotImplementedException();
+      }
+
+      public Task<ProcedureDto> GetByIdAsync(int id)
+      {
+            throw new NotImplementedException();
+      }
+
+
+      public Task<bool> IsAnyByNameAsync(string name)
+      {
+            throw new NotImplementedException();
+      }
 }

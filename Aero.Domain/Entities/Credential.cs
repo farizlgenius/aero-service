@@ -12,20 +12,52 @@ public sealed class Credential : BaseDomain
         public string Pin { get; set; } = string.Empty;
         public string ActiveDate { get; set; } = string.Empty;
         public string DeactiveDate { get; set; } = string.Empty;
-        public User user { get; set; } = new User();
+        public string UserId {get; set;} = string.Empty;
 
         public Credential() { }
 
-        public Credential(int bits, int issueCode, int facilityCode, long cardNo, string pin, string activeDate, string deactiveDate, User user)
+        public Credential(int bits, int issueCode, int facilityCode, long cardNo, string pin, string activeDate, string deactiveDate,string UserId)
         {
-                Bits = bits;
-                IssueCode = issueCode;
-                FacilityCode = facilityCode;
-                CardNo = cardNo;
+                SetBits(bits);
+                SetIssueCode(issueCode);
+                SetFacCode(facilityCode);
+                SetCardNo(cardNo);
                 Pin = ValidateRequiredString(pin, nameof(pin));
                 ActiveDate = ValidateRequiredString(activeDate, nameof(activeDate));
                 DeactiveDate = ValidateRequiredString(deactiveDate, nameof(deactiveDate));
-                this.user = user ?? throw new ArgumentNullException(nameof(user));
+                SetUserId(UserId);
+       
+        }
+
+        private void SetUserId(string user)
+        {
+                ArgumentException.ThrowIfNullOrWhiteSpace(user);
+                if(!RegexHelper.IsValidOnlyCharAndDigit(user)) throw new ArgumentException("UserId invalid.",nameof(user));
+                this.UserId = user;                
+        }
+
+        private void SetBits(int bit)
+        {
+                if(bit < 0) throw new ArgumentException("Bits invalid.",nameof(bit));
+                this.Bits = bit;
+        }
+
+        private void SetIssueCode(int issue)
+        {
+                if(issue < 0) throw new ArgumentException("Issue code invalid.",nameof(issue));
+                this.IssueCode = issue;
+        }
+
+        private void SetFacCode(int fac)
+        {
+                if(fac < 0) throw new ArgumentException("Fac code invalid.",nameof(fac));
+                this.FacilityCode = fac;
+        }
+
+        private void SetCardNo(long card)
+        {
+                if(card <= 0) throw new ArgumentException("Card no invalid.",nameof(card));
+                this.CardNo = card;
         }
 
         private static string ValidateRequiredString(string value, string field)

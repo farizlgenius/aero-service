@@ -98,7 +98,7 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
             x.is_active
         }).ToArrayAsync();
 
-        var res = data.Select(x => new AccessLevel(x.name,x.components.ToList(),x.location_id,x.is_active)).ToList();
+        var res = data.Select(x => new AccessLevel(x.id,x.name,x.components.ToList(),x.location_id,x.is_active)).ToList();
 
         return res;
 
@@ -306,7 +306,7 @@ public class AlvlRepository(AppDbContext context) : IAlvlRepository
         return await context.access_level.AsNoTracking().AnyAsync(x => x.name.Equals(name));
     }
 
-    public async Task<bool> IsAnyById(int id)
+    public async Task<bool> IsAnyByIdAsync(int id)
     {
         return await context.access_level.AsNoTracking().AnyAsync(x => x.id == id);
     }

@@ -19,5 +19,13 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.point_number = data.PointNumber;
             this.monitor_group_id = data.MonitorGroupId;
         }
+
+        public void Update(Aero.Domain.Entities.MonitorGroupList data)
+        {
+            this.point_type = data.PointType;
+            this.point_type_detail = data.PointTypeDetail;
+            this.point_number = data.PointNumber;
+            this.monitor_group_id = data.MonitorGroupId;
+        }
     }
 }

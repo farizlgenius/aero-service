@@ -37,7 +37,7 @@ namespace Aero.Api.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IntervalDto>>> CreateAsync([FromBody] IntervalDto dto)
+        public async Task<ActionResult<ResponseDto<IntervalDto>>> CreateAsync([FromBody] CreateIntervalDto dto)
         {
             var res = await service.CreateAsync(dto);
             return Ok(res);
@@ -52,9 +52,9 @@ namespace Aero.Api.Controllers
 
         [HttpPost("delete/range")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IEnumerable<ResponseDto<bool>>>>> DeleteRangeAsync([FromBody] List<short> components)
+        public async Task<ActionResult<ResponseDto<IEnumerable<ResponseDto<bool>>>>> DeleteRangeAsync([FromBody] List<int> ids)
         {
-            var res = await service.DeleteRangeAsync(components);
+            var res = await service.DeleteRangeAsync(ids);
             return Ok(res);
         }
 

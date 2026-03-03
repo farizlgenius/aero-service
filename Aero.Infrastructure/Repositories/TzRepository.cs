@@ -362,7 +362,7 @@ public class TzRepository(AppDbContext context) : ITzRepository
         return dtos;
     }
 
-    public async Task<bool> IsAnyById(int id)
+    public async Task<bool> IsAnyByIdAsync(int id)
     {
         return await context.timezone.AnyAsync(x => x.id == id);
     }

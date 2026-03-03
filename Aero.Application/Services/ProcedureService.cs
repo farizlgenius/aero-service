@@ -5,111 +5,127 @@ using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
-using Aero.Application.Mapper;
+
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 
 namespace Aero.Application.Services{
-    public sealed class ProcedureService(IProcedureRepository rProc,IQProcRepository qProc,IQHwRepository qHw,IProcCommand proc) : IProcedureService
+    public sealed class ProcedureService(IProcedureRepository repo,IDeviceRepository hw,IProcCommand proc,ISettingRepository setting) : IProcedureService
     {
-        public async Task<ResponseDto<bool>> CreateAsync(ProcedureDto dto)
+        public async Task<ResponseDto<ProcedureDto>> CreateAsync(ProcedureDto dto)
         {
-            var ComponentId = await qProc.GetLowestUnassignedNumberAsync(10,"");
-            var ProcId = await qProc.GetLowestUnassignedNumberAsync(10,dto.Mac);
+            // Check value in license here 
+            // ....to be implement
 
-            foreach(var ac in dto.Actions)
-            {
-                if(ac.ActionType == 9)
-                {
-                    ac.ScpId = 0;
-                }
-                else
-                {
-                    ac.ScpId = await qHw.GetComponentIdFromMacAsync(ac.Mac);
-                }
-               
-            }
+            if(await repo.IsAnyByNameAsync(dto.Name.Trim())) return ResponseHelper.BadRequestName<ProcedureDto>();
 
-            dto.ProcId = ProcId;
-            dto.ComponentId = ComponentId;
+            var ScpSetting = await setting.GetScpSettingAsync();
 
-            var domain = ProcedureMapper.ToDomain(dto);
+            var DriverId = await repo.GetLowestUnassignedNumberAsync(ScpSetting.nProc,dto.DeviceId);
+
+
+
+            var domain = new Procedure(
+                dto.Id,
+                dto.DeviceId,
+                dto.DriverId,
+                dto.TriggerId,
+                dto.Name,
+                dto.Actions.Select(x => new Aero.Domain.Entities.Action(
+                    x.ActionType == 0 ? (short)0 :(short)x.DeviceId,
+                    x.ActionType,
+                    x.ActionDetail,
+                    x.Arg1,
+                    x.Arg2,
+                    x.Arg3,
+                    x.Arg4,
+                    x.Arg5,
+                    x.Arg6,
+                    x.Arg7,
+                    x.StrArg,
+                    x.DelayTime,
+                    x.ProcedureId,
+                    x.LocationId,
+                    x.IsActive
+                )).ToList()
+                );
             
 
-            var ids = await qHw.GetComponentIdsAsync();
+            var ids = await hw.GetDriverIdsAsync();
             foreach(var ac in domain.Actions)
             {
                 if (ac.ActionType == 9)
                 {
-                    if (!proc.ActionSpecificationAsyncForAllHW(ComponentId, ac, ids.ToList()))
+                    if (!proc.ActionSpecificationAsyncForAllHW(DriverId, ac, ids.ToList()))
                     {
-                        return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.ACTION_SPEC));
+                        return ResponseHelper.UnsuccessBuilderWithString<ProcedureDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.ACTION_SPEC));
                     }
                 }
                 else if (ac.DelayTime != 0) 
                 {
-                    if(!proc.ActionSpecificationDelayAsync(ComponentId, ac))
+                    if(!proc.ActionSpecificationDelayAsync(DriverId, ac))
                     {
-                        return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.ACTION_SPEC));
+                        return ResponseHelper.UnsuccessBuilderWithString<ProcedureDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.ACTION_SPEC));
                     }
                 }
             }
 
-            if (!proc.ActionSpecificationAsync(ComponentId, domain.Actions.ToList()))
+            if (!proc.ActionSpecificationAsync(DriverId, domain.Actions.ToList()))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.ACTION_SPEC));
+                return ResponseHelper.UnsuccessBuilderWithString<ProcedureDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.ACTION_SPEC));
             }
 
-            var status = await rProc.AddAsync(domain);
-            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
+            var status = await repo.AddAsync(domain);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<ProcedureDto>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
 
-            return ResponseHelper.SuccessBuilder<bool>(true);
+            return ResponseHelper.SuccessBuilder<ProcedureDto>(await repo.GetByIdAsync(status));
             
         }
 
-        public async Task<ResponseDto<bool>> DeleteAsync(short ComponentId)
+        public async Task<ResponseDto<ProcedureDto>> DeleteAsync(int id)
         {
+            var en = await repo.GetByIdAsync(id);
 
-            if (!await qProc.IsAnyByComponentId(ComponentId)) return ResponseHelper.NotFoundBuilder<bool>();
+            if (en is null) return ResponseHelper.NotFoundBuilder<ProcedureDto>();
 
             var ac = new Aero.Domain.Entities.Action
             {
                 ActionType = 0,
             };
 
-            if(!proc.ActionSpecificationAsync(ComponentId, [ac]))
+            if(!proc.ActionSpecificationAsync(en.DriverId, [ac]))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.ACTION_SPEC));
+                return ResponseHelper.UnsuccessBuilderWithString<ProcedureDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess("", Command.ACTION_SPEC));
             }
 
-            var status = await rProc.DeleteByComponentIdAsync(ComponentId);
-            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,[]);
+            var status = await repo.DeleteByIdAsync(id);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<ProcedureDto>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,[]);
 
-            return ResponseHelper.SuccessBuilder<bool>(true);
+            return ResponseHelper.SuccessBuilder<ProcedureDto>(en);
         }
 
-        public async Task<ResponseDto<IEnumerable<Mode>>> GetActionType()
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetActionType()
         {
-            var dtos = await qProc.GetActionTypeAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
+            var dtos = await repo.GetActionTypeAsync();
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
         public async Task<ResponseDto<IEnumerable<ProcedureDto>>> GetAsync()
         {
-           var dtos = await qProc.GetAsync();
+           var dtos = await repo.GetAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<ProcedureDto>>(dtos);
         }
 
-        public async Task<ResponseDto<IEnumerable<ProcedureDto>>> GetByLocationIdAsync(short location)
+        public async Task<ResponseDto<IEnumerable<ProcedureDto>>> GetByLocationIdAsync(int location)
         {
-            var dtos = await qProc.GetByLocationIdAsync(location);
+            var dtos = await repo.GetByLocationIdAsync(location);
 
             return ResponseHelper.SuccessBuilder<IEnumerable<ProcedureDto>>(dtos);
         }
 
-        public async Task<ResponseDto<Pagination<ProcedureDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        public async Task<ResponseDto<Pagination<ProcedureDto>>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
         {
-            var res = await qProc.GetPaginationAsync(param,location);
+            var res = await repo.GetPaginationAsync(param,location);
             return ResponseHelper.SuccessBuilder(res);
         }
 

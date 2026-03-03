@@ -47,11 +47,11 @@ public class CpRepository(AppDbContext context) : ICpRepository
             return await context.SaveChangesAsync();
       }
 
-    public async Task<int> CountByMacAndUpdateTimeAsync(string mac, DateTime sync)
+    public async Task<int> CountByMacAndUpdateTimeAsync(int device, DateTime sync)
     {
         var res = await context.control_point
         .AsNoTracking()
-        .Where(x => x.module.device_id.Equals(mac) && x.updated_date > sync)
+        .Where(x => x.module.device_id == device && x.updated_date > sync)
         .CountAsync();
 
         return res;
@@ -122,7 +122,7 @@ public class CpRepository(AppDbContext context) : ICpRepository
         return res;
     }
 
-    public async Task<ControlPointDto> GetByDeviceAndIdAsync(int deviceId, int id)
+    public async Task<ControlPointDto> GetByIdAsync(int deviceId, int id)
     {
         var dto = await context.control_point
            .Where(x => x.module.device_id == deviceId && x.id == id)
@@ -278,7 +278,7 @@ public class CpRepository(AppDbContext context) : ICpRepository
         };
     }
 
-    public async Task<bool> IsAnyById(int id)
+    public async Task<bool> IsAnyByIdAsync(int id)
     {
         return await context.control_point.AsNoTracking().AnyAsync(x => x.id == id);
     }

@@ -9,7 +9,7 @@ using HID.Aero.ScpdNet.Wrapper;
 
 namespace Aero.Infrastructure.Services;
 
-public sealed class CfmtCommandService(ICmndRepository cmnd,IHwRepository qHw) : BaseAeroCommand,ICfmtCommand
+public sealed class CfmtCommandService(ICmndRepository cmnd,IDeviceRepository qHw) : BaseAeroCommand,ICfmtCommand
 {
       public async Task<bool> CardFormatterConfiguration(short ScpId, short FormatNo, short facility, short offset, short function_id, short flags, short bits, short pe_ln, short pe_loc, short po_ln, short po_loc, short fc_ln, short fc_loc, short ch_ln, short ch_loc, short ic_ln, short ic_loc)
       {
@@ -44,7 +44,7 @@ public sealed class CfmtCommandService(ICmndRepository cmnd,IHwRepository qHw) :
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromMacAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await qHw.GetLocationIdFromDriverIdAsync(await qHw.GetMacFromComponentAsync(ScpId))
             });
         }
         else
@@ -59,7 +59,7 @@ public sealed class CfmtCommandService(ICmndRepository cmnd,IHwRepository qHw) :
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromMacAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await qHw.GetLocationIdFromDriverIdAsync(await qHw.GetMacFromComponentAsync(ScpId))
             });
 
         }
@@ -101,7 +101,7 @@ public sealed class CfmtCommandService(ICmndRepository cmnd,IHwRepository qHw) :
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromMacAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await qHw.GetLocationIdFromDriverIdAsync(await qHw.GetMacFromComponentAsync(ScpId))
             });
         }
         else
@@ -116,7 +116,7 @@ public sealed class CfmtCommandService(ICmndRepository cmnd,IHwRepository qHw) :
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromMacAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await qHw.GetLocationIdFromDriverIdAsync(await qHw.GetMacFromComponentAsync(ScpId))
             });
 
         }

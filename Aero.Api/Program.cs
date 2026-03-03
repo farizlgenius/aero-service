@@ -216,7 +216,7 @@ namespace AeroService
             builder.Services.AddScoped<IUserRepository,HolderRepository>();
             builder.Services.AddScoped<IQHolderRepository,QHolderRepository>();
             builder.Services.AddScoped<IHttpRepository,HttpRepository>();
-            builder.Services.AddScoped<IHwRepository,HwRepository>();
+            builder.Services.AddScoped<IDeviceRepository,DeviceRepository>();
             builder.Services.AddScoped<IQHwRepository,QHwRepository>();
             builder.Services.AddScoped<IIntervalRepository,IntervalRepository>();
             builder.Services.AddScoped<IQIntervalRepository,QIntervalRepository>();
@@ -252,7 +252,7 @@ namespace AeroService
 
 
             // DI for Service
-            builder.Services.AddScoped<IHardwareService,HardwareService>();
+            builder.Services.AddScoped<IDeviceService,HardwareService>();
             builder.Services.AddScoped<ITimeZoneService,TimeZoneService>();
             builder.Services.AddScoped<IAccessLevelService, AccessLevelService>();
             builder.Services.AddScoped<ICardFormatService, CardFormatService>();

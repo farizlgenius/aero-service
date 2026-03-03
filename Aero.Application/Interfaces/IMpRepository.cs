@@ -8,13 +8,16 @@ namespace Aero.Domain.Interface;
 
 public interface IMpRepository : IBaseRepository<MonitorPointDto,MonitorPoint>
 {
-      Task<int> SetMaskAsync(string mac,short mpid,bool mask);
-    Task<IEnumerable<MonitorPointDto>> GetByMacAsync(string mac);
-    Task<int> CountByMacAndUpdateTimeAsync(string mac, DateTime sync);
-    Task<IEnumerable<short>> GetAvailableIpAsync(string mac, short sio);
-    Task<bool> IsAnyByMacAndComponentIdAsync(string mac, short component);
-    Task<string> GetMacFromComponentIdAsync(short component);
-    Task<IEnumerable<Mode>> GetInputModeAsync();
-    Task<IEnumerable<Mode>> GetMonitorPointModeAsync();
-    Task<IEnumerable<Mode>> GetLogFunctionAsync();
+  Task<IEnumerable<MonitorPointDto>> GetByDeviceId(int device);
+      Task<int> SetMaskByIdAsync(int id,bool mask);
+    Task<IEnumerable<MonitorPointDto>> GetByDeviceIdAsync(int id);
+    Task<int> CountByDeviceIdAndUpdateTimeAsync(int deviceId, DateTime sync);
+    Task<IEnumerable<short>> GetAvailableIpAsync(int moduleId);
+    Task<bool> IsAnyByDeviceIdAndDriverIdAsync(int deviceId, short driver);
+    Task<IEnumerable<ModeDto>> GetInputModeAsync();
+    Task<IEnumerable<ModeDto>> GetMonitorPointModeAsync();
+    Task<IEnumerable<ModeDto>> GetLogFunctionAsync();
+    Task<short> GetLowestUnassignedNumberAsync(int max, int device);
+    Task<int> GetDeviceIdFromDriverIdIdAsync(int driver);
+
 }

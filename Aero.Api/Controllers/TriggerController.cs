@@ -79,10 +79,10 @@ namespace Aero.Api.Controllers
             return Ok(res);
         }
 
-        [HttpDelete]
-        public async Task<ActionResult<ResponseDto<bool>>> DeleteAsync(string Mac,short ComponentId)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ResponseDto<bool>>> DeleteAsync(int id)
         {
-            var res = await service.DeleteAsync(Mac,ComponentId);
+            var res = await service.DeleteAsync(id);
             return Ok(res);
         }
 

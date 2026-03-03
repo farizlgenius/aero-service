@@ -1,25 +1,23 @@
 using System;
+using System.IO.Compression;
 using Aero.Application.DTOs;
+using Aero.Application.Interfaces;
 using Aero.Domain.Entities;
 using Aero.Domain.Enums;
 using Aero.Domain.Interfaces;
-using Aero.Infrastructure.Data;
+using Aero.Infrastructure.Persistences;
 using HID.Aero.ScpdNet.Wrapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aero.Infrastructure.Repositories;
 
-public sealed class ModuleRepository(AppDbContext context) : IBaseRepository<Module>
+public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
 {
       public Task<int> AddAsync(Module data)
       {
             throw new NotImplementedException();
       }
 
-      public Task<int> DeleteByComponentIdAsync(short component)
-      {
-            throw new NotImplementedException();
-      }
 
       public Task<int> UpdateAsync(Module newData)
       {
@@ -66,11 +64,11 @@ public sealed class ModuleRepository(AppDbContext context) : IBaseRepository<Mod
 
     //   }
 
-    public async Task<int> CountByMacAndUpdateTimeAsync(string mac, DateTime sync)
+    public async Task<int> CountByDeviceIdAndUpdateTimeAsync(int device, DateTime sync)
     {
         var res = await context.module
         .AsNoTracking()
-        .Where(x => x.mac.Equals(mac) && x.updated_date > sync)
+        .Where(x => x.device_id == device && x.updated_date > sync)
         .CountAsync();
 
         return res;
@@ -80,183 +78,136 @@ public sealed class ModuleRepository(AppDbContext context) : IBaseRepository<Mod
     {
         var res = await context.module
             .AsNoTracking()
-            .Select(d => new ModuleDto
-            {
-                // Base 
-
-                ComponentId = d.component_id,
-                Mac = d.mac,
-                HardwareName = d.hardware.name,
-                LocationId = d.location_id,
-                IsActive = d.is_active,
-
-                // extend_desc
-                Model = d.model,
-                ModelDescription = d.model_desc,
-                Revision = d.revision,
-                SerialNumber = d.serial_number,
-                nHardwareId = d.n_hardware_id,
-                nHardwareIdDescription = d.n_hardware_id_desc,
-                nHardwareRev = d.n_hardware_rev,
-                nProductId = d.n_product_id,
-                nProductVer = d.n_product_ver,
-                nEncConfig = d.n_enc_config,
-                nEncConfigDescription = d.n_enc_config_desc,
-                nEncKeyStatus = d.n_enc_key_status,
-                nEncKeyStatusDescription = d.n_enc_key_status_desc,
-                Readers = d.readers == null ? null : d.readers.Select(x => new ReaderDto
-                {
-                    // Base
-
-                    ComponentId = x.component_id,
-                    Mac = x.module.mac,
-                    HardwareName = x.module.hardware.name,
-                    LocationId = x.location_id,
-                    IsActive = x.is_active,
-
-                    // extend_desc
-                    ModuleId = x.module_id,
-                    ReaderNo = x.reader_no,
-                    DataFormat = x.data_format,
-                    KeypadMode = x.keypad_mode,
-                    LedDriveMode = x.led_drive_mode,
-                    OsdpFlag = x.osdp_flag,
-                    OsdpAddress = x.osdp_address,
-                    OsdpBaudrate = x.osdp_baudrate,
-                    OsdpDiscover = x.osdp_discover,
-                    OsdpSecureChannel = x.osdp_secure_channel,
-                    OsdpTracing = x.osdp_tracing,
-                }).ToList(),
-                Sensors = d.sensors == null ? null : d.sensors.Select(x => new SensorDto
-                {
-
-                    // Base 
-
-                    ComponentId = x.component_id,
-                    Mac = x.module.mac,
-                    HardwareName = x.module.hardware.name,
-                    LocationId = x.location_id,
-                    IsActive = x.is_active,
-
-                    // extend_desc
-                    ModuleId = x.module_id,
-                    InputNo = x.input_no,
-                    InputMode = x.input_mode,
-                    Debounce = x.debounce,
-                    HoldTime = x.holdtime,
-                    DcHeld = x.dc_held,
-
-                }).ToList(),
-                Strikes = d.strikes == null ? null : d.strikes.Select(x => new StrikeDto
-                {
-                    // Base 
-
-                    ComponentId = x.component_id,
-                    Mac = x.module.mac,
-                    HardwareName = x.module.hardware.name,
-                    LocationId = x.location_id,
-                    IsActive = x.is_active,
-
-                    // extend_desc
-                    ModuleId = x.module_id,
-                    OutputNo = x.output_no,
-                    RelayMode = x.relay_mode,
-                    OfflineMode = x.offline_mode,
-                    StrkMax = x.strike_max,
-                    StrkMin = x.strike_min,
-                    StrkMode = x.strike_mode,
-                }).ToList(),
-                RequestExits = d.request_exits == null ? null : d.request_exits.Select(x => new RequestExitDto
-                {
-                    // Base
-
-                    ComponentId = x.component_id,
-                    Mac = x.module.mac,
-                    HardwareName = x.module.hardware.name,
-                    LocationId = x.location_id,
-                    IsActive = x.is_active,
-
-                    // extend_desc
-                    ModuleId = x.module_id,
-                    InputNo = x.input_no,
-                    InputMode = x.input_mode,
-                    Debounce = x.debounce,
-                    HoldTime = x.holdtime,
-                    MaskTimeZone = x.mask_timezone,
-                }).ToList(),
-                MonitorPoints = d.monitor_points == null ? null : d.monitor_points.Select(x => new MonitorPointDto
-                {
-                    // Base 
-
-                    ComponentId = x.component_id,
-                    Mac = x.module.mac,
-                    HardwareName = x.module.hardware.name,
-                    LocationId = x.location_id,
-                    IsActive = x.is_active,
-
-                    // extend_desc 
-                    Name = x.name,
-                    ModuleId = x.module_id,
-                    InputNo = x.input_no,
-                    InputMode = x.input_mode,
-                    InputModeDescription = x.input_mode_desc,
-                    Debounce = x.debounce,
-                    HoldTime = x.holdtime,
-                    LogFunction = x.log_function,
-                    LogFunctionDescription = x.log_function_desc,
-                    MonitorPointMode = x.monitor_point_mode,
-                    MonitorPointModeDescription = x.monitor_point_mode_desc,
-                    DelayEntry = x.delay_entry,
-                    DelayExit = x.delay_exit,
-                    IsMask = x.is_mask,
-
-                }).ToList(),
-                ControlPoints = d.control_points == null ? null : d.control_points.Select(x => new ControlPointDto
-                {
-                    // Base
-
-                    ComponentId = x.component_id,
-                    Mac = x.module.mac,
-                    HardwareName = x.module.hardware.name,
-                    LocationId = x.location_id,
-                    IsActive = x.is_active,
-
-                    // extend_desc
-                    Name = x.name,
-                    ModuleId = x.module_id,
-                    ModuleDescription = x.module.model_desc,
-                    //module_desc = x.module_desc,
-                    OutputNo = x.output_no,
-                    RelayMode = x.relay_mode,
-                    RelayModeDescription = x.relay_mode_desc,
-                    OfflineMode = x.offline_mode,
-                    OfflineModeDescription = x.offline_mode_desc,
-                    DefaultPulse = x.default_pulse,
-                }).ToList(),
-                Address = d.address,
-                Port = d.port,
-                nInput = d.n_input,
-                nOutput = d.n_output,
-                nReader = d.n_reader,
-                Msp1No = d.msp1_no,
-                BaudRate = d.baudrate,
-                nProtocol = d.n_protocol,
-                nDialect = d.n_dialect,
-            }).ToArrayAsync();
+            .Select(m => new ModuleDto(
+                m.driver_id,
+                m.model,
+                m.model_detail,
+                m.revision,
+                m.serial_number,
+                m.n_hardware_id,
+                m.n_hardware_id_detail,
+                m.n_hardware_rev,
+                m.n_product_id,
+                m.n_product_ver,
+                m.n_enc_config,
+                m.n_enc_config_detail,
+                m.n_enc_key_status,
+                m.n_enc_key_status_detail,
+                m.readers == null ? null : m.readers.Select(r => new ReaderDto(
+                    r.device_id,
+                    r.module_id,
+                    r.door_id,
+                    r.reader_no,
+                    r.data_format,
+                    r.keypad_mode,
+                    r.led_drive_mode,
+                    r.osdp_flag,
+                    r.osdp_baudrate,
+                    r.osdp_discover,
+                    r.osdp_tracing,
+                    r.osdp_address,
+                    r.osdp_secure_channel,
+                    r.location_id,
+                    r.is_active
+                )).ToList(),
+                m.sensors == null ? null : m.sensors.Select(s => new SensorDto(
+                    s.device_id,
+                    s.module_id,
+                    s.door_id,
+                    s.input_no,
+                    s.input_mode,
+                    s.debounce,
+                    s.holdtime,
+                    s.dc_held,
+                    s.location_id,
+                    s.is_active
+                )).ToList(),
+                m.strikes == null ? null : m.strikes.Select(k => new StrikeDto(
+                    k.device_id,
+                    k.door_id,
+                    k.module_id,
+                    k.output_no,
+                    k.relay_mode,
+                    k.offline_mode,
+                    k.strike_max,
+                    k.strike_min,
+                    k.strike_mode,
+                    k.location_id,
+                    k.is_active
+                )).ToList(),
+                m.request_exits == null ? null : m.request_exits.Select(x => new RequestExitDto(
+                    x.device_id,
+                    x.module_id,
+                    x.door_id,
+                    x.input_no,
+                    x.input_mode,
+                    x.debounce,
+                    x.holdtime,
+                    x.mask_timezone,
+                    x.location_id,
+                    x.is_active
+                )).ToList(),
+                m.monitor_points == null ? null : m.monitor_points.Select(m => new MonitorPointDto(
+                    m.id,
+                    m.device_id,
+                    m.driver_id,
+                    m.name,
+                    (short)m.module_id,
+                    m.module.model_detail,
+                    m.input_no,
+                    m.input_mode,
+                    m.input_mode_detail,
+                    m.debounce,
+                    m.holdtime,
+                    m.log_function,
+                    m.log_function_detail,
+                    m.monitor_point_mode,
+                    m.monitor_point_mode_detail,
+                    m.delay_entry,
+                    m.delay_exit,
+                    m.is_mask,
+                    m.location_id,
+                    m.is_active
+                )).ToList(),
+                m.control_points == null ? null : m.control_points.Select(c => new ControlPointDto(
+                    c.id,
+                    c.driver_id,
+                    c.name,
+                    c.module_id,
+                    c.module_detail,
+                    c.output_no,
+                    c.relaymode,
+                    c.relaymode_detail,
+                    c.offlinemode,
+                    c.offlinemode_detail,
+                    c.default_pulse,
+                    c.device_id,
+                    c.location_id,
+                    c.is_active
+                )).ToList(),
+                m.address,
+                m.address_detail,
+                m.port,
+                m.n_input,
+                m.n_output,
+                m.n_reader,
+                m.msp1_no,
+                m.baudrate,
+                m.n_protocol,
+                m.n_dialect,
+                m.location_id,
+                m.is_active
+            ))
+            .ToArrayAsync();
 
         return res;
     }
 
-    public async Task<IEnumerable<Mode>> GetBaudrateAsync()
+    public async Task<IEnumerable<ModeDto>> GetBaudrateAsync()
     {
         var res = await context.module_baudrate
             .AsNoTracking()
-            .Select(x => new Mode
-            {
-                Value = x.value,
-                Name = x.name,
-                Description = x.description,
-            })
+            .Select(x => new ModeDto(x.name,(short)x.value,x.description))
             .ToArrayAsync();
 
         return res;
@@ -272,354 +223,269 @@ public sealed class ModuleRepository(AppDbContext context) : IBaseRepository<Mod
         var res = await context.module
             .AsNoTracking()
             .Where(x => x.location_id == locationId || x.location_id == 1)
-            .Select(d => new ModuleDto
-            {
-                // Base 
-                ComponentId = d.component_id,
-                Mac = d.mac,
-                HardwareName = d.hardware.name,
-                LocationId = d.location_id,
-                IsActive = d.is_active,
-
-                // extend_desc
-                Model = d.model,
-                ModelDescription = d.model_desc,
-                Revision = d.revision,
-                SerialNumber = d.serial_number,
-                nHardwareId = d.n_hardware_id,
-                nHardwareIdDescription = d.n_hardware_id_desc,
-                nHardwareRev = d.n_hardware_rev,
-                nProductId = d.n_product_id,
-                nProductVer = d.n_product_ver,
-                nEncConfig = d.n_enc_config,
-                nEncConfigDescription = d.n_enc_config_desc,
-                nEncKeyStatus = d.n_enc_key_status,
-                nEncKeyStatusDescription = d.n_enc_key_status_desc,
-                Readers = d.readers == null ? null : d.readers.Select(x => new ReaderDto
-                {
-                    // Base
-
-                    ComponentId = x.component_id,
-                    Mac = x.module.mac,
-                    HardwareName = x.module.hardware.name,
-                    LocationId = x.location_id,
-                    IsActive = x.is_active,
-
-                    // extend_desc
-                    ModuleId = x.module_id,
-                    ReaderNo = x.reader_no,
-                    DataFormat = x.data_format,
-                    KeypadMode = x.keypad_mode,
-                    LedDriveMode = x.led_drive_mode,
-                    OsdpFlag = x.osdp_flag,
-                    OsdpAddress = x.osdp_address,
-                    OsdpBaudrate = x.osdp_baudrate,
-                    OsdpDiscover = x.osdp_discover,
-                    OsdpSecureChannel = x.osdp_secure_channel,
-                    OsdpTracing = x.osdp_tracing,
-                }).ToList(),
-                Sensors = d.sensors == null ? null : d.sensors.Select(x => new SensorDto
-                {
-
-                    // Base 
-
-                    ComponentId = x.component_id,
-                    Mac = x.module.mac,
-                    HardwareName = x.module.hardware.name,
-                    LocationId = x.location_id,
-                    IsActive = x.is_active,
-
-                    // extend_desc
-                    ModuleId = x.module_id,
-                    InputNo = x.input_no,
-                    InputMode = x.input_mode,
-                    Debounce = x.debounce,
-                    HoldTime = x.holdtime,
-                    DcHeld = x.dc_held,
-
-                }).ToList(),
-                Strikes = d.strikes == null ? null : d.strikes.Select(x => new StrikeDto
-                {
-                    // Base 
-
-                    ComponentId = x.component_id,
-                    Mac = x.module.mac,
-                    HardwareName = x.module.hardware.name,
-                    LocationId = x.location_id,
-                    IsActive = x.is_active,
-
-                    // extend_desc
-                    ModuleId = x.module_id,
-                    OutputNo = x.output_no,
-                    RelayMode = x.relay_mode,
-                    OfflineMode = x.offline_mode,
-                    StrkMax = x.strike_max,
-                    StrkMin = x.strike_min,
-                    StrkMode = x.strike_mode,
-                }).ToList(),
-                RequestExits = d.request_exits == null ? null : d.request_exits.Select(x => new RequestExitDto
-                {
-                    // Base
-
-                    ComponentId = x.component_id,
-                    Mac = x.module.mac,
-                    HardwareName = x.module.hardware.name,
-                    LocationId = x.location_id,
-                    IsActive = x.is_active,
-
-                    // extend_desc
-                    ModuleId = x.module_id,
-                    InputNo = x.input_no,
-                    InputMode = x.input_mode,
-                    Debounce = x.debounce,
-                    HoldTime = x.holdtime,
-                    MaskTimeZone = x.mask_timezone,
-                }).ToList(),
-                MonitorPoints = d.monitor_points == null ? null : d.monitor_points.Select(x => new MonitorPointDto
-                {
-                    // Base 
-
-                    ComponentId = x.component_id,
-                    Mac = x.module.mac,
-                    HardwareName = x.module.hardware.name,
-                    LocationId = x.location_id,
-                    IsActive = x.is_active,
-
-                    // extend_desc 
-                    Name = x.name,
-                    ModuleId = x.module_id,
-                    InputNo = x.input_no,
-                    InputMode = x.input_mode,
-                    InputModeDescription = x.input_mode_desc,
-                    Debounce = x.debounce,
-                    HoldTime = x.holdtime,
-                    LogFunction = x.log_function,
-                    LogFunctionDescription = x.log_function_desc,
-                    MonitorPointMode = x.monitor_point_mode,
-                    MonitorPointModeDescription = x.monitor_point_mode_desc,
-                    DelayEntry = x.delay_entry,
-                    DelayExit = x.delay_exit,
-                    IsMask = x.is_mask,
-
-                }).ToList(),
-                ControlPoints = d.control_points == null ? null : d.control_points.Select(x => new ControlPointDto
-                {
-                    // Base
-
-                    ComponentId = x.component_id,
-                    Mac = x.module.mac,
-                    HardwareName = x.module.hardware.name,
-                    LocationId = x.location_id,
-                    IsActive = x.is_active,
-
-                    // extend_desc
-                    Name = x.name,
-                    ModuleId = x.module_id,
-                    ModuleDescription = x.module.model_desc,
-                    //module_desc = x.module_desc,
-                    OutputNo = x.output_no,
-                    RelayMode = x.relay_mode,
-                    RelayModeDescription = x.relay_mode_desc,
-                    OfflineMode = x.offline_mode,
-                    OfflineModeDescription = x.offline_mode_desc,
-                    DefaultPulse = x.default_pulse,
-                }).ToList(),
-                Address = d.address,
-                Port = d.port,
-                nInput = d.n_input,
-                nOutput = d.n_output,
-                nReader = d.n_reader,
-                Msp1No = d.msp1_no,
-                BaudRate = d.baudrate,
-                nProtocol = d.n_protocol,
-                nDialect = d.n_dialect,
-            }).ToArrayAsync();
+           .Select(m => new ModuleDto(
+                m.driver_id,
+                m.model,
+                m.model_detail,
+                m.revision,
+                m.serial_number,
+                m.n_hardware_id,
+                m.n_hardware_id_detail,
+                m.n_hardware_rev,
+                m.n_product_id,
+                m.n_product_ver,
+                m.n_enc_config,
+                m.n_enc_config_detail,
+                m.n_enc_key_status,
+                m.n_enc_key_status_detail,
+                m.readers == null ? null : m.readers.Select(r => new ReaderDto(
+                    r.device_id,
+                    r.module_id,
+                    r.door_id,
+                    r.reader_no,
+                    r.data_format,
+                    r.keypad_mode,
+                    r.led_drive_mode,
+                    r.osdp_flag,
+                    r.osdp_baudrate,
+                    r.osdp_discover,
+                    r.osdp_tracing,
+                    r.osdp_address,
+                    r.osdp_secure_channel,
+                    r.location_id,
+                    r.is_active
+                )).ToList(),
+                m.sensors == null ? null : m.sensors.Select(s => new SensorDto(
+                    s.device_id,
+                    s.module_id,
+                    s.door_id,
+                    s.input_no,
+                    s.input_mode,
+                    s.debounce,
+                    s.holdtime,
+                    s.dc_held,
+                    s.location_id,
+                    s.is_active
+                )).ToList(),
+                m.strikes == null ? null : m.strikes.Select(k => new StrikeDto(
+                    k.device_id,
+                    k.door_id,
+                    k.module_id,
+                    k.output_no,
+                    k.relay_mode,
+                    k.offline_mode,
+                    k.strike_max,
+                    k.strike_min,
+                    k.strike_mode,
+                    k.location_id,
+                    k.is_active
+                )).ToList(),
+                m.request_exits == null ? null : m.request_exits.Select(x => new RequestExitDto(
+                    x.device_id,
+                    x.module_id,
+                    x.door_id,
+                    x.input_no,
+                    x.input_mode,
+                    x.debounce,
+                    x.holdtime,
+                    x.mask_timezone,
+                    x.location_id,
+                    x.is_active
+                )).ToList(),
+                m.monitor_points == null ? null : m.monitor_points.Select(m => new MonitorPointDto(
+                    m.id,
+                    m.device_id,
+                    m.driver_id,
+                    m.name,
+                    (short)m.module_id,
+                    m.module.model_detail,
+                    m.input_no,
+                    m.input_mode,
+                    m.input_mode_detail,
+                    m.debounce,
+                    m.holdtime,
+                    m.log_function,
+                    m.log_function_detail,
+                    m.monitor_point_mode,
+                    m.monitor_point_mode_detail,
+                    m.delay_entry,
+                    m.delay_exit,
+                    m.is_mask,
+                    m.location_id,
+                    m.is_active
+                )).ToList(),
+                m.control_points == null ? null : m.control_points.Select(c => new ControlPointDto(
+                    c.id,
+                    c.driver_id,
+                    c.name,
+                    c.module_id,
+                    c.module_detail,
+                    c.output_no,
+                    c.relaymode,
+                    c.relaymode_detail,
+                    c.offlinemode,
+                    c.offlinemode_detail,
+                    c.default_pulse,
+                    c.device_id,
+                    c.location_id,
+                    c.is_active
+                )).ToList(),
+                m.address,
+                m.address_detail,
+                m.port,
+                m.n_input,
+                m.n_output,
+                m.n_reader,
+                m.msp1_no,
+                m.baudrate,
+                m.n_protocol,
+                m.n_dialect,
+                m.location_id,
+                m.is_active
+            )).ToArrayAsync();
 
         return res;
     }
 
-    public async Task<IEnumerable<ModuleDto>> GetByMacAsync(string mac)
+    public async Task<IEnumerable<ModuleDto>> GetByDeviceIdAsync(int device)
     {
         var res = await context.module
         .AsNoTracking()
-        .Where(x => x.mac.Equals(mac))
-        .OrderBy(x => x.component_id)
-        .Select(d => new ModuleDto
-        {
-            // Base 
-            ComponentId = d.component_id,
-            Mac = d.hardware_mac,
-            HardwareName = d.hardware.name,
-            LocationId = d.location_id,
-            IsActive = d.is_active,
-
-            // extend_desc
-            Model = d.model,
-            ModelDescription = d.model_desc,
-            Revision = d.revision,
-            SerialNumber = d.serial_number,
-            nHardwareId = d.n_hardware_id,
-            nHardwareIdDescription = d.n_hardware_id_desc,
-            nHardwareRev = d.n_hardware_rev,
-            nProductId = d.n_product_id,
-            nProductVer = d.n_product_ver,
-            nEncConfig = d.n_enc_config,
-            nEncConfigDescription = d.n_enc_config_desc,
-            nEncKeyStatus = d.n_enc_key_status,
-            nEncKeyStatusDescription = d.n_enc_key_status_desc,
-            Readers = d.readers == null ? null : d.readers.Select(x => new ReaderDto
-            {
-                // Base
-
-                ComponentId = x.component_id,
-                Mac = x.module.hardware_mac,
-                HardwareName = x.module.hardware.name,
-                LocationId = x.location_id,
-                IsActive = x.is_active,
-
-                // extend_desc
-                ModuleId = x.module_id,
-                ReaderNo = x.reader_no,
-                DataFormat = x.data_format,
-                KeypadMode = x.keypad_mode,
-                LedDriveMode = x.led_drive_mode,
-                OsdpFlag = x.osdp_flag,
-                OsdpAddress = x.osdp_address,
-                OsdpBaudrate = x.osdp_baudrate,
-                OsdpDiscover = x.osdp_discover,
-                OsdpSecureChannel = x.osdp_secure_channel,
-                OsdpTracing = x.osdp_tracing,
-            }).ToList(),
-            Sensors = d.sensors == null ? null : d.sensors.Select(x => new SensorDto
-            {
-
-                // Base 
-
-                ComponentId = x.component_id,
-                Mac = x.module.hardware_mac,
-                HardwareName = x.module.hardware.name,
-                LocationId = x.location_id,
-                IsActive = x.is_active,
-
-                // extend_desc
-                ModuleId = x.module_id,
-                InputNo = x.input_no,
-                InputMode = x.input_mode,
-                Debounce = x.debounce,
-                HoldTime = x.holdtime,
-                DcHeld = x.dc_held,
-
-            }).ToList(),
-            Strikes = d.strikes == null ? null : d.strikes.Select(x => new StrikeDto
-            {
-                // Base 
-
-                ComponentId = x.component_id,
-                Mac = x.module.hardware_mac,
-                HardwareName = x.module.hardware.name,
-                LocationId = x.location_id,
-                IsActive = x.is_active,
-
-                // extend_desc
-                ModuleId = x.module_id,
-                OutputNo = x.output_no,
-                RelayMode = x.relay_mode,
-                OfflineMode = x.offline_mode,
-                StrkMax = x.strike_max,
-                StrkMin = x.strike_min,
-                StrkMode = x.strike_mode,
-            }).ToList(),
-            RequestExits = d.request_exits == null ? null : d.request_exits.Select(x => new RequestExitDto
-            {
-                // Base
-
-                ComponentId = x.component_id,
-                Mac = x.module.hardware_mac,
-                HardwareName = x.module.hardware.name,
-                LocationId = x.location_id,
-                IsActive = x.is_active,
-
-                // extend_desc
-                ModuleId = x.module_id,
-                InputNo = x.input_no,
-                InputMode = x.input_mode,
-                Debounce = x.debounce,
-                HoldTime = x.holdtime,
-                MaskTimeZone = x.mask_timezone,
-            }).ToList(),
-            MonitorPoints = d.monitor_points == null ? null : d.monitor_points.Select(x => new MonitorPointDto
-            {
-                // Base 
-
-                ComponentId = x.component_id,
-                Mac = x.module.hardware_mac,
-                HardwareName = x.module.hardware.name,
-                LocationId = x.location_id,
-                IsActive = x.is_active,
-
-                // extend_desc 
-                Name = x.name,
-                ModuleId = x.module_id,
-                InputNo = x.input_no,
-                InputMode = x.input_mode,
-                InputModeDescription = x.input_mode_desc,
-                Debounce = x.debounce,
-                HoldTime = x.holdtime,
-                LogFunction = x.log_function,
-                LogFunctionDescription = x.log_function_desc,
-                MonitorPointMode = x.monitor_point_mode,
-                MonitorPointModeDescription = x.monitor_point_mode_desc,
-                DelayEntry = x.delay_entry,
-                DelayExit = x.delay_exit,
-                IsMask = x.is_mask,
-
-            }).ToList(),
-            ControlPoints = d.control_points == null ? null : d.control_points.Select(x => new ControlPointDto
-            {
-                // Base
-
-                ComponentId = x.component_id,
-                Mac = x.module.hardware_mac,
-                HardwareName = x.module.hardware.name,
-                LocationId = x.location_id,
-                IsActive = x.is_active,
-
-                // extend_desc
-                Name = x.name,
-                ModuleId = x.module_id,
-                ModuleDescription = x.module.model_desc,
-                //module_desc = x.module_desc,
-                OutputNo = x.output_no,
-                RelayMode = x.relay_mode,
-                RelayModeDescription = x.relay_mode_desc,
-                OfflineMode = x.offline_mode,
-                OfflineModeDescription = x.offline_mode_desc,
-                DefaultPulse = x.default_pulse,
-            }).ToList(),
-            Address = d.address,
-            Port = d.port,
-            nInput = d.n_input,
-            nOutput = d.n_output,
-            nReader = d.n_reader,
-            Msp1No = d.msp1_no,
-            BaudRate = d.baudrate,
-            nProtocol = d.n_protocol,
-            nDialect = d.n_dialect,
-        })
+        .Where(x => x.device_id == device)
+        .OrderBy(x => x.id)
+        .Select(m => new ModuleDto(
+                m.driver_id,
+                m.model,
+                m.model_detail,
+                m.revision,
+                m.serial_number,
+                m.n_hardware_id,
+                m.n_hardware_id_detail,
+                m.n_hardware_rev,
+                m.n_product_id,
+                m.n_product_ver,
+                m.n_enc_config,
+                m.n_enc_config_detail,
+                m.n_enc_key_status,
+                m.n_enc_key_status_detail,
+                m.readers == null ? null : m.readers.Select(r => new ReaderDto(
+                    r.device_id,
+                    r.module_id,
+                    r.door_id,
+                    r.reader_no,
+                    r.data_format,
+                    r.keypad_mode,
+                    r.led_drive_mode,
+                    r.osdp_flag,
+                    r.osdp_baudrate,
+                    r.osdp_discover,
+                    r.osdp_tracing,
+                    r.osdp_address,
+                    r.osdp_secure_channel,
+                    r.location_id,
+                    r.is_active
+                )).ToList(),
+                m.sensors == null ? null : m.sensors.Select(s => new SensorDto(
+                    s.device_id,
+                    s.module_id,
+                    s.door_id,
+                    s.input_no,
+                    s.input_mode,
+                    s.debounce,
+                    s.holdtime,
+                    s.dc_held,
+                    s.location_id,
+                    s.is_active
+                )).ToList(),
+                m.strikes == null ? null : m.strikes.Select(k => new StrikeDto(
+                    k.device_id,
+                    k.door_id,
+                    k.module_id,
+                    k.output_no,
+                    k.relay_mode,
+                    k.offline_mode,
+                    k.strike_max,
+                    k.strike_min,
+                    k.strike_mode,
+                    k.location_id,
+                    k.is_active
+                )).ToList(),
+                m.request_exits == null ? null : m.request_exits.Select(x => new RequestExitDto(
+                    x.device_id,
+                    x.module_id,
+                    x.door_id,
+                    x.input_no,
+                    x.input_mode,
+                    x.debounce,
+                    x.holdtime,
+                    x.mask_timezone,
+                    x.location_id,
+                    x.is_active
+                )).ToList(),
+                m.monitor_points == null ? null : m.monitor_points.Select(m => new MonitorPointDto(
+                    m.id,
+                    m.device_id,
+                    m.driver_id,
+                    m.name,
+                    (short)m.module_id,
+                    m.module.model_detail,
+                    m.input_no,
+                    m.input_mode,
+                    m.input_mode_detail,
+                    m.debounce,
+                    m.holdtime,
+                    m.log_function,
+                    m.log_function_detail,
+                    m.monitor_point_mode,
+                    m.monitor_point_mode_detail,
+                    m.delay_entry,
+                    m.delay_exit,
+                    m.is_mask,
+                    m.location_id,
+                    m.is_active
+                )).ToList(),
+                m.control_points == null ? null : m.control_points.Select(c => new ControlPointDto(
+                    c.id,
+                    c.driver_id,
+                    c.name,
+                    c.module_id,
+                    c.module_detail,
+                    c.output_no,
+                    c.relaymode,
+                    c.relaymode_detail,
+                    c.offlinemode,
+                    c.offlinemode_detail,
+                    c.default_pulse,
+                    c.device_id,
+                    c.location_id,
+                    c.is_active
+                )).ToList(),
+                m.address,
+                m.address_detail,
+                m.port,
+                m.n_input,
+                m.n_output,
+                m.n_reader,
+                m.msp1_no,
+                m.baudrate,
+                m.n_protocol,
+                m.n_dialect,
+                m.location_id,
+                m.is_active
+            ))
         .ToArrayAsync();
 
         return res;
     }
 
-    public async Task<short> GetLowestUnassignedNumberAsync(int max, string mac)
+    public async Task<short> GetLowestUnassignedNumberAsync(int max, int device)
     {
-        if (string.IsNullOrEmpty(mac))
-        {
-            if (max <= 0) return -1;
+        if (max <= 0) return -1;
 
             var query = context.module
                 .AsNoTracking()
-                .Select(x => x.component_id);
+                .Where(x => x.device_id == device)
+                .Select(x => x.driver_id);
 
             // Handle empty table case quickly
             var hasAny = await query.AnyAsync();
@@ -640,54 +506,19 @@ public sealed class ModuleRepository(AppDbContext context) : IBaseRepository<Mod
             // If none missing in sequence, return next number
             if (expected > max) return -1;
             return expected;
-        }
-        else
-        {
-            if (max <= 0) return -1;
-
-            var query = context.module
-                .AsNoTracking()
-                .Where(x => x.mac == mac)
-                .Select(x => x.sio_id);
-
-            // Handle empty table case quickly
-            var hasAny = await query.AnyAsync();
-            if (!hasAny)
-                return 1; // start at 1 if table is empty
-
-            // Load all numbers into memory (only the column, so it's lightweight)
-            var numbers = await query.Distinct().OrderBy(x => x).ToListAsync();
-
-            short expected = 1;
-            foreach (var num in numbers)
-            {
-                if (num != expected)
-                    return expected; // found the lowest missing number
-                expected++;
-            }
-
-            // If none missing in sequence, return next number
-            if (expected > max) return -1;
-            return expected;
-        }
     }
 
-    public async Task<IEnumerable<Mode>> GetProtocolAsync()
+    public async Task<IEnumerable<ModeDto>> GetProtocolAsync()
     {
         var res = await context.module_protocol
             .AsNoTracking()
-            .Select(x => new Mode
-            {
-                Value = x.value,
-                Name = x.name,
-                Description = x.description,
-            })
+            .Select(x => new ModeDto(x.name,x.value,x.description))
             .ToArrayAsync();
 
         return res;
     }
 
-    public async Task<Pagination<ModuleDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    public async Task<Pagination<ModuleDto>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
     {
 
         var query = context.module.AsNoTracking().AsQueryable();
@@ -704,22 +535,18 @@ public sealed class ModuleRepository(AppDbContext context) : IBaseRepository<Mod
                     var pattern = $"%{search}%";
 
                     query = query.Where(x =>
-                        EF.Functions.ILike(x.model_desc, pattern) ||
+                        EF.Functions.ILike(x.model_detail, pattern) ||
                         EF.Functions.ILike(x.serial_number, pattern) ||
-                        EF.Functions.ILike(x.mac, pattern) ||
-                        EF.Functions.ILike(x.mac, pattern) ||
-                        EF.Functions.ILike(x.address_desc, pattern)
+                        EF.Functions.ILike(x.address_detail, pattern)
 
                     );
                 }
                 else // SQL Server
                 {
                     query = query.Where(x =>
-                        x.model_desc.Contains(search) ||
+                        x.model_detail.Contains(search) ||
                         x.serial_number.Contains(search) ||
-                        x.mac.Contains(search) ||
-                        x.mac.Contains(search) ||
-                        x.address_desc.Contains(search)
+                        x.address_detail.Contains(search)
                     );
                 }
             }
@@ -747,169 +574,126 @@ public sealed class ModuleRepository(AppDbContext context) : IBaseRepository<Mod
             .OrderByDescending(t => t.created_date)
             .Skip((param.PageNumber - 1) * param.PageSize)
             .Take(param.PageSize)
-             .Select(d => new ModuleDto
-             {
-                 // Base 
-
-                 ComponentId = d.component_id,
-                 Mac = d.mac,
-                 HardwareName = d.hardware.name,
-                 LocationId = d.location_id,
-                 IsActive = d.is_active,
-
-                 // extend_desc
-                 Model = d.model,
-                 ModelDescription = d.model_desc,
-                 Revision = d.revision,
-                 SerialNumber = d.serial_number,
-                 nHardwareId = d.n_hardware_id,
-                 nHardwareIdDescription = d.n_hardware_id_desc,
-                 nHardwareRev = d.n_hardware_rev,
-                 nProductId = d.n_product_id,
-                 nProductVer = d.n_product_ver,
-                 nEncConfig = d.n_enc_config,
-                 nEncConfigDescription = d.n_enc_config_desc,
-                 nEncKeyStatus = d.n_enc_key_status,
-                 nEncKeyStatusDescription = d.n_enc_key_status_desc,
-                 Readers = d.readers == null ? null : d.readers.Select(x => new ReaderDto
-                 {
-                     // Base
-
-                     ComponentId = x.component_id,
-                     Mac = x.module.mac,
-                     HardwareName = x.module.hardware.name,
-                     LocationId = x.location_id,
-                     IsActive = x.is_active,
-
-                     // extend_desc
-                     ModuleId = x.module_id,
-                     ReaderNo = x.reader_no,
-                     DataFormat = x.data_format,
-                     KeypadMode = x.keypad_mode,
-                     LedDriveMode = x.led_drive_mode,
-                     OsdpFlag = x.osdp_flag,
-                     OsdpAddress = x.osdp_address,
-                     OsdpBaudrate = x.osdp_baudrate,
-                     OsdpDiscover = x.osdp_discover,
-                     OsdpSecureChannel = x.osdp_secure_channel,
-                     OsdpTracing = x.osdp_tracing,
-                 }).ToList(),
-                 Sensors = d.sensors == null ? null : d.sensors.Select(x => new SensorDto
-                 {
-
-                     // Base 
-
-                     ComponentId = x.component_id,
-                     Mac = x.module.mac,
-                     HardwareName = x.module.hardware.name,
-                     LocationId = x.location_id,
-                     IsActive = x.is_active,
-
-                     // extend_desc
-                     ModuleId = x.module_id,
-                     InputNo = x.input_no,
-                     InputMode = x.input_mode,
-                     Debounce = x.debounce,
-                     HoldTime = x.holdtime,
-                     DcHeld = x.dc_held,
-
-                 }).ToList(),
-                 Strikes = d.strikes == null ? null : d.strikes.Select(x => new StrikeDto
-                 {
-                     // Base 
-
-                     ComponentId = x.component_id,
-                     Mac = x.module.mac,
-                     HardwareName = x.module.hardware.name,
-                     LocationId = x.location_id,
-                     IsActive = x.is_active,
-
-                     // extend_desc
-                     ModuleId = x.module_id,
-                     OutputNo = x.output_no,
-                     RelayMode = x.relay_mode,
-                     OfflineMode = x.offline_mode,
-                     StrkMax = x.strike_max,
-                     StrkMin = x.strike_min,
-                     StrkMode = x.strike_mode,
-                 }).ToList(),
-                 RequestExits = d.request_exits == null ? null : d.request_exits.Select(x => new RequestExitDto
-                 {
-                     // Base
-
-                     ComponentId = x.component_id,
-                     Mac = x.module.mac,
-                     HardwareName = x.module.hardware.name,
-                     LocationId = x.location_id,
-                     IsActive = x.is_active,
-
-                     // extend_desc
-                     ModuleId = x.module_id,
-                     InputNo = x.input_no,
-                     InputMode = x.input_mode,
-                     Debounce = x.debounce,
-                     HoldTime = x.holdtime,
-                     MaskTimeZone = x.mask_timezone,
-                 }).ToList(),
-                 MonitorPoints = d.monitor_points == null ? null : d.monitor_points.Select(x => new MonitorPointDto
-                 {
-                     // Base 
-
-                     ComponentId = x.component_id,
-                     Mac = x.module.mac,
-                     HardwareName = x.module.hardware.name,
-                     LocationId = x.location_id,
-                     IsActive = x.is_active,
-
-                     // extend_desc 
-                     Name = x.name,
-                     ModuleId = x.module_id,
-                     InputNo = x.input_no,
-                     InputMode = x.input_mode,
-                     InputModeDescription = x.input_mode_desc,
-                     Debounce = x.debounce,
-                     HoldTime = x.holdtime,
-                     LogFunction = x.log_function,
-                     LogFunctionDescription = x.log_function_desc,
-                     MonitorPointMode = x.monitor_point_mode,
-                     MonitorPointModeDescription = x.monitor_point_mode_desc,
-                     DelayEntry = x.delay_entry,
-                     DelayExit = x.delay_exit,
-                     IsMask = x.is_mask,
-
-                 }).ToList(),
-                 ControlPoints = d.control_points == null ? null : d.control_points.Select(x => new ControlPointDto
-                 {
-                     // Base
-
-                     ComponentId = x.component_id,
-                     Mac = x.module.mac,
-                     HardwareName = x.module.hardware.name,
-                     LocationId = x.location_id,
-                     IsActive = x.is_active,
-
-                     // extend_desc
-                     Name = x.name,
-                     ModuleId = x.module_id,
-                     ModuleDescription = x.module.model_desc,
-                     //module_desc = x.module_desc,
-                     OutputNo = x.output_no,
-                     RelayMode = x.relay_mode,
-                     RelayModeDescription = x.relay_mode_desc,
-                     OfflineMode = x.offline_mode,
-                     OfflineModeDescription = x.offline_mode_desc,
-                     DefaultPulse = x.default_pulse,
-                 }).ToList(),
-                 Address = d.address,
-                 Port = d.port,
-                 nInput = d.n_input,
-                 nOutput = d.n_output,
-                 nReader = d.n_reader,
-                 Msp1No = d.msp1_no,
-                 BaudRate = d.baudrate,
-                 nProtocol = d.n_protocol,
-                 nDialect = d.n_dialect,
-             })
+             .Select(m => new ModuleDto(
+                m.driver_id,
+                m.model,
+                m.model_detail,
+                m.revision,
+                m.serial_number,
+                m.n_hardware_id,
+                m.n_hardware_id_detail,
+                m.n_hardware_rev,
+                m.n_product_id,
+                m.n_product_ver,
+                m.n_enc_config,
+                m.n_enc_config_detail,
+                m.n_enc_key_status,
+                m.n_enc_key_status_detail,
+                m.readers == null ? null : m.readers.Select(r => new ReaderDto(
+                    r.device_id,
+                    r.module_id,
+                    r.door_id,
+                    r.reader_no,
+                    r.data_format,
+                    r.keypad_mode,
+                    r.led_drive_mode,
+                    r.osdp_flag,
+                    r.osdp_baudrate,
+                    r.osdp_discover,
+                    r.osdp_tracing,
+                    r.osdp_address,
+                    r.osdp_secure_channel,
+                    r.location_id,
+                    r.is_active
+                )).ToList(),
+                m.sensors == null ? null : m.sensors.Select(s => new SensorDto(
+                    s.device_id,
+                    s.module_id,
+                    s.door_id,
+                    s.input_no,
+                    s.input_mode,
+                    s.debounce,
+                    s.holdtime,
+                    s.dc_held,
+                    s.location_id,
+                    s.is_active
+                )).ToList(),
+                m.strikes == null ? null : m.strikes.Select(k => new StrikeDto(
+                    k.device_id,
+                    k.door_id,
+                    k.module_id,
+                    k.output_no,
+                    k.relay_mode,
+                    k.offline_mode,
+                    k.strike_max,
+                    k.strike_min,
+                    k.strike_mode,
+                    k.location_id,
+                    k.is_active
+                )).ToList(),
+                m.request_exits == null ? null : m.request_exits.Select(x => new RequestExitDto(
+                    x.device_id,
+                    x.module_id,
+                    x.door_id,
+                    x.input_no,
+                    x.input_mode,
+                    x.debounce,
+                    x.holdtime,
+                    x.mask_timezone,
+                    x.location_id,
+                    x.is_active
+                )).ToList(),
+                m.monitor_points == null ? null : m.monitor_points.Select(m => new MonitorPointDto(
+                    m.id,
+                    m.device_id,
+                    m.driver_id,
+                    m.name,
+                    (short)m.module_id,
+                    m.module.model_detail,
+                    m.input_no,
+                    m.input_mode,
+                    m.input_mode_detail,
+                    m.debounce,
+                    m.holdtime,
+                    m.log_function,
+                    m.log_function_detail,
+                    m.monitor_point_mode,
+                    m.monitor_point_mode_detail,
+                    m.delay_entry,
+                    m.delay_exit,
+                    m.is_mask,
+                    m.location_id,
+                    m.is_active
+                )).ToList(),
+                m.control_points == null ? null : m.control_points.Select(c => new ControlPointDto(
+                    c.id,
+                    c.driver_id,
+                    c.name,
+                    c.module_id,
+                    c.module_detail,
+                    c.output_no,
+                    c.relaymode,
+                    c.relaymode_detail,
+                    c.offlinemode,
+                    c.offlinemode_detail,
+                    c.default_pulse,
+                    c.device_id,
+                    c.location_id,
+                    c.is_active
+                )).ToList(),
+                m.address,
+                m.address_detail,
+                m.port,
+                m.n_input,
+                m.n_output,
+                m.n_reader,
+                m.msp1_no,
+                m.baudrate,
+                m.n_protocol,
+                m.n_dialect,
+                m.location_id,
+                m.is_active
+            ))
             .ToListAsync();
 
 
@@ -926,13 +710,43 @@ public sealed class ModuleRepository(AppDbContext context) : IBaseRepository<Mod
         };
     }
 
-    public async Task<bool> IsAnyByComponentAndMacAsnyc(string mac, short component)
-    {
-        return await context.module.AnyAsync(x => x.mac.Equals(mac) && x.component_id == component);
-    }
 
-    public async Task<bool> IsAnyByComponentId(short component)
-    {
-        throw new NotImplementedException();
-    }
+
+      public async Task<bool> IsAnyByDriverAndDeviceIdAsnyc(int device, short driver)
+      {
+            return await context.module.AnyAsync(x => x.device_id == device && x.driver_id == driver);
+      }
+
+
+
+      public Task<IEnumerable<ModuleDto>> GetAnyByDeviceId(int device)
+      {
+            throw new NotImplementedException();
+      }
+
+      public Task<int> DeleteByIdAsync(int id)
+      {
+            throw new NotImplementedException();
+      }
+
+      public Task<bool> IsAnyByIdAsync(int id)
+      {
+            throw new NotImplementedException();
+      }
+
+      public Task<ModuleDto> GetByIdAsync(int id)
+      {
+            throw new NotImplementedException();
+      }
+
+      public Task<IEnumerable<ModuleDto>> GetByLocationIdAsync(int locationId)
+      {
+            throw new NotImplementedException();
+      }
+
+
+      public Task<bool> IsAnyByNameAsync(string name)
+      {
+            throw new NotImplementedException();
+      }
 }

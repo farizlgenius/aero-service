@@ -12,8 +12,8 @@ namespace Aero.Application.Interface
         Task<ResponseDto<Pagination<UserDto>>> GetPaginationAsync(PaginationParamsWithFilter param,short location);
         Task<ResponseDto<UserDto>> GetByUserIdAsync(string UserId);
         Task<ResponseDto<bool>> UploadImageAsync(string userid,Stream stream);
-        Task<ResponseDto<bool>> CreateAsync(UserDto dto);
-        Task<ResponseDto<bool>> DeleteAsync(string UserId);
+        Task<ResponseDto<UserDto>> CreateAsync(UserDto dto);
+        Task<ResponseDto<UserDto>> DeleteAsync(string UserId);
         Task<ResponseDto<UserDto>> UpdateAsync(UserDto dto);
         Task<ResponseDto<bool>> DeleteImageAsync(string userid);
     }

@@ -4,7 +4,6 @@ using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
-using Aero.Application.Mapper;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
@@ -13,7 +12,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aero.Application.Services
 {
-    public class HolidayService(IHwRepository hw,IHolCommand hol,IHolRepository repo,ISettingRepository setting) : IHolidayService
+    public class HolidayService(IDeviceRepository hw,IHolCommand hol,IHolRepository repo,ISettingRepository setting) : IHolidayService
     {
 
         public async Task<ResponseDto<IEnumerable<HolidayDto>>> GetAsync()
@@ -25,7 +24,7 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<bool>> ClearAsync()
         {
             List<string> errors = new List<string>();
-            var ids = await hw.GetComponentIdsAsync();
+            var ids = await hw.GetDriverIdsAsync();
             foreach (var id in ids)
             {
                 if (!hol.ClearHolidayConfiguration(id))
@@ -68,7 +67,7 @@ namespace Aero.Application.Services
             var domain = new Holiday(Driver,dto.Name,dto.Year,dto.Month,dto.Day,dto.Extend,dto.TypeMask,dto.LocationId,dto.IsActive);
 
             // Send command 
-            var ids = await hw.GetComponentIdsAsync();
+            var ids = await hw.GetDriverIdsAsync();
 
             foreach (var id in ids)
             {
@@ -96,7 +95,7 @@ namespace Aero.Application.Services
             // Send command 
 
             var domain = new Holiday(en.DriverId, en.Name, en.Year, en.Month, en.Day, en.Extend, en.TypeMask, en.LocationId, en.IsActive);
-            var ids = await hw.GetComponentIdsAsync();
+            var ids = await hw.GetDriverIdsAsync();
 
             foreach (var i in ids)
             {
@@ -116,15 +115,15 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<HolidayDto>> UpdateAsync(HolidayDto dto)
         {
             List<string> errors = new List<string>();
-            var en = repo.IsAnyById(dto.Id);
+            var en = repo.IsAnyByIdAsync(dto.Id);
             if (en is null) return ResponseHelper.NotFoundBuilder<HolidayDto>();
 
             if (await repo.IsAnyWithSameDataAsync(dto.Day,dto.Month,dto.Year)) return ResponseHelper.Duplicate<HolidayDto>();
 
             // Send command 
-            var ids = await hw.GetComponentIdsAsync();
+            var ids = await hw.GetDriverIdsAsync();
 
-            var domain = HolidayMapper.ToDomain(dto);
+            var domain = new Holiday(dto.DriverId,dto.Name,dto.Year,dto.Month,dto.Day,dto.Extend,dto.TypeMask,dto.LocationId,dto.IsActive);
 
             foreach (var id in ids)
             {

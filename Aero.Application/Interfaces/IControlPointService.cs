@@ -16,7 +16,7 @@ namespace Aero.Application.Interface
         Task<ResponseDto<ControlPointDto>> UpdateAsync(ControlPointDto dto);
         Task<ResponseDto<bool>> GetStatusAsync(int deviceId, int driverId);
         Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param);
-        Task<ResponseDto<ControlPointDto>> GetByDeviceAndIdAsync(int device, int id);
+        Task<ResponseDto<ControlPointDto>> GetByIdAsync(int id);
         Task<ResponseDto<bool>> ToggleAsync(ToggleControlPointDto cpTriggerDto);
         Task<ResponseDto<IEnumerable<short>>> GetAvailableOpAsync(int deviceId, int id);
         Task<ResponseDto<IEnumerable<ControlPointDto>>> DeleteRangeAsync(List<int> ids);

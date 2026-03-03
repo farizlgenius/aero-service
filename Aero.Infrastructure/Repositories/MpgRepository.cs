@@ -1,10 +1,11 @@
 using Aero.Application.DTOs;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
-using Aero.Infrastructure.Data;
+using Aero.Infrastructure.Persistences;
 using Aero.Infrastructure.Mapper;
 using Microsoft.EntityFrameworkCore;
 using System;
+using Aero.Application.Interface;
 
 namespace Aero.Infrastructure.Repositories;
 
@@ -12,21 +13,18 @@ public class MpgRepository(AppDbContext context) : IMpgRepository
 {
       public async Task<int> AddAsync(MonitorGroup data)
       {
-            var en = MonitorGroupMapper.ToEf(data);
+            var en = new Aero.Infrastructure.Persistences.Entities.MonitorGroup(data);
             await context.monitor_group.AddAsync(en);
-            return await context.SaveChangesAsync();
+            var rec = await context.SaveChangesAsync();
+            if(rec <= 0) return -1;
+            return en.id;
       }
 
 
-      public Task<int> DeleteByComponentIdAsync(short component)
-      {
-            throw new NotImplementedException();
-      }
-
-      public async Task<int> DeleteByMacAndComponentIdAsync(string mac, short component)
+      public async Task<int> DeleteByIdAsync(int id)
       {
             var en = await context.monitor_group
-            .Where(x => x.mac.Equals(mac) && x.component_id == component)
+            .Where(x => x.id == id)
             .FirstOrDefaultAsync();
 
             if(en is null) return 0;
@@ -35,33 +33,45 @@ public class MpgRepository(AppDbContext context) : IMpgRepository
             return await context.SaveChangesAsync();
       }
 
-      public async Task<int> DeleteReferenceByMacAnsComponentIdAsync(string mac, short component)
+    //   public async Task<int> DeleteByMacAndIdAsync(string mac, int id)
+    //   {
+    //         var en = await context.monitor_group
+    //         .Where(x => x.mac.Equals(mac) && x.component_id == component)
+    //         .FirstOrDefaultAsync();
+
+    //         if(en is null) return 0;
+
+    //         context.monitor_group.Remove(en);
+    //         return await context.SaveChangesAsync();
+    //   }
+
+      public async Task<int> DeleteReferenceByIdAsync(int Id)
       {
-            var en = await context.monitor_group_list.Where(x => x.monitor_group_id == component).ToArrayAsync();
+            var en = await context.monitor_group_list.Where(x => x.monitor_group_id == Id).ToArrayAsync();
 
             context.monitor_group_list.RemoveRange(en);
             return await context.SaveChangesAsync();
       }
 
-      public async Task<int> UpdateAsync(MonitorGroup newData)
+      public async Task<int> UpdateAsync(MonitorGroup data)
       {
             var en = await context.monitor_group
-            .Where(x => x.component_id == newData.ComponentId && x.mac.Equals(newData.Mac))
+            .Where(x => x.id == data.Id)
             .FirstOrDefaultAsync();
 
             if(en is null) return 0;
 
-            MonitorGroupMapper.Update(newData,en);
+            en.Update(data);
 
             context.monitor_group.Update(en);
             return await context.SaveChangesAsync();
       }
 
-    public async Task<int> CountByMacAndUpdateTimeAsync(string mac, DateTime sync)
+    public async Task<int> CountByDriverIdAndUpdateTimeAsync(int driverid, DateTime sync)
     {
         var res = await context.monitor_group
         .AsNoTracking()
-        .Where(x => x.mac.Equals(mac) && x.updated_date > sync)
+        .Where(x => x.driver_id == driverid && x.updated_date > sync)
         .CountAsync();
 
         return res;
@@ -71,139 +81,97 @@ public class MpgRepository(AppDbContext context) : IMpgRepository
     {
         var res = await context.monitor_group
         .AsNoTracking()
-        .Select(en => new MonitorGroupDto
-        {
-            // Base 
-            ComponentId = en.component_id,
-            Mac = en.mac,
-            LocationId = en.location_id,
-            IsActive = en.is_active,
-
-            // Detail
-            Name = en.name,
-            nMpCount = en.n_mp_count,
-            nMpList = en.n_mp_list.Select(x => new MonitorGroupListDto
-            {
-                PointType = x.point_type,
-                PointNumber = x.point_number,
-                PointTypeDesc = x.point_type_desc,
-            }).ToList(),
-        })
+        .Select(x => new MonitorGroupDto(
+            x.id,
+            x.device_id,
+            x.driver_id,
+            x.name,
+            x.n_mp_count,
+            x.n_mp_list.Select(x => new MonitorGroupListDto(x.point_type,x.point_type_detail,x.point_number)).ToList(),
+            x.location_id,
+            x.is_active))
             .ToArrayAsync();
 
         return res;
     }
 
-    public async Task<MonitorGroupDto> GetByComponentIdAsync(short componentId)
+    public async Task<MonitorGroupDto> GetByIdAsync(int id)
     {
 
         var res = await context.monitor_group
         .AsNoTracking()
-        .OrderBy(x => x.component_id)
-        .Where(x => x.component_id == componentId)
-        .Select(en => new MonitorGroupDto
-        {
-            // Base 
-            ComponentId = en.component_id,
-            Mac = en.hardware_mac,
-            LocationId = en.location_id,
-            IsActive = en.is_active,
-
-            // Detail
-            Name = en.name,
-            nMpCount = en.n_mp_count,
-            nMpList = en.n_mp_list.Select(x => new MonitorGroupListDto
-            {
-                PointType = x.point_type,
-                PointNumber = x.point_number,
-                PointTypeDesc = x.point_type_desc,
-            }).ToList(),
-        })
+        .OrderBy(x => x.id)
+        .Where(x => x.id == id)
+        .Select(x => new MonitorGroupDto(
+            x.id,
+            x.device_id,
+            x.driver_id,
+            x.name,
+            x.n_mp_count,
+            x.n_mp_list.Select(x => new MonitorGroupListDto(x.point_type,x.point_type_detail,x.point_number)).ToList(),
+            x.location_id,
+            x.is_active))
             .FirstOrDefaultAsync();
 
         return res;
     }
 
-    public async Task<IEnumerable<MonitorGroupDto>> GetByLocationIdAsync(short locationId)
+    public async Task<IEnumerable<MonitorGroupDto>> GetByLocationIdAsync(int locationId)
     {
         var res = await context.monitor_group
         .AsNoTracking()
-        .OrderBy(x => x.component_id)
+        .OrderBy(x => x.id)
         .Where(x => x.location_id == locationId || x.location_id == 1)
-        .Select(en => new MonitorGroupDto
-        {
-            // Base 
-            ComponentId = en.component_id,
-            Mac = en.hardware_mac,
-            LocationId = en.location_id,
-            IsActive = en.is_active,
-
-            // Detail
-            Name = en.name,
-            nMpCount = en.n_mp_count,
-            nMpList = en.n_mp_list.Select(x => new MonitorGroupListDto
-            {
-                PointType = x.point_type,
-                PointNumber = x.point_number,
-                PointTypeDesc = x.point_type_desc,
-            }).ToList(),
-        })
+        .Select(x => new MonitorGroupDto(
+            x.id,
+            x.device_id,
+            x.driver_id,
+            x.name,
+            x.n_mp_count,
+            x.n_mp_list.Select(x => new MonitorGroupListDto(x.point_type,x.point_type_detail,x.point_number)).ToList(),
+            x.location_id,
+            x.is_active))
             .ToArrayAsync();
 
         return res;
     }
 
-    public async Task<IEnumerable<MonitorGroupDto>> GetByMacAsync(string mac)
-    {
-        var res = await context.monitor_group
-       .AsNoTracking()
-       .OrderBy(x => x.component_id)
-       .Where(x => x.mac.Equals(mac))
-       .Select(en => new MonitorGroupDto
-       {
-           // Base 
-           ComponentId = en.component_id,
-           Mac = en.hardware_mac,
-           LocationId = en.location_id,
-           IsActive = en.is_active,
+    // public async Task<IEnumerable<MonitorGroupDto>> GetByMacAsync(string mac)
+    // {
+    //     var res = await context.monitor_group
+    //    .AsNoTracking()
+    //    .OrderBy(x => x.id)
+    //    .Where(x => x.mac.Equals(mac))
+    //     .Select(x => new MonitorGroupDto(
+    //         x.id,
+    //         x.name,
+    //         x.n_mp_count,
+    //         x.n_mp_list.Select(x => new MonitorGroupListDto(x.point_type,x.point_type_detail,x.point_number)).ToList(),
+    //         x.location_id,
+    //         x.is_active))
+    //        .ToArrayAsync();
 
-           // Detail
-           Name = en.name,
-           nMpCount = en.n_mp_count,
-           nMpList = en.n_mp_list.Select(x => new MonitorGroupListDto
-           {
-               PointType = x.point_type,
-               PointNumber = x.point_number,
-               PointTypeDesc = x.point_type_desc,
-           }).ToList(),
-       })
-           .ToArrayAsync();
+    //     return res;
+    // }
 
-        return res;
-    }
-
-    public async Task<IEnumerable<Mode>> GetCommandAsync()
+    public async Task<IEnumerable<ModeDto>> GetCommandAsync()
     {
         var dtos = await context.monitor_group_command
              .AsNoTracking()
-             .Select(x => new Mode
-             {
-                 Name = x.name,
-                 Value = x.value,
-                 Description = x.description,
-             })
+             .Select(x => new ModeDto(x.name,x.value,x.description))
              .ToArrayAsync();
 
         return dtos;
     }
 
-    public async Task<short> GetLowestUnassignedNumberAsync(int max, string mac)
+    public async Task<short> GetLowestUnassignedNumberAsync(int max, int device)
     {
         if (max <= 0) return -1;
 
-        var query = context.location
+        var query = context.monitor_group
             .AsNoTracking()
-            .Select(x => x.component_id);
+            .Where(x => x.device_id == device)
+            .Select(x => x.driver_id);
 
         // Handle empty table case quickly
         var hasAny = await query.AnyAsync();
@@ -226,22 +194,17 @@ public class MpgRepository(AppDbContext context) : IMpgRepository
         return expected;
     }
 
-    public async Task<IEnumerable<Mode>> GetTypeAsync()
+    public async Task<IEnumerable<ModeDto>> GetTypeAsync()
     {
         var dtos = await context.monitor_group_type
              .AsNoTracking()
-             .Select(x => new Mode
-             {
-                 Name = x.name,
-                 Value = x.value,
-                 Description = x.description,
-             })
+             .Select(x => new ModeDto(x.name,x.value,x.description))
              .ToArrayAsync();
 
         return dtos;
     }
 
-    public async Task<Pagination<MonitorGroupDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    public async Task<Pagination<MonitorGroupDto>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
     {
 
         var query = context.monitor_group.AsNoTracking().AsQueryable();
@@ -258,18 +221,14 @@ public class MpgRepository(AppDbContext context) : IMpgRepository
                     var pattern = $"%{search}%";
 
                     query = query.Where(x =>
-                        EF.Functions.ILike(x.name, pattern) ||
-                        EF.Functions.ILike(x.mac, pattern) ||
-                        EF.Functions.ILike(x.mac, pattern)
+                        EF.Functions.ILike(x.name, pattern) 
 
                     );
                 }
                 else // SQL Server
                 {
                     query = query.Where(x =>
-                        x.name.Contains(search) ||
-                        x.mac.Contains(search) ||
-                        x.mac.Contains(search)
+                        x.name.Contains(search) 
                     );
                 }
             }
@@ -297,24 +256,15 @@ public class MpgRepository(AppDbContext context) : IMpgRepository
             .OrderByDescending(t => t.created_date)
             .Skip((param.PageNumber - 1) * param.PageSize)
             .Take(param.PageSize)
-           .Select(en => new MonitorGroupDto
-           {
-               // Base 
-               ComponentId = en.component_id,
-               Mac = en.mac,
-               LocationId = en.location_id,
-               IsActive = en.is_active,
-
-               // Detail
-               Name = en.name,
-               nMpCount = en.n_mp_count,
-               nMpList = en.n_mp_list.Select(x => new MonitorGroupListDto
-               {
-                   PointType = x.point_type,
-                   PointNumber = x.point_number,
-                   PointTypeDesc = x.point_type_desc,
-               }).ToList(),
-           })
+          .Select(x => new MonitorGroupDto(
+            x.id,
+            x.device_id,
+            x.driver_id,
+            x.name,
+            x.n_mp_count,
+            x.n_mp_list.Select(x => new MonitorGroupListDto(x.point_type,x.point_type_detail,x.point_number)).ToList(),
+            x.location_id,
+            x.is_active))
             .ToListAsync();
 
 
@@ -331,13 +281,34 @@ public class MpgRepository(AppDbContext context) : IMpgRepository
         };
     }
 
-    public async Task<bool> IsAnyByComponentId(short component)
+    public async Task<bool> IsAnyByIdAsync(int id)
     {
-        return await context.location.AnyAsync(x => x.component_id == component);
+        return await context.location.AnyAsync(x => x.id == id);
     }
 
-    public async Task<bool> IsAnyByMacAndComponentIdAsync(string mac, short component)
-    {
-        return await context.monitor_group.AnyAsync(x => x.mac.Equals(mac) && x.component_id == component);
-    }
+      public async Task<bool> IsAnyByNameAsync(string name)
+      {
+            return await context.location.AnyAsync(x => x.name == name);
+      }
+
+      public async Task<IEnumerable<MonitorGroupDto>> GetByDeviceIdAsync(int device)
+      {
+            var res = await context.monitor_group
+            .AsNoTracking()
+            .Where(x => x.device_id == device)
+            .Select(x => new MonitorGroupDto(
+                 x.id,
+            x.device_id,
+            x.driver_id,
+            x.name,
+            x.n_mp_count,
+            x.n_mp_list.Select(x => new MonitorGroupListDto(x.point_type,x.point_type_detail,x.point_number)).ToList(),
+            x.location_id,
+            x.is_active
+            ))
+            .ToArrayAsync();
+
+            return res;
+            
+      }
 }

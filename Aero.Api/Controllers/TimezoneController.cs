@@ -36,7 +36,7 @@ namespace Aero.Api.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<TimeZoneDto>>> CreateAsync([FromBody] TimeZoneDto dto) 
+        public async Task<ActionResult<ResponseDto<TimeZoneDto>>> CreateAsync([FromBody] CreateTimeZoneDto dto) 
         {
             var res = await service.CreateAsync(dto);
             return Ok(res);

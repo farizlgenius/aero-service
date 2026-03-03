@@ -13,33 +13,19 @@ public class FeatureRepository(AppDbContext context) : IFeatureRepository
       {
             var res = await context.feature
             .AsNoTracking()
-            .OrderBy(x => x.component_id)
-            .Select(fn => new FeatureDto
-            {
-                  ComponentId = fn.component_id,
-                  Name = fn.name,
-                  Path = fn.path,
-                  SubItems = fn.sub_feature == null || fn.sub_feature.Count == 0 ? new List<SubFeatureDto>() : fn.sub_feature.Select(s => new SubFeatureDto
-                  {
-                        Path = s.path,
-                        Name = s.name
-                  }).ToList(),
-                  IsAllow = false,
-                  IsCreate = false,
-                  IsModify = false,
-                  IsDelete = false,
-                  IsAction = false
-            }).ToArrayAsync();
+            .OrderBy(x => x.id)
+            .Select(f => new FeatureDto(f.id,f.name,f.path,f.s,false,false,false,false,false))
+            .ToArrayAsync();
 
             return res;
 
       }
 
-      public async Task<FeatureDto> GetByComponentIdAsync(short componentId)
+      public async Task<FeatureDto> GetByIdAsync(int id)
       {
             var res = await context.feature
             .AsNoTracking()
-            .Where(x => x.component_id == componentId)
+            .Where(x => x.component_id == id)
             .OrderBy(x => x.component_id)
             .Select(fn => new FeatureDto
             {

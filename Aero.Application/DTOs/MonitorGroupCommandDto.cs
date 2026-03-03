@@ -1,3 +1,3 @@
 namespace Aero.Application.DTOs;
 
-public sealed record MonitorGroupCommandDto(string Mac, short ComponentId, short Command, short Arg);
+public sealed record MonitorGroupCommandDto(int Id, short Command, short Arg);

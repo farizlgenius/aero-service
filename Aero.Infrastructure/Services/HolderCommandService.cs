@@ -36,6 +36,8 @@ public sealed class HolderCommandService : BaseAeroCommand, IUserCommand
 
       }
 
+
+
       public bool CardDelete(short ScpId, long CardNo)
       {
             CC_CARDDELETEI64 cc = new CC_CARDDELETEI64();

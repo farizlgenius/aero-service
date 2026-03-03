@@ -771,7 +771,7 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
         return dtos;
     }
 
-    public async Task<bool> IsAnyById(int id)
+    public async Task<bool> IsAnyByIdAsync(int id)
     {
         return await context.door.AnyAsync(x => x.id == id);
     }

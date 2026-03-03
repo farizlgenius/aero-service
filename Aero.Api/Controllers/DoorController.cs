@@ -37,11 +37,11 @@ namespace Aero.Api.Controllers
             return Ok(res);
         }
 
-        [HttpGet("{mac}")]
+        [HttpGet("{id}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<DoorDto>>> GetByMacAsync(string mac)
+        public async Task<ActionResult<ResponseDto<DoorDto>>> GetByMacAsync(int id)
         {
-            var res = await doorService.GetByDeviceIdAsync(mac);
+            var res = await doorService.GetByDeviceIdAsync(id);
             return Ok(res);
 
         }
@@ -57,7 +57,7 @@ namespace Aero.Api.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<DoorDto>>> CreateAsync([FromBody]DoorDto dto)
+        public async Task<ActionResult<ResponseDto<DoorDto>>> CreateAsync([FromBody]CreateDoorDto dto)
         {
             var res = await doorService.CreateAsync(dto);
             return Ok(res);
@@ -147,11 +147,11 @@ namespace Aero.Api.Controllers
             return Ok(res);
         }
 
-        [HttpGet("reader/{mac}/{component}")]
+        [HttpGet("reader/{device}/{driver}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<short>>> AvailableReaderAsync(string mac,short component)
+        public async Task<ActionResult<ResponseDto<short>>> AvailableReaderAsync(int device,int driver)
         {
-            var res = await doorService.AvailableReaderAsync(mac,component);
+            var res = await doorService.AvailableReaderAsync(device,driver);
             return Ok(res);
         }
 

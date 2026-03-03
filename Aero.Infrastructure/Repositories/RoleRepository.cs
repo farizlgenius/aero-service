@@ -315,7 +315,7 @@ public class RoleRepository(AppDbContext context) : IRoleRepository
         };
     }
 
-    public async Task<bool> IsAnyById(int id)
+    public async Task<bool> IsAnyByIdAsync(int id)
     {
         return await context.role.AnyAsync(x => x.id == id);
     }

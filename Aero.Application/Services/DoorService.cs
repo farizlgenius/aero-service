@@ -11,7 +11,7 @@ using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Services
 {
-    public class DoorService(IDoorCommand door,IHwRepository hw,IDoorRepository repo,ICpCommand cp,IMpCommand mp,ISettingRepository setting) : IDoorService
+    public class DoorService(IDoorCommand door,IDeviceRepository hw,IDoorRepository repo,ICpCommand cp,IMpCommand mp,ISettingRepository setting) : IDoorService
     {
         public async Task<ResponseDto<IEnumerable<DoorDto>>> GetAsync()
         {
@@ -80,7 +80,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<bool>> ChangeModeAsync(ChangeDoorModeDto dto)
         {
-            if (!await repo.IsAnyById(dto.DriverId)) return ResponseHelper.NotFoundBuilder<bool>();
+            if (!await repo.IsAnyByIdAsync(dto.DriverId)) return ResponseHelper.NotFoundBuilder<bool>();
 
             if (!door.AcrMode((short)dto.DeviceId, (short)dto.DriverId, dto.Mode))
             {
@@ -230,7 +230,7 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<DoorDto>> UpdateAsync(DoorDto dto)
         {
 
-            if (!await repo.IsAnyById(dto.Id)) return ResponseHelper.NotFoundBuilder<DoorDto>();
+            if (!await repo.IsAnyByIdAsync(dto.Id)) return ResponseHelper.NotFoundBuilder<DoorDto>();
 
             var domain = new Door(0,dto.DriverId,dto.Name,dto.AccessConfig,dto.PairDoorNo,
             (DoorDirection)dto.Direction,

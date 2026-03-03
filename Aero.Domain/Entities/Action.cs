@@ -17,11 +17,11 @@ public sealed class Action : BaseDomain
     public short Arg7 { get; set; }
     public string StrArg { get; set; } = string.Empty;
     public short DelayTime { get; set; }
-    public short ProcedureId { get; set; }
+    public int ProcedureId { get; set; }
 
     public Action() { }
 
-    public Action(short deviceId, short actionType, string actionTypeDetail, short arg1, short arg2, short arg3, short arg4, short arg5, short arg6, short arg7, string strArg, short delayTime, short procedureId)
+    public Action(short deviceId, short actionType, string actionTypeDetail, short arg1, short arg2, short arg3, short arg4, short arg5, short arg6, short arg7, string strArg, short delayTime, int procedureId,int location,bool status) : base(location,status)
     {
         DeviceId = deviceId;
         ActionType = actionType;
@@ -49,5 +49,10 @@ public sealed class Action : BaseDomain
         }
 
         return value;
+    }
+
+    public void SetActionType(short actiontype)
+    {
+        this.ActionType = actiontype;
     }
 }

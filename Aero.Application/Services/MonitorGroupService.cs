@@ -6,99 +6,110 @@ using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
-using Aero.Application.Mapper;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Services
 {
-    public sealed class MonitorGroupService(IQMpgRepository qMpg,IMpgCommand mpg,IQHwRepository qHw,IMpgRepository rMpg) : IMonitorGroupService
+    public sealed class MonitorGroupService(IMpgCommand mpg,IDeviceRepository hw,IMpgRepository repo,ISettingRepository setting) : IMonitorGroupService
     {
-        public async Task<ResponseDto<bool>> CreateAsync(MonitorGroupDto dto)
+        public async Task<ResponseDto<MonitorGroupDto>> CreateAsync(MonitorGroupDto dto)
         {
+            // Check value in license here 
+            // ....to be implement
 
-            var ComponentId = await qMpg.GetLowestUnassignedNumberAsync(10,"");
-            if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
+            if(await repo.IsAnyByNameAsync(dto.Name.Trim())) return ResponseHelper.BadRequestName<MonitorGroupDto>();
 
-            var domain = MonitorGroupMapper.ToDomain(dto);
+            var ScpSetting = await setting.GetScpSettingAsync();
 
-            var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
+            var DriverId = await repo.GetLowestUnassignedNumberAsync(ScpSetting.nMpg,dto.DeviceId);
+            if (DriverId == -1) return ResponseHelper.ExceedLimit<MonitorGroupDto>();
 
-            if (!mpg.ConfigureMonitorPointGroup(ScpId, ComponentId, dto.nMpCount, domain.nMpList.ToList()))
+            var domain = new MonitorGroup(
+                dto.DeviceId,
+                DriverId,
+                dto.Name,
+                dto.nMpCount,
+                dto.nMpList.Select(x => new MonitorGroupList(DriverId,x.PointType,x.PointTypeDesc,x.PointNumber)).ToList(),
+                dto.LocationId,
+                dto.IsActive
+                );
+
+
+            if (!mpg.ConfigureMonitorPointGroup((short)dto.DeviceId, DriverId, dto.nMpCount, domain.nMpList.ToList()))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.CONFIG_MPG));
+                return ResponseHelper.UnsuccessBuilderWithString<MonitorGroupDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync((short)domain.DeviceId), Command.CONFIG_MPG));
             }
 
-            var status = await rMpg.AddAsync(domain);
+            var status = await repo.AddAsync(domain);
 
-            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<MonitorGroupDto>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
 
-            return ResponseHelper.SuccessBuilder<bool>(true);
+            return ResponseHelper.SuccessBuilder<MonitorGroupDto>(await repo.GetByIdAsync(status));
         }
 
-        public async Task<ResponseDto<bool>> DeleteAsync(string mac, short Component)
+        public async Task<ResponseDto<MonitorGroupDto>> DeleteAsync(int id)
         {
-            if (!await qMpg.IsAnyByMacAndComponentIdAsync(mac,Component)) return ResponseHelper.NotFoundBuilder<bool>();
+            var en = await repo.GetByIdAsync(id);
+            
+            if(en is null) return ResponseHelper.NotFoundBuilder<MonitorGroupDto>();
 
-            var ScpId = await qHw.GetComponentIdFromMacAsync(mac);
-
-            if (!mpg.ConfigureMonitorPointGroup(ScpId, Component, 0, []))
+            if (!mpg.ConfigureMonitorPointGroup((short)en.DeviceId, en.DriverId, 0, []))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(mac, Command.CONFIG_MPG));
+                return ResponseHelper.UnsuccessBuilderWithString<MonitorGroupDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync((short)en.DeviceId), Command.CONFIG_MPG));
             }
 
-            var status = await rMpg.DeleteByComponentIdAsync(Component);
+            var status = await repo.DeleteByIdAsync(id);
 
-            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<MonitorGroupDto>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
 
-            return ResponseHelper.SuccessBuilder(true);
+            return ResponseHelper.SuccessBuilder(en);
         }
 
         public async Task<ResponseDto<IEnumerable<MonitorGroupDto>>> GetAsync()
         {
-            var dto = await qMpg.GetAsync();
+            var dto = await repo.GetAsync();
 
             return ResponseHelper.SuccessBuilder<IEnumerable<MonitorGroupDto>>(dto);
         }
 
         public async Task<ResponseDto<IEnumerable<MonitorGroupDto>>> GetByLocationAsync(short location)
         {
-            var dto = await qMpg.GetByLocationIdAsync(location);
+            var dto = await repo.GetByLocationIdAsync(location);
 
             return ResponseHelper.SuccessBuilder<IEnumerable<MonitorGroupDto>>(dto);
         }
 
-        public async Task<ResponseDto<IEnumerable<Mode>>> GetCommandAsync()
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetCommandAsync()
         {
-            var dtos = await qMpg.GetCommandAsync();
+            var dtos = await repo.GetCommandAsync();
 
-            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
 
         }
 
         public async Task<ResponseDto<Pagination<MonitorGroupDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
         {
-            var res = await qMpg.GetPaginationAsync(param,location);
+            var res = await repo.GetPaginationAsync(param,location);
             return ResponseHelper.SuccessBuilder(res);
         }
 
-        public async Task<ResponseDto<IEnumerable<Mode>>> GetTypeAsync()
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetTypeAsync()
         {
-            var dtos = await qMpg.GetTypeAsync();
+            var dtos = await repo.GetTypeAsync();
 
-            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
         public async Task<ResponseDto<bool>> MonitorGroupCommandAsync(MonitorGroupCommandDto dto)
         {
-            if (!await qMpg.IsAnyByMacAndComponentIdAsync(dto.Mac,dto.ComponentId)) return ResponseHelper.NotFoundBuilder<bool>();
+            var en = await repo.GetByIdAsync(dto.Id);
+            if (en is null) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
-
-            if (!mpg.MonitorPointGroupArmDisarm(ScpId, dto.ComponentId, dto.Command, dto.Arg))
+            if (!mpg.MonitorPointGroupArmDisarm((short)en.DeviceId, en.DriverId, dto.Command, dto.Arg))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.MPG_ARM_DISARM));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync((short)en.DeviceId), Command.MPG_ARM_DISARM));
             }
 
             return ResponseHelper.SuccessBuilder<bool>(true);
@@ -107,24 +118,31 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<MonitorGroupDto>> UpdateAsync(MonitorGroupDto dto)
         {
 
-            if (!await qMpg.IsAnyByMacAndComponentIdAsync(dto.Mac,dto.ComponentId)) return ResponseHelper.NotFoundBuilder<MonitorGroupDto>();
+            if (!await repo.IsAnyByIdAsync(dto.Id)) return ResponseHelper.NotFoundBuilder<MonitorGroupDto>();
 
-            var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
 
             // Delete relate table first 
-            var status = await rMpg.DeleteReferenceByMacAnsComponentIdAsync(dto.Mac,dto.ComponentId);
+            var status = await repo.DeleteReferenceByIdAsync(dto.Id);
 
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<MonitorGroupDto>(ResponseMessage.REMOVE_OLD_REF_UNSUCCESS,[]);
 
-            var domain = MonitorGroupMapper.ToDomain(dto);
+             var domain = new MonitorGroup(
+                dto.DeviceId,
+                dto.DriverId,
+                dto.Name,
+                dto.nMpCount,
+                dto.nMpList.Select(x => new MonitorGroupList(dto.DriverId,x.PointType,x.PointTypeDesc,x.PointNumber)).ToList(),
+                dto.LocationId,
+                dto.IsActive
+                );
 
-            if (!mpg.ConfigureMonitorPointGroup(ScpId, dto.ComponentId, dto.nMpCount, domain.nMpList.ToList()))
+            if (!mpg.ConfigureMonitorPointGroup((short)domain.DeviceId, dto.DriverId, dto.nMpCount, domain.nMpList.ToList()))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<MonitorGroupDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.CONFIG_MPG));
+                return ResponseHelper.UnsuccessBuilderWithString<MonitorGroupDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync((short)domain.DeviceId), Command.CONFIG_MPG));
             }
 
 
-            status = await rMpg.UpdateAsync(domain);
+            status = await repo.UpdateAsync(domain);
 
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<MonitorGroupDto>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
 

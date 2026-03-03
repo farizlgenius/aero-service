@@ -1515,46 +1515,45 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
         modelBuilder.Entity<Feature>()
             .HasMany(s => s.sub_feature)
             .WithOne(s => s.feature)
-            .HasForeignKey(k => k.feature_id)
-            .HasPrincipalKey(l => l.component_id);
+            .HasForeignKey(k => k.feature_id);
 
 
         modelBuilder.Entity<Feature>()
             .HasData(
-                new Feature { id = 1, component_id = 1, name = "Dashboard", path = "/" },
-                new Feature { id = 2, component_id = 2, name = "transaction", path = "/event" },
-                new Feature { id = 3, component_id = 3, name = "location", path = "/location" },
-                new Feature { id = 4, component_id = 4, name = "Alerts", path = "/alert" },
-                new Feature { id = 5, component_id = 5, name = "operator" },
-                new Feature { id = 6, component_id = 6, name = "Devices" },
-                new Feature { id = 7, component_id = 7, name = "door", path = "/door" },
-                new Feature { id = 8, component_id = 8, name = "Card Holder", path = "/cardholder" },
-                new Feature { id = 9, component_id = 9, name = "Access Level", path = "/level" },
-                new Feature { id = 10, component_id = 10, name = "Access Area", path = "/area" },
-                new Feature { id = 11, component_id = 11, name = "time" },
-                new Feature { id = 12, component_id = 12, name = "trigger & procedure" },
-                new Feature { id = 13, component_id = 13, name = "Reports" },
-                new Feature { id = 14, component_id = 14, name = "Settings", path = "/setting" },
-                new Feature { id = 15, component_id = 15, name = "Maps", path = "/map" },
-                new Feature { id = 16, component_id = 16, name = "ControlPoint", path = "/control" },
-                new Feature { id = 17, component_id = 17, name = "MonitorPoint", path = "/monitor" },
-                new Feature { id = 18, component_id = 18, name = "monitor_group", path = "/monitorgroup" }
+                new Feature { id = 1,  name = "Dashboard", path = "/" },
+                new Feature { id = 2,  name = "transaction", path = "/event" },
+                new Feature { id = 3, name = "location", path = "/location" },
+                new Feature { id = 4,  name = "Alerts", path = "/alert" },
+                new Feature { id = 5,  name = "operator" },
+                new Feature { id = 6,  name = "Devices" },
+                new Feature { id = 7,  name = "door", path = "/door" },
+                new Feature { id = 8,  name = "Card Holder", path = "/cardholder" },
+                new Feature { id = 9,  name = "Access Level", path = "/level" },
+                new Feature { id = 10,  name = "Access Area", path = "/area" },
+                new Feature { id = 11,  name = "time" },
+                new Feature { id = 12,  name = "trigger & procedure" },
+                new Feature { id = 13,  name = "Reports" },
+                new Feature { id = 14,  name = "Settings", path = "/setting" },
+                new Feature { id = 15,  name = "Maps", path = "/map" },
+                new Feature { id = 16,  name = "ControlPoint", path = "/control" },
+                new Feature { id = 17,  name = "MonitorPoint", path = "/monitor" },
+                new Feature { id = 18,  name = "monitor_group", path = "/monitorgroup" }
 
             );
 
         modelBuilder.Entity<SubFeature>()
             .HasData(
-            new SubFeature { id = 1, component_id = 1, name = "operator", path = "/operator", feature_id = 5 },
-            new SubFeature { id = 2, component_id = 2, name = "role", path = "/role", feature_id = 5 },
-            new SubFeature { id = 3, component_id = 3, name = "hardware", path = "/hardware", feature_id = 6 },
-            new SubFeature { id = 4, component_id = 4, name = "modules", path = "/modules", feature_id = 6 },
-            new SubFeature { id = 5, component_id = 5, name = "Timezone", path = "/timezone", feature_id = 11 },
-            new SubFeature { id = 6, component_id = 6, name = "holiday", path = "/holiday", feature_id = 11 },
-            new SubFeature { id = 7, component_id = 7, name = "interval", path = "/interval", feature_id = 11 },
-            new SubFeature { id = 8, component_id = 8, name = "trigger", path = "/trigger", feature_id = 12 },
-            new SubFeature { id = 9, component_id = 9, name = "procedure", path = "/action", feature_id = 12 },
-            new SubFeature { id = 10, component_id = 10, name = "transaction", path = "/transaction", feature_id = 13 },
-            new SubFeature { id = 11, component_id = 11, name = "Audit Trail", path = "/audit", feature_id = 13 }
+            new SubFeature { id = 1,  name = "operator", path = "/operator", feature_id = 5 },
+            new SubFeature { id = 2,  name = "role", path = "/role", feature_id = 5 },
+            new SubFeature { id = 3,  name = "hardware", path = "/hardware", feature_id = 6 },
+            new SubFeature { id = 4,  name = "modules", path = "/modules", feature_id = 6 },
+            new SubFeature { id = 5,  name = "Timezone", path = "/timezone", feature_id = 11 },
+            new SubFeature { id = 6,  name = "holiday", path = "/holiday", feature_id = 11 },
+            new SubFeature { id = 7,  name = "interval", path = "/interval", feature_id = 11 },
+            new SubFeature { id = 8,  name = "trigger", path = "/trigger", feature_id = 12 },
+            new SubFeature { id = 9,  name = "procedure", path = "/action", feature_id = 12 },
+            new SubFeature { id = 10,  name = "transaction", path = "/transaction", feature_id = 13 },
+            new SubFeature { id = 11,  name = "Audit Trail", path = "/audit", feature_id = 13 }
 
 
             );
@@ -1645,8 +1644,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
         modelBuilder.Entity<FeatureRole>()
             .HasOne(e => e.feature)
             .WithMany(e => e.feature_role)
-            .HasForeignKey(e => e.feature_id)
-            .HasPrincipalKey(e => e.component_id);
+            .HasForeignKey(e => e.feature_id);
 
         modelBuilder.Entity<PasswordRule>()
             .HasData(

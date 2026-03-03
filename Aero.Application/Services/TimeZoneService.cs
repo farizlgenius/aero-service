@@ -5,7 +5,6 @@ using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
-using Aero.Application.Mapper;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
@@ -14,7 +13,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aero.Application.Services
 {
-    public class TimeZoneService(ITzRepository repo, IHwRepository hw, ITzCommand tz, ITzRepository rTz,IRunningNumberRepository run,ISettingRepository setting) : ITimeZoneService
+    public class TimeZoneService(ITzRepository repo, IDeviceRepository hw, ITzCommand tz, ITzRepository rTz,IRunningNumberRepository run,ISettingRepository setting) : ITimeZoneService
     {
         public async Task<ResponseDto<IEnumerable<TimeZoneDto>>> GetAsync()
         {
@@ -44,7 +43,11 @@ namespace Aero.Application.Services
             var DriverId = await repo.GetLowestUnassignedNumberAsync(ScpSetting.nTz);
             if (DriverId == -1) return ResponseHelper.ExceedLimit<TimeZoneDto>();
 
-            var domain = new Aero.Domain.Entities.TimeZone(DriverId,dto.Name,dto.Mode,dto.Active,dto.Deactive,dto.LocationId,dto.IsActive);
+            var domain = new Aero.Domain.Entities.TimeZone(DriverId,dto.Name,dto.Mode,dto.Active,dto.Deactive,
+            dto.Intervals.Select(i => new Interval(
+                new DaysInWeek(i.Days.Sunday,i.Days.Monday,i.Days.Tuesday,i.Days.Wednesday,i.Days.Thursday,i.Days.Friday,i.Days.Saturday)
+                ,i.DaysDetail,i.Start,i.End,i.LocationId,i.IsActive)).ToList(),
+            dto.LocationId,dto.IsActive);
 
 
             var ids = await hw.GetDriverIdByLocationIdAsync(domain.LocationId);
@@ -74,7 +77,7 @@ namespace Aero.Application.Services
 
             if(data is null) return ResponseHelper.NotFoundBuilder<TimeZoneDto>();
 
-            var hws = await hw.GetComponentIdsAsync();
+            var hws = await hw.GetDriverIdsAsync();
             foreach (var id in hws)
             {
                 if (!tz.TimeZoneControl(id, id, 3))
@@ -96,11 +99,15 @@ namespace Aero.Application.Services
         {
             List<string> errors = new List<string>();
 
-            if (!await repo.IsAnyById(dto.Id)) return ResponseHelper.NotFoundBuilder<TimeZoneDto>();
+            if (!await repo.IsAnyByIdAsync(dto.Id)) return ResponseHelper.NotFoundBuilder<TimeZoneDto>();
 
-            var domain = new Domain.Entities.TimeZone(dto.DriverId,dto.Name,dto.Mode,dto.Active,dto.Deactive,dto.LocationId,dto.IsActive);
+            var domain = new Aero.Domain.Entities.TimeZone(dto.DriverId,dto.Name,dto.Mode,dto.Active,dto.Deactive,
+            dto.Intervals.Select(i => new Interval(
+                new DaysInWeek(i.Days.Sunday,i.Days.Monday,i.Days.Tuesday,i.Days.Wednesday,i.Days.Thursday,i.Days.Friday,i.Days.Saturday)
+                ,i.DaysDetail,i.Start,i.End,i.LocationId,i.IsActive)).ToList(),
+            dto.LocationId,dto.IsActive);
 
-            var ids = await hw.GetComponentIdsAsync();
+            var ids = await hw.GetDriverIdsAsync();
             foreach (var id in ids)
             {
                 if (!tz.ExtendedTimeZoneActSpecification(id, domain))
@@ -110,7 +117,11 @@ namespace Aero.Application.Services
             }
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<TimeZoneDto>(ResponseMessage.COMMAND_UNSUCCESS, errors);
 
-            var data = TimezoneMapper.ToDomain(dto);
+            var data = new Aero.Domain.Entities.TimeZone(dto.DriverId,dto.Name,dto.Mode,dto.Active,dto.Deactive,
+            dto.Intervals.Select(i => new Interval(
+                new DaysInWeek(i.Days.Sunday,i.Days.Monday,i.Days.Tuesday,i.Days.Wednesday,i.Days.Thursday,i.Days.Friday,i.Days.Saturday)
+                ,i.DaysDetail,i.Start,i.End,i.LocationId,i.IsActive)).ToList(),
+            dto.LocationId,dto.IsActive);
 
             var status = await rTz.UpdateAsync(data);
 

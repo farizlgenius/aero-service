@@ -8,7 +8,7 @@ public interface IBaseRepository<Y,T>
       Task<int> AddAsync(T data);
       Task<int> DeleteByIdAsync(int id);
       Task<int> UpdateAsync(T data);
-    Task<bool> IsAnyById(int id);
+    Task<bool> IsAnyByIdAsync(int id);
     Task<IEnumerable<Y>> GetAsync();
     Task<Y> GetByIdAsync(int id);
     Task<IEnumerable<Y>> GetByLocationIdAsync(int locationId);

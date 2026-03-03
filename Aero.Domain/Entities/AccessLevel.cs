@@ -5,17 +5,24 @@ namespace Aero.Domain.Entities;
 
 public sealed class AccessLevel : BaseDomain
 {
+    public int Id {get; private set;}
       public string Name {get; private set;} = string.Empty;
       public List<AccessLevelComponent> Components {get; private set;} = new List<AccessLevelComponent>();
 
        public AccessLevel() { }
 
-    public AccessLevel(string name, List<AccessLevelComponent> components, int location,bool status) : base(location,status)
+    public AccessLevel(int Id,string name, List<AccessLevelComponent> components, int location,bool status) : base(location,status)
     {
+        SetId(Id);
         SetName(name);
         SetComponents(components);
     }
 
+    private void SetId(int id)
+    {
+        if(id < 0) throw new ArgumentException("Id invalid.");
+        this.Id = id;
+    }
 
     private void SetName(string name) 
     {

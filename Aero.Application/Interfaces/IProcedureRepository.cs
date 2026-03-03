@@ -8,6 +8,7 @@ namespace Aero.Domain.Interface;
 
 public interface IProcedureRepository : IBaseRepository<ProcedureDto,Procedure>
 {
-    Task<int> CountByMacAndUpdateTimeAsync(string mac, DateTime sync);
-    Task<IEnumerable<Mode>> GetActionTypeAsync();
+    Task<int> CountByDeviceIdAndUpdateTimeAsync(int device, DateTime sync);
+    Task<IEnumerable<ModeDto>> GetActionTypeAsync();
+    Task<short> GetLowestUnassignedNumberAsync(int max, int device);
 }

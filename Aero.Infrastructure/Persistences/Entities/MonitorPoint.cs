@@ -65,5 +65,10 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.updated_date = DateTime.UtcNow;
 
         }
+
+        public void SetMask(bool mask)
+        {
+            this.is_mask = mask;
+        }
     }
 }

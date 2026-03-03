@@ -5,7 +5,6 @@ using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
-using Aero.Application.Mapper;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
@@ -13,7 +12,7 @@ using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Services
 {
-    public class IntervalService(IIntervalRepository repo,IHwRepository hw,ITzCommand tz,ITzRepository tzRepo) : IIntervalService
+    public class IntervalService(IIntervalRepository repo,IDeviceRepository hw,ITzCommand tz,ITzRepository tzRepo) : IIntervalService
     {
         public async Task<ResponseDto<IEnumerable<IntervalDto>>> GetAsync()
         {
@@ -67,9 +66,11 @@ namespace Aero.Application.Services
             // Update is need to send the time zone command again 
             List<string> errors = new List<string>();
 
-            if (!await repo.IsAnyById(dto.Id)) return ResponseHelper.NotFoundBuilder<IntervalDto>();
+            if (!await repo.IsAnyByIdAsync(dto.Id)) return ResponseHelper.NotFoundBuilder<IntervalDto>();
 
-            var status = await repo.UpdateAsync(IntervalMapper.ToDomain(dto));
+            var domain = new Interval(new DaysInWeek(dto.Days.Sunday,dto.Days.Monday,dto.Days.Tuesday,dto.Days.Wednesday,dto.Days.Thursday,dto.Days.Friday,dto.Days.Saturday),dto.DaysDetail,dto.Start,dto.End,dto.LocationId,dto.IsActive);
+
+            var status = await repo.UpdateAsync(domain);
 
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<IntervalDto>(ResponseMessage.UPDATE_RECORD_UNSUCCESS,[]); 
 
@@ -83,7 +84,7 @@ namespace Aero.Application.Services
                 {
 
                     var t = await tzRepo.GetByIdAsync(tzs);
-                    var tdomain = new Aero.Domain.Entities.TimeZone(t.DriverId,t.Name,t.Mode,t.Active,t.Deactive,t.LocationId,t.IsActive);
+                    var tdomain = new Aero.Domain.Entities.TimeZone(t.DriverId,t.Name,t.Mode,t.Active,t.Deactive,t.Intervals.Select( dto=> new Interval(new DaysInWeek(dto.Days.Sunday,dto.Days.Monday,dto.Days.Tuesday,dto.Days.Wednesday,dto.Days.Thursday,dto.Days.Friday,dto.Days.Saturday),dto.DaysDetail,dto.Start,dto.End,dto.LocationId,dto.IsActive)).ToList(),t.LocationId,t.IsActive);
 
                     if (!tz.ExtendedTimeZoneActSpecification(id,tdomain))
                     {

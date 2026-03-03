@@ -2,11 +2,13 @@ using System;
 using Aero.Infrastructure.Mapper;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
-using Aero.Infrastructure.Data;
+using Aero.Infrastructure.Persistences;
 using Aero.Application.DTOs;
 using HID.Aero.ScpdNet.Wrapper;
 using Microsoft.EntityFrameworkCore;
 using Aero.Application.Helpers;
+using Aero.Application.Interface;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Aero.Infrastructure.Repositories;
 
@@ -14,18 +16,20 @@ public class TriggerRepository(AppDbContext context) : ITriggerRepository
 {
       public async Task<int> AddAsync(Trigger data)
       {
-            var en = Aero.Infrastructure.Mapper.TriggerMapper.ToEf(data);
+            var en = new Persistences.Entities.Trigger(data);
 
             await context.trigger.AddAsync(en);
-            return await context.SaveChangesAsync();
+            var rec = await context.SaveChangesAsync();
+            if(rec <= 0) return -1;
+            return en.id;
       }
 
-      public async Task<int> DeleteByComponentIdAsync(short component)
+      public async Task<int> DeleteByIdAsync(int id)
       {
             throw new NotImplementedException();
       }
 
-      public async Task<IEnumerable<Mode>> GetDeviceBySourceAsync(short location, short source)
+      public async Task<IEnumerable<ModeDto>> GetDeviceBySourceAsync(short location, short source)
       {
             switch (source)
             {
@@ -33,15 +37,10 @@ public class TriggerRepository(AppDbContext context) : ITriggerRepository
                   case (short)tranSrc.tranSrcScpCom:
                   case (short)tranSrc.tranSrcScpLcl:
                   case (short)tranSrc.tranSrcLoginService:
-                        var dtos = await context.hardware
+                        var dtos = await context.device
                             .AsNoTracking()
                             .Where(x => x.location_id == location)
-                            .Select(x => new Mode
-                            {
-                                  Name = x.name,
-                                  Value = x.component_id,
-                                  Description = x.mac
-                            })
+                            .Select(x => new ModeDto(x.name,x.driver_id,x.mac))
                             .ToArrayAsync();
                         return dtos;
                   case (short)tranSrc.tranSrcSioDiag:
@@ -51,36 +50,21 @@ public class TriggerRepository(AppDbContext context) : ITriggerRepository
                         dtos = await context.module
                             .AsNoTracking()
                             .Where(x => x.location_id == location)
-                            .Select(x => new Mode
-                            {
-                                  Name = x.model_desc,
-                                  Value = x.component_id,
-                                  Description = x.mac
-                            })
+                            .Select(x => new ModeDto(x.model_detail,x.driver_id,""))
                             .ToArrayAsync();
                         return dtos;
                   case (short)tranSrc.tranSrcMP:
                         dtos = await context.monitor_point
                             .AsNoTracking()
                             .Where(x => x.location_id == location)
-                            .Select(x => new Mode
-                            {
-                                  Name = x.name,
-                                  Value = x.component_id,
-                                  Description = x.module.mac
-                            })
+                            .Select(x => new ModeDto(x.name,x.driver_id,""))
                             .ToArrayAsync();
                         return dtos;
                   case (short)tranSrc.tranSrcCP:
                         dtos = await context.control_point
                             .AsNoTracking()
                             .Where(x => x.location_id == location)
-                            .Select(x => new Mode
-                            {
-                                  Name = x.name,
-                                  Value = x.component_id,
-                                  Description = x.module.mac
-                            })
+                            .Select(x => new ModeDto(x.name,x.driver_id,""))
                             .ToArrayAsync();
                         return dtos;
                   case (short)tranSrc.tranSrcACR:
@@ -92,36 +76,21 @@ public class TriggerRepository(AppDbContext context) : ITriggerRepository
                         dtos = await context.door
                             .AsNoTracking()
                             .Where(x => x.location_id == location)
-                            .Select(x => new Mode
-                            {
-                                  Name = x.name,
-                                  Value = x.component_id,
-                                  Description = x.mac
-                            })
+                            .Select(x => new ModeDto(x.name,x.driver_id,""))
                             .ToArrayAsync();
                         return dtos;
                   case (short)tranSrc.tranSrcTimeZone:
                         dtos = await context.timezone
                             .AsNoTracking()
                             .Where(x => x.location_id == location)
-                            .Select(x => new Mode
-                            {
-                                  Name = x.name,
-                                  Value = x.component_id,
-                                  Description = ""
-                            })
+                            .Select(x => new ModeDto(x.name,x.driver_id,""))
                             .ToArrayAsync();
                         return dtos;
                   case (short)tranSrc.tranSrcProcedure:
                         dtos = await context.procedure
                             .AsNoTracking()
                             .Where(x => x.location_id == location)
-                            .Select(x => new Mode
-                            {
-                                  Name = x.name,
-                                  Value = x.component_id,
-                                  Description = x.trigger.hardware_mac
-                            })
+                            .Select(x => new ModeDto(x.name,x.driver_id,""))
                             .ToArrayAsync();
                         return dtos;
                   case (short)tranSrc.tranSrcTrigger:
@@ -129,40 +98,25 @@ public class TriggerRepository(AppDbContext context) : ITriggerRepository
                         dtos = await context.trigger
                             .AsNoTracking()
                             .Where(x => x.location_id == location)
-                            .Select(x => new Mode
-                            {
-                                  Name = x.name,
-                                  Value = x.component_id,
-                                  Description = x.hardware_mac
-                            })
+                            .Select(x => new ModeDto(x.name,x.driver_id,""))
                             .ToArrayAsync();
                         return dtos;
                   case (short)tranSrc.tranSrcMPG:
                         dtos = await context.monitor_group
                             .AsNoTracking()
                             .Where(x => x.location_id == location)
-                            .Select(x => new Mode
-                            {
-                                  Name = x.name,
-                                  Value = x.component_id,
-                                  Description = x.mac
-                            })
+                            .Select(x => new ModeDto(x.name,x.driver_id,""))
                             .ToArrayAsync();
                         return dtos;
                   case (short)tranSrc.tranSrcArea:
                         dtos = await context.area
                             .AsNoTracking()
                             .Where(x => x.location_id == location)
-                            .Select(x => new Mode
-                            {
-                                  Name = x.name,
-                                  Value = x.component_id,
-                                  Description = ""
-                            })
+                            .Select(x => new ModeDto(x.name,x.driver_id,""))
                             .ToArrayAsync();
                         return dtos;
                   default:
-                        return new List<Mode>();
+                        return new List<ModeDto>();
             }
       }
 
@@ -171,16 +125,12 @@ public class TriggerRepository(AppDbContext context) : ITriggerRepository
             throw new NotImplementedException();
       }
 
-      Task<IEnumerable<Mode>> ITriggerRepository.GetDeviceBySourceAsync(short location, short source)
-      {
-            throw new NotImplementedException();
-      }
 
-    public async Task<int> CountByMacAndUpdateTimeAsync(string mac, DateTime sync)
+    public async Task<int> CountByDeviceIdAndUpdateTimeAsync(int device, DateTime sync)
     {
         var res = await context.trigger
         .AsNoTracking()
-        .Where(x => x.mac.Equals(mac) && x.updated_date > sync)
+        .Where(x => x.device_id == device && x.updated_date > sync)
         .CountAsync();
 
         return res;
@@ -190,170 +140,73 @@ public class TriggerRepository(AppDbContext context) : ITriggerRepository
     {
         var dtos = await context.trigger
         .AsNoTracking()
-        .OrderBy(x => x.component_id)
-        .Select(en => new TriggerDto
-        {
-            // Base
-            LocationId = en.location_id,
-            Mac = en.hardware_mac,
-            HardwareName = en.hardware.name,
-            IsActive = en.is_active,
-
-            // Detail
-            Name = en.name,
-            Command = en.command,
-            ProcedureId = en.procedure_id,
-            SourceNumber = en.source_number,
-            SourceType = en.source_type,
-            TranType = en.tran_type,
-            CodeMap = en.code_map.Select(x => new TransactionCodeDto
-            {
-                Name = x.name,
-                Value = x.value,
-                Description = x.description
-            }).ToList(),
-            TimeZone = en.timezone,
-        }).ToArrayAsync();
+        .OrderBy(x => x.id)
+        .Select(en => new TriggerDto(en.id,en.device_id,en.driver_id,en.name,en.command,en.procedure_id,en.source_type,en.source_number,en.tran_type,en.code_map.Select(x => new TransactionCodeDto(x.name,x.value,x.description)).ToList()
+            ,en.timezone,en.location_id,en.is_active)).ToArrayAsync();
 
         return dtos;
     }
 
-    public async Task<TriggerDto> GetByComponentIdAsync(short componentId)
+    public async Task<TriggerDto> GetByIdAsync(int id)
     {
         var dtos = await context.trigger
         .AsNoTracking()
-        .Where(x => x.component_id == componentId)
-        .OrderBy(x => x.component_id)
-        .Select(en => new TriggerDto
-        {
-            // Base
-            LocationId = en.location_id,
-            Mac = en.hardware_mac,
-            HardwareName = en.hardware.name,
-            IsActive = en.is_active,
-
-            // Detail
-            Name = en.name,
-            Command = en.command,
-            ProcedureId = en.procedure_id,
-            SourceNumber = en.source_number,
-            SourceType = en.source_type,
-            TranType = en.tran_type,
-            CodeMap = en.code_map.Select(x => new TransactionCodeDto
-            {
-                Name = x.name,
-                Value = x.value,
-                Description = x.description
-            }).ToList(),
-            TimeZone = en.timezone,
-        }).FirstOrDefaultAsync();
+        .Where(x => x.id == id)
+        .OrderBy(x => x.id)
+        .Select(en => new TriggerDto(en.id,en.device_id,en.driver_id,en.name,en.command,en.procedure_id,en.source_type,en.source_number,en.tran_type,en.code_map.Select(x => new TransactionCodeDto(x.name,x.value,x.description)).ToList()
+            ,en.timezone,en.location_id,en.is_active))
+            .FirstOrDefaultAsync();
 
         return dtos;
     }
 
-    public async Task<IEnumerable<TriggerDto>> GetByLocationIdAsync(short locationId)
+    public async Task<IEnumerable<TriggerDto>> GetByLocationIdAsync(int locationId)
     {
         var dtos = await context.trigger
         .AsNoTracking()
         .Where(x => x.location_id == locationId || x.location_id == 1)
-        .OrderBy(x => x.component_id)
-        .Select(en => new TriggerDto
-        {
-            // Base
-            LocationId = en.location_id,
-            Mac = en.hardware_mac,
-            HardwareName = en.hardware.name,
-            IsActive = en.is_active,
-
-            // Detail
-            Name = en.name,
-            Command = en.command,
-            ProcedureId = en.procedure_id,
-            SourceNumber = en.source_number,
-            SourceType = en.source_type,
-            TranType = en.tran_type,
-            CodeMap = en.code_map.Select(x => new TransactionCodeDto
-            {
-                Name = x.name,
-                Value = x.value,
-                Description = x.description
-            }).ToList(),
-            TimeZone = en.timezone,
-        }).ToArrayAsync();
+        .OrderBy(x => x.id)
+        .Select(en => new TriggerDto(en.id,en.device_id,en.driver_id,en.name,en.command,en.procedure_id,en.source_type,en.source_number,en.tran_type,
+        en.code_map.Select(x => new TransactionCodeDto(x.name,x.value,x.description))
+            .ToList()
+        ,en.timezone,
+        en.location_id,en.is_active
+        ))
+        .ToArrayAsync();
 
         return dtos;
     }
 
-    public async Task<IEnumerable<Mode>> GetCodeByTranAsync(short tran)
+    public async Task<IEnumerable<ModeDto>> GetCodeByTranAsync(short tran)
     {
         var dtos = await context.transaction_code
             .AsNoTracking()
             .Where(x => x.transaction_type_value == tran)
-            .Select(x => new Mode
-            {
-                Name = x.name,
-                Description = x.description,
-                Value = x.value,
-            })
+            .Select(x => new ModeDto(x.name,x.value,x.description))
             .ToArrayAsync();
 
         return dtos;
     }
 
-    public async Task<IEnumerable<Mode>> GetCommandAsync()
+    public async Task<IEnumerable<ModeDto>> GetCommandAsync()
     {
         var dtos = await context.trigger_command
             .AsNoTracking()
-            .Select(x => new Mode
-            {
-                Name = x.name,
-                Description = x.description,
-                Value = x.value,
-            })
+            .Select(x => new ModeDto(x.name,x.value,x.description))
             .ToArrayAsync();
 
         return dtos;
     }
 
 
-    public async Task<short> GetLowestUnassignedNumberAsync(int max, string mac)
+    public async Task<short> GetLowestUnassignedNumberAsync(int max, int device)
     {
-        if (string.IsNullOrEmpty(mac))
-        {
-            if (max <= 0) return -1;
-
-            var query = context.transaction
-                .AsNoTracking()
-                .Select(x => x.component_id);
-
-            // Handle empty table case quickly
-            var hasAny = await query.AnyAsync();
-            if (!hasAny)
-                return 1; // start at 1 if table is empty
-
-            // Load all numbers into memory (only the column, so it's lightweight)
-            var numbers = await query.Distinct().OrderBy(x => x).ToListAsync();
-
-            short expected = 1;
-            foreach (var num in numbers)
-            {
-                if (num != expected)
-                    return expected; // found the lowest missing number
-                expected++;
-            }
-
-            // If none missing in sequence, return next number
-            if (expected > max) return -1;
-            return expected;
-        }
-        else
-        {
-            if (max <= 0) return -1;
+        if (max <= 0) return -1;
 
             var query = context.trigger
                 .AsNoTracking()
-                .Where(x => x.mac == mac)
-                .Select(x => x.trig_id);
+                .Where(x => x.device_id == device)
+                .Select(x => x.driver_id);
 
             // Handle empty table case quickly
             var hasAny = await query.AnyAsync();
@@ -374,25 +227,19 @@ public class TriggerRepository(AppDbContext context) : ITriggerRepository
             // If none missing in sequence, return next number
             if (expected > max) return -1;
             return expected;
-        }
     }
 
-    public async Task<IEnumerable<Mode>> GetSourceTypeAsync()
+    public async Task<IEnumerable<ModeDto>> GetSourceTypeAsync()
     {
         var dtos = await context.transaction_source
             .AsNoTracking()
-            .Select(x => new Mode
-            {
-                Name = x.name,
-                Description = x.source,
-                Value = x.value,
-            })
+            .Select(x => new ModeDto(x.name,x.value,""))
             .ToArrayAsync();
 
         return dtos;
     }
 
-    public async Task<IEnumerable<Mode>> GetTypeBySourceAsync(short source)
+    public async Task<IEnumerable<ModeDto>> GetTypeBySourceAsync(short source)
     {
         var dtos = await context.transaction_type
             .AsNoTracking()
@@ -400,18 +247,13 @@ public class TriggerRepository(AppDbContext context) : ITriggerRepository
                 x.transaction_source_types.All(x => x.transction_source_value == source) &&
                 x.transaction_source_types.Any()
             )
-            .Select(x => new Mode
-            {
-                Name = x.name,
-                Description = "",
-                Value = x.value,
-            })
+            .Select(x => new ModeDto(x.name,x.value,""))
             .ToArrayAsync();
 
         return dtos;
     }
 
-    public async Task<Pagination<TriggerDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    public async Task<Pagination<TriggerDto>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
     {
 
         var query = context.trigger.AsNoTracking().AsQueryable();
@@ -428,18 +270,14 @@ public class TriggerRepository(AppDbContext context) : ITriggerRepository
                     var pattern = $"%{search}%";
 
                     query = query.Where(x =>
-                        EF.Functions.ILike(x.name, pattern) ||
-                        EF.Functions.ILike(x.mac, pattern) ||
-                        EF.Functions.ILike(x.mac, pattern)
+                        EF.Functions.ILike(x.name, pattern) 
 
                     );
                 }
                 else // SQL Server
                 {
                     query = query.Where(x =>
-                        x.name.Contains(search) ||
-                        x.mac.Contains(search) ||
-                        x.mac.Contains(search)
+                        x.name.Contains(search) 
                     );
                 }
             }
@@ -467,29 +305,8 @@ public class TriggerRepository(AppDbContext context) : ITriggerRepository
             .OrderByDescending(t => t.created_date)
             .Skip((param.PageNumber - 1) * param.PageSize)
             .Take(param.PageSize)
-            .Select(en => new TriggerDto
-            {
-                // Base
-                LocationId = en.location_id,
-                Mac = en.hardware_mac,
-                HardwareName = en.hardware.name,
-                IsActive = en.is_active,
-
-                // Detail
-                Name = en.name,
-                Command = en.command,
-                ProcedureId = en.procedure_id,
-                SourceNumber = en.source_number,
-                SourceType = en.source_type,
-                TranType = en.tran_type,
-                CodeMap = en.code_map.Select(x => new TransactionCodeDto
-                {
-                    Name = x.name,
-                    Value = x.value,
-                    Description = x.description
-                }).ToList(),
-                TimeZone = en.timezone,
-            })
+            .Select(en => new TriggerDto(en.id,en.device_id,en.driver_id,en.name,en.command,en.procedure_id,en.source_type,en.source_number,en.tran_type,en.code_map.Select(x => new TransactionCodeDto(x.name,x.value,x.description)).ToList()
+            ,en.timezone,en.location_id,en.is_active))
             .ToListAsync();
 
 
@@ -506,7 +323,12 @@ public class TriggerRepository(AppDbContext context) : ITriggerRepository
         };
     }
 
-    public Task<bool> IsAnyByComponentId(short component)
+    public Task<bool> IsAnyByIdAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> IsAnyByNameAsync(string name)
     {
         throw new NotImplementedException();
     }

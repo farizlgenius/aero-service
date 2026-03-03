@@ -5,6 +5,7 @@ namespace Aero.Domain.Entities;
 
 public sealed class Procedure : BaseDomain
 {
+    public int Id {get; set;}
     public int DeviceId { get; set; }
       public short DriverId {get; set;}
       public int TriggerId {get; set;}
@@ -13,8 +14,9 @@ public sealed class Procedure : BaseDomain
 
       public Procedure() { }
 
-      public Procedure(int deviceId, short driverId, int triggerId, string name, List<Action> actions)
+      public Procedure(int Id,int deviceId, short driverId, int triggerId, string name, List<Action> actions)
       {
+        this.Id = Id;
           DeviceId = deviceId;
           DriverId = driverId;
           TriggerId = triggerId;

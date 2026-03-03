@@ -6,91 +6,95 @@ using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
-using Aero.Application.Mapper;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 
 namespace Aero.Application.Services
 {
-    public sealed class TriggerService(IQTrigRepository qTrig, ITriggerRepository rTrig, IQHwRepository qHw, ITrigCommand trig) : ITriggerService
+    public sealed class TriggerService(ITriggerRepository repo, IDeviceRepository hw, ITrigCommand trig,ISettingRepository setting) : ITriggerService
     {
-        public async Task<ResponseDto<bool>> CreateAsync(TriggerDto dto)
+        public async Task<ResponseDto<TriggerDto>> CreateAsync(TriggerDto dto)
         {
-            var ComponentId = await qTrig.GetLowestUnassignedNumberAsync(128, "");
-            var TrigId = await qTrig.GetLowestUnassignedNumberAsync(128, dto.Mac);
-            if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
-            var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
-            if (ScpId == 0) return ResponseHelper.NotFoundBuilder<bool>();
+            // Check value in license here 
+            // ....to be implement
 
-            var domain = TriggerMapper.ToDomain(dto);
-            domain.DriverID = TrigId;
-            domain.ComponentId = ComponentId;
+            if (await repo.IsAnyByNameAsync(dto.Name.Trim())) return ResponseHelper.BadRequestName<TriggerDto>();
 
-            if (!trig.TriggerSpecification(ScpId, domain, ComponentId))
+            var ScpSetting = await setting.GetScpSettingAsync();
+
+            var DriverId = await repo.GetLowestUnassignedNumberAsync(ScpSetting.nTrgr,dto.DeviceId);
+            if (DriverId == -1) return ResponseHelper.ExceedLimit<TriggerDto>();
+
+
+            var domain = new Aero.Domain.Entities.Trigger(DriverId,dto.Name,dto.Command,dto.ProcedureId,dto.SourceType,dto.SourceNumber,dto.TranType,
+            dto.CodeMap.Select(x => new TransactionCode(x.Name,x.Value,x.Description)).ToList(),
+            dto.TimeZone,dto.DriverId,dto.LocationId,dto.IsActive);
+
+            if (!trig.TriggerSpecification((short)dto.DeviceId, domain, dto.DriverId))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.TRIG_SPEC));
+                return ResponseHelper.UnsuccessBuilderWithString<TriggerDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync((short)dto.DeviceId), Command.TRIG_SPEC));
             }
 
-            var status = await rTrig.AddAsync(domain);
-            if (status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS, []);
+            var status = await repo.AddAsync(domain);
+            if (status <= 0) return ResponseHelper.UnsuccessBuilder<TriggerDto>(ResponseMessage.SAVE_DATABASE_UNSUCCESS, []);
 
-            return ResponseHelper.SuccessBuilder<bool>(true);
+            return ResponseHelper.SuccessBuilder<TriggerDto>(await repo.GetByIdAsync(status));
         }
 
-        public async Task<ResponseDto<bool>> DeleteAsync(string Mac, short ComponentId)
+        public async Task<ResponseDto<TriggerDto>> DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }
 
         public async Task<ResponseDto<IEnumerable<TriggerDto>>> GetAsync()
         {
-            var dto = await qTrig.GetAsync();
+            var dto = await repo.GetAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<TriggerDto>>(dto);
         }
 
-        public async Task<ResponseDto<IEnumerable<TriggerDto>>> GetByLocationId(short location)
+        public async Task<ResponseDto<IEnumerable<TriggerDto>>> GetByLocationId(int location)
         {
-            var dto = await qTrig.GetByLocationIdAsync(location);
+            var dto = await repo.GetByLocationIdAsync(location);
 
             return ResponseHelper.SuccessBuilder<IEnumerable<TriggerDto>>(dto);
         }
 
 
-        public async Task<ResponseDto<IEnumerable<Mode>>> GetCommandAsync()
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetCommandAsync()
         {
-            var dtos = await qTrig.GetCommandAsync();
+            var dtos = await repo.GetCommandAsync();
 
-            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
-        public async Task<ResponseDto<IEnumerable<Mode>>> GetSourceTypeAsync()
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetSourceTypeAsync()
         {
-            var dtos = await qTrig.GetSourceTypeAsync();
+            var dtos = await repo.GetSourceTypeAsync();
 
-            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
-        public async Task<ResponseDto<IEnumerable<Mode>>> GetCodeByTranAsync(short tran)
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetCodeByTranAsync(short tran)
         {
-            var dtos = await qTrig.GetCodeByTranAsync(tran);
+            var dtos = await repo.GetCodeByTranAsync(tran);
 
-            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
-        public async Task<ResponseDto<IEnumerable<Mode>>> GetTypeBySourceAsync(short source)
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetTypeBySourceAsync(short source)
         {
-            var dtos = await qTrig.GetTypeBySourceAsync(source);
+            var dtos = await repo.GetTypeBySourceAsync(source);
 
-            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
 
 
         }
 
-        public async Task<ResponseDto<IEnumerable<Mode>>> GetDeviceBySourceAsync(short location, short source)
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetDeviceBySourceAsync(short location, short source)
         {
-            var dtos = await rTrig.GetDeviceBySourceAsync(location, source);
+            var dtos = await repo.GetDeviceBySourceAsync(location, source);
 
-            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
         public Task<ResponseDto<TriggerDto>> UpdateAsync(TriggerDto dto)
@@ -98,9 +102,9 @@ namespace Aero.Application.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ResponseDto<Pagination<TriggerDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        public async Task<ResponseDto<Pagination<TriggerDto>>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
         {
-            var res = await qTrig.GetPaginationAsync(param, location);
+            var res = await repo.GetPaginationAsync(param, location);
             return ResponseHelper.SuccessBuilder(res);
         }
     }

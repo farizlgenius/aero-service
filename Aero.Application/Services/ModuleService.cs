@@ -10,12 +10,12 @@ using Aero.Domain.Entities;
 
 namespace Aero.Application.Services
 {
-    public class ModuleService(IQModuleRepository qModule,ISioCommand sio,IQHwRepository qhw) : IModuleService
+    public class ModuleService(IModuleRepository moduleRepo,ISioCommand sio,IDeviceRepository hw) : IModuleService
     {
 
         public async Task<ResponseDto<IEnumerable<ModuleDto>>> GetAsync()
         {
-            var dtos = await qModule.GetAsync();
+            var dtos = await moduleRepo.GetAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<ModuleDto>>(dtos);
         }
 
@@ -26,22 +26,21 @@ namespace Aero.Application.Services
 
         
 
-        public async Task<ResponseDto<bool>> GetStatusAsync(string mac, short Id)
+        public async Task<ResponseDto<bool>> GetStatusAsync(int device, short driver)
         {
 
-            if (!await qModule.IsAnyByComponentAndMacAsnyc(mac,Id)) return ResponseHelper.NotFoundBuilder<bool>();
-            int ScpId = await qhw.GetComponentIdFromMacAsync(mac);
-            if (!sio.GetSioStatus((short)ScpId, Id))
+            if (!await moduleRepo.IsAnyByDriverAndDeviceIdAsnyc(device,driver)) return ResponseHelper.NotFoundBuilder<bool>();
+            if (!sio.GetSioStatus((short)device, driver))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.MODULE_STATUS));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync((short)device),Command.MODULE_STATUS));
             }
             return ResponseHelper.SuccessBuilder<bool>(true);
 
         }
 
-        public async Task<ResponseDto<IEnumerable<ModuleDto>>> GetByMacAsync(string mac)
+        public async Task<ResponseDto<IEnumerable<ModuleDto>>> GetByDeviceIdAsync(int device)
         {
-            var dtos = await qModule.GetByMacAsync(mac);
+            var dtos = await moduleRepo.GetByDeviceIdAsync(device);
             return ResponseHelper.SuccessBuilder<IEnumerable<ModuleDto>>(dtos);
         }
 
@@ -61,7 +60,7 @@ namespace Aero.Application.Services
         }
 
 
-        public async Task<ResponseDto<IEnumerable<Mode>>> GetModeAsync(int param)
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param)
         {
             throw new NotImplementedException();
         }
@@ -72,28 +71,28 @@ namespace Aero.Application.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ResponseDto<IEnumerable<ModuleDto>>> GetByLocationAsync(short location)
+        public async Task<ResponseDto<IEnumerable<ModuleDto>>> GetByLocationAsync(int location)
         {
-            var dtos = await qModule.GetByLocationIdAsync(location);
+            var dtos = await moduleRepo.GetByLocationIdAsync(location);
             return ResponseHelper.SuccessBuilder<IEnumerable<ModuleDto>>(dtos);
         }
 
-        public async Task<ResponseDto<IEnumerable<Mode>>> GetBaudrateAsync()
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetBaudrateAsync()
         {
-            var dtos = await qModule.GetBaudrateAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
+            var dtos = await moduleRepo.GetBaudrateAsync();
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
-        public async Task<ResponseDto<IEnumerable<Mode>>> GetProtocolAsync()
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetProtocolAsync()
         {
-            var dtos = await qModule.GetProtocolAsync();
+            var dtos = await moduleRepo.GetProtocolAsync();
 
-            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
-        public async Task<ResponseDto<Pagination<ModuleDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        public async Task<ResponseDto<Pagination<ModuleDto>>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
         {
-            var res = await qModule.GetPaginationAsync(param,location);
+            var res = await moduleRepo.GetPaginationAsync(param,location);
             return ResponseHelper.SuccessBuilder(res);
         }
     }

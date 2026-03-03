@@ -3,7 +3,6 @@ using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
-using Aero.Application.Mapper;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using System.ComponentModel;
@@ -94,9 +93,20 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<RoleDto>> UpdateAsync(RoleDto dto)
         {
-            if(!await repo.IsAnyById(dto.Id)) return ResponseHelper.NotFoundBuilder<RoleDto>();
+            if(!await repo.IsAnyByIdAsync(dto.Id)) return ResponseHelper.NotFoundBuilder<RoleDto>();
 
-            var domain = RoleMapper.ToDomain(dto);
+            var domain = new Domain.Entities.Role(dto.DriverId,dto.Name,dto.Features.Select(f => 
+            new Feature(
+                f.Id,
+                f.Name,
+                f.Path,
+                f.SubItem.Select(s => new SubFeature(s.Name,s.Path)).ToList(),
+                f.IsAllow,
+                f.IsCreate,
+                f.IsModify,
+                f.IsDelete,
+                f.IsAction
+            )).ToList());
 
             var status = await repo.UpdateAsync(domain);
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<RoleDto>(ResponseMessage.UPDATE_RECORD_UNSUCCESS,[]);

@@ -12,7 +12,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aero.Infrastructure.Services;
 
-public sealed class AlvlCommandService(ICmndRepository cmnd,IHwRepository qHw) : BaseAeroCommand, IAlvlCommand
+public sealed class AlvlCommandService(ICmndRepository cmnd,IDeviceRepository qHw) : BaseAeroCommand, IAlvlCommand
 {
       public async Task<bool> AccessLevelConfigurationExtended(short ScpId, short component, short tzAcr)
         {
@@ -40,7 +40,7 @@ public sealed class AlvlCommandService(ICmndRepository cmnd,IHwRepository qHw) :
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromMacAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await qHw.GetLocationIdFromDriverIdAsync(await qHw.GetMacFromComponentAsync(ScpId))
             });
         }
         else
@@ -55,7 +55,7 @@ public sealed class AlvlCommandService(ICmndRepository cmnd,IHwRepository qHw) :
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromMacAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await qHw.GetLocationIdFromDriverIdAsync(await qHw.GetMacFromComponentAsync(ScpId))
             });
 
         }
@@ -86,7 +86,7 @@ public sealed class AlvlCommandService(ICmndRepository cmnd,IHwRepository qHw) :
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromMacAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await qHw.GetLocationIdFromDriverIdAsync(await qHw.GetMacFromComponentAsync(ScpId))
             });
         }
         else
@@ -101,7 +101,7 @@ public sealed class AlvlCommandService(ICmndRepository cmnd,IHwRepository qHw) :
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromMacAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await qHw.GetLocationIdFromDriverIdAsync(await qHw.GetMacFromComponentAsync(ScpId))
             });
 
         }
@@ -132,7 +132,7 @@ public sealed class AlvlCommandService(ICmndRepository cmnd,IHwRepository qHw) :
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromMacAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await qHw.GetLocationIdFromDriverIdAsync(await qHw.GetMacFromComponentAsync(ScpId))
             });
         }
         else
@@ -147,7 +147,7 @@ public sealed class AlvlCommandService(ICmndRepository cmnd,IHwRepository qHw) :
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromMacAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await qHw.GetLocationIdFromDriverIdAsync(await qHw.GetMacFromComponentAsync(ScpId))
             });
 
         }
@@ -178,7 +178,7 @@ public sealed class AlvlCommandService(ICmndRepository cmnd,IHwRepository qHw) :
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromMacAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await qHw.GetLocationIdFromDriverIdAsync(await qHw.GetMacFromComponentAsync(ScpId))
             });
         }
         else
@@ -193,7 +193,7 @@ public sealed class AlvlCommandService(ICmndRepository cmnd,IHwRepository qHw) :
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromMacAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await qHw.GetLocationIdFromDriverIdAsync(await qHw.GetMacFromComponentAsync(ScpId))
             });
 
         }

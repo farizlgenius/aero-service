@@ -31,9 +31,9 @@ namespace Aero.Infrastructure.Mapper
             await foreach (var message in queue.Reader.ReadAllAsync(stoppingToken))
             {
                 using var scope = scopeFactory.CreateScope();
-                var qhw = scope.ServiceProvider.GetRequiredService<IHwRepository>();
-                var rhw = scope.ServiceProvider.GetRequiredService<IHwRepository>();
-                var hw = scope.ServiceProvider.GetRequiredService<IHardwareService>();
+                var qhw = scope.ServiceProvider.GetRequiredService<IDeviceRepository>();
+                var rhw = scope.ServiceProvider.GetRequiredService<IDeviceRepository>();
+                var hw = scope.ServiceProvider.GetRequiredService<IDeviceService>();
                 var tran = scope.ServiceProvider.GetRequiredService<ITransactionService>();
                 var publisher = scope.ServiceProvider.GetRequiredService<INotificationPublisher>();
                 var cmnd = scope.ServiceProvider.GetRequiredService<ICmndRepository>();
@@ -218,7 +218,7 @@ namespace Aero.Infrastructure.Mapper
                             await hw.HandleFoundHardware(message);
                             break;
                         case (int)enSCPReplyType.enSCPReplyCommStatus:
-                            hw = scope.ServiceProvider.GetRequiredService<IHardwareService>();
+                            hw = scope.ServiceProvider.GetRequiredService<IDeviceService>();
                             var scp = scope.ServiceProvider.GetRequiredService<IScpCommand>();
                             var qId = scope.ServiceProvider.GetRequiredService<IIdReportRepository>();
                             if (message.comm.status != 2)

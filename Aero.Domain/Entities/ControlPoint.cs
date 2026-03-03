@@ -7,6 +7,7 @@ namespace Aero.Domain.Entities;
 
 public class ControlPoint : BaseDomain
 {
+    public int Id {get; set;}
         public short DriverId {get; private set;}
        public string Name { get; private set; } = string.Empty;
         public int ModuleId { get; private set; }
@@ -19,8 +20,9 @@ public class ControlPoint : BaseDomain
         public short DefaultPulse { get; private set; } = 1;
         public int DeviceId { get; private set; }
 
-    public ControlPoint(short driverid,string name,int moduleid,string moduledetail,short outputno,short relaymode,string relaymodedetail,short offlinemode,string offlinemodedetail,short defaultpulse,int deviceId,int location,bool status) : base(location,status)
+    public ControlPoint(int Id,short driverid,string name,int moduleid,string moduledetail,short outputno,short relaymode,string relaymodedetail,short offlinemode,string offlinemodedetail,short defaultpulse,int deviceId,int location,bool status) : base(location,status)
     {
+        this.Id = Id;
         SetDriverId(driverid);
         SetName(name);
         SetModule(moduleid,moduledetail);

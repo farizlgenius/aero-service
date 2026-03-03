@@ -12,7 +12,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aero.Application.Services
 {
-    public sealed class ControlPointService(IHwRepository hw,ICpCommand cp,ICpRepository repo,ISettingRepository setting) : IControlPointService 
+    public sealed class ControlPointService(IDeviceRepository hw,ICpCommand cp,ICpRepository repo,ISettingRepository setting) : IControlPointService 
     {
         public async Task<ResponseDto<IEnumerable<ControlPointDto>>> GetAsync()
         {
@@ -69,7 +69,7 @@ namespace Aero.Application.Services
 
             if (await repo.IsAnyByNameAsync(dto.Name.Trim())) return ResponseHelper.BadRequestName<ControlPointDto>();
 
-            if(!await hw.IsAnyById(dto.DeviceId)) return ResponseHelper.NotFoundBuilder<ControlPointDto>();
+            if(!await hw.IsAnyByIdAsync(dto.DeviceId)) return ResponseHelper.NotFoundBuilder<ControlPointDto>();
 
             var ScpSetting = await setting.GetScpSettingAsync();
 
@@ -123,7 +123,7 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<ControlPointDto>> UpdateAsync(ControlPointDto dto)
         {
 
-            if (!await repo.IsAnyById(dto.Id)) return ResponseHelper.NotFoundBuilder<ControlPointDto>();
+            if (!await repo.IsAnyByIdAsync(dto.Id)) return ResponseHelper.NotFoundBuilder<ControlPointDto>();
 
             var domain = new Aero.Domain.Entities.ControlPoint(dto.DriverId, dto.Name, dto.ModuleId, dto.ModuleDetail, dto.OutputNo, dto.RelayMode, dto.RelayModeDetail, dto.OfflineMode, dto.OfflineModeDetail, dto.DefaultPulse, dto.DeviceId, dto.LocationId, dto.IsActive);
 
@@ -168,9 +168,9 @@ namespace Aero.Application.Services
             }
         }
 
-        public async Task<ResponseDto<ControlPointDto>> GetByDeviceAndIdAsync(int id, int device)
+        public async Task<ResponseDto<ControlPointDto>> GetByIdAsync(int id)
         {
-           var dto = await repo.GetByDeviceAndIdAsync(device, id);
+           var dto = await repo.GetByIdAsync(id);
 
             return ResponseHelper.SuccessBuilder<ControlPointDto>(dto);
         }

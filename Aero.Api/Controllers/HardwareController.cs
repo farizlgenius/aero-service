@@ -9,13 +9,13 @@ namespace Aero.Api.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class HardwareController(IHardwareService service) : ControllerBase
+    public class HardwareController(IDeviceService service) : ControllerBase
     {
 
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IEnumerable<HardwareDto>>>> GetAsync()
+        public async Task<ActionResult<ResponseDto<IEnumerable<DeviceDto>>>> GetAsync()
         {
             var res = await service.GetAsync();
             return Ok(res);
@@ -23,7 +23,7 @@ namespace Aero.Api.Controllers
 
         [HttpGet("/api/v1/{location}/[controller]")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IEnumerable<HardwareDto>>>> GetByLocationAsync(short location)
+        public async Task<ActionResult<ResponseDto<IEnumerable<DeviceDto>>>> GetByLocationAsync(short location)
         {
             var res = await service.GetByLocationAsync(location);
             return Ok(res);
@@ -31,7 +31,7 @@ namespace Aero.Api.Controllers
 
         [HttpGet("/api/v1/{location}/[controller]/pagination")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<Pagination<HardwareDto>>>> GetPaginationAsync([FromQuery] PaginationParamsWithFilter param,short location)
+        public async Task<ActionResult<ResponseDto<Pagination<DeviceDto>>>> GetPaginationAsync([FromQuery] PaginationParamsWithFilter param,short location)
         {
             var res = await service.GetPaginationAsync(param,location);
             return Ok(res);
@@ -39,18 +39,18 @@ namespace Aero.Api.Controllers
 
         [HttpGet("{mac}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<HardwareDto>>> GetByMacAsync(string mac)
+        public async Task<ActionResult<ResponseDto<DeviceDto>>> GetByMacAsync(string mac)
         {
             var res = await service.GetByMacAsync(mac);
             return StatusCode((int)res.code, res);
         }
 
 
-        [HttpGet("status/{mac}")]
+        [HttpGet("status/{id}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<HardwareStatusDto>>> GetStatusAsync(string mac)
+        public async Task<ActionResult<ResponseDto<DeviceStatusDto>>> GetStatusAsync(int id)
         {
-            var res = await service.GetStatusAsync(mac);
+            var res = await service.GetStatusAsync(id);
             return Ok(res);
         }
 
@@ -64,7 +64,7 @@ namespace Aero.Api.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<HardwareDto>>> CreateAsync([FromBody] CreateDeviceDto dto)
+        public async Task<ActionResult<ResponseDto<DeviceDto>>> CreateAsync([FromBody] CreateDeviceDto dto)
         {
             var res = await service.CreateAsync(dto);
             return Ok(res);
@@ -72,17 +72,17 @@ namespace Aero.Api.Controllers
 
         [HttpPut]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<HardwareDto>>> UpdateAsync([FromBody] HardwareDto dto)
+        public async Task<ActionResult<ResponseDto<DeviceDto>>> UpdateAsync([FromBody] DeviceDto dto)
         {
             var res = await service.UpdateAsync(dto);
             return Ok(res);
         }
 
-        [HttpDelete("{mac}")]
+        [HttpDelete("{id}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<bool>>> DeleteAsync(string mac)
+        public async Task<ActionResult<ResponseDto<bool>>> DeleteAsync(int id)
         {
-            var res = await service.DeleteAsync(mac);
+            var res = await service.DeleteAsync(id);
             return Ok(res);
         }
 
@@ -105,11 +105,11 @@ namespace Aero.Api.Controllers
 
 
 
-        [HttpPost("upload/{mac}")]
+        [HttpPost("upload/{id}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<bool>>> UploadConfigAsync(string mac)
+        public async Task<ActionResult<ResponseDto<bool>>> UploadConfigAsync(int id)
         {
-            var res = await service.UploadComponentConfigurationAsync(mac);
+            var res = await service.UploadComponentConfigurationAsync(id);
             return Ok(res);
         }
 
@@ -132,7 +132,7 @@ namespace Aero.Api.Controllers
 
         [HttpDelete("{mac}/{component}")]
         [Authorize]
-        public Task<ActionResult<ResponseDto<HardwareDto>>> DeleteAsync(string mac, short component)
+        public Task<ActionResult<ResponseDto<DeviceDto>>> DeleteAsync(string mac, short component)
         {
             throw new NotImplementedException();
         }

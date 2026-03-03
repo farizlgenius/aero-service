@@ -41,7 +41,7 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.card_no = data.CardNo;
             this.active_date = data.ActiveDate;
             this.deactive_date = data.DeactiveDate;
-            this.user_id = data.user.UserId;
+            this.user_id = data.UserId;
             this.pin = pin;
             this.updated_date = DateTime.UtcNow;
 
@@ -55,7 +55,7 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.card_no = data.CardNo;
             this.active_date = data.ActiveDate;
             this.deactive_date = data.DeactiveDate;
-            this.user_id = data.user.UserId;
+            this.user_id = data.UserId;
             this.pin = pin;
             this.updated_date = DateTime.UtcNow;
 

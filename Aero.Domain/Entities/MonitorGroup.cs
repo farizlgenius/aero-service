@@ -5,25 +5,24 @@ namespace Aero.Domain.Entities;
 
 public sealed class MonitorGroup : BaseDomain
 {
+    public int Id {get; set;}
     public int DeviceId { get; set; }
     public short DriverId { get; set; }
       public string Name { get; set; } = string.Empty;
         public short nMpCount { get; set; }
         public List<MonitorGroupList> nMpList { get; set; } = new List<MonitorGroupList>();
-    public string Mac { get; set; } = string.Empty;
     public MonitorGroup()
     {
         
     }
 
-    public MonitorGroup(int deviceId, short driverId, string name, short nMpCount, List<MonitorGroupList> nMpList, string mac)
+    public MonitorGroup(int deviceId, short driverId, string name, short nMpCount, List<MonitorGroupList> nMpList,int location,bool status) : base(location,status)
     {
         DeviceId = deviceId;
         DriverId = driverId;
         Name = ValidateRequiredString(name, nameof(name));
         this.nMpCount = nMpCount;
         this.nMpList = nMpList ?? throw new ArgumentNullException(nameof(nMpList));
-        Mac = ValidateRequiredString(mac, nameof(mac));
     }
 
     private static string ValidateRequiredString(string value, string field)

@@ -10,10 +10,12 @@ namespace Aero.Application.Interfaces
 {
     public interface IModuleRepository : IBaseRepository<ModuleDto,Module>
     {
-        Task<int> CountByMacAndUpdateTimeAsync(string mac, DateTime sync);
-        Task<IEnumerable<ModuleDto>> GetByMacAsync(string mac);
-        Task<bool> IsAnyByComponentAndMacAsnyc(string mac, short component);
-        Task<IEnumerable<Mode>> GetBaudrateAsync();
-        Task<IEnumerable<Mode>> GetProtocolAsync();
+        Task<int> CountByDeviceIdAndUpdateTimeAsync(int device, DateTime sync);
+        Task<IEnumerable<ModuleDto>> GetByDeviceIdAsync(int device);
+        Task<bool> IsAnyByDriverAndDeviceIdAsnyc(int device, short driver);
+        Task<IEnumerable<ModeDto>> GetBaudrateAsync();
+        Task<IEnumerable<ModeDto>> GetProtocolAsync();
+        Task<IEnumerable<ModuleDto>> GetAnyByDeviceId(int device);
+        Task<short> GetLowestUnassignedNumberAsync(int max, int device);
     }
 }

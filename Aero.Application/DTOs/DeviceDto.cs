@@ -3,10 +3,13 @@ using Aero.Domain.Entities;
 
 namespace Aero.Application.DTOs
 {
-    public sealed record HardwareDto(
+    public sealed record DeviceDto(
+        int Id,
+        int DriverId,
     string Name,
     int HardwareType,
     string HardwareTypeDescription,
+    string Mac,
     string Ip,
     string Firmware,
     string Port,

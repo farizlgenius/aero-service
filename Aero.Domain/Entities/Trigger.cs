@@ -20,7 +20,7 @@ public sealed class Trigger : BaseDomain
 
   public Trigger() { }
 
-  public Trigger(short driverId, string name, short command, short procedureId, short sourceType, short sourceNumber, short tranType, List<TransactionCode> codeMap, short timeZone, int deviceId, Device device, Procedure procedure)
+  public Trigger(short driverId, string name, short command, short procedureId, short sourceType, short sourceNumber, short tranType, List<TransactionCode> codeMap, short timeZone, int deviceId,int location,bool status) : base(location,status)
   {
       DriverId = driverId;
       Name = ValidateRequiredString(name, nameof(name));
@@ -32,8 +32,6 @@ public sealed class Trigger : BaseDomain
       CodeMap = codeMap ?? throw new ArgumentNullException(nameof(codeMap));
       TimeZone = timeZone;
       DeviceId = deviceId;
-      Device = device ?? throw new ArgumentNullException(nameof(device));
-      Procedure = procedure ?? throw new ArgumentNullException(nameof(procedure));
   }
 
   private static string ValidateRequiredString(string value, string field)

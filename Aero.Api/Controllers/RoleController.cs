@@ -44,9 +44,9 @@ namespace Aero.Api.Controllers
 
         [HttpPost("delete/range")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IEnumerable<ResponseDto<bool>>>>> DeleteRangeAsync([FromBody] List<short> dtos)
+        public async Task<ActionResult<ResponseDto<IEnumerable<ResponseDto<bool>>>>> DeleteRangeAsync([FromBody] List<int> ids)
         {
-            var res = await service.DeleteRangeAsync(dtos);
+            var res = await service.DeleteRangeAsync(ids);
             return Ok(res);
         }
 
@@ -58,19 +58,19 @@ namespace Aero.Api.Controllers
             return Ok(res);
         }
 
-        [HttpDelete("{component}")]
+        [HttpDelete("{id}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<bool>>> DeleteByIdAsync(short component)
+        public async Task<ActionResult<ResponseDto<bool>>> DeleteByIdAsync(int id)
         {
-            var res = await service.DeleteByComponentIdAsync(component);
+            var res = await service.DeleteByIdAsync(id);
             return Ok(res);
         }
 
-        [HttpGet("{component}")]
+        [HttpGet("{id}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<RoleDto>>> GetByIdAsync(short component)
+        public async Task<ActionResult<ResponseDto<RoleDto>>> GetByIdAsync(int id)
         {
-            var res = await service.GetByComponentIdAsync(component);
+            var res = await service.GetByIdAsync(id);
             return Ok(res);
         }
 

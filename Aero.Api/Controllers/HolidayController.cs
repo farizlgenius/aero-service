@@ -78,9 +78,9 @@ namespace Aero.Api.Controllers
 
         [HttpPost("delete/range")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IEnumerable<ResponseDto<bool>>>>> DeleteRangeAsync([FromBody] List<short> components)
+        public async Task<ActionResult<ResponseDto<IEnumerable<ResponseDto<bool>>>>> DeleteRangeAsync([FromBody] List<int> ids)
         {
-            var res = await service.DeleteRangeAsync(components);
+            var res = await service.DeleteRangeAsync(ids);
             return Ok(res);
         }
 

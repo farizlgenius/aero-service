@@ -45,11 +45,11 @@ namespace Aero.Api.Controllers
             return Ok(res);
         }
 
-        [HttpGet("{mac}")]
+        [HttpGet("{device}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IEnumerable<ModuleDto>>>> GetByMacAsync(string mac)
+        public async Task<ActionResult<ResponseDto<IEnumerable<ModuleDto>>>> GetByDeviceIdAsync(int device)
         {
-            var res = await service.GetByMacAsync(mac);
+            var res = await service.GetByDeviceIdAsync(device);
             return Ok(res);
         }
 
@@ -77,11 +77,11 @@ namespace Aero.Api.Controllers
             return Ok(res);
         }
 
-        [HttpGet("status/{mac}/{component}")]
+        [HttpGet("status/{device}/{driver}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<bool>>> GetStatusAsync(string mac, short component)
+        public async Task<ActionResult<ResponseDto<bool>>> GetStatusAsync(int device, short driver)
         {
-            var res = await service.GetStatusAsync(mac, component);
+            var res = await service.GetStatusAsync(device, driver);
             return Ok(res);
         }
 

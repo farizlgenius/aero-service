@@ -235,7 +235,7 @@ public class AreaRepository(AppDbContext context) : IAreaRepository
         };
     }
 
-    public async Task<bool> IsAnyById(int id)
+    public async Task<bool> IsAnyByIdAsync(int id)
     {
         return await context.area.AnyAsync(x => x.id == id);
     }

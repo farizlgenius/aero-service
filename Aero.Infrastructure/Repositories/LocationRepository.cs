@@ -283,7 +283,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
     }
 
 
-    public async Task<bool> IsAnyById(int id)
+    public async Task<bool> IsAnyByIdAsync(int id)
     {
         return await context.location.AnyAsync(x => x.id == id);
     }

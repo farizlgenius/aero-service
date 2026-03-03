@@ -8,11 +8,12 @@ namespace Aero.Application.Interface;
 
 public interface IMpgRepository : IBaseRepository<MonitorGroupDto,Aero.Domain.Entities.MonitorGroup>
 {
-      Task<int> DeleteByMacAndComponentIdAsync(string mac,short component);
-      Task<int> DeleteReferenceByMacAnsComponentIdAsync(string mac,short component);
-    Task<IEnumerable<MonitorGroupDto>> GetByMacAsync(string mac);
-    Task<IEnumerable<Mode>> GetCommandAsync();
-    Task<IEnumerable<Mode>> GetTypeAsync();
-    Task<bool> IsAnyByMacAndComponentIdAsync(string mac, short component);
-    Task<int> CountByMacAndUpdateTimeAsync(string mac, DateTime sync);
+    // Task<IEnumerable<MonitorGroupDto>> GetByMacAsync(string mac);
+    Task<IEnumerable<ModeDto>> GetCommandAsync();
+    Task<IEnumerable<ModeDto>> GetTypeAsync();
+    Task<int> CountByDriverIdAndUpdateTimeAsync(int driverid, DateTime sync);
+    Task<short> GetLowestUnassignedNumberAsync(int max, int device);
+    Task<IEnumerable<MonitorGroupDto>> GetByDeviceIdAsync(int device);
+
+    Task<int> DeleteReferenceByIdAsync(int Id);
 }

@@ -6,7 +6,7 @@ using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Interface;
 
-public interface IUserRepository : IBaseRepository<UserDto,User,User>
+public interface IUserRepository : IBaseRepository<UserDto,User>
 {
       Task<int> DeleteByUserIdAsync(string UserId);
       Task<int> DeleteReferenceByUserIdAsync(string UserId);

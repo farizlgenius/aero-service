@@ -35,16 +35,16 @@ namespace Aero.Api.Controllers
             return Ok(res);
         }
 
-        [HttpGet("{mac}/{id}")]
-        public async Task<ActionResult<ResponseDto<ControlPointDto>>> GetByComponentAsync(string mac,short id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ResponseDto<ControlPointDto>>> GetByIdAsync(int id)
         {
-            var res = await service.GetByDeviceAndIdAsync(mac,id);
+            var res = await service.GetByIdAsync(id);
             return StatusCode((int)res.code, res);
         }
 
         [HttpPost("control")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<ControlPointDto>>> CreateControlPointAsync([FromBody] ControlPointDto dto)
+        public async Task<ActionResult<ResponseDto<ControlPointDto>>> CreateControlPointAsync([FromBody] CreateControlPointDto dto)
         {
             var res = await service.CreateAsync(dto);
             return Ok(res);
@@ -92,27 +92,27 @@ namespace Aero.Api.Controllers
             return StatusCode((int)res.code, res);
         }
 
-        [HttpGet("op/{mac}/{component}")]
+        [HttpGet("op/{id}/{device}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<List<short>>>> GetAvailableOpAsync(string mac,short component)
+        public async Task<ActionResult<ResponseDto<List<short>>>> GetAvailableOpAsync(int id,int device)
         {
-            var res = await service.GetAvailableOpAsync(mac,component);
+            var res = await service.GetAvailableOpAsync(device,id);
             return Ok(res);
         }
 
-        [HttpGet("status/{mac}/{component}")]
-        public async Task<ActionResult<ResponseDto<bool>>> GetStatusAsync(string mac,short component)
+        [HttpGet("status/{device}/{driver}")]
+        public async Task<ActionResult<ResponseDto<bool>>> GetStatusAsync(int device,short driver)
         {
-            var res = await service.GetStatusAsync(mac,component);
+            var res = await service.GetStatusAsync(device,driver);
             return Ok(res);
 
         }
 
         [HttpPost("delete/range")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IEnumerable<ResponseDto<bool>>>>> DeleteRangeAsync([FromBody] List<short> components) 
+        public async Task<ActionResult<ResponseDto<IEnumerable<ResponseDto<bool>>>>> DeleteRangeAsync([FromBody] List<int> ids) 
         {
-            var res = await service.DeleteRangeAsync(components);
+            var res = await service.DeleteRangeAsync(ids);
             return Ok(res);
         }
 

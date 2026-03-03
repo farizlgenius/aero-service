@@ -85,36 +85,14 @@ namespace Aero.Api.Controllers
             var name = User.Identity?.Name;
 
             var userJson = User.FindFirst("user")?.Value ?? "";
-            var user = string.IsNullOrEmpty(userJson) ? new Users
-            {
-                Title = "",
-                Firstname = "",
-                Middlename = "",
-                Lastname = "",
-                Email = ""
-            } : JsonSerializer.Deserialize<Users>(userJson);
+            var user = string.IsNullOrEmpty(userJson) ? new Users("","","","","") : JsonSerializer.Deserialize<Users>(userJson);
 
             var locJson = User.FindFirst("location")?.Value ?? "";
             var loc = string.IsNullOrEmpty(locJson) ? [] : JsonSerializer.Deserialize<List<short>>(locJson);
             var roleJson = User.FindFirst("rol")?.Value ?? "";
-            var rol = string.IsNullOrEmpty(roleJson) ? new Role
-            {
-                Features = [],
-                RoleName = "",
-                RoleNo = 0
-            } : JsonSerializer.Deserialize<Role>(roleJson);
-
-            var info = new TokenInfo
-            {
-                User = user,
-                Locations = loc,
-                Role = rol
-            };
-            var dto = new TokenDetail
-            {
-                Auth = true,
-                //info = info,
-            };
+            var rol = string.IsNullOrEmpty(roleJson) ? new Role(0,"",[]) : JsonSerializer.Deserialize<Role>(roleJson);
+            var info = new TokenInfo(user,loc,rol);
+            var dto = new TokenDetail(true,info);
             return Ok(
                 new
                 {

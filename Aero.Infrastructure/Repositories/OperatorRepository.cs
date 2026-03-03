@@ -317,7 +317,7 @@ public class OperatorRepository(AppDbContext context) : IOperatorRepository
         };
     }
 
-    public async Task<bool> IsAnyById(int id)
+    public async Task<bool> IsAnyByIdAsync(int id)
     {
         return await context.@operator.AnyAsync(x => x.id == id);
     }

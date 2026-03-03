@@ -12,7 +12,7 @@ using System.Security.Cryptography;
 
 namespace Aero.Application.Services
 {
-    public sealed class AccessLevelService(IAlvlRepository repo,IHwRepository hw,IAlvlCommand alvl,ISettingRepository setting) : IAccessLevelService
+    public sealed class AccessLevelService(IAlvlRepository repo,IDeviceRepository hw,IAlvlCommand alvl,ISettingRepository setting) : IAccessLevelService
     {
         public async Task<ResponseDto<IEnumerable<AccessLevelDto>>> GetByLocationIdAsync(int location)
         {
@@ -43,6 +43,7 @@ namespace Aero.Application.Services
             List<string> errors = new List<string>();
 
             var domain = new AccessLevel(
+                0,
                 dto.Name,
                 dto.Components.Select(x => new AccessLevelComponent(x.DriverId,x.DeviceId,x.DoorId,x.AcrId,x.TimeZoneId)).ToList(),
                 dto.LocationId,
@@ -73,7 +74,7 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<AccessLevelDto>> DeleteAsync(int id)
         {
             List<string> errors = new List<string>();
-            if (!await repo.IsAnyById(id)) return ResponseHelper.NotFoundBuilder<AccessLevelDto>();
+            if (!await repo.IsAnyByIdAsync(id)) return ResponseHelper.NotFoundBuilder<AccessLevelDto>();
 
             var domain = await repo.GetByIdAsync(id);
 
@@ -94,9 +95,9 @@ namespace Aero.Application.Services
         {
 
             List<string> errors = new List<string>();
-            if (!await repo.IsAnyById(dto.Id)) return ResponseHelper.NotFoundBuilder<AccessLevelDto>();
+            if (!await repo.IsAnyByIdAsync(dto.Id)) return ResponseHelper.NotFoundBuilder<AccessLevelDto>();
 
-            var domain = new AccessLevel(dto.Name,dto.Components.Select(c => new AccessLevelComponent(c.DriverId,c.DeviceId,c.DoorId,c.AcrId,c.TimeZoneId)).ToList(),dto.LocationId,dto.IsActive);
+            var domain = new AccessLevel(dto.Id,dto.Name,dto.Components.Select(c => new AccessLevelComponent(c.DriverId,c.DeviceId,c.DoorId,c.AcrId,c.TimeZoneId)).ToList(),dto.LocationId,dto.IsActive);
             var ids = domain.Components.Select(x => x.DeviceId).Distinct();
 
             for (int i = 0; i < ids.Count(); i++)

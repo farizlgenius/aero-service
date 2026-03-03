@@ -193,7 +193,7 @@ public class CfmtRepository(AppDbContext context) : ICfmtRepository
         };
     }
 
-    public async Task<bool> IsAnyById(int id)
+    public async Task<bool> IsAnyByIdAsync(int id)
     {
         return await context.card_format.AnyAsync(x => x.id == id);
     }

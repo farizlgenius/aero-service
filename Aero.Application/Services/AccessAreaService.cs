@@ -10,7 +10,7 @@ using Aero.Domain.Interface;
 
 namespace AeroService.Service.Impl
 {
-    public sealed class AccessAreaService(IAreaRepository repo,IHwRepository hw,IAreaCommand area,ISettingRepository setting) : IAccessAreaService
+    public sealed class AccessAreaService(IAreaRepository repo,IDeviceRepository hw,IAreaCommand area,ISettingRepository setting) : IAccessAreaService
     {
 
         public async Task<ResponseDto<IEnumerable<AccessAreaDto>>> GetAsync()
@@ -60,7 +60,7 @@ namespace AeroService.Service.Impl
         public async Task<ResponseDto<AccessAreaDto>> UpdateAsync(AccessAreaDto dto)
         {
 
-            if (await repo.IsAnyById(dto.Id)) return ResponseHelper.NotFoundBuilder<AccessAreaDto>();
+            if (await repo.IsAnyByIdAsync(dto.Id)) return ResponseHelper.NotFoundBuilder<AccessAreaDto>();
 
             var domain = new AccessArea(dto.DriverId, dto.Name, dto.MultiOccupancy,dto.AccessControl,dto.OccControl,dto.OccSet,dto.OccMax,dto.OccUp,dto.OccDown,dto.AreaFlag,dto.LocationId,dto.IsActive);
 

@@ -173,7 +173,7 @@ public class IntervalRepository(AppDbContext context) : IIntervalRepository
 
     }
 
-    public async Task<bool> IsAnyById(int id)
+    public async Task<bool> IsAnyByIdAsync(int id)
     {
         return await context.interval.AsNoTracking().AnyAsync(x => x.id == id);
     }

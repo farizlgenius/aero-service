@@ -5,6 +5,7 @@ namespace Aero.Domain.Entities;
 
 public sealed class Device : BaseDomain
 {
+    public int Id {get; set;}
     public short DriverId { get; private set; }
     public string Name { get; private set; } = string.Empty;
     public int HardwareType { get; private set; }
@@ -30,6 +31,7 @@ public sealed class Device : BaseDomain
     public Device() { }
 
     public Device(
+        int Id,
         short driver,
         string name,
         int type,
@@ -196,5 +198,15 @@ public sealed class Device : BaseDomain
     {
         if (lastSync == default) throw new ArgumentException("Last sync invalid.");
         LastSync = lastSync;
+    }
+
+    public void SetUpload(bool upload)
+    {
+        this.IsUpload = upload;
+    }
+
+    public void SetReset(bool reset)
+    {
+        this.IsReset = reset;
     }
 }

@@ -136,7 +136,7 @@ public class IdReportRepository(AppDbContext context) : IIdReportRepository
         throw new NotImplementedException();
     }
 
-    public Task<bool> IsAnyById(int id)
+    public Task<bool> IsAnyByIdAsync(int id)
       {
             throw new NotImplementedException();
       }

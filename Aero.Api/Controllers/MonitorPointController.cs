@@ -39,15 +39,15 @@ namespace Aero.Api.Controllers
         [Authorize]
         public async Task<ActionResult<ResponseDto<MonitorPointDto>>> GetByComponentAsync(short component)
         {
-            var res = await service.GetByComponentIdAsync(component);
+            var res = await service.GetByIdAsync(component);
             return Ok(res);
         }
 
-        [HttpGet("mac/{mac}")]
+        [HttpGet("device/{device}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IEnumerable<MonitorPointDto>>>> GetByMacAsync(string mac)
+        public async Task<ActionResult<ResponseDto<IEnumerable<MonitorPointDto>>>> GetByDviceIdAsync(int device)
         {
-            var res = await service.GetByMacAsync(mac);
+            var res = await service.GetByDviceIdAsync(device);
             return Ok(res);
         }
 
@@ -77,19 +77,19 @@ namespace Aero.Api.Controllers
 
         [HttpPost("delete/range")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IEnumerable<ResponseDto<bool>>>>> DeleteRangeAsync([FromBody] List<short> components)
+        public async Task<ActionResult<ResponseDto<IEnumerable<ResponseDto<bool>>>>> DeleteRangeAsync([FromBody] List<int> ids)
         {
-            var res = await service.DeleteRangeAsync(components);
+            var res = await service.DeleteRangeAsync(ids);
             return Ok(res);
         }
 
 
 
-        [HttpGet("ip/{mac}/{component}")]
+        [HttpGet("ip/{id}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IEnumerable<short>>>> GetAvailableIp(string mac ,short component)
+        public async Task<ActionResult<ResponseDto<IEnumerable<short>>>> GetAvailableIp(int id)
         {
-            var res = await service.GetAvailableIp(mac, component);
+            var res = await service.GetAvailableIp(id);
             return Ok(res);
         }
 
@@ -97,7 +97,7 @@ namespace Aero.Api.Controllers
         [Authorize]
         public async Task<ActionResult<ResponseDto<bool>>> GetStatusAsync(short component)
         {
-            var res = await service.GetStatusByComponentIdAsync(component);
+            var res = await service.GetStatusByIdAsync(component);
             return Ok(res);
         }
 

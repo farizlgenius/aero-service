@@ -11,7 +11,7 @@ using Aero.Application.Interface;
 
 namespace Aero.Infrastructure.Repositories;
 
-public class CredRepository(AppDbContext context,IHwRepository qHw,IServiceScopeFactory factory) : ICredRepository
+public class CredRepository(AppDbContext context,IDeviceRepository qHw,IServiceScopeFactory factory) : ICredRepository
 {
       public async Task<int> AddAsync(Credential data)
       {
@@ -180,7 +180,7 @@ public class CredRepository(AppDbContext context,IHwRepository qHw,IServiceScope
         throw new NotImplementedException();
     }
 
-    public async Task<bool> IsAnyById(int id)
+    public async Task<bool> IsAnyByIdAsync(int id)
     {
         return await context.credential.AnyAsync(x => x.id == id);
     }

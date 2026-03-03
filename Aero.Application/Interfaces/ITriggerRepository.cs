@@ -8,10 +8,11 @@ namespace Aero.Application.Interface;
 
 public interface ITriggerRepository : IBaseRepository<TriggerDto,Trigger>
 {
-       Task<IEnumerable<Mode>> GetDeviceBySourceAsync(short location,short source);
-    Task<int> CountByMacAndUpdateTimeAsync(string mac, DateTime sync);
-    Task<IEnumerable<Mode>> GetCommandAsync();
-    Task<IEnumerable<Mode>> GetSourceTypeAsync();
-    Task<IEnumerable<Mode>> GetCodeByTranAsync(short tran);
-    Task<IEnumerable<Mode>> GetTypeBySourceAsync(short source);
+       Task<IEnumerable<ModeDto>> GetDeviceBySourceAsync(short location,short source);
+    Task<int> CountByDeviceIdAndUpdateTimeAsync(int device, DateTime sync);
+    Task<IEnumerable<ModeDto>> GetCommandAsync();
+    Task<IEnumerable<ModeDto>> GetSourceTypeAsync();
+    Task<IEnumerable<ModeDto>> GetCodeByTranAsync(short tran);
+    Task<IEnumerable<ModeDto>> GetTypeBySourceAsync(short source);
+    Task<short> GetLowestUnassignedNumberAsync(int max, int device);
 }

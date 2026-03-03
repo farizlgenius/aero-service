@@ -11,7 +11,7 @@ using Aero.Domain.Interfaces;
 namespace Aero.Application.Services
 {
 
-    public class CardFormatService(IHwRepository hw,ICfmtCommand cfmt,ICfmtRepository repo,ISettingRepository setting) : ICardFormatService
+    public class CardFormatService(IDeviceRepository hw,ICfmtCommand cfmt,ICfmtRepository repo,ISettingRepository setting) : ICardFormatService
     {
 
         public async Task<ResponseDto<IEnumerable<CardFormatDto>>> GetAsync()

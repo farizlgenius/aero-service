@@ -66,11 +66,11 @@ namespace Aero.Api.Controllers
             return Ok(res);
         }
 
-        [HttpDelete("{mac}/{component}")]
+        [HttpDelete("{id}")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<MonitorGroupDto>>> DeleteAsync(string mac,short component)
+        public async Task<ActionResult<ResponseDto<MonitorGroupDto>>> DeleteAsync(int id)
         {
-            var res = await service.DeleteAsync(mac,component);
+            var res = await service.DeleteAsync(id);
             return Ok(res);
         }
 
