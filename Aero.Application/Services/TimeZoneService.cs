@@ -43,8 +43,9 @@ namespace Aero.Application.Services
             var DriverId = await repo.GetLowestUnassignedNumberAsync(ScpSetting.nTz);
             if (DriverId == -1) return ResponseHelper.ExceedLimit<TimeZoneDto>();
 
-            var domain = new Aero.Domain.Entities.TimeZone(DriverId,dto.Name,dto.Mode,dto.Active,dto.Deactive,
+            var domain = new Aero.Domain.Entities.TimeZone(0,DriverId,dto.Name,dto.Mode,dto.Active,dto.Deactive,
             dto.Intervals.Select(i => new Interval(
+                i.Id,
                 new DaysInWeek(i.Days.Sunday,i.Days.Monday,i.Days.Tuesday,i.Days.Wednesday,i.Days.Thursday,i.Days.Friday,i.Days.Saturday)
                 ,i.DaysDetail,i.Start,i.End,i.LocationId,i.IsActive)).ToList(),
             dto.LocationId,dto.IsActive);
@@ -101,8 +102,9 @@ namespace Aero.Application.Services
 
             if (!await repo.IsAnyByIdAsync(dto.Id)) return ResponseHelper.NotFoundBuilder<TimeZoneDto>();
 
-            var domain = new Aero.Domain.Entities.TimeZone(dto.DriverId,dto.Name,dto.Mode,dto.Active,dto.Deactive,
+            var domain = new Aero.Domain.Entities.TimeZone(dto.Id,dto.DriverId,dto.Name,dto.Mode,dto.Active,dto.Deactive,
             dto.Intervals.Select(i => new Interval(
+                i.Id,
                 new DaysInWeek(i.Days.Sunday,i.Days.Monday,i.Days.Tuesday,i.Days.Wednesday,i.Days.Thursday,i.Days.Friday,i.Days.Saturday)
                 ,i.DaysDetail,i.Start,i.End,i.LocationId,i.IsActive)).ToList(),
             dto.LocationId,dto.IsActive);
@@ -117,8 +119,9 @@ namespace Aero.Application.Services
             }
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<TimeZoneDto>(ResponseMessage.COMMAND_UNSUCCESS, errors);
 
-            var data = new Aero.Domain.Entities.TimeZone(dto.DriverId,dto.Name,dto.Mode,dto.Active,dto.Deactive,
+            var data = new Aero.Domain.Entities.TimeZone(dto.Id,dto.DriverId,dto.Name,dto.Mode,dto.Active,dto.Deactive,
             dto.Intervals.Select(i => new Interval(
+                i.Id,
                 new DaysInWeek(i.Days.Sunday,i.Days.Monday,i.Days.Tuesday,i.Days.Wednesday,i.Days.Thursday,i.Days.Friday,i.Days.Saturday)
                 ,i.DaysDetail,i.Start,i.End,i.LocationId,i.IsActive)).ToList(),
             dto.LocationId,dto.IsActive);

@@ -12,8 +12,10 @@ public sealed class Interval : BaseDomain
         public string StartTime { get; set; } = string.Empty;   
         public string EndTime { get; set; } = string.Empty;
 
-    public Interval(DaysInWeek days,string detail,string start,string end,int location,bool status) : base(location,status)
+    public Interval(int Id,DaysInWeek days,string detail,string start,string end,int location,bool status) : base(location,status)
     {
+        if(Id < 0) throw new ArgumentException("Id invalid.");
+        this.Id = Id;
         this.Days = days;
         SetDaysDetail(detail);
         SetStart(start);

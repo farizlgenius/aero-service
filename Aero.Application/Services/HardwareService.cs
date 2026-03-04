@@ -245,12 +245,14 @@ namespace Aero.Application.Services
             var timezones = await tzRepo.GetByLocationIdAsync(locationId);
 
             var timezonesdomain = timezones.Select(x => new Aero.Domain.Entities.TimeZone(
+                x.Id,
                 x.DriverId,
                 x.Name,
                 x.Mode,
                 x.Active,
                 x.Deactive,
                 x.Intervals.Select(i => new Interval(
+                    i.Id,
                     new DaysInWeek(
                         i.Days.Sunday,
                         i.Days.Monday,

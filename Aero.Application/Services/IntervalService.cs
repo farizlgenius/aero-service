@@ -37,7 +37,7 @@ namespace Aero.Application.Services
 
             if (await repo.IsAnyOnEachDays(dto)) return ResponseHelper.Duplicate<IntervalDto>();
 
-            var domain = new Aero.Domain.Entities.Interval(new Aero.Domain.Entities.DaysInWeek(dto.Days.Sunday,dto.Days.Monday,dto.Days.Tuesday,dto.Days.Wednesday,dto.Days.Thursday,dto.Days.Friday,dto.Days.Saturday),dto.DaysDetail,dto.Start,dto.End,dto.LocationId,dto.IsActive);
+            var domain = new Aero.Domain.Entities.Interval(0,new Aero.Domain.Entities.DaysInWeek(dto.Days.Sunday,dto.Days.Monday,dto.Days.Tuesday,dto.Days.Wednesday,dto.Days.Thursday,dto.Days.Friday,dto.Days.Saturday),dto.DaysDetail,dto.Start,dto.End,dto.LocationId,dto.IsActive);
 
             var id = await repo.AddAsync(domain);
 
@@ -68,7 +68,7 @@ namespace Aero.Application.Services
 
             if (!await repo.IsAnyByIdAsync(dto.Id)) return ResponseHelper.NotFoundBuilder<IntervalDto>();
 
-            var domain = new Interval(new DaysInWeek(dto.Days.Sunday,dto.Days.Monday,dto.Days.Tuesday,dto.Days.Wednesday,dto.Days.Thursday,dto.Days.Friday,dto.Days.Saturday),dto.DaysDetail,dto.Start,dto.End,dto.LocationId,dto.IsActive);
+            var domain = new Interval(dto.Id,new DaysInWeek(dto.Days.Sunday,dto.Days.Monday,dto.Days.Tuesday,dto.Days.Wednesday,dto.Days.Thursday,dto.Days.Friday,dto.Days.Saturday),dto.DaysDetail,dto.Start,dto.End,dto.LocationId,dto.IsActive);
 
             var status = await repo.UpdateAsync(domain);
 
@@ -84,7 +84,7 @@ namespace Aero.Application.Services
                 {
 
                     var t = await tzRepo.GetByIdAsync(tzs);
-                    var tdomain = new Aero.Domain.Entities.TimeZone(t.DriverId,t.Name,t.Mode,t.Active,t.Deactive,t.Intervals.Select( dto=> new Interval(new DaysInWeek(dto.Days.Sunday,dto.Days.Monday,dto.Days.Tuesday,dto.Days.Wednesday,dto.Days.Thursday,dto.Days.Friday,dto.Days.Saturday),dto.DaysDetail,dto.Start,dto.End,dto.LocationId,dto.IsActive)).ToList(),t.LocationId,t.IsActive);
+                    var tdomain = new Aero.Domain.Entities.TimeZone(t.DriverId,t.Name,t.Mode,t.Active,t.Deactive,t.Intervals.Select( dto=> new Interval(dto.Id,new DaysInWeek(dto.Days.Sunday,dto.Days.Monday,dto.Days.Tuesday,dto.Days.Wednesday,dto.Days.Thursday,dto.Days.Friday,dto.Days.Saturday),dto.DaysDetail,dto.Start,dto.End,dto.LocationId,dto.IsActive)).ToList(),t.LocationId,t.IsActive);
 
                     if (!tz.ExtendedTimeZoneActSpecification(id,tdomain))
                     {

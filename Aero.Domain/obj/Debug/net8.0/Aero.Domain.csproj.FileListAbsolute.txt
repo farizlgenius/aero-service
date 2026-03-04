@@ -10,3 +10,15 @@ D:\Aero\AeroService\Aero.Data\obj\Debug\net8.0\Aero.Domain.dll
 D:\Aero\AeroService\Aero.Data\obj\Debug\net8.0\refint\Aero.Domain.dll
 D:\Aero\AeroService\Aero.Data\obj\Debug\net8.0\Aero.Domain.pdb
 D:\Aero\AeroService\Aero.Data\obj\Debug\net8.0\ref\Aero.Domain.dll
+D:\Aero\AeroService\Aero.Domain\bin\Debug\net8.0\Aero.Domain.deps.json
+D:\Aero\AeroService\Aero.Domain\bin\Debug\net8.0\Aero.Domain.dll
+D:\Aero\AeroService\Aero.Domain\bin\Debug\net8.0\Aero.Domain.pdb
+D:\Aero\AeroService\Aero.Domain\obj\Debug\net8.0\Aero.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\Aero\AeroService\Aero.Domain\obj\Debug\net8.0\Aero.Domain.AssemblyInfoInputs.cache
+D:\Aero\AeroService\Aero.Domain\obj\Debug\net8.0\Aero.Domain.AssemblyInfo.cs
+D:\Aero\AeroService\Aero.Domain\obj\Debug\net8.0\Aero.Domain.csproj.CoreCompileInputs.cache
+D:\Aero\AeroService\Aero.Domain\obj\Debug\net8.0\Aero.Domain.sourcelink.json
+D:\Aero\AeroService\Aero.Domain\obj\Debug\net8.0\Aero.Domain.dll
+D:\Aero\AeroService\Aero.Domain\obj\Debug\net8.0\refint\Aero.Domain.dll
+D:\Aero\AeroService\Aero.Domain\obj\Debug\net8.0\Aero.Domain.pdb
+D:\Aero\AeroService\Aero.Domain\obj\Debug\net8.0\ref\Aero.Domain.dll

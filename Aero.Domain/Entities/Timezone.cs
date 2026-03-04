@@ -15,13 +15,16 @@ public sealed class TimeZone : BaseDomain
 
     public TimeZone() { }
 
-    public TimeZone(short driverId, string name, short mode, string activeTime, string deactiveTime, List<Interval> intervals, int locationId, bool status) : base(locationId, status)
+    public TimeZone(int Id,short driverId, string name, short mode, string activeTime, string deactiveTime, List<Interval> intervals, int locationId, bool status) : base(locationId, status)
     {
+        if(Id < 0) throw new ArgumentException("Id invalid.");
+        this.Id = Id;
         DriverId = driverId;
         Name = ValidateRequiredString(name, nameof(name));
         Mode = mode;
-        ActiveTime = ValidateRequiredString(activeTime, nameof(activeTime));
-        DeactiveTime = ValidateRequiredString(deactiveTime, nameof(deactiveTime));
+        var result = DateTimeOffset.Now.ToString("yyyy-MM-ddTHH:mm:sszzz");
+        ActiveTime = string.IsNullOrWhiteSpace(activeTime) ? result : activeTime ;
+        DeactiveTime = deactiveTime;
         Intervals = intervals ?? throw new ArgumentNullException(nameof(intervals));
     }
 

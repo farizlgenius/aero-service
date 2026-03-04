@@ -64,7 +64,7 @@ namespace Aero.Application.Services
             if (Driver == -1) return ResponseHelper.ExceedLimit<HolidayDto>();
 
 
-            var domain = new Holiday(Driver,dto.Name,dto.Year,dto.Month,dto.Day,dto.Extend,dto.TypeMask,dto.LocationId,dto.IsActive);
+            var domain = new Holiday(0,Driver,dto.Name,dto.Year,dto.Month,dto.Day,dto.Extend,dto.TypeMask,dto.LocationId,dto.IsActive);
 
             // Send command 
             var ids = await hw.GetDriverIdsAsync();
@@ -94,7 +94,7 @@ namespace Aero.Application.Services
             if (en is null) return ResponseHelper.NotFoundBuilder<HolidayDto>();
             // Send command 
 
-            var domain = new Holiday(en.DriverId, en.Name, en.Year, en.Month, en.Day, en.Extend, en.TypeMask, en.LocationId, en.IsActive);
+            var domain = new Holiday(en.Id,en.DriverId, en.Name, en.Year, en.Month, en.Day, en.Extend, en.TypeMask, en.LocationId, en.IsActive);
             var ids = await hw.GetDriverIdsAsync();
 
             foreach (var i in ids)
@@ -115,7 +115,7 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<HolidayDto>> UpdateAsync(HolidayDto dto)
         {
             List<string> errors = new List<string>();
-            var en = repo.IsAnyByIdAsync(dto.Id);
+            var en = await repo.GetByIdAsync(dto.Id);
             if (en is null) return ResponseHelper.NotFoundBuilder<HolidayDto>();
 
             if (await repo.IsAnyWithSameDataAsync(dto.Day,dto.Month,dto.Year)) return ResponseHelper.Duplicate<HolidayDto>();
@@ -123,7 +123,7 @@ namespace Aero.Application.Services
             // Send command 
             var ids = await hw.GetDriverIdsAsync();
 
-            var domain = new Holiday(dto.DriverId,dto.Name,dto.Year,dto.Month,dto.Day,dto.Extend,dto.TypeMask,dto.LocationId,dto.IsActive);
+            var domain = new Holiday(dto.Id,dto.DriverId,dto.Name,dto.Year,dto.Month,dto.Day,dto.Extend,dto.TypeMask,dto.LocationId,dto.IsActive);
 
             foreach (var id in ids)
             {

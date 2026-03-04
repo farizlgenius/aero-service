@@ -6634,3 +6634,43 @@ Begin - SCP Driver DLL (64-bit) version 4.7.1.43
 00596.658 Listen Successful, port: 3333
 02040.414 Shutting down debug Thread...
 File closed Wed Mar  4 12:27:20 2026
+Debug file SCPDEBUG.txt <SCPDEBUGc.txt> <SCPDEBUG.TXT> opened Wed Mar  4 17:44:19 2026
+Begin - SCP Driver DLL (64-bit) version 4.7.1.43
+21059.521 WSAStartup ok
+21059.521 RNG_X931A24 Initialized
+21059.521 1, enCcSystem: 011 1 1024 0 0 1
+21059.521 1, enCcCreateChannel: 0012 1 7 3333 0 3000 0 "" 0
+21059.521 listen(lsock) created socket=1856 on port 3333
+21059.521 Listen Successful, port: 3333
+21954.722 Shutting down debug Thread...
+File closed Wed Mar  4 17:59:14 2026
+Debug file SCPDEBUG.txt <SCPDEBUGc.txt> <SCPDEBUG.TXT> opened Wed Mar  4 18:01:05 2026
+Begin - SCP Driver DLL (64-bit) version 4.7.1.43
+22065.817 WSAStartup ok
+22065.819 RNG_X931A24 Initialized
+22065.819 1, enCcSystem: 011 1 1024 0 0 1
+22065.820 1, enCcCreateChannel: 0012 1 7 3333 0 3000 0 "" 0
+22065.822 listen(lsock) created socket=1860 on port 3333
+22065.822 Listen Successful, port: 3333
+36087.096 Shutting down debug Thread...
+File closed Wed Mar  4 21:54:47 2026
+Debug file SCPDEBUG.txt <SCPDEBUGc.txt> <SCPDEBUG.TXT> opened Wed Mar  4 21:57:49 2026
+Begin - SCP Driver DLL (64-bit) version 4.7.1.43
+36269.372 WSAStartup ok
+36269.372 RNG_X931A24 Initialized
+36269.372 1, enCcSystem: 011 1 1024 0 0 1
+36269.372 1, enCcCreateChannel: 0012 1 7 3333 0 3000 0 "" 0
+36269.372 listen(lsock) created socket=1856 on port 3333
+36269.372 Listen Successful, port: 3333
+37116.583 Shutting down debug Thread...
+File closed Wed Mar  4 22:11:56 2026
+Debug file SCPDEBUG.txt <SCPDEBUGc.txt> <SCPDEBUG.TXT> opened Wed Mar  4 22:12:52 2026
+Begin - SCP Driver DLL (64-bit) version 4.7.1.43
+37172.456 WSAStartup ok
+37172.456 RNG_X931A24 Initialized
+37172.456 1, enCcSystem: 011 1 1024 0 0 1
+37172.456 1, enCcCreateChannel: 0012 1 7 3333 0 3000 0 "" 0
+37172.468 listen(lsock) created socket=1876 on port 3333
+37172.468 Listen Successful, port: 3333
+39071.504 Shutting down debug Thread...
+File closed Wed Mar  4 22:44:31 2026

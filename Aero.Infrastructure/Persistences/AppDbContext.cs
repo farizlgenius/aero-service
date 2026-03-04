@@ -641,7 +641,8 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
         modelBuilder.Entity<Interval>()
             .HasOne(u => u.days)
             .WithOne(u => u.interval)
-            .HasPrincipalKey<Interval>(p => p.id).HasForeignKey<DaysInWeek>(p => p.id);
+            .HasPrincipalKey<Interval>(p => p.id)
+            .HasForeignKey<DaysInWeek>(p => p.id);
 
         #endregion
 

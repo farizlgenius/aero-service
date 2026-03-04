@@ -14,9 +14,12 @@ public sealed class Holiday : BaseDomain
         public short Extend { get; set; }
         public short TypeMask { get; set; }
 
-    public Holiday(short driver,string name,short year, short month, short day, short extend, short typemask,int location,bool status) : base(location,status)
+    public Holiday(int Id,short driver,string name,short year, short month, short day, short extend, short typemask,int location,bool status) : base(location,status)
     {
+         if (Id <= 0) throw new ArgumentException("Id invalid.",nameof(driver));
+         this.Id = Id;
         if (driver <= 0) throw new ArgumentException("Driver id invalid.",nameof(driver));
+        this.DriverId = driver;
         SetName(name);
         SetYear(year);
         SetMonth(month);

@@ -6,8 +6,10 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class DaysInWeek : BaseEntity,IDatetime
+    public sealed class DaysInWeek 
     {
+        [Key]
+        public int id {get; set;}        
         public int interval_id { get; set; }
         public Interval interval { get; set; }
         public bool sunday { get; set; }
@@ -21,7 +23,7 @@ namespace Aero.Infrastructure.Persistences.Entities
         public DaysInWeek(){}
 
 
-        public DaysInWeek(int interval_id,bool sun,bool mon,bool tue,bool wed,bool thur,bool fri,bool sat,int locaion) : base(locaion)
+        public DaysInWeek(int interval_id,bool sun,bool mon,bool tue,bool wed,bool thur,bool fri,bool sat) 
         {
             this.interval_id = interval_id;
             this.sunday = sun;
@@ -57,7 +59,6 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.thursday = data.Thursday;
             this.friday = data.Friday;
             this.saturday = data.Saturday;
-            this.updated_date = DateTime.UtcNow;
         }
     }
 }
