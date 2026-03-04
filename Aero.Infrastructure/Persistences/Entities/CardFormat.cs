@@ -7,7 +7,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public class CardFormat : BaseEntity,IDriverId
+    public class CardFormat : BaseEntity
     {
         public string name { get; set; } = string.Empty;
         public short driver_id { get; set; }
@@ -47,6 +47,28 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.ic_loc = icLoc;
             this.po_ln = poLn;
             this.po_loc = poLoc;
+
+        }
+
+        public CardFormat(Aero.Domain.Entities.CardFormat data) : base(data.LocationId)
+        {
+            this.driver_id = data.DriverId;
+            this.name = data.Name;
+            this.facility = data.Facility;
+            this.offset = data.Offset;
+            this.function_id = data.FunctionId;
+            this.flags = data.Flags;
+            this.bits = data.Bits;
+            this.pe_ln = data.PeLn;
+            this.pe_loc = data.PeLoc;
+            this.fc_ln = data.FcLn;
+            this.fc_loc = data.FcLoc;
+            this.ch_ln = data.ChLn;
+            this.ch_loc = data.ChLoc;
+            this.ic_ln = data.IcLn;
+            this.ic_loc = data.IcLoc;
+            this.po_ln = data.PoLn;
+            this.po_loc = data.PoLoc;
 
         }
 

@@ -15,7 +15,7 @@ namespace Aero.Application.DTOs
         short OfflineMode,
         string OfflineModeDetail,
         short DefaultPulse,
-        int DeviceId,
+        short DeviceId,
         int LocationId,
         bool IsActive
         ) : BaseDto(LocationId,IsActive);

@@ -14,7 +14,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aero.Application.Services
 {
-    public class HardwareService(
+    public class DeviceService(
         IDeviceRepository repo,
         IModuleRepository moduleRepo,
         ITzRepository tzRepo,
@@ -417,11 +417,11 @@ namespace Aero.Application.Services
                 var door = new Door(dto.Id, dto.DriverId, dto.Name, dto.AccessConfig, dto.PairDoorNo,
             (DoorDirection)dto.Direction,
             dto.DeviceId,
-            dto.Readers.Select(x => new Reader(x.ModuleId, x.DoorId, x.ReaderNo, x.DataFormat, x.KeypadMode, x.LedDriveMode, x.OsdpFlag, x.OsdpBaudrate, x.OsdpDiscover, x.OsdpTracing, x.OsdpAddress, x.OsdpSecureChannel, x.DeviceId, x.LocationId, x.IsActive)).ToList(),
+            dto.Readers.Select(x => new Reader(x.ModuleId,x.ModuleDriverId, x.DoorId, x.ReaderNo, x.DataFormat, x.KeypadMode, x.LedDriveMode, x.OsdpFlag, x.OsdpBaudrate, x.OsdpDiscover, x.OsdpTracing, x.OsdpAddress, x.OsdpSecureChannel, x.DeviceId, x.LocationId, x.IsActive)).ToList(),
             dto.ReaderOutConfiguration,
-            dto.Strk is null ? null : new Strike(dto.Strk.DeviceId, dto.Strk.ModuleId, dto.Strk.DoorId, dto.Strk.OutputNo, dto.Strk.RelayMode, dto.Strk.OfflineMode, dto.Strk.StrkMax, dto.Strk.StrkMin, dto.Strk.StrkMode, dto.Strk.LocationId, dto.Strk.IsActive),
-            dto.Sensor is null ? null : new Sensor(dto.Sensor.DeviceId, dto.Sensor.ModuleId, dto.Sensor.DoorId, dto.Sensor.InputNo, dto.Sensor.InputMode, dto.Sensor.Debounce, dto.Sensor.HoldTime, dto.Sensor.DcHeld, dto.Sensor.LocationId, dto.Sensor.IsActive),
-            dto.RequestExits is null ? new List<RequestExit>() : dto.RequestExits.Select(x => new RequestExit(x.DeviceId, x.ModuleId, x.DoorId, x.InputNo, x.InputMode, x.Debounce, x.HoldTime, x.MaskTimeZone, x.LocationId, x.IsActive)).ToList()
+            dto.Strk is null ? null : new Strike(dto.Strk.DeviceId, dto.Strk.ModuleId,dto.Strk.ModuleDriverId, dto.Strk.DoorId, dto.Strk.OutputNo, dto.Strk.RelayMode, dto.Strk.OfflineMode, dto.Strk.StrkMax, dto.Strk.StrkMin, dto.Strk.StrkMode, dto.Strk.LocationId, dto.Strk.IsActive),
+            dto.Sensor is null ? null : new Sensor(dto.Sensor.DeviceId, dto.Sensor.ModuleId,dto.Sensor.ModuleDriverId,dto.Sensor.DoorId, dto.Sensor.InputNo, dto.Sensor.InputMode, dto.Sensor.Debounce, dto.Sensor.HoldTime, dto.Sensor.DcHeld, dto.Sensor.LocationId, dto.Sensor.IsActive),
+            dto.RequestExits is null ? new List<RequestExit>() : dto.RequestExits.Select(x => new RequestExit(x.DeviceId, x.ModuleId, x.ModuleDriverId,x.DoorId, x.InputNo, x.InputMode, x.Debounce, x.HoldTime, x.MaskTimeZone, x.LocationId, x.IsActive)).ToList()
             , dto.CardFormat, dto.AntiPassbackMode, dto.AntiPassBackIn,
             dto.AreaInId, dto.AntiPassBackOut, dto.AreaOutId, dto.SpareTags, dto.AccessControlFlags, dto.Mode, dto.ModeDesc,
             dto.OfflineMode, dto.OfflineModeDesc, dto.DefaultMode, dto.DefaultModeDesc, dto.DefaultLEDMode, dto.PreAlarm, dto.AntiPassbackDelay,
@@ -455,7 +455,7 @@ namespace Aero.Application.Services
                     // Reader In Config
 
 
-                    if (!d.ReaderSpecification((short)reader.DeviceId, reader.ModuleId, reader.ReaderNo, reader.DataFormat, reader.KeypadMode, readerLedDriveMode, readerInOsdpFlag))
+                    if (!d.ReaderSpecification((short)reader.DeviceId,reader.ModuleDriverId, reader.ReaderNo, reader.DataFormat, reader.KeypadMode, readerLedDriveMode, readerInOsdpFlag))
                     {
                         errors.Add(MessageBuilder.Unsuccess(await repo.GetMacFromComponentAsync((short)en.DriverId), Command.READER_SPEC));
                     }
@@ -466,7 +466,7 @@ namespace Aero.Application.Services
                 // Strike Strike Config
                 if (door.Strk != null)
                 {
-                    if (!cp.OutputPointSpecification((short)door.Strk.DeviceId, door.Strk.ModuleId, door.Strk.OutputNo, door.Strk.RelayMode))
+                    if (!cp.OutputPointSpecification((short)door.Strk.DeviceId, (short)door.Strk.ModuleId, door.Strk.OutputNo, door.Strk.RelayMode))
                     {
                         errors.Add(MessageBuilder.Unsuccess(await repo.GetMacFromComponentAsync((short)en.DriverId), Command.OUTPUT_SPEC));
                     }
@@ -475,7 +475,7 @@ namespace Aero.Application.Services
 
                 if (door.Sensor != null)
                 {
-                    if (!mp.InputPointSpecification((short)door.Sensor.DeviceId, door.Sensor.ModuleId, door.Sensor.InputNo, door.Sensor.InputMode, door.Sensor.Debounce, door.Sensor.HoldTime))
+                    if (!mp.InputPointSpecification((short)door.Sensor.DeviceId, door.Sensor.ModuleDriverId,door.Sensor.InputNo, door.Sensor.InputMode, door.Sensor.Debounce, door.Sensor.HoldTime))
                     {
                         errors.Add(MessageBuilder.Unsuccess(await repo.GetMacFromComponentAsync((short)en.DriverId), Command.INPUT_SPEC));
                     }
@@ -485,7 +485,7 @@ namespace Aero.Application.Services
                 foreach (var rex in door.RequestExits)
                 {
                     if (rex.DeviceId == 0) continue;
-                    if (!mp.InputPointSpecification((short)rex.DeviceId, rex.ModuleId, rex.InputNo, rex.InputMode, rex.Debounce, rex.HoldTime))
+                    if (!mp.InputPointSpecification((short)rex.DeviceId, (short)rex.ModuleId, rex.InputNo, rex.InputMode, rex.Debounce, rex.HoldTime))
                     {
                         errors.Add(MessageBuilder.Unsuccess(await repo.GetMacFromComponentAsync((short)en.DriverId), Command.INPUT_SPEC));
                     }
@@ -510,11 +510,14 @@ namespace Aero.Application.Services
                 dto.FirstName,
                 dto.MiddleName,
                 dto.LastName,
-                dto.Sex,
+                (Gender)dto.Gender,
                 dto.Email,
                 dto.Phone,
+                dto.CompanyId,
                 dto.Company,
+                dto.PositionId,
                 dto.Position,
+                dto.DepartmentId,
                 dto.Department,
                 dto.Image,
                 dto.Flag,
@@ -914,7 +917,7 @@ namespace Aero.Application.Services
 
             if (status <= 0) return ResponseHelper.UnsuccessBuilder<DeviceDto>(ResponseMessage.SAVE_DATABASE_UNSUCCESS, []);
 
-            status = await idRepo.DeleteByMacAndScpIdAsync(report.MacAddress, report.ComponentId);
+            status = await idRepo.DeleteByMacAndScpIdAsync(report.MacAddress, report.ScpId);
 
             if (status <= 0) return ResponseHelper.UnsuccessBuilder<DeviceDto>(ResponseMessage.DELETE_DATABASE_UNSUCCESS, []);
 

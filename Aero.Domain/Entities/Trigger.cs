@@ -14,13 +14,13 @@ public sealed class Trigger : BaseDomain
   public short TranType { get; set; }
   public List<TransactionCode> CodeMap { get; set; } = new List<TransactionCode>();
   public short TimeZone { get; set; }
-  public int DeviceId { get; set; } 
+  public short DeviceId { get; set; } 
   public Device Device { get; set; } = new Device();
   public Procedure Procedure { get; set; } = new Procedure();
 
   public Trigger() { }
 
-  public Trigger(short driverId, string name, short command, short procedureId, short sourceType, short sourceNumber, short tranType, List<TransactionCode> codeMap, short timeZone, int deviceId,int location,bool status) : base(location,status)
+  public Trigger(short driverId, string name, short command, short procedureId, short sourceType, short sourceNumber, short tranType, List<TransactionCode> codeMap, short timeZone, short deviceId,int location,bool status) : base(location,status)
   {
       DriverId = driverId;
       Name = ValidateRequiredString(name, nameof(name));

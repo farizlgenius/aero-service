@@ -58,7 +58,7 @@ public sealed class DeviceRepository(AppDbContext context) : IDeviceRepository
         .OrderBy(x => x.id)
         .Select(x => new Device(
             x.id,
-            x.driver_id,
+            (short)x.driver_id,
             x.name,
             x.hardware_type,
             x.hardware_type_detail,
@@ -502,7 +502,7 @@ public sealed class DeviceRepository(AppDbContext context) : IDeviceRepository
         .Select(x => x.driver_id)
         .FirstOrDefaultAsync();
 
-        return res;
+        return (short)res;
     }
 
     public async Task<string> GetMacFromComponentAsync(short component)
@@ -560,7 +560,7 @@ public sealed class DeviceRepository(AppDbContext context) : IDeviceRepository
             .Select(x => new { x.driver_id, x.mac })
             .ToArrayAsync();
 
-        return res.Select(x => (x.driver_id, x.mac));
+        return res.Select(x => ((short)x.driver_id, x.mac));
     }
 
     public async Task<bool> IsAnyByMacAndDriver(string mac, int driver)
@@ -574,7 +574,7 @@ public sealed class DeviceRepository(AppDbContext context) : IDeviceRepository
     {
         return await context.device.AsNoTracking()
         .Where(x => x.location_id == locationId)
-        .Select(x => x.driver_id)
+        .Select(x => (short)x.driver_id)
         .ToArrayAsync();
     }
 
@@ -591,7 +591,7 @@ public sealed class DeviceRepository(AppDbContext context) : IDeviceRepository
     public async Task<IEnumerable<short>> GetDriverIdsAsync()
     {
         var res = await context.device.AsNoTracking()
-        .Select(x => x.driver_id)
+        .Select(x => (short)x.driver_id)
         .ToArrayAsync();
 
         return res;
@@ -726,7 +726,7 @@ public sealed class DeviceRepository(AppDbContext context) : IDeviceRepository
     {
         return await context.device.AsNoTracking()
             .Where(x => x.location_id == locationid)
-            .Select(x => x.driver_id)
+            .Select(x => (short)x.driver_id)
             .ToArrayAsync();
     }
 
@@ -904,5 +904,17 @@ public sealed class DeviceRepository(AppDbContext context) : IDeviceRepository
 
             return res;
    
+      }
+
+      public async Task<bool> IsAnyByDriverIdAsync(int Driver)
+      {
+            return await context.device.AsNoTracking().AnyAsync(x => x.driver_id == Driver);
+      }
+
+      public async Task<string> GetNameByDeviceIdAsync(int device)
+      {
+            return await context.device.AsNoTracking()
+            .OrderBy(x => x.id)
+            .Where(x => x.driver_id == device).Select(x => x.name).FirstOrDefaultAsync() ?? "";
       }
 }

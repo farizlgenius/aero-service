@@ -1,7 +1,7 @@
 ﻿namespace Aero.Application.DTOs
 {
     public sealed record IdReportDto(
-    short ComponentId,
+    short ScpId,
     int SerialNumber,
     string MacAddress,
     string Ip,

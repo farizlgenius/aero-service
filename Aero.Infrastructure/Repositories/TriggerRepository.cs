@@ -40,7 +40,7 @@ public class TriggerRepository(AppDbContext context) : ITriggerRepository
                         var dtos = await context.device
                             .AsNoTracking()
                             .Where(x => x.location_id == location)
-                            .Select(x => new ModeDto(x.name,x.driver_id,x.mac))
+                            .Select(x => new ModeDto(x.name,(short)x.driver_id,x.mac))
                             .ToArrayAsync();
                         return dtos;
                   case (short)tranSrc.tranSrcSioDiag:

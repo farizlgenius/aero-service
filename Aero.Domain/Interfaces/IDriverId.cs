@@ -8,6 +8,6 @@ namespace Aero.Domain.Interfaces
 {
     public interface IDriverId
     {
-        public short driver_id { get;}
+        public int driver_id { get;}
     }
 }

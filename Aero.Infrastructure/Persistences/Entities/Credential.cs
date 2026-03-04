@@ -1,4 +1,4 @@
-﻿
+
 
 
 using Aero.Domain.Entities;
@@ -20,14 +20,17 @@ namespace Aero.Infrastructure.Persistences.Entities
         public User user { get; set; }
         public ICollection<DeviceCredential> hardware_credentials { get; set; }
 
-        public Credential(int bits,int issue,int fac,long card,string pin,string active,string deactive,string user_id,int location) : base(location)
+        public Credential(){}
+
+
+        public Credential(int bits,int issue_code,int fac_code,long card_no,string pin,string active_date,string deactive_date,string user_id,int location_id) : base(location_id)
         {
             this.bits = bits;
-            this.issue_code = issue;
-            this.fac_code = fac;
-            this.card_no = card;
-            this.active_date = active;
-            this.deactive_date = deactive;
+            this.issue_code = issue_code;
+            this.fac_code = fac_code;
+            this.card_no = card_no;
+            this.active_date = active_date;
+            this.deactive_date = deactive_date;
             this.user_id = user_id;
             this.pin = pin;
             
@@ -42,7 +45,7 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.active_date = data.ActiveDate;
             this.deactive_date = data.DeactiveDate;
             this.user_id = data.UserId;
-            this.pin = pin;
+            this.pin = data.Pin;
             this.updated_date = DateTime.UtcNow;
 
         }
@@ -56,9 +59,10 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.active_date = data.ActiveDate;
             this.deactive_date = data.DeactiveDate;
             this.user_id = data.UserId;
-            this.pin = pin;
+            this.pin = data.Pin;
             this.updated_date = DateTime.UtcNow;
 
         }
     }
 }
+

@@ -5,7 +5,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class AccessArea : BaseEntity,IDriverId,IDbFunc<Aero.Domain.Entities.AccessArea>
+    public sealed class AccessArea : BaseEntity,IDbFunc<Aero.Domain.Entities.AccessArea>
     {
         public short driver_id { get; set; }
         public string name { get; set; } = string.Empty;    
@@ -24,8 +24,9 @@ namespace Aero.Infrastructure.Persistences.Entities
 
         public AccessArea(){}
 
-        public AccessArea(short driver,string name,short multi_occ,short access_control,short occ_control,short occ_set,short occ_max,short occ_up,short occ_down,short area_flag,int location_id) : base(location_id) 
+        public AccessArea(int device_id,short driver_id,string name,short multi_occ,short access_control,short occ_control,short occ_set,short occ_max,short occ_up,short occ_down,short area_flag,int location_id) : base(location_id) 
         {
+            this.device_id = device_id;
             this.driver_id = driver_id;
             this.name = name;
             this.multi_occ = multi_occ;
@@ -40,6 +41,7 @@ namespace Aero.Infrastructure.Persistences.Entities
 
         public AccessArea(Aero.Domain.Entities.AccessArea data)
         {
+            this.device_id = data.DeviceId;
             this.driver_id = data.DriverId;
             this.name = data.Name;
             this.multi_occ = data.MultiOccupancy;

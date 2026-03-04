@@ -9,6 +9,7 @@ namespace Aero.Application.DTOs
 
     public sealed record AccessAreaDto(
         int Id,
+        int DeviceId,
         short DriverId,
         string Name,
         short MultiOccupancy,

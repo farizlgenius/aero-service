@@ -6,7 +6,7 @@ namespace Aero.Infrastructure.Persistences;
 
 public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-   
+
     // New 
     public DbSet<Device> device { get; set; }
     public DbSet<Module> module { get; set; }
@@ -90,6 +90,9 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<TransactionFlag> transaction_flag { get; set; }
     public DbSet<TransactionSourceType> transaction_source_type { get; set; }
     public DbSet<UserDevice> user_device { get; set; }
+    public DbSet<Company> companies { get; set; }
+    public DbSet<Position> positions { get; set; }
+    public DbSet<Department> departments { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -103,12 +106,12 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         modelBuilder.Entity<Location>()
             .HasData(
-            new Location { id = 1,  name = "Shared", description = "Shared location" },
+            new Location { id = 1, name = "Shared", description = "Shared location" },
             new Location { id = 2, name = "Main", description = "Main location" }
             );
 
         modelBuilder.Entity<Location>()
-            .HasMany(l => l.hardwares)
+            .HasMany(l => l.device)
             .WithOne(h => h.location)
             .HasForeignKey(f => f.location_id)
             .OnDelete(DeleteBehavior.Restrict);
@@ -172,113 +175,130 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
           .HasMany(l => l.credentials)
           .WithOne(c => c.location)
           .HasForeignKey(f => f.location_id)
-          
+
           .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Location>()
           .HasMany(l => l.credentials)
           .WithOne(c => c.location)
           .HasForeignKey(f => f.location_id)
-          
+
           .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Location>()
           .HasMany(l => l.holidays)
           .WithOne(c => c.location)
           .HasForeignKey(f => f.location_id)
-          
+
           .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Location>()
           .HasMany(l => l.readers)
           .WithOne(c => c.location)
           .HasForeignKey(f => f.location_id)
-          
+
           .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Location>()
           .HasMany(l => l.request_exits)
           .WithOne(c => c.location)
           .HasForeignKey(f => f.location_id)
-          
+
           .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Location>()
           .HasMany(l => l.sensors)
           .WithOne(c => c.location)
           .HasForeignKey(f => f.location_id)
-          
+
           .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Location>()
           .HasMany(l => l.strikes)
           .WithOne(c => c.location)
           .HasForeignKey(f => f.location_id)
-          
+
           .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Location>()
             .HasMany(l => l.triggers)
             .WithOne(c => c.location)
             .HasForeignKey(f => f.location_id)
-            
+
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Location>()
             .HasMany(l => l.procedures)
             .WithOne(c => c.location)
             .HasForeignKey(f => f.location_id)
-            
+
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Location>()
             .HasMany(l => l.actions)
             .WithOne(c => c.location)
             .HasForeignKey(f => f.location_id)
-            
+
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Location>()
             .HasMany(l => l.intervals)
             .WithOne(c => c.location)
             .HasForeignKey(f => f.location_id)
-            
+
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Location>()
             .HasMany(l => l.timezones)
             .WithOne(c => c.location)
             .HasForeignKey(f => f.location_id)
-            
+
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Location>()
     .HasMany(l => l.card_formats)
     .WithOne(c => c.location)
     .HasForeignKey(f => f.location_id)
-    
+
     .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Location>()
     .HasMany(l => l.idreports)
     .WithOne(c => c.location)
     .HasForeignKey(f => f.location_id)
-    
+
     .OnDelete(DeleteBehavior.NoAction);
 
         modelBuilder.Entity<Location>()
     .HasMany(l => l.roles)
     .WithOne(c => c.location)
     .HasForeignKey(f => f.location_id)
-    
+
     .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Location>()
    .HasMany(l => l.command_audit)
    .WithOne(c => c.location)
    .HasForeignKey(f => f.location_id)
-   
    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Location>()
+        .HasMany(l => l.companies)
+        .WithOne(c => c.location)
+        .HasForeignKey(f => f.location_id)
+        .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Company>()
+        .HasMany(l => l.departments)
+        .WithOne(c => c.company)
+        .HasForeignKey(f => f.company_id)
+        .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Department>()
+        .HasMany(l => l.positions)
+        .WithOne(c => c.department)
+        .HasForeignKey(f => f.department_id)
+        .OnDelete(DeleteBehavior.Cascade);
 
 
         #endregion
@@ -377,7 +397,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
         modelBuilder.Entity<DeviceCredential>()
             .HasOne(e => e.hardware)
             .WithMany(e => e.device_credentials)
-            .HasForeignKey(e => e.credential_id)
+            .HasForeignKey(e => e.device_id)
             .HasPrincipalKey(e => e.driver_id)
             .OnDelete(DeleteBehavior.Restrict);
 
@@ -476,28 +496,24 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .HasMany(p => p.sensors)
             .WithOne(p => p.module)
             .HasForeignKey(p => p.module_id)
-            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Module>()
             .HasMany(p => p.strikes)
             .WithOne(p => p.module)
             .HasForeignKey(p => p.module_id)
-            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Module>()
             .HasMany(p => p.readers)
             .WithOne(p => p.module)
             .HasForeignKey(p => p.module_id)
-            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Module>()
             .HasMany(p => p.request_exits)
             .WithOne(p => p.module)
             .HasForeignKey(p => p.module_id)
-            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
 
@@ -505,7 +521,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .HasMany(p => p.control_points)
             .WithOne(p => p.module)
             .HasForeignKey(p => p.module_id)
-            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
 
@@ -513,7 +528,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .HasMany(p => p.monitor_points)
             .WithOne(p => p.module)
             .HasForeignKey(p => p.module_id)
-            .HasPrincipalKey(p => p.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<ModuleBaudrate>()
@@ -545,7 +559,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         var NoAccess = new AccessLevel { id = 1, name = "No Access", location_id = 1, is_active = true };
 
-        var FullAccess = new AccessLevel { id = 2, name = "Full Access",  location_id = 1, is_active = true };
+        var FullAccess = new AccessLevel { id = 2, name = "Full Access", location_id = 1, is_active = true };
 
 
         modelBuilder.Entity<AccessLevel>().HasData(
@@ -578,7 +592,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .HasMany(e => e.timezone_intervals)
             .WithOne(s => s.timezone)
             .HasForeignKey(e => e.timezone_id)
-            .HasPrincipalKey(s => s.driver_id)
             .OnDelete(DeleteBehavior.Cascade);
 
 
@@ -598,7 +611,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
 
         modelBuilder.Entity<Aero.Infrastructure.Persistences.Entities.TimeZone>().HasData(
-            new Aero.Infrastructure.Persistences.Entities.TimeZone { id = 1, name = "Always",driver_id=1, mode = 1, active_time = "", deactive_time = "", is_active = true, location_id = 1 }
+            new Aero.Infrastructure.Persistences.Entities.TimeZone { id = 1, name = "Always", driver_id = 1, mode = 1, active_time = "", deactive_time = "", is_active = true, location_id = 1 }
            );
 
         modelBuilder.Entity<TimeZoneMode>().HasData(
@@ -664,7 +677,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .WithOne(x => x.door)
             .HasForeignKey(x => x.door_id)
             .OnDelete(DeleteBehavior.Cascade);
-            
+
 
         modelBuilder.Entity<DoorSpareFlag>().HasData(
             new DoorSpareFlag { id = 1, name = "No extend", value = 0x0001, description = "ACR_FE_NOEXTEND\t0x0001\t\r\n🔹 Purpose: Prevents the “Extended door Held Open Timer” from being restarted when a new access is granted.\r\n🔹 Effect: If someone presents a valid credential while the door is already open, the extended hold timer won’t reset — the timer continues to count down.\r\n🔹 Use Case: High-traffic door where you don’t want repeated badge reads to keep the door open indefinitely." },
@@ -1468,10 +1481,10 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .HasForeignKey(f => f.antipassback_out)
             .HasPrincipalKey(p => p.driver_id);
 
-        modelBuilder.Entity<AccessArea>()
-            .HasData(
-                new AccessArea { id = 1, driver_id = -1, multi_occ = 0, access_control = 0, occ_control = 0, occ_set = 0, occ_max = 0, occ_up = 0, occ_down = 0, area_flag = 0, location_id = 1, is_active = true,  name = "Any Area", }
-            );
+        // modelBuilder.Entity<AccessArea>()
+        //     .HasData(
+        //         new AccessArea { id = 1, driver_id = -1,device_id=0, multi_occ = 0, access_control = 0, occ_control = 0, occ_set = 0, occ_max = 0, occ_up = 0, occ_down = 0, area_flag = 0, location_id = 1, is_active = true, name = "Any Area", }
+        //     );
 
         modelBuilder.Entity<AccessAreaCommand>()
             .HasData(
@@ -1520,40 +1533,40 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         modelBuilder.Entity<Feature>()
             .HasData(
-                new Feature { id = 1,  name = "Dashboard", path = "/" },
-                new Feature { id = 2,  name = "transaction", path = "/event" },
+                new Feature { id = 1, name = "Dashboard", path = "/" },
+                new Feature { id = 2, name = "transaction", path = "/event" },
                 new Feature { id = 3, name = "location", path = "/location" },
-                new Feature { id = 4,  name = "Alerts", path = "/alert" },
-                new Feature { id = 5,  name = "operator" },
-                new Feature { id = 6,  name = "Devices" },
-                new Feature { id = 7,  name = "door", path = "/door" },
-                new Feature { id = 8,  name = "Card Holder", path = "/cardholder" },
-                new Feature { id = 9,  name = "Access Level", path = "/level" },
-                new Feature { id = 10,  name = "Access Area", path = "/area" },
-                new Feature { id = 11,  name = "time" },
-                new Feature { id = 12,  name = "trigger & procedure" },
-                new Feature { id = 13,  name = "Reports" },
-                new Feature { id = 14,  name = "Settings", path = "/setting" },
-                new Feature { id = 15,  name = "Maps", path = "/map" },
-                new Feature { id = 16,  name = "ControlPoint", path = "/control" },
-                new Feature { id = 17,  name = "MonitorPoint", path = "/monitor" },
-                new Feature { id = 18,  name = "monitor_group", path = "/monitorgroup" }
+                new Feature { id = 4, name = "Alerts", path = "/alert" },
+                new Feature { id = 5, name = "operator" },
+                new Feature { id = 6, name = "Devices" },
+                new Feature { id = 7, name = "door", path = "/door" },
+                new Feature { id = 8, name = "Card Holder", path = "/cardholder" },
+                new Feature { id = 9, name = "Access Level", path = "/level" },
+                new Feature { id = 10, name = "Access Area", path = "/area" },
+                new Feature { id = 11, name = "time" },
+                new Feature { id = 12, name = "trigger & procedure" },
+                new Feature { id = 13, name = "Reports" },
+                new Feature { id = 14, name = "Settings", path = "/setting" },
+                new Feature { id = 15, name = "Maps", path = "/map" },
+                new Feature { id = 16, name = "ControlPoint", path = "/control" },
+                new Feature { id = 17, name = "MonitorPoint", path = "/monitor" },
+                new Feature { id = 18, name = "monitor_group", path = "/monitorgroup" }
 
             );
 
         modelBuilder.Entity<SubFeature>()
             .HasData(
-            new SubFeature { id = 1,  name = "operator", path = "/operator", feature_id = 5 },
-            new SubFeature { id = 2,  name = "role", path = "/role", feature_id = 5 },
-            new SubFeature { id = 3,  name = "hardware", path = "/hardware", feature_id = 6 },
-            new SubFeature { id = 4,  name = "modules", path = "/modules", feature_id = 6 },
-            new SubFeature { id = 5,  name = "Timezone", path = "/timezone", feature_id = 11 },
-            new SubFeature { id = 6,  name = "holiday", path = "/holiday", feature_id = 11 },
-            new SubFeature { id = 7,  name = "interval", path = "/interval", feature_id = 11 },
-            new SubFeature { id = 8,  name = "trigger", path = "/trigger", feature_id = 12 },
-            new SubFeature { id = 9,  name = "procedure", path = "/action", feature_id = 12 },
-            new SubFeature { id = 10,  name = "transaction", path = "/transaction", feature_id = 13 },
-            new SubFeature { id = 11,  name = "Audit Trail", path = "/audit", feature_id = 13 }
+            new SubFeature { id = 1, name = "operator", path = "/operator", feature_id = 5 },
+            new SubFeature { id = 2, name = "role", path = "/role", feature_id = 5 },
+            new SubFeature { id = 3, name = "hardware", path = "/hardware", feature_id = 6 },
+            new SubFeature { id = 4, name = "modules", path = "/modules", feature_id = 6 },
+            new SubFeature { id = 5, name = "Timezone", path = "/timezone", feature_id = 11 },
+            new SubFeature { id = 6, name = "holiday", path = "/holiday", feature_id = 11 },
+            new SubFeature { id = 7, name = "interval", path = "/interval", feature_id = 11 },
+            new SubFeature { id = 8, name = "trigger", path = "/trigger", feature_id = 12 },
+            new SubFeature { id = 9, name = "procedure", path = "/action", feature_id = 12 },
+            new SubFeature { id = 10, name = "transaction", path = "/transaction", feature_id = 13 },
+            new SubFeature { id = 11, name = "Audit Trail", path = "/audit", feature_id = 13 }
 
 
             );
@@ -1590,7 +1603,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         modelBuilder.Entity<Role>()
             .HasData(
-                new Role { id = 1,  name = "Administrator",location_id=1 }
+                new Role { id = 1, name = "Administrator", location_id = 1 }
             );
 
         #endregion
@@ -1661,7 +1674,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         modelBuilder.Entity<Operator>()
             .HasData(
-                new Operator { id = 1,  user_id = "Administrator", user_name = "admin", password = "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY", email = "support@honorsupplying.com", title = "Mr.", first_name = "Administrator", middle_name = "", last_name = "", phone = "", image = "", role_id = 1}
+                new Operator { id = 1, user_id = "Administrator", user_name = "admin", password = "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY", email = "support@honorsupplying.com", title = "Mr.", first_name = "Administrator", middle_name = "", last_name = "", phone = "", image = "", role_id = 1 }
             );
 
         modelBuilder.Entity<OperatorLocation>()
@@ -1873,7 +1886,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             );
 
         modelBuilder.Entity<ScpSetting>().HasData(
-            new ScpSetting { id = 1, n_msp1_port = 3, n_transaction = 60000, n_sio = 33, n_mp = 615, n_cp = 388, n_acr = 64, n_alvl = 32000, n_trgr = 1024, n_proc = 1024, gmt_offset = -25200, n_tz = 255, n_hol = 255, n_mpg = 128, n_card = 200, n_area = 127,n_cfmt=8 }
+            new ScpSetting { id = 1, n_msp1_port = 3, n_transaction = 60000, n_sio = 33, n_mp = 615, n_cp = 388, n_acr = 64, n_alvl = 32000, n_trgr = 1024, n_proc = 1024, gmt_offset = -25200, n_tz = 255, n_hol = 255, n_mpg = 128, n_card = 200, n_area = 127, n_cfmt = 8 }
             );
 
 

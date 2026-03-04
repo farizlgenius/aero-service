@@ -6,7 +6,7 @@ namespace Aero.Domain.Entities;
 public sealed class MonitorGroup : BaseDomain
 {
     public int Id {get; set;}
-    public int DeviceId { get; set; }
+    public short DeviceId { get; set; }
     public short DriverId { get; set; }
       public string Name { get; set; } = string.Empty;
         public short nMpCount { get; set; }
@@ -16,7 +16,7 @@ public sealed class MonitorGroup : BaseDomain
         
     }
 
-    public MonitorGroup(int deviceId, short driverId, string name, short nMpCount, List<MonitorGroupList> nMpList,int location,bool status) : base(location,status)
+    public MonitorGroup(short deviceId, short driverId, string name, short nMpCount, List<MonitorGroupList> nMpList,int location,bool status) : base(location,status)
     {
         DeviceId = deviceId;
         DriverId = driverId;

@@ -1,4 +1,4 @@
-﻿
+
 using System.ComponentModel.DataAnnotations;
 using Aero.Domain.Interface;
 
@@ -15,10 +15,13 @@ namespace Aero.Infrastructure.Persistences.Entities
         public string? nak_reason { get; set; }
         public int nake_desc_code { get; set; }
 
-        public CommandAudit(int tagno,int scp_id,string mac,string command,bool is_success,bool is_pending,string nak_reason,int nake_desc_code, int location) : base(location)
+        public CommandAudit(){}
+
+
+        public CommandAudit(int tag_no,int device_id,string mac,string command,bool is_success,bool is_pending,string nak_reason,int nake_desc_code, int location_id) : base(location_id)
         {
-            this.tag_no = tagno;
-            this.device_id = scp_id;
+            this.tag_no = tag_no;
+            this.device_id = device_id;
             this.mac = mac;
             this.command = command;
             this.is_success = is_success;
@@ -27,5 +30,31 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.nake_desc_code = nake_desc_code;
         }
 
+        public CommandAudit(Aero.Domain.Entities.CommandAudit data) : base(data.LoationId)
+        {
+            this.tag_no = data.TagNo;
+            this.device_id = data.ScpId;
+            this.mac = data.Mac;
+            this.command = data.Command;
+            this.is_success = data.IsSuccess;
+            this.is_pending = data.IsPending;
+            this.nak_reason = data.NakReason;
+            this.nake_desc_code = data.NakDescCode;
+        }
+
+        public void Update(Aero.Domain.Entities.CommandAudit data)
+        {
+            this.tag_no = data.TagNo;
+            this.device_id = data.ScpId;
+            this.mac = data.Mac;
+            this.command = data.Command;
+            this.is_success = data.IsSuccess;
+            this.is_pending = data.IsPending;
+            this.nak_reason = data.NakReason;
+            this.nake_desc_code = data.NakDescCode;
+            this.updated_date = DateTime.UtcNow;
+        }
+
     }
 }
+

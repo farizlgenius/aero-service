@@ -1,11 +1,11 @@
-﻿
+
 using Aero.Application.Services;
 using Aero.Domain.Interfaces;
 using System.ComponentModel.DataAnnotations;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class Device : BaseEntity,IDriverId
+    public sealed class Device : BaseEntity
     {
         public string name { get; set; } = string.Empty;
         public short driver_id { get; set; }
@@ -41,6 +41,9 @@ namespace Aero.Infrastructure.Persistences.Entities
         public bool is_upload { get; set; } = false;
         public bool is_reset { get; set; } = false;
         public DateTime last_sync { get; set; }
+
+        public Device(){}
+
 
         public Device(Aero.Domain.Entities.Device data) : base(data.LocationId)
         {
@@ -89,3 +92,4 @@ namespace Aero.Infrastructure.Persistences.Entities
         }
     }
 }
+

@@ -13,7 +13,7 @@ public class CfmtRepository(AppDbContext context) : ICfmtRepository
 {
       public async Task<int> AddAsync(CardFormat data)
       {
-           var en = CardFormatMapper.ToEf(data);
+           var en = new Aero.Infrastructure.Persistences.Entities.CardFormat(data);
            await context.card_format.AddAsync(en);
            return await context.SaveChangesAsync();
       }
@@ -176,7 +176,8 @@ public class CfmtRepository(AppDbContext context) : ICfmtRepository
             .OrderByDescending(t => t.created_date)
             .Skip((param.PageNumber - 1) * param.PageSize)
             .Take(param.PageSize)
-            .Select(c => new CardFormatDto(c.id, c.name, c.facility, c.offset, c.function_id, c.flags, c.bits, c.pe_ln, c.pe_loc, c.po_ln, c.po_loc, c.fc_ln, c.fc_loc, c.ch_ln, c.ch_loc, c.ic_ln, c.ic_loc, c.location_id, c.is_active))
+            .Select(c => new CardFormatDto(
+                c.id,c.driver_id, c.name, c.facility, c.offset, c.function_id, c.flags, c.bits, c.pe_ln, c.pe_loc, c.po_ln, c.po_loc, c.fc_ln, c.fc_loc, c.ch_ln, c.ch_loc, c.ic_ln, c.ic_loc, c.location_id, c.is_active))
             .ToListAsync();
 
 

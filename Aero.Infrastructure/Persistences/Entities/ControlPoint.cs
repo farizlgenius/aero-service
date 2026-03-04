@@ -1,8 +1,8 @@
-﻿using Aero.Domain.Interfaces;
+using Aero.Domain.Interfaces;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class ControlPoint : BaseEntity, IDeviceId,IDriverId
+    public sealed class ControlPoint : BaseEntity
     {
         public short driver_id {get; set;}
         public string name { get; set; } = string.Empty;
@@ -15,12 +15,15 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short offlinemode { get; set; }
         public string offlinemode_detail { get; set; } = string.Empty;
         public short default_pulse { get; set; } = 1;
-        public int device_id { get; set; }
+        public short device_id { get; set; }
         public Device device { get; set; }
 
-        public ControlPoint(short driver,string name,int module_id,string module_detail,short output_no,short relaymode,string relaymode_detail,short offlinemode,string offlinemode_detail,short defaultpulse,int device,int location_id) : base(location_id) 
+        public ControlPoint(){}
+
+
+        public ControlPoint(short driver_id,string name,int module_id,string module_detail,short output_no,short relaymode,string relaymode_detail,short offlinemode,string offlinemode_detail,short default_pulse,short device_id,int location_id) : base(location_id) 
         {
-            this.driver_id = driver;
+            this.driver_id = driver_id;
             this.name = name;
             this.module_id = module_id;
             this.module_detail = module_detail;
@@ -29,8 +32,8 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.relaymode_detail = relaymode_detail;
             this.offlinemode = offlinemode;
             this.offlinemode_detail = offlinemode_detail;
-            this.default_pulse = defaultpulse;
-            this.device_id = device;
+            this.default_pulse = default_pulse;
+            this.device_id = device_id;
         }
 
         public ControlPoint(Aero.Domain.Entities.ControlPoint data) : base(data.LocationId)
@@ -65,3 +68,4 @@ namespace Aero.Infrastructure.Persistences.Entities
         
     }
 }
+

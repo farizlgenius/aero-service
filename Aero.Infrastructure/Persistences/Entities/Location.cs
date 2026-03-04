@@ -13,7 +13,7 @@ namespace Aero.Infrastructure.Persistences.Entities
         public string description { get; set; } = string.Empty;
 
         // All HardwareComponent 
-        public ICollection<Device> hardwares { get; set; }
+        public ICollection<Device> device { get; set; }
         public ICollection<Module> modules { get; set; }
         public ICollection<ControlPoint> control_points { get; set; }
         public ICollection<MonitorPoint> monitor_points { get; set; }

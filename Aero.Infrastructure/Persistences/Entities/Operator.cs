@@ -19,7 +19,7 @@ namespace Aero.Infrastructure.Persistences.Entities
         public string last_name { get; set; } = string.Empty;
         public string phone { get; set; } = string.Empty;
         public string image { get; set; } = string.Empty;
-        public short role_id { get; set; }
+        public int role_id { get; set; }
         public Role role { get; set; }
         public ICollection<OperatorLocation> operator_locations { get; set; }
         public bool is_active { get; set; } = true;

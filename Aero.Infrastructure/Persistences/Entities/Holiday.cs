@@ -1,10 +1,10 @@
-﻿
+
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class Holiday : BaseEntity,IDriverId
+    public sealed class Holiday : BaseEntity
     {
         public string name { get; set; } = string.Empty;
         public short driver_id { get; set; }
@@ -13,6 +13,9 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short day { get; set; }
         public short extend { get; set; }
         public short type_mask { get; set; }
+
+        public Holiday(){}
+
 
         public Holiday(short driver,string name,short year,short month,short day,short extend,short mask,int location) : base(location)
         {
@@ -37,3 +40,4 @@ namespace Aero.Infrastructure.Persistences.Entities
         }
     }
 }
+

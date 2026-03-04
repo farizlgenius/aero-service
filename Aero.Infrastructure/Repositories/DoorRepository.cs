@@ -120,11 +120,12 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
             d.pair_door_no,
             d.direction,
             readers = d.readers.Select(
-            r => new
-            {
+            r => new ReaderDto
+            (
                 r.device_id,
-                r.door_id,
                 r.module_id,
+                r.module.driver_id,
+                r.door_id,
                 r.reader_no,
                 r.data_format,
                 r.keypad_mode,
@@ -137,17 +138,18 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
                 r.osdp_secure_channel,
                 r.location_id,
                 r.is_active
-            }
+            )
             ),
             d.reader_out_config,
-            strike = d.strike == null ? null : new StrikeDto(d.strike.device_id, d.strike.door_id, (short)d.strike.module_id, d.strike.output_no, d.strike.relay_mode, d.offline_mode, d.strike.strike_max, d.strike.strike_min, d.strike.strike_mode, d.strike.location_id, d.strike.is_active),
-            sensor = d.sensor == null ? null : new SensorDto(d.sensor.device_id, d.sensor.door_id, (short)d.sensor.module_id, d.sensor.input_no, d.sensor.input_mode, d.sensor.debounce, d.sensor.holdtime, d.sensor.dc_held, d.sensor.location_id, d.sensor.is_active),
+            strike = d.strike == null ? null : new StrikeDto(d.strike.device_id, (short)d.strike.module_id,d.strike.module.driver_id,d.strike.door_id,d.strike.output_no, d.strike.relay_mode, d.offline_mode, d.strike.strike_max, d.strike.strike_min, d.strike.strike_mode, d.strike.location_id, d.strike.is_active),
+            sensor = d.sensor == null ? null : new SensorDto(d.sensor.device_id,  (short)d.sensor.module_id,d.sensor.module.driver_id,d.sensor.door_id,d.sensor.input_no, d.sensor.input_mode, d.sensor.debounce, d.sensor.holdtime, d.sensor.dc_held, d.sensor.location_id, d.sensor.is_active),
             rexs = d.request_exits == null ? null : d.request_exits.Select(
-                rx => new
-                {
+                rx => new RequestExitDto
+                (
                     rx.device_id,
-                    rx.door_id,
                     rx.module_id,
+                    rx.module.driver_id,
+                    rx.door_id,
                     rx.input_no,
                     rx.input_mode,
                     rx.debounce,
@@ -156,7 +158,7 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
                     rx.location_id,
                     rx.is_active
 
-                }
+                )
             ),
             d.card_format,
             d.antipassback_mode,
@@ -203,11 +205,11 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
             d.access_config,
             d.pair_door_no,
             (int)d.direction,
-            d.readers.Select(r => new ReaderDto(r.device_id, r.module_id, r.door_id, r.reader_no, r.data_format, r.keypad_mode, r.led_drive_mode, r.osdp_flag, r.osdp_baudrate, r.osdp_discover, r.osdp_tracing, r.osdp_address, r.osdp_secure_channel, r.location_id, r.is_active)).ToList(),
+            d.readers.ToList(),
             d.reader_out_config,
             d.strike,
             d.sensor,
-            d.rexs is null ? new List<RequestExitDto>() : d.rexs.Select(rx => new RequestExitDto(rx.device_id,rx.module_id,rx.door_id, rx.input_no, rx.input_mode, rx.debounce, rx.holdtime, rx.mask_timezone, rx.location_id, rx.is_active)).ToList(),
+            d.rexs is null ? new List<RequestExitDto>() : d.rexs.ToList(),
             d.card_format, d.antipassback_mode, d.antipassback_in, d.area_in_id, d.antipassback_out, d.area_out_id, d.spare_tag, d.access_control_flag, d.mode, d.mode_detail, d.offline_mode, d.offline_mode_detail,
         d.default_mode, d.default_mode_detail, d.default_led_mode, d.pre_alarm, d.antipassback_delay, d.strike_t2, d.dc_held2, d.strike_follow_pulse, d.strike_follow_delay,
         d.n_ext_feature_type, d.i_lpb_sio, d.i_lpb_number, d.i_lpb_long_press, d.i_lpb_out_sio, d.i_lpb_out_num,
@@ -252,11 +254,12 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
             d.pair_door_no,
             d.direction,
             readers = d.readers.Select(
-            r => new
-            {
+            r => new ReaderDto
+            (
                 r.device_id,
-                r.door_id,
                 r.module_id,
+                r.module.driver_id,
+                r.door_id,
                 r.reader_no,
                 r.data_format,
                 r.keypad_mode,
@@ -269,17 +272,18 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
                 r.osdp_secure_channel,
                 r.location_id,
                 r.is_active
-            }
+            )
             ),
             d.reader_out_config,
-            strike = d.strike == null ? null : new StrikeDto(d.strike.device_id, d.strike.door_id, (short)d.strike.module_id, d.strike.output_no, d.strike.relay_mode, d.offline_mode, d.strike.strike_max, d.strike.strike_min, d.strike.strike_mode, d.strike.location_id, d.strike.is_active),
-            sensor = d.sensor == null ? null : new SensorDto(d.sensor.device_id, d.sensor.door_id, (short)d.sensor.module_id, d.sensor.input_no, d.sensor.input_mode, d.sensor.debounce, d.sensor.holdtime, d.sensor.dc_held, d.sensor.location_id, d.sensor.is_active),
+            strike = d.strike == null ? null : new StrikeDto(d.strike.device_id, (short)d.strike.module_id,d.strike.module.driver_id,d.strike.door_id,d.strike.output_no, d.strike.relay_mode, d.offline_mode, d.strike.strike_max, d.strike.strike_min, d.strike.strike_mode, d.strike.location_id, d.strike.is_active),
+            sensor = d.sensor == null ? null : new SensorDto(d.sensor.device_id,  (short)d.sensor.module_id,d.sensor.module.driver_id,d.sensor.door_id,d.sensor.input_no, d.sensor.input_mode, d.sensor.debounce, d.sensor.holdtime, d.sensor.dc_held, d.sensor.location_id, d.sensor.is_active),
             rexs = d.request_exits == null ? null : d.request_exits.Select(
-                rx => new
-                {
+                rx => new RequestExitDto
+                (
                     rx.device_id,
-                    rx.door_id,
                     rx.module_id,
+                    rx.module.driver_id,
+                    rx.door_id,
                     rx.input_no,
                     rx.input_mode,
                     rx.debounce,
@@ -288,7 +292,7 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
                     rx.location_id,
                     rx.is_active
 
-                }
+                )
             ),
             d.card_format,
             d.antipassback_mode,
@@ -337,11 +341,11 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
             d.access_config,
             d.pair_door_no,
             (int)d.direction,
-            d.readers.Select(r => new ReaderDto(r.device_id,r.module_id, r.door_id,r.reader_no, r.data_format, r.keypad_mode, r.led_drive_mode, r.osdp_flag, r.osdp_baudrate, r.osdp_discover, r.osdp_tracing, r.osdp_address, r.osdp_secure_channel, r.location_id, r.is_active)).ToList(),
+            d.readers.ToList(),
             d.reader_out_config,
             d.strike,
             d.sensor,
-            d.rexs is null ? new List<RequestExitDto>() : d.rexs.Select(rx => new RequestExitDto(rx.device_id,rx.module_id,rx.door_id, rx.input_no, rx.input_mode, rx.debounce, rx.holdtime, rx.mask_timezone, rx.location_id, rx.is_active)).ToList(),
+            d.rexs is null ? new List<RequestExitDto>() : d.rexs.ToList(),
             d.card_format, d.antipassback_mode, d.antipassback_in, d.area_in_id, d.antipassback_out, d.area_out_id, d.spare_tag, d.access_control_flag, d.mode, d.mode_detail, d.offline_mode, d.offline_mode_detail,
         d.default_mode, d.default_mode_detail, d.default_led_mode, d.pre_alarm, d.antipassback_delay, d.strike_t2, d.dc_held2, d.strike_follow_pulse, d.strike_follow_delay,
         d.n_ext_feature_type, d.i_lpb_sio, d.i_lpb_number, d.i_lpb_long_press, d.i_lpb_out_sio, d.i_lpb_out_num,
@@ -367,11 +371,12 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
             d.pair_door_no,
             d.direction,
             readers = d.readers.Select(
-            r => new
-            {
+            r => new ReaderDto
+            (
                 r.device_id,
-                r.door_id,
                 r.module_id,
+                r.module.driver_id,
+                r.door_id,
                 r.reader_no,
                 r.data_format,
                 r.keypad_mode,
@@ -384,17 +389,18 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
                 r.osdp_secure_channel,
                 r.location_id,
                 r.is_active
-            }
+            )
             ),
             d.reader_out_config,
-            strike = d.strike == null ? null : new StrikeDto(d.strike.device_id, d.strike.door_id, (short)d.strike.module_id, d.strike.output_no, d.strike.relay_mode, d.offline_mode, d.strike.strike_max, d.strike.strike_min, d.strike.strike_mode, d.strike.location_id, d.strike.is_active),
-            sensor = d.sensor == null ? null : new SensorDto(d.sensor.device_id, d.sensor.door_id, (short)d.sensor.module_id, d.sensor.input_no, d.sensor.input_mode, d.sensor.debounce, d.sensor.holdtime, d.sensor.dc_held, d.sensor.location_id, d.sensor.is_active),
+            strike = d.strike == null ? null : new StrikeDto(d.strike.device_id, (short)d.strike.module_id,d.strike.module.driver_id,d.strike.door_id,d.strike.output_no, d.strike.relay_mode, d.offline_mode, d.strike.strike_max, d.strike.strike_min, d.strike.strike_mode, d.strike.location_id, d.strike.is_active),
+            sensor = d.sensor == null ? null : new SensorDto(d.sensor.device_id,  (short)d.sensor.module_id,d.sensor.module.driver_id,d.sensor.door_id,d.sensor.input_no, d.sensor.input_mode, d.sensor.debounce, d.sensor.holdtime, d.sensor.dc_held, d.sensor.location_id, d.sensor.is_active),
             rexs = d.request_exits == null ? null : d.request_exits.Select(
-                rx => new
-                {
+                rx => new RequestExitDto
+                (
                     rx.device_id,
-                    rx.door_id,
                     rx.module_id,
+                    rx.module.driver_id,
+                    rx.door_id,
                     rx.input_no,
                     rx.input_mode,
                     rx.debounce,
@@ -403,7 +409,7 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
                     rx.location_id,
                     rx.is_active
 
-                }
+                )
             ),
             d.card_format,
             d.antipassback_mode,
@@ -450,11 +456,11 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
         d.access_config,
         d.pair_door_no,
         (int)d.direction,
-        d.readers.Select(r => new ReaderDto(r.device_id,r.module_id,r.door_id,r.reader_no, r.data_format, r.keypad_mode, r.led_drive_mode, r.osdp_flag, r.osdp_baudrate, r.osdp_discover, r.osdp_tracing, r.osdp_address, r.osdp_secure_channel, r.location_id, r.is_active)).ToList(),
+        d.readers.ToList(),
         d.reader_out_config,
         d.strike,
         d.sensor,
-        d.rexs is null ? new List<RequestExitDto>() : d.rexs.Select(rx => new RequestExitDto(rx.device_id,rx.module_id,rx.door_id, rx.input_no, rx.input_mode, rx.debounce, rx.holdtime, rx.mask_timezone, rx.location_id, rx.is_active)).ToList(),
+        d.rexs is null ? new List<RequestExitDto>() : d.rexs.ToList(),
         d.card_format, d.antipassback_mode, d.antipassback_in, d.area_in_id, d.antipassback_out, d.area_out_id, d.spare_tag, d.access_control_flag, d.mode, d.mode_detail, d.offline_mode, d.offline_mode_detail,
     d.default_mode, d.default_mode_detail, d.default_led_mode, d.pre_alarm, d.antipassback_delay, d.strike_t2, d.dc_held2, d.strike_follow_pulse, d.strike_follow_delay,
     d.n_ext_feature_type, d.i_lpb_sio, d.i_lpb_number, d.i_lpb_long_press, d.i_lpb_out_sio, d.i_lpb_out_num,
@@ -480,11 +486,12 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
             d.pair_door_no,
             d.direction,
             readers = d.readers.Select(
-            r => new
-            {
+            r => new ReaderDto
+            (
                 r.device_id,
-                r.door_id,
                 r.module_id,
+                r.module.driver_id,
+                r.door_id,
                 r.reader_no,
                 r.data_format,
                 r.keypad_mode,
@@ -497,17 +504,18 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
                 r.osdp_secure_channel,
                 r.location_id,
                 r.is_active
-            }
+            )
             ),
             d.reader_out_config,
-            strike = d.strike == null ? null : new StrikeDto(d.strike.device_id, d.strike.door_id, (short)d.strike.module_id, d.strike.output_no, d.strike.relay_mode, d.offline_mode, d.strike.strike_max, d.strike.strike_min, d.strike.strike_mode, d.strike.location_id, d.strike.is_active),
-            sensor = d.sensor == null ? null : new SensorDto(d.sensor.device_id, d.sensor.door_id, (short)d.sensor.module_id, d.sensor.input_no, d.sensor.input_mode, d.sensor.debounce, d.sensor.holdtime, d.sensor.dc_held, d.sensor.location_id, d.sensor.is_active),
+            strike = d.strike == null ? null : new StrikeDto(d.strike.device_id, (short)d.strike.module_id,d.strike.module.driver_id,d.strike.door_id,d.strike.output_no, d.strike.relay_mode, d.offline_mode, d.strike.strike_max, d.strike.strike_min, d.strike.strike_mode, d.strike.location_id, d.strike.is_active),
+            sensor = d.sensor == null ? null : new SensorDto(d.sensor.device_id,  (short)d.sensor.module_id,d.sensor.module.driver_id,d.sensor.door_id,d.sensor.input_no, d.sensor.input_mode, d.sensor.debounce, d.sensor.holdtime, d.sensor.dc_held, d.sensor.location_id, d.sensor.is_active),
             rexs = d.request_exits == null ? null : d.request_exits.Select(
-                rx => new
-                {
+                rx => new RequestExitDto
+                (
                     rx.device_id,
-                    rx.door_id,
                     rx.module_id,
+                    rx.module.driver_id,
+                    rx.door_id,
                     rx.input_no,
                     rx.input_mode,
                     rx.debounce,
@@ -516,7 +524,7 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
                     rx.location_id,
                     rx.is_active
 
-                }
+                )
             ),
             d.card_format,
             d.antipassback_mode,
@@ -563,11 +571,11 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
        d.access_config,
        d.pair_door_no,
        (int)d.direction,
-       d.readers.Select(r => new ReaderDto(r.device_id,r.module_id, r.door_id,r.reader_no, r.data_format, r.keypad_mode, r.led_drive_mode, r.osdp_flag, r.osdp_baudrate, r.osdp_discover, r.osdp_tracing, r.osdp_address, r.osdp_secure_channel, r.location_id, r.is_active)).ToList(),
+       d.readers.ToList(),
        d.reader_out_config,
        d.strike,
        d.sensor,
-       d.rexs is null ? new List<RequestExitDto>() : d.rexs.Select(rx => new RequestExitDto(rx.device_id,rx.module_id,rx.door_id, rx.input_no, rx.input_mode, rx.debounce, rx.holdtime, rx.mask_timezone, rx.location_id, rx.is_active)).ToList(),
+       d.rexs is null ? new List<RequestExitDto>() : d.rexs.ToList(),
        d.card_format, d.antipassback_mode, d.antipassback_in, d.area_in_id, d.antipassback_out, d.area_out_id, d.spare_tag, d.access_control_flag, d.mode, d.mode_detail, d.offline_mode, d.offline_mode_detail,
    d.default_mode, d.default_mode_detail, d.default_led_mode, d.pre_alarm, d.antipassback_delay, d.strike_t2, d.dc_held2, d.strike_follow_pulse, d.strike_follow_delay,
    d.n_ext_feature_type, d.i_lpb_sio, d.i_lpb_number, d.i_lpb_long_press, d.i_lpb_out_sio, d.i_lpb_out_num,
@@ -872,11 +880,12 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
             d.pair_door_no,
             d.direction,
             readers = d.readers.Select(
-            r => new
-            {
+            r => new ReaderDto
+            (
                 r.device_id,
-                r.door_id,
                 r.module_id,
+                r.module.driver_id,
+                r.door_id,
                 r.reader_no,
                 r.data_format,
                 r.keypad_mode,
@@ -889,17 +898,18 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
                 r.osdp_secure_channel,
                 r.location_id,
                 r.is_active
-            }
+            )
             ),
             d.reader_out_config,
-            strike = d.strike == null ? null : new StrikeDto(d.strike.device_id, d.strike.door_id, (short)d.strike.module_id, d.strike.output_no, d.strike.relay_mode, d.offline_mode, d.strike.strike_max, d.strike.strike_min, d.strike.strike_mode, d.strike.location_id, d.strike.is_active),
-            sensor = d.sensor == null ? null : new SensorDto(d.sensor.device_id, d.sensor.door_id, (short)d.sensor.module_id, d.sensor.input_no, d.sensor.input_mode, d.sensor.debounce, d.sensor.holdtime, d.sensor.dc_held, d.sensor.location_id, d.sensor.is_active),
+            strike = d.strike == null ? null : new StrikeDto(d.strike.device_id, (short)d.strike.module_id,d.strike.module.driver_id,d.strike.door_id,d.strike.output_no, d.strike.relay_mode, d.offline_mode, d.strike.strike_max, d.strike.strike_min, d.strike.strike_mode, d.strike.location_id, d.strike.is_active),
+            sensor = d.sensor == null ? null : new SensorDto(d.sensor.device_id,  (short)d.sensor.module_id,d.sensor.module.driver_id,d.sensor.door_id,d.sensor.input_no, d.sensor.input_mode, d.sensor.debounce, d.sensor.holdtime, d.sensor.dc_held, d.sensor.location_id, d.sensor.is_active),
             rexs = d.request_exits == null ? null : d.request_exits.Select(
-                rx => new
-                {
+                rx => new RequestExitDto
+                (
                     rx.device_id,
-                    rx.door_id,
                     rx.module_id,
+                    rx.module.driver_id,
+                    rx.door_id,
                     rx.input_no,
                     rx.input_mode,
                     rx.debounce,
@@ -908,7 +918,7 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
                     rx.location_id,
                     rx.is_active
 
-                }
+                )
             ),
             d.card_format,
             d.antipassback_mode,
@@ -940,7 +950,6 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
             d.df_filter_time,
             d.is_held_mask,
             d.is_force_mask,
-
             d.location_id,
             d.is_active
         }
@@ -956,11 +965,11 @@ public class DoorRepository(AppDbContext context) : IDoorRepository
   d.access_config,
   d.pair_door_no,
   (int)d.direction,
-  d.readers.Select(r => new ReaderDto(r.device_id,r.module_id,r.door_id, r.reader_no, r.data_format, r.keypad_mode, r.led_drive_mode, r.osdp_flag, r.osdp_baudrate, r.osdp_discover, r.osdp_tracing, r.osdp_address, r.osdp_secure_channel, r.location_id, r.is_active)).ToList(),
+  d.readers.ToList(),
   d.reader_out_config,
   d.strike,
   d.sensor,
-  d.rexs is null ? new List<RequestExitDto>() : d.rexs.Select(rx => new RequestExitDto(rx.device_id,rx.module_id,rx.door_id, rx.input_no, rx.input_mode, rx.debounce, rx.holdtime, rx.mask_timezone, rx.location_id, rx.is_active)).ToList(),
+  d.rexs is null ? new List<RequestExitDto>() : d.rexs.ToList(),
   d.card_format, d.antipassback_mode, d.antipassback_in, d.area_in_id, d.antipassback_out, d.area_out_id, d.spare_tag, d.access_control_flag, d.mode, d.mode_detail, d.offline_mode, d.offline_mode_detail,
 d.default_mode, d.default_mode_detail, d.default_led_mode, d.pre_alarm, d.antipassback_delay, d.strike_t2, d.dc_held2, d.strike_follow_pulse, d.strike_follow_delay,
 d.n_ext_feature_type, d.i_lpb_sio, d.i_lpb_number, d.i_lpb_long_press, d.i_lpb_out_sio, d.i_lpb_out_num,

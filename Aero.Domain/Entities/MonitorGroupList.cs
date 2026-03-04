@@ -5,14 +5,14 @@ namespace Aero.Domain.Entities;
 
 public sealed class MonitorGroupList
 {
-    public int MonitorGroupId { get; set; } 
+    public short MonitorGroupId { get; set; } 
       public short PointType { get; set; }
         public string PointTypeDetail { get; set; } = string.Empty;
         public short PointNumber { get; set; }
 
     public MonitorGroupList() { }
 
-    public MonitorGroupList(int monitorGroupId, short pointType, string pointTypeDetail, short pointNumber)
+    public MonitorGroupList(short monitorGroupId, short pointType, string pointTypeDetail, short pointNumber)
     {
         MonitorGroupId = monitorGroupId;
         PointType = pointType;

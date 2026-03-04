@@ -40,7 +40,7 @@ public sealed class AlvlCommandService(ICmndRepository cmnd,IDeviceRepository qH
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromDriverIdAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await qHw.GetLocationIdFromDriverIdAsync(ScpId)
             });
         }
         else
@@ -55,7 +55,7 @@ public sealed class AlvlCommandService(ICmndRepository cmnd,IDeviceRepository qH
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromDriverIdAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await qHw.GetLocationIdFromDriverIdAsync(ScpId)
             });
 
         }
@@ -86,7 +86,7 @@ public sealed class AlvlCommandService(ICmndRepository cmnd,IDeviceRepository qH
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromDriverIdAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await qHw.GetLocationIdFromDriverIdAsync(ScpId)
             });
         }
         else
@@ -101,7 +101,7 @@ public sealed class AlvlCommandService(ICmndRepository cmnd,IDeviceRepository qH
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromDriverIdAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await qHw.GetLocationIdFromDriverIdAsync(ScpId)
             });
 
         }
@@ -132,7 +132,7 @@ public sealed class AlvlCommandService(ICmndRepository cmnd,IDeviceRepository qH
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromDriverIdAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await qHw.GetLocationIdFromDriverIdAsync(ScpId)
             });
         }
         else
@@ -147,7 +147,7 @@ public sealed class AlvlCommandService(ICmndRepository cmnd,IDeviceRepository qH
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromDriverIdAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await qHw.GetLocationIdFromDriverIdAsync(ScpId)
             });
 
         }
@@ -178,7 +178,7 @@ public sealed class AlvlCommandService(ICmndRepository cmnd,IDeviceRepository qH
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromDriverIdAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await qHw.GetLocationIdFromDriverIdAsync(ScpId)
             });
         }
         else
@@ -193,7 +193,7 @@ public sealed class AlvlCommandService(ICmndRepository cmnd,IDeviceRepository qH
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromDriverIdAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await qHw.GetLocationIdFromDriverIdAsync(ScpId)
             });
 
         }

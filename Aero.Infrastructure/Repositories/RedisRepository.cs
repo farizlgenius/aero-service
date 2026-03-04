@@ -1,3 +1,4 @@
+using Aero.Application.Interface;
 using Aero.Domain.Interface;
 using StackExchange.Redis;
 

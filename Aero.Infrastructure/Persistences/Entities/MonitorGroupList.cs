@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
@@ -9,8 +9,11 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short point_type { get; set; }
         public string point_type_detail { get; set; } = string.Empty;
         public short point_number { get; set; }
-        public int monitor_group_id { get; set; }
+        public short monitor_group_id { get; set; }
         public MonitorGroup monitor_group { get; set; }
+
+        public MonitorGroupList(){}
+
 
         public MonitorGroupList(Aero.Domain.Entities.MonitorGroupList data) 
         {
@@ -29,3 +32,4 @@ namespace Aero.Infrastructure.Persistences.Entities
         }
     }
 }
+

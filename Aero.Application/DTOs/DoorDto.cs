@@ -6,7 +6,7 @@ namespace Aero.Application.DTOs
 {
    public sealed record DoorDto(
     int Id,
-    int DeviceId,
+    short DeviceId,
     short DriverId,
     string Name,
     short AccessConfig,

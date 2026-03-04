@@ -14,7 +14,7 @@ namespace Aero.Domain.Entities
 
         public CreateAccessLevel() { }
 
-        public CreateAccessLevel(string name, List<AccessLevelComponent> components, int location) : base(location)
+        public CreateAccessLevel(string name, List<AccessLevelComponent> components, int location,bool status) : base(location,status)
         {
             SetName(name);
             SetComponents(components);

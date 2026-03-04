@@ -13,11 +13,11 @@ public sealed class CommandAudit
     public bool IsSuccess { get; set; }
     public string? NakReason { get; set; }
     public int NakDescCode { get; set; }
-    public short LoationId { get; set; }
+    public int LoationId { get; set; }
 
     public CommandAudit() { }
 
-    public CommandAudit(int tagNo, int scpId, string? mac, string? command, bool isPending, bool isSuccess, string? nakReason, int nakDescCode, short loationId)
+    public CommandAudit(int tagNo, int scpId, string? mac, string? command, bool isPending, bool isSuccess, string? nakReason, int nakDescCode, int loationId)
     {
         TagNo = tagNo;
         ScpId = scpId;

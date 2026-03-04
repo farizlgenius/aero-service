@@ -8,7 +8,7 @@ namespace Aero.Infrastructure.Persistences.Entities
         public int id { get; set; }
         public int feature_id { get; set; }
         public Feature feature { get; set; }
-        public short role_id { get; set; }
+        public int role_id { get; set; }
         public Role role { get; set; }
         public bool is_allow { get; set; }
         public bool is_create { get; set; }

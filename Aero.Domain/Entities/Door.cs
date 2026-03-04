@@ -12,7 +12,7 @@ public sealed class Door : BaseDomain
     public short AccessConfig { get; set; }
     public short PairDoorNo { get; set; }
     public DoorDirection Direction { get; set; }
-    public int DeviceId { get; set; }
+    public short DeviceId { get; set; }
     public List<Reader> Readers { get; set; } = new List<Reader>();
     public short ReaderOutConfiguration { get; set; }
     public Strike Strk { get; set; } 
@@ -49,7 +49,7 @@ public sealed class Door : BaseDomain
     public bool MaskHeldOpen { get; set; }
     public bool MaskForceOpen { get; set; }
 
-    public Door(int Id,short driverId, string name, short accessConfig, short pairDoorNo, DoorDirection direction, int deviceId, List<Reader> readers, short readerOutConfiguration, Strike strk, Sensor sensor, List<RequestExit> requestExits, short cardFormat, short antiPassbackMode, short antiPassBackIn, short areaInId, short antiPassBackOut, short areaOutId, short spareTags, short accessControlFlags, short mode, string modeDesc, short offlineMode, string offlineModeDesc, short defaultMode, string defaultModeDesc, short defaultLedMode, short preAlarm, short antiPassbackDelay, short strkT2, short dcHeld2, short strkFollowPulse, short strkFollowDelay, short nExtFeatureType, short ilPBSio, short ilPBNumber, short ilPBLongPress, short ilPBOutSio, short ilPBOutNum, short dfOfFilterTime, bool maskHeldOpen, bool maskForceOpen)
+    public Door(int Id,short driverId, string name, short accessConfig, short pairDoorNo, DoorDirection direction, short deviceId, List<Reader> readers, short readerOutConfiguration, Strike strk, Sensor sensor, List<RequestExit> requestExits, short cardFormat, short antiPassbackMode, short antiPassBackIn, short areaInId, short antiPassBackOut, short areaOutId, short spareTags, short accessControlFlags, short mode, string modeDesc, short offlineMode, string offlineModeDesc, short defaultMode, string defaultModeDesc, short defaultLedMode, short preAlarm, short antiPassbackDelay, short strkT2, short dcHeld2, short strkFollowPulse, short strkFollowDelay, short nExtFeatureType, short ilPBSio, short ilPBNumber, short ilPBLongPress, short ilPBOutSio, short ilPBOutNum, short dfOfFilterTime, bool maskHeldOpen, bool maskForceOpen)
     {
         this.Id = Id;
         DriverId = driverId;

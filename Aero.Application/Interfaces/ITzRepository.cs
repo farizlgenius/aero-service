@@ -10,7 +10,7 @@ public interface ITzRepository : IBaseRepository<TimeZoneDto, Domain.Entities.Ti
 {
     Task<short> GetLowestUnassignedNumberAsync(int max);
     Task<int> CountByLocationIdAndUpdateTimeAsync(short locationId, DateTime sync);
-    Task<IEnumerable<Mode>> GetCommandAsync();
-    Task<IEnumerable<Mode>> GetModeAsync();
+    Task<IEnumerable<ModeDto>> GetCommandAsync();
+    Task<IEnumerable<ModeDto>> GetModeAsync();
     Task<TimeZoneDto> GetByLocationAndNameAsync(string name, int location);
 }

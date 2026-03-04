@@ -18,9 +18,9 @@ public class ControlPoint : BaseDomain
         public short OfflineMode { get; private set; }
         public string OfflineModeDetail { get; private set; } = string.Empty;
         public short DefaultPulse { get; private set; } = 1;
-        public int DeviceId { get; private set; }
+        public short DeviceId { get; private set; }
 
-    public ControlPoint(int Id,short driverid,string name,int moduleid,string moduledetail,short outputno,short relaymode,string relaymodedetail,short offlinemode,string offlinemodedetail,short defaultpulse,int deviceId,int location,bool status) : base(location,status)
+    public ControlPoint(int Id,short driverid,string name,int moduleid,string moduledetail,short outputno,short relaymode,string relaymodedetail,short offlinemode,string offlinemodedetail,short defaultpulse,short deviceId,int location,bool status) : base(location,status)
     {
         this.Id = Id;
         SetDriverId(driverid);
@@ -81,7 +81,7 @@ public class ControlPoint : BaseDomain
         OfflineModeDetail = offlinemodedetail;
     }
 
-    private void SetDeviceId(int device)
+    private void SetDeviceId(short device)
     {
         if (device < 0) throw new ArgumentException("Device id invalid.");
         this.DeviceId = device;

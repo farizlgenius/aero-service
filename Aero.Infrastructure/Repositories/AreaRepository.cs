@@ -13,7 +13,7 @@ public class AreaRepository(AppDbContext context) : IAreaRepository
 {
       public async Task<int> AddAsync(AccessArea data)
       {
-            var en = new Aero.Infrastructure.Persistences.Entities.AccessArea(data.DriverId,data.Name,data.MultiOccupancy,data.AccessControl,data.OccControl,data.OccSet,data.OccMax,data.OccUp,data.OccDown,data.AreaFlag,data.LocationId);
+            var en = new Aero.Infrastructure.Persistences.Entities.AccessArea(data.DeviceId,data.DriverId,data.Name,data.MultiOccupancy,data.AccessControl,data.OccControl,data.OccSet,data.OccMax,data.OccUp,data.OccDown,data.AreaFlag,data.LocationId);
             await context.area.AddAsync(en);
             return await context.SaveChangesAsync();
       }
@@ -79,7 +79,7 @@ public class AreaRepository(AppDbContext context) : IAreaRepository
     {
         var res = await context.area
         .AsNoTracking()
-        .Select(a => new AccessAreaDto(a.id,a.driver_id, a.name,a.multi_occ,a.access_control,a.occ_control,a.occ_set,a.occ_max,a.occ_up,a.occ_down,a.area_flag,a.location_id,a.is_active))
+        .Select(a => new AccessAreaDto(a.id,a.device_id,a.driver_id, a.name,a.multi_occ,a.access_control,a.occ_control,a.occ_set,a.occ_max,a.occ_up,a.occ_down,a.area_flag,a.location_id,a.is_active))
         .ToArrayAsync();
 
         return res;
@@ -91,7 +91,7 @@ public class AreaRepository(AppDbContext context) : IAreaRepository
         .AsNoTracking()
         .Where(x => x.id == id)
         .OrderBy(x => x.id)
-        .Select(a => new AccessAreaDto(a.id,a.driver_id, a.name, a.multi_occ, a.access_control, a.occ_control, a.occ_set, a.occ_max, a.occ_up, a.occ_down, a.area_flag,a.location_id,a.is_active))
+        .Select(a => new AccessAreaDto(a.id,a.device_id,a.driver_id, a.name, a.multi_occ, a.access_control, a.occ_control, a.occ_set, a.occ_max, a.occ_up, a.occ_down, a.area_flag,a.location_id,a.is_active))
         .FirstOrDefaultAsync();
 
         return res;
@@ -103,7 +103,7 @@ public class AreaRepository(AppDbContext context) : IAreaRepository
         .AsNoTracking()
         .Where(x => x.location_id == locationId || x.location_id == 1)
         .OrderBy(x => x.id)
-        .Select(a => new AccessAreaDto(a.id,a.driver_id, a.name, a.multi_occ, a.access_control, a.occ_control, a.occ_set, a.occ_max, a.occ_up, a.occ_down, a.area_flag, a.location_id, a.is_active))
+        .Select(a => new AccessAreaDto(a.id,a.device_id,a.driver_id, a.name, a.multi_occ, a.access_control, a.occ_control, a.occ_set, a.occ_max, a.occ_up, a.occ_down, a.area_flag, a.location_id, a.is_active))
         .ToArrayAsync();
 
         return res;
@@ -218,7 +218,7 @@ public class AreaRepository(AppDbContext context) : IAreaRepository
             .OrderByDescending(t => t.created_date)
             .Skip((param.PageNumber - 1) * param.PageSize)
             .Take(param.PageSize)
-            .Select(a => new AccessAreaDto(a.id,a.driver_id,a.name, a.multi_occ, a.access_control, a.occ_control, a.occ_set, a.occ_max, a.occ_up, a.occ_down, a.area_flag, a.location_id, a.is_active))
+            .Select(a => new AccessAreaDto(a.id,a.device_id,a.driver_id,a.name, a.multi_occ, a.access_control, a.occ_control, a.occ_set, a.occ_max, a.occ_up, a.occ_down, a.area_flag, a.location_id, a.is_active))
             .ToListAsync();
 
 

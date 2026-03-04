@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
+using Aero.Application.Helpers;
+using Aero.Application.Interfaces;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
@@ -32,8 +34,69 @@ namespace Aero.Infrastructure.Persistences.Entities
         public int cumulative_bld_cnt { get; set; }
         public string ip { get; set; } = string.Empty;
         public string port { get; set; } = string.Empty;
-        public short location_id { get; set; }
+        public int location_id { get; set; }
         public Location location { get; set; }
 
+        public IdReport(){}
+
+
+        public IdReport(IScpReply message)
+        {
+            this.device_id = message.id.device_id;
+            this.device_ver = message.id.device_ver;
+            this.software_rev_major = message.id.sft_rev_major;
+            this.software_rev_minor = message.id.sft_rev_minor;
+            this.firmware = UtilitiesHelper.ParseFirmware(message.id.sft_rev_major, message.id.sft_rev_minor);
+            this.serial_number = message.id.serial_number;
+            this.ram_size = message.id.ram_size;
+            this.ram_free = message.id.ram_free;
+            this.e_sec = message.id.e_sec;
+            this.db_max = message.id.db_max;
+            this.db_active = message.id.db_active;
+            this.dip_switch_powerup = message.id.dip_switch_pwrup;
+            this.dip_switch_current = message.id.dip_switch_current;
+            this.scp_id = message.id.scp_id;
+            this.firmware_advisory = message.id.firmware_advisory;
+            this.scp_in1 = message.id.scp_in_1;
+            this.scp_in2 = message.id.scp_in_2;
+            this.n_oem_code = message.id.nOemCode;
+            this.config_flag = message.id.config_flags;
+            this.mac = UtilitiesHelper.ByteToHexStr(message.id.mac_addr);
+            this.tls_status = message.id.tls_status;
+            this.oper_mode = message.id.oper_mode;
+            this.scp_in3 = message.id.scp_in_3;
+            this.cumulative_bld_cnt = message.id.cumulative_bld_cnt;
+            this.location_id = 1;
+        }
+
+        public void Update(IScpReply message)
+        {
+            this.device_id = message.id.device_id;
+            this.device_ver = message.id.device_ver;
+            this.software_rev_major = message.id.sft_rev_major;
+            this.software_rev_minor = message.id.sft_rev_minor;
+            this.firmware = UtilitiesHelper.ParseFirmware(message.id.sft_rev_major, message.id.sft_rev_minor);
+            this.serial_number = message.id.serial_number;
+            this.ram_size = message.id.ram_size;
+            this.ram_free = message.id.ram_free;
+            this.e_sec = message.id.e_sec;
+            this.db_max = message.id.db_max;
+            this.db_active = message.id.db_active;
+            this.dip_switch_powerup = message.id.dip_switch_pwrup;
+            this.dip_switch_current = message.id.dip_switch_current;
+            this.scp_id = message.id.scp_id;
+            this.firmware_advisory = message.id.firmware_advisory;
+            this.scp_in1 = message.id.scp_in_1;
+            this.scp_in2 = message.id.scp_in_2;
+            this.n_oem_code = message.id.nOemCode;
+            this.config_flag = message.id.config_flags;
+            this.mac = UtilitiesHelper.ByteToHexStr(message.id.mac_addr);
+            this.tls_status = message.id.tls_status;
+            this.oper_mode = message.id.oper_mode;
+            this.scp_in3 = message.id.scp_in_3;
+            this.cumulative_bld_cnt = message.id.cumulative_bld_cnt;
+            this.location_id = 1;
+        }
     }
 }
+

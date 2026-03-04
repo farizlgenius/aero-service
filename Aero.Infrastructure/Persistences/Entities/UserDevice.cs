@@ -11,7 +11,7 @@ namespace Aero.Infrastructure.Persistences.Entities
     {
         [Key]
         public int id { get; set; }
-        public int device_id { get; set; }
+        public short device_id { get; set; }
         public Device device { get; set; }
         public string user_id { get; set; }
         public User user { get; set; }

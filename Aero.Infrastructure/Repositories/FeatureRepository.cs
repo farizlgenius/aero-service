@@ -9,12 +9,35 @@ namespace Aero.Infrastructure.Repositories;
 
 public class FeatureRepository(AppDbContext context) : IFeatureRepository
 {
+      public Task<int> AddAsync(Feature data)
+      {
+            throw new NotImplementedException();
+      }
+
+      public Task<int> DeleteByIdAsync(int id)
+      {
+            throw new NotImplementedException();
+      }
+
       public async Task<IEnumerable<FeatureDto>> GetAsync()
       {
             var res = await context.feature
             .AsNoTracking()
             .OrderBy(x => x.id)
-            .Select(f => new FeatureDto(f.id,f.name,f.path,f.s,false,false,false,false,false))
+            .Select(f => new FeatureDto(
+                  f.id,
+                  f.name,
+                  f.path,
+                  f.sub_feature.Select(s => new SubFeatureDto(
+                        s.name,
+                        s.path
+                  )).ToList(),
+                  false,
+                  false,
+                  false,
+                  false,
+                  false
+                  ))
             .ToArrayAsync();
 
             return res;
@@ -25,24 +48,23 @@ public class FeatureRepository(AppDbContext context) : IFeatureRepository
       {
             var res = await context.feature
             .AsNoTracking()
-            .Where(x => x.component_id == id)
-            .OrderBy(x => x.component_id)
-            .Select(fn => new FeatureDto
-            {
-                  ComponentId = fn.component_id,
-                  Name = fn.name,
-                  Path = fn.path,
-                  SubItems = fn.sub_feature == null || fn.sub_feature.Count == 0 ? new List<SubFeatureDto>() : fn.sub_feature.Select(s => new SubFeatureDto
-                  {
-                        Path = s.path,
-                        Name = s.name
-                  }).ToList(),
-                  IsAllow = false,
-                  IsCreate = false,
-                  IsModify = false,
-                  IsDelete = false,
-                  IsAction = false
-            }).FirstOrDefaultAsync();
+            .Where(x => x.id == id)
+            .OrderBy(x => x.id)
+            .Select(f => new FeatureDto(
+                  f.id,
+                  f.name,
+                  f.path,
+                  f.sub_feature.Select(s => new SubFeatureDto(
+                        s.name,
+                        s.path
+                  )).ToList(),
+                  false,
+                  false,
+                  false,
+                  false,
+                  false
+                  ))
+            .FirstOrDefaultAsync();
 
             return res;
       }
@@ -52,56 +74,81 @@ public class FeatureRepository(AppDbContext context) : IFeatureRepository
             throw new NotImplementedException();
       }
 
+      public Task<IEnumerable<FeatureDto>> GetByLocationIdAsync(int locationId)
+      {
+            throw new NotImplementedException();
+      }
+
       public async Task<IEnumerable<FeatureDto>> GetFeatureByRoleAsync(short RoleId)
       {
-            var dtos = await context.feature_role
+            var data = await context.feature_role
                  .AsNoTracking()
                  .Where(f => f.role_id == RoleId)
-                 .Select(fn => new FeatureDto
-                 {
-                       ComponentId = fn.feature.component_id,
-                       Name = fn.feature.name,
-                       Path = fn.feature.path,
-                       SubItems = fn.feature.sub_feature == null || fn.feature.sub_feature.Count == 0 ? new List<SubFeatureDto>() : fn.feature.sub_feature.Select(s => new SubFeatureDto
-                       {
-                             Path = s.path,
-                             Name = s.name
-                       }).ToList(),
-                       IsAllow = fn.is_allow,
-                       IsCreate = fn.is_create,
-                       IsModify = fn.is_modify,
-                       IsDelete = fn.is_delete,
-                       IsAction = fn.is_action
-                 })
+                 .Select(f => new {
+                  f.id,
+                  f.feature.name,
+                  f.feature.path,
+                  sub = f.feature.sub_feature.Select(s => new SubFeatureDto(s.name,s.path)),
+                  f.is_allow,
+                  f.is_create,
+                  f.is_modify,
+                  f.is_delete,
+                  f.is_action
+                  })
                  .ToArrayAsync();
+
+            var dtos = data.Select(f => new FeatureDto(
+                  f.id,
+                  f.name,
+                  f.path,
+                  f.sub.Select(s => new SubFeatureDto(
+                        s.Name,
+                        s.Path
+                  )).ToList(),
+                  f.is_allow,
+                  f.is_create,
+                  f.is_modify,
+                  f.is_delete,
+                  f.is_action
+            )).ToList();
 
             return dtos;
       }
 
       public async Task<FeatureDto> GetFeatureByRoleIdAndFeatureIdAsync(short RoleId, short FeatureId)
       {
-            var dtos = await context.feature_role
+            var f = await context.feature_role
                  .AsNoTracking()
                  .Where(f => f.role_id == RoleId && f.feature_id == FeatureId)
-                 .Select(fn => new FeatureDto
-                 {
-                       ComponentId = fn.feature.component_id,
-                       Name = fn.feature.name,
-                       Path = fn.feature.path,
-                       SubItems = fn.feature.sub_feature == null || fn.feature.sub_feature.Count == 0 ? new List<SubFeatureDto>() : fn.feature.sub_feature.Select(s => new SubFeatureDto
-                       {
-                             Path = s.path,
-                             Name = s.name
-                       }).ToList(),
-                       IsAllow = fn.is_allow,
-                       IsCreate = fn.is_create,
-                       IsModify = fn.is_modify,
-                       IsDelete = fn.is_delete,
-                       IsAction = fn.is_action
-                 })
+                 .Select(f => new {
+                  f.id,
+                  f.feature.name,
+                  f.feature.path,
+                  sub = f.feature.sub_feature.Select(s => new SubFeatureDto(s.name,s.path)),
+                  f.is_allow,
+                  f.is_create,
+                  f.is_modify,
+                  f.is_delete,
+                  f.is_action
+                  })
                  .FirstOrDefaultAsync();
 
-            return dtos;
+            var dto = new FeatureDto(
+                  f.id,
+                  f.name,
+                  f.path,
+                  f.sub.Select(s => new SubFeatureDto(
+                        s.Name,
+                        s.Path
+                  )).ToList(),
+                  f.is_allow,
+                  f.is_create,
+                  f.is_modify,
+                  f.is_delete,
+                  f.is_action
+            );
+
+            return dto;
       }
 
       public Task<short> GetLowestUnassignedNumberAsync(int max,string mac)
@@ -109,13 +156,23 @@ public class FeatureRepository(AppDbContext context) : IFeatureRepository
             throw new NotImplementedException();
       }
 
-    public Task<Pagination<FeatureDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    public Task<Pagination<FeatureDto>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<bool> IsAnyByComponentId(short component)
+    public async Task<bool> IsAnyByIdAsync(int id)
       {
-            return await context.feature.AnyAsync(x => x.component_id == component);
+            return await context.feature.AnyAsync(x => x.id == id);
+      }
+
+      public Task<bool> IsAnyByNameAsync(string name)
+      {
+            throw new NotImplementedException();
+      }
+
+      public Task<int> UpdateAsync(Feature data)
+      {
+            throw new NotImplementedException();
       }
 }

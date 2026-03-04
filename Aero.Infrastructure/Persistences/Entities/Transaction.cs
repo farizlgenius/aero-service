@@ -1,4 +1,4 @@
-﻿namespace Aero.Infrastructure.Persistences.Entities
+namespace Aero.Infrastructure.Persistences.Entities
 {
     public sealed class Transaction : BaseEntity
     {
@@ -19,6 +19,9 @@
         public string mac { get; set; } = string.Empty;
         public string hardware_name { get; set; } = string.Empty;
         public List<TransactionFlag> transaction_flag { get; set; } = new List<TransactionFlag>();
+
+        public Transaction(){}
+
 
         public Transaction(Aero.Domain.Entities.Transaction data) : base(data.LocationId)
         {
@@ -43,3 +46,4 @@
 
     }
 }
+

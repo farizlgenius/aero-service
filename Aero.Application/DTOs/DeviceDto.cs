@@ -5,7 +5,7 @@ namespace Aero.Application.DTOs
 {
     public sealed record DeviceDto(
         int Id,
-        int DriverId,
+        short DriverId,
     string Name,
     int HardwareType,
     string HardwareTypeDescription,

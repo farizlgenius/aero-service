@@ -17,7 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Aero.Application.Services
 {
-    public class AuthService(IOptions<JwtSettings> settings, IOperatorRepository oper,IRoleRepository role,IAuthRepository auth) : IAuthService
+    public class AuthService(IOptions<JwtSettings> settings, IOperatorRepository oper,IRoleRepository repo,IAuthRepository auth) : IAuthService
     {
         private readonly string _secret = settings.Value.Secret;
         private readonly string _issuer = settings.Value.Issuer;
@@ -44,7 +44,7 @@ namespace Aero.Application.Services
 
             if (user is null) return ResponseHelper.NotFoundBuilder<TokenDtoWithRefresh>(["User not found."]);
 
-            var role = await role.GetByComponentIdAsync(user.RoleId);
+            var role = await repo.GetByDriverIdAsync(user.Role);
 
             
 
@@ -59,13 +59,7 @@ namespace Aero.Application.Services
 
             await StoreTokenAsync(rawRefresh, user.UserId, user.Username, _refreshTtl,info:ip);
 
-            var dto = new TokenDtoWithRefresh
-            {
-                TimeStamp = DateTime.UtcNow,
-                AccessToken = accessToken,
-                RefreshToken = rawRefresh,
-                ExpireInMinute = (int)_refreshTtl.TotalMinutes
-            };
+            var dto = new TokenDtoWithRefresh(DateTime.UtcNow,accessToken,rawRefresh,(int)_refreshTtl.TotalMinutes);
 
             return ResponseHelper.SuccessBuilder<TokenDtoWithRefresh>(dto);
         }
@@ -86,7 +80,7 @@ namespace Aero.Application.Services
             }
 
             var user = await oper.GetByUsernameAsync(rec.Username);
-            var role = await role.GetByComponentIdAsync(user.RoleId);
+            var role = await repo.GetByDriverIdAsync(user.Role);
 
             if (user is null) return ResponseHelper.NotFoundBuilder<TokenDtoWithRefresh>(["User not found."]);
 
@@ -109,13 +103,7 @@ namespace Aero.Application.Services
             var accessToken = CreateAccessToken(user,role);
 
 
-            var dto = new TokenDtoWithRefresh
-            {
-                AccessToken = accessToken,
-                TimeStamp = DateTime.UtcNow,
-                RefreshToken = newRaw,
-                ExpireInMinute = (int)_refreshTtl.TotalMinutes
-            };
+            var dto = new TokenDtoWithRefresh(DateTime.UtcNow,accessToken,newRaw,(int)_refreshTtl.TotalMinutes);
             return ResponseHelper.SuccessBuilder<TokenDtoWithRefresh>(dto);
 
         }
@@ -151,18 +139,18 @@ namespace Aero.Application.Services
             var now = DateTime.UtcNow;
             var users = new
             {
-                Title = user.Title ?? "",
-                Firstname = user.FirstName ?? "",
-                Middlename = user.MiddleName ?? "",
-                Lastname = user.LastName ?? "",
+                Title = user.title ?? "",
+                Firstname = user.Firstname ?? "",
+                Middlename = user.Middlename ?? "",
+                Lastname = user.Lastname ?? "",
                 Email = user.Email ?? "",
             };
             var locations = user.LocationIds;
             var roles = new 
             {
-                RoleNo = role.ComponentId,
+                RoleNo = role.DriverId,
                 RoleName = role.Name,
-                Features = role.Features.Select(x => x.ComponentId).ToList()
+                Features = role.Features.Select(x => x.Id).ToList()
             };
 
 

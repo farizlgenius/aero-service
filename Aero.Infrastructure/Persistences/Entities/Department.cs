@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +13,8 @@ namespace Aero.Infrastructure.Persistences.Entities
         public int company_id { get; set; }
         public Company company { get; set; }
         public ICollection<Position> positions { get; set; }
+        public Department(){}
+
         public Department(string name,string description,int company_id,int location_id) : base(location_id)
         {
             this.name = name;
@@ -29,3 +31,4 @@ namespace Aero.Infrastructure.Persistences.Entities
         }
     }
 }
+

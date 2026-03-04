@@ -1,10 +1,10 @@
-﻿using Aero.Domain.Interfaces;
+using Aero.Domain.Interfaces;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class MonitorPoint : BaseEntity,IDriverId,IDeviceId
+    public sealed class MonitorPoint : BaseEntity,IDeviceId
     {
-        public int device_id { get; set; }
+        public short device_id { get; set; }
         public Device device { get; set; }
         public short driver_id {get; set;}
         public string name { get; set; } = string.Empty;
@@ -22,6 +22,9 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short delay_entry { get; set; } = -1;
         public short delay_exit { get; set; } = -1;
         public bool is_mask { get; set; }
+
+        public MonitorPoint(){}
+
 
         public MonitorPoint(Aero.Domain.Entities.MonitorPoint data) : base(data.LocationId)
         {
@@ -72,3 +75,4 @@ namespace Aero.Infrastructure.Persistences.Entities
         }
     }
 }
+

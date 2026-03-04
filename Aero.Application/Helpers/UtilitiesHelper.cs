@@ -44,30 +44,6 @@ public sealed class UtilitiesHelper
     return string.Join(",", map.Where(x => x.Value).Select(x => x.Key));
   }
 
-  public static DaysInWeekDto StringToDaysInWeek(string daysString)
-  {
-    var dto = new DaysInWeekDto();
-    if (string.IsNullOrWhiteSpace(daysString)) return dto;
-
-    var parts = daysString.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                          .Select(p => p.Trim());
-
-    foreach (var day in parts)
-    {
-      switch (day)
-      {
-        case "Sun": dto.Sunday = true; break;
-        case "Mon": dto.Monday = true; break;
-        case "Tue": dto.Tuesday = true; break;
-        case "Wed": dto.Wednesday = true; break;
-        case "Thu": dto.Thursday = true; break;
-        case "Fri": dto.Friday = true; break;
-        case "Sat": dto.Saturday = true; break;
-      }
-    }
-
-    return dto;
-  }
 
   public static int ConvertDayToBinary(DaysInWeek days)
   {
@@ -164,7 +140,7 @@ public sealed class UtilitiesHelper
     string[] d = new string[2];
 
     //var dateTime = DateTimeOffset.FromUnixTimeMilliseconds(timestamp);
-    var dateTime = new DateTime(1970, 1, 1).AddSeconds(timestamp).ToLocalTime(); 
+    var dateTime = new DateTime(1970, 1, 1).AddSeconds(timestamp).ToLocalTime();
 
     d[0] = dateTime.Date.ToString("yyyy-MM-dd");             // Only the date part (00:00:00 time)
     d[1] = dateTime.TimeOfDay.ToString(@"hh\:mm\:ss");        // Only the time part
@@ -173,14 +149,14 @@ public sealed class UtilitiesHelper
 
   }
 
-    public static DateTime UnixToDateTimeUtc(int timestamp)
-    {
-        return DateTimeOffset
-            .FromUnixTimeSeconds(timestamp)
-            .UtcDateTime;
-    }
+  public static DateTime UnixToDateTimeUtc(int timestamp)
+  {
+    return DateTimeOffset
+        .FromUnixTimeSeconds(timestamp)
+        .UtcDateTime;
+  }
 
-    public static string ParseFirmware(short major, short minor)
+  public static string ParseFirmware(short major, short minor)
   {
     string s = minor.ToString();
 
@@ -269,16 +245,16 @@ public sealed class UtilitiesHelper
     return (value & (1 << bit)) != 0;
   }
 
-    public static byte[] Base64ToBytes(string base64)
-    {
-        if (string.IsNullOrWhiteSpace(base64))
-            throw new ArgumentException("Base64 string is empty");
+  public static byte[] Base64ToBytes(string base64)
+  {
+    if (string.IsNullOrWhiteSpace(base64))
+      throw new ArgumentException("Base64 string is empty");
 
-        // Remove data URL prefix if present
-        var commaIndex = base64.IndexOf(',');
-        if (commaIndex >= 0)
-            base64 = base64[(commaIndex + 1)..];
+    // Remove data URL prefix if present
+    var commaIndex = base64.IndexOf(',');
+    if (commaIndex >= 0)
+      base64 = base64[(commaIndex + 1)..];
 
-        return Convert.FromBase64String(base64);
-    }
+    return Convert.FromBase64String(base64);
+  }
 }

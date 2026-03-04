@@ -11,4 +11,5 @@ public interface IRoleRepository : IBaseRepository<RoleDto,Aero.Domain.Entities.
     Task<bool> IsAnyReferenceByIdAsync(int id);
     Task<short> GetLowestUnassignedNumberAsync(int max);
     Task<short> GetLowestUnassignedNumberAsync();
+    Task<RoleDto> GetByDriverIdAsync(int driver);
 }

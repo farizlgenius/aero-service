@@ -1,4 +1,4 @@
-﻿using Aero.Domain.Entities;
+using Aero.Domain.Entities;
 using Aero.Domain.Enums;
 using Aero.Domain.Interfaces;
 using System.Net;
@@ -7,9 +7,9 @@ namespace Aero.Infrastructure.Persistences.Entities
 {
     public sealed class Reader : BaseEntity,IDeviceId
     {
-        public short module_id { get; set; }
+        public int module_id { get; set; }
         public Module module { get; set; }
-        public short door_id { get; set; }
+        public int door_id { get; set; }
         public Door door { get; set; }
         public short reader_no { get; set; }
         public short data_format { get; set; } = 0x01;
@@ -21,10 +21,13 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short osdp_tracing { get; set; } = 0x10;
         public short osdp_address { get; set; }
         public short osdp_secure_channel { get; set; }
-        public int device_id { get; set; }
+        public short device_id { get; set; }
         public Device device { get; set; }
 
-        public Reader(short module,short doorid,short reader,short datadormat,short keypad,short leddrivermode,bool osdpflag,short baudrate,short discover,short tracing,short address,short secure,int device,int location) : base(location) 
+        public Reader(){}
+
+
+        public Reader(int module,int doorid,short reader,short datadormat,short keypad,short leddrivermode,bool osdpflag,short baudrate,short discover,short tracing,short address,short secure,short device,int location) : base(location) 
         {
             this.module_id = module;
             this.door_id = doorid;
@@ -61,3 +64,4 @@ namespace Aero.Infrastructure.Persistences.Entities
         }
     }
 }
+

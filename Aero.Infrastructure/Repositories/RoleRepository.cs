@@ -127,6 +127,43 @@ public class RoleRepository(AppDbContext context) : IRoleRepository
         return res;
     }
 
+    public async Task<RoleDto> GetByDriverIdAsync(int driver)
+    {
+        var d = await context.role
+        .AsNoTracking()
+        .Where(x => x.driver_id == driver)
+        .OrderBy(x => x.id)
+        .Select(r => new
+        {
+            r.id,
+            r.driver_id,
+            r.name,
+            features = r.feature_roles.Select(fr => new
+            {
+                fr.feature,
+                fr.is_allow,
+                fr.is_create,
+                fr.is_modify,
+                fr.is_delete,
+                fr.is_action
+
+            }),
+            r.location_id,
+            r.is_active
+        }).FirstOrDefaultAsync();
+
+        var res = new RoleDto(
+           d.id,
+           d.driver_id,
+           d.name,
+           d.features.Select(fr => new FeatureDto(fr.feature.id, fr.feature.name, fr.feature.path, fr.feature.sub_feature.Select(sf => new SubFeatureDto(sf.name, sf.path)).ToList(), fr.is_allow, fr.is_create, fr.is_modify, fr.is_delete, fr.is_action)).ToList(),
+           d.location_id,
+           d.is_active
+           );
+
+        return res;
+    }
+
     public async Task<IEnumerable<RoleDto>> GetByLocationIdAsync(int locationId)
     {
         var data = await context.role

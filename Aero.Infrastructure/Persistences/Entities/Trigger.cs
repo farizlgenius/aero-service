@@ -1,10 +1,10 @@
-﻿using Aero.Domain.Entities;
+using Aero.Domain.Entities;
 using Aero.Domain.Interfaces;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class Trigger : BaseEntity, IDriverId, IDeviceId
+    public sealed class Trigger : BaseEntity, IDeviceId
     {
         public short driver_id { get; set; }
         public string name { get; set; } = string.Empty;
@@ -13,11 +13,14 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short source_type { get; set; }
         public short source_number { get; set; }
         public short tran_type { get; set; }
-        public int device_id { get; set; } 
+        public short device_id { get; set; } 
         public Device device { get; set; }
         public ICollection<TriggerTranCode> code_map { get; set; }
         public short timezone { get; set; }
         public Procedure procedure { get; set; }
+
+        public Trigger(){}
+
 
         public Trigger(Aero.Domain.Entities.Trigger data) : base(data.LocationId)
         {
@@ -50,3 +53,4 @@ namespace Aero.Infrastructure.Persistences.Entities
 
     }
 }
+

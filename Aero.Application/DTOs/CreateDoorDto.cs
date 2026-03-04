@@ -4,7 +4,7 @@ using Aero.Domain.Enums;
 namespace Aero.Application.DTOs;
 
 public sealed record CreateDoorDto(
-    int DeviceId,
+    short DeviceId,
     string Name,
     short AccessConfig,
     short PairDoorNo,

@@ -1,17 +1,20 @@
-﻿
+
 using Aero.Domain.Interfaces;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class MonitorGroup : BaseEntity,IDeviceId,IDriverId
+    public sealed class MonitorGroup : BaseEntity,IDeviceId
     {
         
         public short driver_id { get; set; }
         public string name { get; set; } = string.Empty;
         public short n_mp_count { get; set; }
         public ICollection<MonitorGroupList> n_mp_list { get; set; }
-        public int device_id { get; set; }
+        public short device_id { get; set; }
         public Device device { get; set; }
+
+        public MonitorGroup(){}
+
 
         public MonitorGroup(Aero.Domain.Entities.MonitorGroup data) : base(data.LocationId)
         {
@@ -33,3 +36,4 @@ namespace Aero.Infrastructure.Persistences.Entities
 
     }
 }
+

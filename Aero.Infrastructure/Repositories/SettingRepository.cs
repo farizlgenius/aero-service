@@ -14,28 +14,27 @@ public class SettingRepository(AppDbContext context) : ISettingRepository
       {
             var en = await context.password_rule.OrderBy(x => x.id).FirstOrDefaultAsync();
             if(en is null) return 0;
-            SettingMapper.PasswordRuleUpdate(data,en);
+            en.Update(data);
             context.password_rule.Update(en);
             return await context.SaveChangesAsync();
       }
 
     public async Task<PasswordRuleDto> GetPasswordRuleAsync()
     {
-        var dto = await context.password_rule
+        var data = await context.password_rule
             .AsNoTracking()
             .OrderBy(x => x.id)
-            .Select(x => new PasswordRuleDto
-            {
-                Len = x.len,
-                IsLower = x.is_lower,
-                IsUpper = x.is_upper,
-                IsDigit = x.is_digit,
-                IsSymbol = x.is_symbol,
-                Weaks = x.weaks.Select(x => x.pattern).ToList()
-            })
+            .Select(x => new {x.len,x.is_lower,x.is_upper,x.is_digit,x.is_symbol,weaks = x.weaks.Select(x => x.pattern)})
             .FirstOrDefaultAsync();
 
-        return dto;
+            var res = new PasswordRuleDto(
+                data.len,
+                data.is_lower,
+                data.is_upper,
+                data.is_digit,
+                data.is_symbol,data.weaks.ToList());
+
+        return res;
 
     }
 

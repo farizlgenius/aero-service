@@ -1,9 +1,9 @@
-﻿
+
 using Aero.Domain.Interfaces;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class Module : BaseEntity,IDeviceId,IDriverId
+    public sealed class Module : BaseEntity,IDeviceId
     {
         public short driver_id { get; set; }
         public short model { get; set; }
@@ -19,7 +19,7 @@ namespace Aero.Infrastructure.Persistences.Entities
         public string n_enc_config_detail { get; set; } = string.Empty;
         public short n_enc_key_status { get; set; }
         public string n_enc_key_status_detail { get; set; } = string.Empty;
-        public int device_id { get; set; } 
+        public short device_id { get; set; } 
         public Device device { get; set; }
         // HardwareComponent 
         public ICollection<Reader>? readers { get; set; }
@@ -39,6 +39,8 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short baudrate { get; set; }
         public short n_protocol { get; set; }
         public short n_dialect { get; set; }
+        public Module(){}
+
         public Module(Aero.Domain.Entities.Module data) : base(data.LocationId)
         {
             this.driver_id = data.DriverId;
@@ -98,3 +100,4 @@ namespace Aero.Infrastructure.Persistences.Entities
         }
     }
 }
+

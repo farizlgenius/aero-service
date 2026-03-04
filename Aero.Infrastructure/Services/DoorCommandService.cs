@@ -34,31 +34,31 @@ public class DoorCommandService : BaseAeroCommand, IDoorCommand
             cc_acr.acr_number = AcrNo;
             cc_acr.access_cfg = dto.AccessConfig;
             cc_acr.pair_acr_number = dto.PairDoorNo;
-            cc_acr.rdr_sio = dto.Readers.ElementAt(0).ModuleId;
+            cc_acr.rdr_sio = dto.Readers.ElementAt(0).ModuleDriverId;
             cc_acr.rdr_number = dto.Readers.ElementAt(0).ReaderNo;
-            cc_acr.strk_sio = dto.Strk.ModuleId;
+            cc_acr.strk_sio = dto.Strk.ModuleDriverId;
             cc_acr.strk_number = dto.Strk.OutputNo;
             cc_acr.strike_t_min = dto.Strk.StrkMin;
             cc_acr.strike_t_max = dto.Strk.StrkMax;
             cc_acr.strike_mode = dto.Strk.StrkMode;
-            cc_acr.door_sio = dto.Sensor.ModuleId;
+            cc_acr.door_sio = dto.Sensor.ModuleDriverId;
             cc_acr.door_number = dto.Sensor.InputNo;
             cc_acr.dc_held = dto.Sensor.DcHeld;
             if (dto.RequestExits is not null && dto.RequestExits.Count > 0)
             {
-                  cc_acr.rex0_sio = dto.RequestExits.ElementAt(0).ModuleId;
+                  cc_acr.rex0_sio = dto.RequestExits.ElementAt(0).ModuleDriverId;
                   cc_acr.rex0_number = dto.RequestExits.ElementAt(0).InputNo;
                   cc_acr.rex_tzmask[0] = dto.RequestExits.ElementAt(0).MaskTimeZone;
                   if (dto.RequestExits.Count > 1)
                   {
-                        cc_acr.rex1_sio = dto.RequestExits.ElementAt(1).ModuleId;
+                        cc_acr.rex1_sio = dto.RequestExits.ElementAt(1).ModuleDriverId;
                         cc_acr.rex1_number = dto.RequestExits.ElementAt(1).InputNo;
                         cc_acr.rex_tzmask[1] = dto.RequestExits.ElementAt(1).MaskTimeZone;
                   }
             }
             if (dto.Readers.Count > 1)
             {
-                  cc_acr.altrdr_sio = dto.Readers.ElementAt(1).ModuleId;
+                  cc_acr.altrdr_sio = dto.Readers.ElementAt(1).ModuleDriverId;
                   cc_acr.altrdr_number = dto.Readers.ElementAt(1).ReaderNo;
                   cc_acr.altrdr_spec = dto.ReaderOutConfiguration;
             }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +12,8 @@ namespace Aero.Infrastructure.Persistences.Entities
         public string description { get; set;  } = string.Empty;
         public int department_id { get; set; }
         public Department department { get; set; }
+        public Position(){}
+
         public Position(Aero.Domain.Entities.Position data) : base(data.LocationId)
         {
             this.name = data.Name;
@@ -28,3 +30,4 @@ namespace Aero.Infrastructure.Persistences.Entities
         }
     }
 }
+

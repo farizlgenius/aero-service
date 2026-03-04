@@ -1,4 +1,4 @@
-﻿
+
 using Aero.Domain.Entities;
 using Aero.Domain.Enums;
 using Aero.Domain.Interfaces;
@@ -7,13 +7,13 @@ using static System.Net.WebRequestMethods;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class Door : BaseEntity,IDeviceId,IDriverId
+    public sealed class Door : BaseEntity,IDeviceId
     {
         public short driver_id {get; set;}
         public string name { get; set; } = string.Empty;   
         public short access_config { get; set; }
         public short pair_door_no { get; set; }
-        public int device_id { get; set; }
+        public short device_id { get; set; }
 
         // Door Direction
         public DoorDirection direction { get; set; }
@@ -64,7 +64,10 @@ namespace Aero.Infrastructure.Persistences.Entities
         public bool is_force_mask { get; set; } = false;
         public ICollection<AccessLevelComponent> access_level_component { get; set; }
 
-        public Door(short driver,string name,short accessconfig,DoorDirection direction,short pair_door_no,int device_id,int location,List<Aero.Domain.Entities.Reader> readers,short readeroutconfig,Aero.Domain.Entities.Strike k,Aero.Domain.Entities.Sensor s,List<Aero.Domain.Entities.RequestExit> rexs
+        public Door(){}
+
+
+        public Door(short driver,string name,short accessconfig,DoorDirection direction,short pair_door_no,short device_id,int location,List<Aero.Domain.Entities.Reader> readers,short readeroutconfig,Aero.Domain.Entities.Strike k,Aero.Domain.Entities.Sensor s,List<Aero.Domain.Entities.RequestExit> rexs
             ,short cardformat
             ,short antipassbackmode,
             short antipassbackin,
@@ -174,3 +177,4 @@ namespace Aero.Infrastructure.Persistences.Entities
 
     }
 }
+

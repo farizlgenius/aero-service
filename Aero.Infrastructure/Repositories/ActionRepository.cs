@@ -24,7 +24,7 @@ public sealed class ActionRepository(AppDbContext context) : IActionRepository
             return res;
       }
 
-    public Task<int> DeleteByIdAsync(short id)
+    public Task<int> DeleteByIdAsync(int id)
     {
         throw new NotImplementedException();
     }
@@ -34,12 +34,12 @@ public sealed class ActionRepository(AppDbContext context) : IActionRepository
         throw new NotImplementedException();
     }
 
-    public Task<ActionDto> GetByIdAsync(short id)
+    public Task<ActionDto> GetByIdAsync(int id)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<ActionDto>> GetByLocationIdAsync(short locationId)
+    public Task<IEnumerable<ActionDto>> GetByLocationIdAsync(int locationId)
     {
         throw new NotImplementedException();
     }
@@ -49,17 +49,22 @@ public sealed class ActionRepository(AppDbContext context) : IActionRepository
         throw new NotImplementedException();
     }
 
-    public Task<Pagination<ActionDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    public Task<Pagination<ActionDto>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> IsAnyById(short id)
+    public Task<bool> IsAnyByIdAsync(int id)
     {
         throw new NotImplementedException();
     }
 
-    public Task<int> UpdateAsync(Domain.Entities.Action newData)
+      public Task<bool> IsAnyByNameAsync(string name)
+      {
+            throw new NotImplementedException();
+      }
+
+      public Task<int> UpdateAsync(Domain.Entities.Action newData)
     {
         throw new NotImplementedException();
     }

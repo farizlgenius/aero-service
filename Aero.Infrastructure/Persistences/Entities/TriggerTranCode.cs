@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
@@ -12,6 +12,9 @@ namespace Aero.Infrastructure.Persistences.Entities
         public short trigger_id { get; set; }
         public Trigger trigger { get; set; }
 
+        public TriggerTranCode(){}
+
+
         public TriggerTranCode(Aero.Domain.Entities.TransactionCode data)
         {
             this.value = data.Value;
@@ -20,3 +23,4 @@ namespace Aero.Infrastructure.Persistences.Entities
         }
     }
 }
+

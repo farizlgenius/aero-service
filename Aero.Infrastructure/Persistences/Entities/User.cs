@@ -1,4 +1,4 @@
-﻿
+
 using System.ComponentModel.DataAnnotations;
 using Aero.Domain.Enums;
 using Aero.Domain.Interface;
@@ -29,6 +29,9 @@ namespace Aero.Infrastructure.Persistences.Entities
         public ICollection<UserAccessLevel> user_access_levels { get; set; }
         public ICollection<UserDevice> user_device { get; set; }
 
+        public User(){}
+
+
         public User(string userid,string title,string firstname,string middlename,string lastname,Gender gender,string email,string phone,int company_id,int department_id,int position_id,short flag,List<string> additionals,string image,List<Credential> cred,List<short> user_accesslevel,int location) : base(location) 
         {
             this.user_id = userid;
@@ -49,5 +52,52 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.credentials = cred;
 
         }
+
+        public User(Aero.Domain.Entities.User data)
+        {
+            this.user_id = data.UserId;
+            this.title = data.Title;
+            this.first_name = data.FirstName;
+            this.middle_name = data.MiddleName;
+            this.last_name = data.LastName;
+            this.gender = data.Sex;
+            this.email = data.Email;
+            this.phone = data.Phone;
+            this.company_id = data.CompanyId;
+            this.department_id = data.DepartmentId;
+            this.position_id = data.PositionId;
+            this.flag = data.Flag;
+            this.additionals = additionals is null ? new List<UserAdditional>() : additionals.Select(a => new UserAdditional(data.UserId,a.additional)).ToList();
+            this.image = image;
+            this.user_access_levels = data.AccessLevels.Select(a => new UserAccessLevel(data.UserId,(short)a.Id)).ToList();
+            this.credentials = data.Credentials.Select(c => new Credential(c.Bits,c.IssueCode,c.FacilityCode,c.CardNo,c.Pin,c.ActiveDate,c.DeactiveDate,data.UserId,c.LocationId)).ToList();
+        }
+
+        public void Update(Aero.Domain.Entities.User data)
+        {
+            this.user_id = data.UserId;
+            this.title = data.Title;
+            this.first_name = data.FirstName;
+            this.middle_name = data.MiddleName;
+            this.last_name = data.LastName;
+            this.gender = data.Sex;
+            this.email = data.Email;
+            this.phone = data.Phone;
+            this.company_id = data.CompanyId;
+            this.department_id = data.DepartmentId;
+            this.position_id = data.PositionId;
+            this.flag = data.Flag;
+            this.additionals = additionals is null ? new List<UserAdditional>() : additionals.Select(a => new UserAdditional(data.UserId,a.additional)).ToList();
+            this.image = image;
+            this.user_access_levels = data.AccessLevels.Select(a => new UserAccessLevel(data.UserId,(short)a.Id)).ToList();
+            this.credentials = data.Credentials.Select(c => new Credential(c.Bits,c.IssueCode,c.FacilityCode,c.CardNo,c.Pin,c.ActiveDate,c.DeactiveDate,data.UserId,c.LocationId)).ToList();
+            this.updated_date = DateTime.UtcNow;
+        }
+
+        public void SetImage(string image)
+        {
+            this.image = image;
+        }
     }
 }
+

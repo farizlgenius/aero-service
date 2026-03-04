@@ -1,4 +1,5 @@
 using System;
+using Aero.Application.Interface;
 using Aero.Application.Interfaces;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
@@ -6,7 +7,7 @@ using HID.Aero.ScpdNet.Wrapper;
 
 namespace Aero.Infrastructure.Services;
 
-public class AreaCommandService(ICmndRepository cmnd,IQHwRepository qHw) : BaseAeroCommand, IAreaCommand
+public class AreaCommandService(ICmndRepository cmnd,IDeviceRepository hw) : BaseAeroCommand, IAreaCommand
 {
       public async Task<bool> ConfigureAccessArea(short ScpId, short AreaNo, short MultiOccu, short AccControl, short OccControl, short OccSet, short OccMax, short OccUp, short OccDown, short AreaFlag)
       {
@@ -29,13 +30,13 @@ public class AreaCommandService(ICmndRepository cmnd,IQHwRepository qHw) : BaseA
             {
                 TagNo = SCPDLL.scpGetTagLastPosted(ScpId),
                 ScpId = ScpId,
-                Mac = await qHw.GetMacFromComponentAsync(ScpId),
+                Mac = await hw.GetMacFromComponentAsync(ScpId),
                 Command = enCfgCmnd.enCcAreaSrq.ToString(),
                 IsPending = true,
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromMacAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await hw.GetLocationIdFromDriverIdAsync(ScpId)
             });
         }
         else
@@ -44,13 +45,13 @@ public class AreaCommandService(ICmndRepository cmnd,IQHwRepository qHw) : BaseA
             {
                 TagNo = -1,
                 ScpId = ScpId,
-                Mac = await qHw.GetMacFromComponentAsync(ScpId),
+                Mac = await hw.GetMacFromComponentAsync(ScpId),
                 Command = enCfgCmnd.enCcAreaSrq.ToString(),
                 IsPending = false,
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromMacAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await hw.GetLocationIdFromDriverIdAsync(ScpId)
             });
 
         }
@@ -71,13 +72,13 @@ public class AreaCommandService(ICmndRepository cmnd,IQHwRepository qHw) : BaseA
             {
                 TagNo = SCPDLL.scpGetTagLastPosted(ScpId),
                 ScpId = ScpId,
-                Mac = await qHw.GetMacFromComponentAsync(ScpId),
+                Mac = await hw.GetMacFromComponentAsync(ScpId),
                 Command = enCfgCmnd.enCcAreaSrq.ToString(),
                 IsPending = true,
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromMacAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await hw.GetLocationIdFromDriverIdAsync(ScpId)
             });
         }
         else
@@ -86,13 +87,13 @@ public class AreaCommandService(ICmndRepository cmnd,IQHwRepository qHw) : BaseA
             {
                 TagNo = -1,
                 ScpId = ScpId,
-                Mac = await qHw.GetMacFromComponentAsync(ScpId),
+                Mac = await hw.GetMacFromComponentAsync(ScpId),
                 Command = enCfgCmnd.enCcAreaSrq.ToString(),
                 IsPending = false,
                 IsSuccess = false,
                 NakReason = "",
                 NakDescCode = 0,
-                LoationId = await qHw.GetLocationIdFromMacAsync(await qHw.GetMacFromComponentAsync(ScpId))
+                LoationId = await hw.GetLocationIdFromDriverIdAsync(ScpId)
             });
 
         }

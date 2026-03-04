@@ -2,4 +2,4 @@ using System.Net;
 
 namespace Aero.Application.DTOs;
 
-public sealed record ResponseDto<T>(DateTime timestamp, HttpStatusCode code, T? data, string message, IEnumerable<string>? details);
+public sealed record ResponseDto<T>(HttpStatusCode code,DateTime timestamp,string message,IEnumerable<string>? details,T? data );

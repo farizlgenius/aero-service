@@ -82,6 +82,7 @@ public class TzRepository(AppDbContext context) : ITzRepository
             t.deactive_time,
             intervals = t.timezone_intervals.Select(i => new
             {
+                i.id,
                 days = new
                 {
                     sun = i.interval.days.sunday,
@@ -114,6 +115,7 @@ public class TzRepository(AppDbContext context) : ITzRepository
                 data.deactive_time,
                 data.intervals.Select(
                     i => new IntervalDto(
+                        i.id,
                         new DaysInWeekDto(
                             i.days.sun,
                             i.days.mon,
@@ -151,6 +153,7 @@ public class TzRepository(AppDbContext context) : ITzRepository
             t.deactive_time,
             intervals = t.timezone_intervals.Select(i => new
             {
+                i.id,
                 days = new
                 {
                     sun = i.interval.days.sunday,
@@ -184,6 +187,7 @@ public class TzRepository(AppDbContext context) : ITzRepository
                 t.deactive_time,
                 t.intervals.Select(
                     i => new IntervalDto(
+                        i.id,
                         new DaysInWeekDto(
                             i.days.sun,
                             i.days.mon,
@@ -222,6 +226,7 @@ public class TzRepository(AppDbContext context) : ITzRepository
             t.deactive_time,
             intervals = t.timezone_intervals.Select(i => new
             {
+                i.id,
                 days = new
                 {
                     sun = i.interval.days.sunday,
@@ -254,6 +259,7 @@ public class TzRepository(AppDbContext context) : ITzRepository
                 data.deactive_time,
                 data.intervals.Select(
                     i => new IntervalDto(
+                        i.id,
                         new DaysInWeekDto(
                             i.days.sun,
                             i.days.mon,
@@ -291,6 +297,7 @@ public class TzRepository(AppDbContext context) : ITzRepository
                 t.deactive_time,
                 intervals = t.timezone_intervals.Select(i => new
                 {
+                    i.id,
                     days = new
                     {
                         sun = i.interval.days.sunday,
@@ -324,6 +331,7 @@ public class TzRepository(AppDbContext context) : ITzRepository
                 t.deactive_time,
                 t.intervals.Select(
                     i => new IntervalDto(
+                        i.id,
                         new DaysInWeekDto(
                             i.days.sun,
                             i.days.mon,
@@ -349,15 +357,9 @@ public class TzRepository(AppDbContext context) : ITzRepository
 
    
 
-    public async Task<IEnumerable<Mode>> GetCommandAsync()
+    public async Task<IEnumerable<ModeDto>> GetCommandAsync()
     {
-        var dtos = await context.timezone_command.AsNoTracking().Select(s => new Mode
-        {
-            Name = s.name,
-            Value = s.value,
-            Description = s.description,
-
-        }).ToArrayAsync();
+        var dtos = await context.timezone_command.AsNoTracking().Select(s => new ModeDto(s.name,s.value,s.description)).ToArrayAsync();
 
         return dtos;
     }
@@ -367,15 +369,9 @@ public class TzRepository(AppDbContext context) : ITzRepository
         return await context.timezone.AnyAsync(x => x.id == id);
     }
 
-    public async Task<IEnumerable<Mode>> GetModeAsync()
+    public async Task<IEnumerable<ModeDto>> GetModeAsync()
     {
-        var dtos = await context.timezone_mode.AsNoTracking().Select(s => new Mode
-        {
-            Name = s.name,
-            Value = s.value,
-            Description = s.description,
-
-        }).ToArrayAsync();
+        var dtos = await context.timezone_mode.AsNoTracking().Select(s => new ModeDto(s.name,s.value,s.description)).ToArrayAsync();
 
         return dtos;
     }
@@ -446,6 +442,7 @@ public class TzRepository(AppDbContext context) : ITzRepository
                t.deactive_time,
                intervals = t.timezone_intervals.Select(i => new
                {
+                i.id,
                    days = new
                    {
                        sun = i.interval.days.sunday,
@@ -480,6 +477,7 @@ public class TzRepository(AppDbContext context) : ITzRepository
                 t.deactive_time,
                 t.intervals.Select(
                     i => new IntervalDto(
+                        i.id,
                         new DaysInWeekDto(
                             i.days.sun,
                             i.days.mon,

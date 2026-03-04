@@ -12,7 +12,8 @@ namespace Aero.Api.Controllers
         [HttpGet]
         public ActionResult<ResponseDto<HealthDto>> GetHealth()
         {
-            ResponseDto<HealthDto> dto = new ResponseDto<HealthDto>(DateTime.UtcNow,HttpStatusCode.OK,new HealthDto("Up"),"Online",[]);
+            ResponseDto<HealthDto> dto = new ResponseDto<HealthDto>(
+                HttpStatusCode.OK,DateTime.UtcNow,"Online",[],new HealthDto("Up"));
             return Ok(dto);
         }
     }

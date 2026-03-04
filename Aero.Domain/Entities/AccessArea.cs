@@ -6,6 +6,7 @@ namespace Aero.Domain.Entities;
 public sealed class AccessArea : BaseDomain
 {
     public int Id { get; private set; }
+    public int DeviceId {get; private set;}
     public short DriverId { get; private set; }
       public string Name { get; private set; } = string.Empty;
       public short MultiOccupancy { get; private set; }
@@ -19,8 +20,9 @@ public sealed class AccessArea : BaseDomain
 
     public AccessArea() { }
 
-    public AccessArea(short driver,string name,short multiocc,short acs,short occcontrol,short occset,short occmax,short occup,short occdown,short areaflag,int location,bool status) : base(location,status)
+    public AccessArea(int device_id,short driver,string name,short multiocc,short acs,short occcontrol,short occset,short occmax,short occup,short occdown,short areaflag,int location,bool status) : base(location,status)
     {
+        this.DeviceId = device_id;
         SetDriverId(driver);
         SetName(name);
         this.MultiOccupancy = multiocc;

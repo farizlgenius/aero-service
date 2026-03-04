@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using Aero.Domain.Interface;
 
 namespace Aero.Infrastructure.Persistences.Entities
@@ -14,6 +14,9 @@ namespace Aero.Infrastructure.Persistences.Entities
         public int interval_id { get; set; }
         public Interval interval { get; set; }
 
+        public TimeZoneInterval(){}
+
+
         public TimeZoneInterval(int timezone_id, int interval_id)
         {
             this.timezone_id = timezone_id;
@@ -21,3 +24,4 @@ namespace Aero.Infrastructure.Persistences.Entities
         }
     }
 }
+

@@ -10,195 +10,185 @@ namespace Aero.Application.Helpers
     {
         public static ResponseDto<T> SuccessBuilder<T>(T data)
         {
-            return new ResponseDto<T>()
-            {
-                code = HttpStatusCode.OK,
-                timestamp = DateTime.UtcNow,
-                message = ResponseMessage.SUCCESS,
-                details = Enumerable.Empty<string>(),
-                data = data
-            };
+            return new ResponseDto<T>
+            (
+                 HttpStatusCode.OK,
+                 DateTime.UtcNow,
+                 ResponseMessage.SUCCESS,
+                 Enumerable.Empty<string>(),
+                 data
+            );
         }
 
         public static ResponseDto<T> UnsuccessBuilderWithString<T>(string message, string detail)
         {
-            return new ResponseDto<T>()
-            {
-                code = HttpStatusCode.InternalServerError,
-                timestamp = DateTime.UtcNow,
-                message = message,
-                details = new List<string> { detail },
-                data = default
-            };
+            return new ResponseDto<T>
+            (
+                HttpStatusCode.InternalServerError,
+                DateTime.UtcNow,
+                 message,
+                 new List<string> { detail },
+                 default
+            );
         }
 
         public static ResponseDto<T> UnsuccessBuilder<T>(string message, IEnumerable<string> details)
         {
-            return new ResponseDto<T>()
-            {
-                code = HttpStatusCode.InternalServerError,
-                timestamp = DateTime.UtcNow,
-                message = message,
-                details = details.ToList(),
-                data = default
-            };
+            return new ResponseDto<T>
+            (
+                 HttpStatusCode.InternalServerError,
+                 DateTime.UtcNow,
+                 message,
+                 details.ToList(),
+                 default
+            );
         }
 
         public static ResponseDto<T> UnsuccessBuilder<T>(T data)
         {
-            return new ResponseDto<T>()
-            {
-                code = HttpStatusCode.InternalServerError,
-                timestamp = DateTime.UtcNow,
-                message = ResponseMessage.UNSUCCESS,
-                details = Enumerable.Empty<string>(),
-                data = data
-            };
+            return new ResponseDto<T>
+            (
+                 HttpStatusCode.InternalServerError,
+                 DateTime.UtcNow,
+                 ResponseMessage.UNSUCCESS,
+                 Enumerable.Empty<string>(),
+                 data
+            );
         }
 
         public static ResponseDto<T> NotFoundBuilder<T>()
         {
-            return new ResponseDto<T>()
-            {
-                code = HttpStatusCode.NotFound,
-                timestamp = DateTime.UtcNow,
-                message = ResponseMessage.NOT_FOUND,
-                details = Enumerable.Empty<string>(),
-                data = default
-            };
+            return new ResponseDto<T>
+            (
+                 HttpStatusCode.NotFound,
+                 DateTime.UtcNow,
+                 ResponseMessage.NOT_FOUND,
+                 Enumerable.Empty<string>(),
+                 default
+            );
         }
 
         public static ResponseDto<T> NotFoundBuilder<T>(IEnumerable<string> message)
         {
-            return new ResponseDto<T>()
-            {
-                code = HttpStatusCode.NotFound,
-                timestamp = DateTime.UtcNow,
-                message = ResponseMessage.NOT_FOUND,
-                details=message,
-                data = default
-            };
+            return new ResponseDto<T>
+            (
+                 HttpStatusCode.NotFound,
+                 DateTime.UtcNow,
+                 ResponseMessage.NOT_FOUND,
+                message,
+                 default
+            );
         }
 
         public static ResponseDto<T> NotFoundBuilder<T>(string message)
         {
-            return new ResponseDto<T>()
-            {
-                code = HttpStatusCode.NotFound,
-                timestamp = DateTime.UtcNow,
-                message = message,
-                details = [],
-                data = default
-            };
+            return new ResponseDto<T>(HttpStatusCode.NotFound,
+                 DateTime.UtcNow,
+                 message,
+                 [],
+                 default);
+
         }
 
         public static ResponseDto<T> FoundReferenceBuilder<T>()
         {
-            return new ResponseDto<T>()
-            {
-                code = HttpStatusCode.InternalServerError,
-                timestamp = DateTime.UtcNow,
-                message = ResponseMessage.FOUND_REFERENCE,
-                details = Enumerable.Empty<string>(),
-                data = default
-            };
+            return new ResponseDto<T>(HttpStatusCode.InternalServerError,
+                 DateTime.UtcNow,
+                 ResponseMessage.FOUND_REFERENCE,
+                 Enumerable.Empty<string>(),
+                 default);
+         
         }
 
         public static ResponseDto<T> FoundReferenceBuilder<T>(IEnumerable<string> message)
         {
-            return new ResponseDto<T>()
-            {
-                code = HttpStatusCode.InternalServerError,
-                timestamp = DateTime.UtcNow,
-                message = ResponseMessage.FOUND_REFERENCE,
-                details = message,
-                data = default
-            };
+            return new ResponseDto<T>(HttpStatusCode.InternalServerError,
+                 DateTime.UtcNow,
+                 ResponseMessage.FOUND_REFERENCE,
+                 message,
+                 default);
+       
         }
 
 
         public static ResponseDto<T> ExceedLimit<T>()
         {
-            return new ResponseDto<T>()
-            {
-                code = HttpStatusCode.InternalServerError,
-                timestamp = DateTime.UtcNow,
-                message = ResponseMessage.COMPONENT_EXCEED_LIMIT,
-                details = Enumerable.Empty<string>(),
-                data = default
-            };
+            return new ResponseDto<T>(HttpStatusCode.InternalServerError,
+                 DateTime.UtcNow,
+                 ResponseMessage.COMPONENT_EXCEED_LIMIT,
+                 Enumerable.Empty<string>(),
+                 default);
+          
         }
 
         public static ResponseDto<T> Duplicate<T>()
         {
-            return new ResponseDto<T>()
-            {
-                code = HttpStatusCode.BadRequest,
-                timestamp = DateTime.UtcNow,
-                message = ResponseMessage.DUPLICATE_RECORD,
-                details = Enumerable.Empty<string>(),
-                data = default
-            };
+            return new ResponseDto<T>(
+                HttpStatusCode.BadRequest,
+                 DateTime.UtcNow,
+                 ResponseMessage.DUPLICATE_RECORD,
+                 Enumerable.Empty<string>(),
+                 default
+            );
+            
         }
 
         public static ResponseDto<T> BadRequest<T>()
         {
-            return new ResponseDto<T>()
-            {
-                code = HttpStatusCode.BadRequest,
-                timestamp = DateTime.UtcNow,
-                message = ResponseMessage.DUPLICATE_RECORD,
-                details = Enumerable.Empty<string>(),
-                data = default
-            };
+            return new ResponseDto<T>(
+                HttpStatusCode.BadRequest,
+                 DateTime.UtcNow,
+                 ResponseMessage.DUPLICATE_RECORD,
+                 Enumerable.Empty<string>(),
+                 default
+            );
+      
         }
 
         public static ResponseDto<T> BadRequestName<T>()
         {
-            return new ResponseDto<T>()
-            {
-                code = HttpStatusCode.BadRequest,
-                timestamp = DateTime.UtcNow,
-                message = ResponseMessage.DUPLICATE_NAME,
-                details = Enumerable.Empty<string>(),
-                data = default
-            };
+            return new ResponseDto<T>(
+                 HttpStatusCode.BadRequest,
+                 DateTime.UtcNow,
+                 ResponseMessage.DUPLICATE_NAME,
+                 Enumerable.Empty<string>(),
+                 default
+            );
+          
         }
 
         public static ResponseDto<T> Unauthorize<T>()
         {
-            return new ResponseDto<T>()
-            {
-                code = HttpStatusCode.Unauthorized,
-                timestamp = DateTime.UtcNow,
-                message = ResponseMessage.UNAUTHORIZED,
-                details = Enumerable.Empty<string>(),
-                data = default
-            };
+            return new ResponseDto<T>(
+                 HttpStatusCode.Unauthorized,
+                 DateTime.UtcNow,
+                 ResponseMessage.UNAUTHORIZED,
+                 Enumerable.Empty<string>(),
+                 default
+            );
+           
         }
 
         public static ResponseDto<T> Unauthorize<T>(IEnumerable<string> message)
         {
-            return new ResponseDto<T>()
-            {
-                code = HttpStatusCode.Unauthorized,
-                timestamp = DateTime.UtcNow,
-                message = ResponseMessage.UNAUTHORIZED,
-                details = message,
-                data = default
-            };
+            return new ResponseDto<T>(
+ HttpStatusCode.Unauthorized,
+                 DateTime.UtcNow,
+                 ResponseMessage.UNAUTHORIZED,
+                 message,
+                 default
+            );
+        
         }
 
         public static ResponseDto<T> DefaultRecord<T>()
         {
-            return new ResponseDto<T>()
-            {
-                code = HttpStatusCode.NotAcceptable,
-                timestamp = DateTime.UtcNow,
-                message = ResponseMessage.DELETE_DEFAULT,
-                details = Enumerable.Empty<string>(),
-                data = default
-            };
+            return new ResponseDto<T>(HttpStatusCode.NotAcceptable,
+                 DateTime.UtcNow,
+                 ResponseMessage.DELETE_DEFAULT,
+                 Enumerable.Empty<string>(),
+                 default);
+          
         }
 
 

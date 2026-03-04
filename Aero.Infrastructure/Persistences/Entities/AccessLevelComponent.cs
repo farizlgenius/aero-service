@@ -5,12 +5,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Aero.Infrastructure.Persistences.Entities;
 
-    public class AccessLevelComponent : IDeviceId,IDriverId
+    public class AccessLevelComponent : IDeviceId
     {
         [Key]
         public int id {get; set;}
         public short driver_id { get; set; }
-        public int device_id { get; set;} 
+        public short device_id { get; set;} 
         public Device device { get; set; }
         public int door_id { get; set; }
         public short acr_id { get; set; }
@@ -22,13 +22,16 @@ namespace Aero.Infrastructure.Persistences.Entities;
         public int access_level_id {get; set;}
         public AccessLevel access_level {get; set;}
 
-        public AccessLevelComponent(short driver,int device_id,int doorid,short acrid,short timezone) 
+        public AccessLevelComponent(){}
+
+
+        public AccessLevelComponent(short driver_id,short device_id,int door_id,short acr_id,short timezone_id) 
         {
-        this.driver_id = driver;
+        this.driver_id = driver_id;
         this.device_id = device_id;
-        this.door_id = doorid;
-        this.acr_id = acrid;
-        this.timezone_id = timezone;
+        this.door_id = door_id;
+        this.acr_id = acr_id;
+        this.timezone_id = timezone_id;
         }
 
         public void Update(Aero.Domain.Entities.AccessLevelComponent data)
@@ -41,3 +44,4 @@ namespace Aero.Infrastructure.Persistences.Entities;
         }
 
     }
+

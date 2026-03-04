@@ -80,7 +80,7 @@ namespace Aero.Application.Services
             short modeNo = await repo.GetModeNoByOfflineAndRelayModeAsync(dto.OfflineMode,dto.RelayMode);
 
 
-            var domain = new Aero.Domain.Entities.ControlPoint(DriverId,dto.Name,dto.ModuleId,dto.ModuleDetail,dto.OutputNo,dto.RelayMode,dto.RelayModeDetail,dto.OfflineMode,dto.OfflineModeDetail,dto.DefaultPulse,dto.DeviceId,dto.LocationId,dto.IsActive);
+            var domain = new Aero.Domain.Entities.ControlPoint(0,DriverId,dto.Name,dto.ModuleId,dto.ModuleDetail,dto.OutputNo,dto.RelayMode,dto.RelayModeDetail,dto.OfflineMode,dto.OfflineModeDetail,dto.DefaultPulse,dto.DeviceId,dto.LocationId,dto.IsActive);
 
             if (!cp.OutputPointSpecification((short)dto.DeviceId, (short)domain.ModuleId, domain.OutputNo, modeNo))
             {
@@ -125,7 +125,7 @@ namespace Aero.Application.Services
 
             if (!await repo.IsAnyByIdAsync(dto.Id)) return ResponseHelper.NotFoundBuilder<ControlPointDto>();
 
-            var domain = new Aero.Domain.Entities.ControlPoint(dto.DriverId, dto.Name, dto.ModuleId, dto.ModuleDetail, dto.OutputNo, dto.RelayMode, dto.RelayModeDetail, dto.OfflineMode, dto.OfflineModeDetail, dto.DefaultPulse, dto.DeviceId, dto.LocationId, dto.IsActive);
+            var domain = new Aero.Domain.Entities.ControlPoint(dto.Id,dto.DriverId, dto.Name, dto.ModuleId, dto.ModuleDetail, dto.OutputNo, dto.RelayMode, dto.RelayModeDetail, dto.OfflineMode, dto.OfflineModeDetail, dto.DefaultPulse, dto.DeviceId, dto.LocationId, dto.IsActive);
 
             short modeNo = await repo.GetModeNoByOfflineAndRelayModeAsync(domain.OfflineMode,domain.RelayMode);
             if (!cp.OutputPointSpecification((short)domain.DriverId, (short)domain.ModuleId, domain.OutputNo, modeNo))

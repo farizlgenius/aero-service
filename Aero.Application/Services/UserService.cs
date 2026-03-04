@@ -5,6 +5,7 @@ using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
 using Aero.Domain.Entities;
+using Aero.Domain.Enums;
 
 namespace Aero.Application.Services
 {
@@ -42,11 +43,14 @@ namespace Aero.Application.Services
                 dto.FirstName,
                 dto.MiddleName,
                 dto.LastName,
-                dto.Sex,
+                (Gender)dto.Gender,
                 dto.Email,
                 dto.Phone,
+                dto.CompanyId,
                 dto.Company,
+                dto.PositionId,
                 dto.Position,
+                dto.DepartmentId,
                 dto.Department,
                 dto.Image,
                 dto.Flag,
@@ -134,16 +138,19 @@ namespace Aero.Application.Services
             var dto = await repo.GetByUserIdAsync(UserId);
 
             var domain = new User(
-                dto.UserId,
+               dto.UserId,
                 dto.Title,
                 dto.FirstName,
                 dto.MiddleName,
                 dto.LastName,
-                dto.Sex,
+                (Gender)dto.Gender,
                 dto.Email,
                 dto.Phone,
+                dto.CompanyId,
                 dto.Company,
+                dto.PositionId,
                 dto.Position,
+                dto.DepartmentId,
                 dto.Department,
                 dto.Image,
                 dto.Flag,
@@ -281,11 +288,14 @@ namespace Aero.Application.Services
                 en.FirstName,
                 en.MiddleName,
                 en.LastName,
-                en.Sex,
+                (Gender)en.Gender,
                 en.Email,
                 en.Phone,
+                en.CompanyId,
                 en.Company,
+                en.PositionId,
                 en.Position,
+                en.DepartmentId,
                 en.Department,
                 en.Image,
                 en.Flag,
@@ -347,11 +357,14 @@ namespace Aero.Application.Services
                 dto.FirstName,
                 dto.MiddleName,
                 dto.LastName,
-                dto.Sex,
+                (Gender)dto.Gender,
                 dto.Email,
                 dto.Phone,
+                dto.CompanyId,
                 dto.Company,
+                dto.PositionId,
                 dto.Position,
+                dto.DepartmentId,
                 dto.Department,
                 dto.Image,
                 dto.Flag,

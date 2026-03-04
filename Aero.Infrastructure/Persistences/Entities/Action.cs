@@ -1,8 +1,8 @@
-﻿namespace Aero.Infrastructure.Persistences.Entities
+namespace Aero.Infrastructure.Persistences.Entities
 {
     public sealed class Action : BaseEntity
     {
-        public int device_id { get; set; }
+        public short device_id { get; set; }
         public Device device { get; set; }
         public short action_type { get; set; }
         public string action_type_detail { get; set; } = string.Empty;
@@ -17,6 +17,9 @@
         public short delay_time { get; set; }   
         public short procedure_id { get; set; }
         public Procedure procedure { get; set; }
+
+        public Action(){}
+
 
         public Action(short device_id,short action_type, string action_type_detail,short arg1,short arg2,short arg3,short arg4,short arg5,short arg6,short arg7,string str_arg,short delay_time,short procedure_id,int location_id) : base(location_id)
         {
@@ -50,7 +53,7 @@
             this.arg7 = data.Arg7;
             this.str_arg = data.StrArg;
             this.delay_time = data.DelayTime;
-            this.procedure_id = data.ProcedureId;
+            this.procedure_id = (short)data.ProcedureId;
             this.updated_date = DateTime.UtcNow;
         }
 
@@ -68,7 +71,7 @@
             this.arg7 = data.Arg7;
             this.str_arg = data.StrArg;
             this.delay_time = data.DelayTime;
-            this.procedure_id = data.ProcedureId;
+            this.procedure_id =  (short)data.ProcedureId;
             this.updated_date = DateTime.UtcNow;
         }
 
@@ -76,3 +79,4 @@
 
     }
 }
+

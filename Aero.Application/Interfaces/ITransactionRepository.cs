@@ -10,7 +10,7 @@ public interface ITransactionRepository : IBaseRepository<TransactionDto,Transac
 {
       Task<Transaction> HandleTransactionAsync(IScpReply message);
     Task<Pagination<TransactionDto>> GetPageTransactionWithCountAsync(PaginationParams param);
-    Task<Pagination<TransactionDto>> GetPageTransactionWithCountAndDateAndSearchAsync(PaginationParamsWithFilter param, short location);
+    Task<Pagination<TransactionDto>> GetPageTransactionWithCountAndDateAndSearchAsync(PaginationParamsWithFilter param, int location);
     IEnumerable<Mode> GetSourceAsync();
     Task<IEnumerable<Mode>> GetDeviceAsync(int source);
 }

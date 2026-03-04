@@ -5,7 +5,7 @@ using Aero.Domain.Interfaces;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class TimeZone : BaseEntity, IDriverId
+    public sealed class TimeZone : BaseEntity
     {
         public short driver_id { get; set; }
         public string name { get; set; } = string.Empty;

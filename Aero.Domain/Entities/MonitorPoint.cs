@@ -6,7 +6,7 @@ namespace Aero.Domain.Entities;
 public class MonitorPoint : BaseDomain
 {
         public int Id {get; set;}
-    public int DeviceId { get; set; }
+    public short DeviceId { get; set; }
   public short DriverId {get; set;}
       public string Name { get; set; } = string.Empty;
         public short ModuleId { get; set; }
@@ -26,7 +26,7 @@ public class MonitorPoint : BaseDomain
 
         public MonitorPoint() { }
 
-        public MonitorPoint(int Id,int deviceId, short driverId, string name, short moduleId, string moduleDescription, short inputNo, short inputMode, string inputModeDetail, short debounce, short holdTime, short logFunction, string logFunctionDetail, short monitorPointMode, string monitorPointModeDetail, short delayEntry, short delayExit, bool isMask)
+        public MonitorPoint(int Id,short deviceId, short driverId, string name, short moduleId, string moduleDescription, short inputNo, short inputMode, string inputModeDetail, short debounce, short holdTime, short logFunction, string logFunctionDetail, short monitorPointMode, string monitorPointModeDetail, short delayEntry, short delayExit, bool isMask)
         {
                 this.Id = Id;
                 DeviceId = deviceId;

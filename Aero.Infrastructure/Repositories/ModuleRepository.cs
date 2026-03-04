@@ -79,6 +79,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
         var res = await context.module
             .AsNoTracking()
             .Select(m => new ModuleDto(
+                m.device_id,
                 m.driver_id,
                 m.model,
                 m.model_detail,
@@ -96,6 +97,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
                 m.readers == null ? null : m.readers.Select(r => new ReaderDto(
                     r.device_id,
                     r.module_id,
+                    r.module.driver_id,
                     r.door_id,
                     r.reader_no,
                     r.data_format,
@@ -113,6 +115,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
                 m.sensors == null ? null : m.sensors.Select(s => new SensorDto(
                     s.device_id,
                     s.module_id,
+                    s.module.driver_id,
                     s.door_id,
                     s.input_no,
                     s.input_mode,
@@ -124,8 +127,9 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
                 )).ToList(),
                 m.strikes == null ? null : m.strikes.Select(k => new StrikeDto(
                     k.device_id,
-                    k.door_id,
                     k.module_id,
+                    k.module.driver_id,
+                    k.door_id,
                     k.output_no,
                     k.relay_mode,
                     k.offline_mode,
@@ -138,6 +142,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
                 m.request_exits == null ? null : m.request_exits.Select(x => new RequestExitDto(
                     x.device_id,
                     x.module_id,
+                    x.module.driver_id,
                     x.door_id,
                     x.input_no,
                     x.input_mode,
@@ -224,6 +229,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
             .AsNoTracking()
             .Where(x => x.location_id == locationId || x.location_id == 1)
            .Select(m => new ModuleDto(
+            m.device_id,
                 m.driver_id,
                 m.model,
                 m.model_detail,
@@ -241,6 +247,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
                 m.readers == null ? null : m.readers.Select(r => new ReaderDto(
                     r.device_id,
                     r.module_id,
+                    r.module.driver_id,
                     r.door_id,
                     r.reader_no,
                     r.data_format,
@@ -258,6 +265,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
                 m.sensors == null ? null : m.sensors.Select(s => new SensorDto(
                     s.device_id,
                     s.module_id,
+                    s.module.driver_id,
                     s.door_id,
                     s.input_no,
                     s.input_mode,
@@ -269,8 +277,10 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
                 )).ToList(),
                 m.strikes == null ? null : m.strikes.Select(k => new StrikeDto(
                     k.device_id,
-                    k.door_id,
+                    
                     k.module_id,
+                    k.module.driver_id,
+                    k.door_id,
                     k.output_no,
                     k.relay_mode,
                     k.offline_mode,
@@ -283,6 +293,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
                 m.request_exits == null ? null : m.request_exits.Select(x => new RequestExitDto(
                     x.device_id,
                     x.module_id,
+                    x.module.driver_id,
                     x.door_id,
                     x.input_no,
                     x.input_mode,
@@ -354,6 +365,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
         .Where(x => x.device_id == device)
         .OrderBy(x => x.id)
         .Select(m => new ModuleDto(
+            m.device_id,
                 m.driver_id,
                 m.model,
                 m.model_detail,
@@ -371,6 +383,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
                 m.readers == null ? null : m.readers.Select(r => new ReaderDto(
                     r.device_id,
                     r.module_id,
+                    r.module.driver_id,
                     r.door_id,
                     r.reader_no,
                     r.data_format,
@@ -388,6 +401,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
                 m.sensors == null ? null : m.sensors.Select(s => new SensorDto(
                     s.device_id,
                     s.module_id,
+                    s.module.driver_id,
                     s.door_id,
                     s.input_no,
                     s.input_mode,
@@ -399,8 +413,10 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
                 )).ToList(),
                 m.strikes == null ? null : m.strikes.Select(k => new StrikeDto(
                     k.device_id,
-                    k.door_id,
+   
                     k.module_id,
+                    k.module.driver_id,
+                    k.door_id,
                     k.output_no,
                     k.relay_mode,
                     k.offline_mode,
@@ -413,6 +429,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
                 m.request_exits == null ? null : m.request_exits.Select(x => new RequestExitDto(
                     x.device_id,
                     x.module_id,
+                    x.module.driver_id,
                     x.door_id,
                     x.input_no,
                     x.input_mode,
@@ -575,6 +592,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
             .Skip((param.PageNumber - 1) * param.PageSize)
             .Take(param.PageSize)
              .Select(m => new ModuleDto(
+                m.device_id,
                 m.driver_id,
                 m.model,
                 m.model_detail,
@@ -592,6 +610,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
                 m.readers == null ? null : m.readers.Select(r => new ReaderDto(
                     r.device_id,
                     r.module_id,
+                    r.module.driver_id,
                     r.door_id,
                     r.reader_no,
                     r.data_format,
@@ -609,6 +628,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
                 m.sensors == null ? null : m.sensors.Select(s => new SensorDto(
                     s.device_id,
                     s.module_id,
+                    s.module.driver_id,
                     s.door_id,
                     s.input_no,
                     s.input_mode,
@@ -620,8 +640,9 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
                 )).ToList(),
                 m.strikes == null ? null : m.strikes.Select(k => new StrikeDto(
                     k.device_id,
-                    k.door_id,
                     k.module_id,
+                    k.module.driver_id,
+                    k.door_id,
                     k.output_no,
                     k.relay_mode,
                     k.offline_mode,
@@ -634,6 +655,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
                 m.request_exits == null ? null : m.request_exits.Select(x => new RequestExitDto(
                     x.device_id,
                     x.module_id,
+                    x.module.driver_id,
                     x.door_id,
                     x.input_no,
                     x.input_mode,

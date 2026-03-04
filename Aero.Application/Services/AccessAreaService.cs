@@ -37,7 +37,7 @@ namespace AeroService.Service.Impl
             var DriverId = await repo.GetLowestUnassignedNumberAsync(ScpSetting.nArea);
             if (DriverId == -1) return ResponseHelper.ExceedLimit<AccessAreaDto>();
 
-            var domain = new AccessArea(DriverId,dto.Name,dto.MultiOccupancy,dto.AccessControl,dto.OccControl,dto.OccSet,dto.OccMax,dto.OccUp,dto.OccDown,dto.AreaFlag,dto.LocationId,dto.Status);
+            var domain = new AccessArea(dto.DeviceId,DriverId,dto.Name,dto.MultiOccupancy,dto.AccessControl,dto.OccControl,dto.OccSet,dto.OccMax,dto.OccUp,dto.OccDown,dto.AreaFlag,dto.LocationId,dto.Status);
 
             var macs = await hw.GetMacsAsync();
 
@@ -62,7 +62,7 @@ namespace AeroService.Service.Impl
 
             if (await repo.IsAnyByIdAsync(dto.Id)) return ResponseHelper.NotFoundBuilder<AccessAreaDto>();
 
-            var domain = new AccessArea(dto.DriverId, dto.Name, dto.MultiOccupancy,dto.AccessControl,dto.OccControl,dto.OccSet,dto.OccMax,dto.OccUp,dto.OccDown,dto.AreaFlag,dto.LocationId,dto.IsActive);
+            var domain = new AccessArea(dto.DeviceId,dto.DriverId, dto.Name, dto.MultiOccupancy,dto.AccessControl,dto.OccControl,dto.OccSet,dto.OccMax,dto.OccUp,dto.OccDown,dto.AreaFlag,dto.LocationId,dto.IsActive);
 
 
             var macs = await hw.GetMacsAsync();

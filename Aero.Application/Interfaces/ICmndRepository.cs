@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace Aero.Application.Interfaces
 {
-    public interface ICmndRepository : IBaseRepository<CommandAudit,CommandAudit,CommandAudit>
+    public interface ICmndRepository : IBaseRepository<CommandAudit,CommandAudit>
     {
-        Task<Pagination<CommandAudit>> GetCommandStatusAsync(PaginationParamsWithFilter pagination,short location);
+        Task<Pagination<CommandAudit>> GetCommandStatusAsync(PaginationParamsWithFilter pagination,int location);
     }
 }

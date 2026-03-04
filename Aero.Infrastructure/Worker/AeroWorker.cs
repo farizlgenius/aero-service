@@ -229,17 +229,15 @@ namespace Aero.Infrastructure.Mapper
                             }                            
                             break;
                         case (int)enSCPReplyType.enSCPReplyTranStatus:
-                            TranStatus t = new TranStatus
-                            {
-                                MacAddress = await qhw.GetMacFromComponentAsync((short)message.ScpId),
-                                Capacity = message.tran_sts.capacity,
-                                Oldest = message.tran_sts.oldest,
-                                LastLog = message.tran_sts.last_loggd,
-                                LastReport = message.tran_sts.last_rprtd,
-                                Disabled = message.tran_sts.disabled,
-                                Status = message.tran_sts.disabled == 0 ? "Enable" : "Disable"
-
-                            };
+                            TranStatus t = new TranStatus(
+                                await qhw.GetMacFromComponentAsync((short)message.ScpId),
+                                message.tran_sts.capacity,
+                                message.tran_sts.oldest,
+                                 message.tran_sts.last_loggd,
+                                 message.tran_sts.last_rprtd,
+                                 message.tran_sts.disabled,
+                                 message.tran_sts.disabled == 0 ? "Enable" : "Disable"
+                                );
                             await publisher.ScpNotifyTranStatus(t);
                             break;
                         case (int)enSCPReplyType.enSCPReplySrSio:

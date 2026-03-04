@@ -23,14 +23,14 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.location_id = location_id;
         }
 
-        public void ChangeLocation(int locationId)
+        public void ChangeLocation(int location_id)
         {
-            this.location_id = locationId;
+            this.location_id = location_id;
         }
 
-        public void ToggleStatus(bool status)
+        public void ToggleStatus(bool is_active)
         {
-            this.is_active = status;
+            this.is_active = is_active;
         }
     }
 }

@@ -1,6 +1,6 @@
 
 using Aero.Domain.Helpers;
-using Aero.Infrastructure.Data;
+using Aero.Infrastructure.Persistences;
 
 namespace Aero.Api.Worker;
 

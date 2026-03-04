@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
@@ -10,6 +10,9 @@ namespace Aero.Infrastructure.Persistences.Entities
         public string user_id { get; set; } = string.Empty;
         public string additional { get; set; } = string.Empty;
 
+        public UserAdditional(){}
+
+
         public UserAdditional(string userid,string additional) 
         {
             this.user_id = userid;
@@ -17,3 +20,4 @@ namespace Aero.Infrastructure.Persistences.Entities
         }
     }
 }
+

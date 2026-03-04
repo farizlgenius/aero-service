@@ -7,6 +7,7 @@ using Aero.Infrastructure.Mapper;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Aero.Application.Interface;
+using System.ComponentModel;
 
 namespace Aero.Infrastructure.Repositories;
 
@@ -14,16 +15,16 @@ public class HolderRepository(AppDbContext context) : IUserRepository
 {
       public async Task<int> AddAsync(User data)
       {
-            var en = HolderMapper.ToEf(data);
+            var en = new Aero.Infrastructure.Persistences.Entities.User(data);
             await context.user.AddAsync(en);
             return await context.SaveChangesAsync();
       }
 
-      public async Task<int> DeleteByComponentIdAsync(short component)
+      public async Task<int> DeleteByIdAsync(int id)
       {
             var en = await context.user
-            .Where(x => x.component_id == component)
-            .OrderBy(x => x.component_id)
+            .Where(x => x.id == id)
+            .OrderBy(x => x.id)
             .FirstOrDefaultAsync();
 
             if(en is null) return 0;
@@ -36,7 +37,7 @@ public class HolderRepository(AppDbContext context) : IUserRepository
       {
             var en = await context.user
             .Where(x => x.user_id.Equals(UserId))
-            .OrderBy(x => x.component_id)
+            .OrderBy(x => x.id)
             .FirstOrDefaultAsync();
 
             if(en is null) return 0;
@@ -75,7 +76,7 @@ public class HolderRepository(AppDbContext context) : IUserRepository
       {
             var en = await context.user
             .Where(x => x.user_id.Equals(newData.UserId))
-            .OrderBy(x => x.component_id)
+            .OrderBy(x => x.id)
             .FirstOrDefaultAsync();
 
             if(en is null) return 0;
@@ -84,7 +85,7 @@ public class HolderRepository(AppDbContext context) : IUserRepository
 
             // Delete link from access level 
 
-            HolderMapper.Update(en,newData);
+            en.Update(newData);
 
             context.user.Update(en);
             return await context.SaveChangesAsync();
@@ -94,12 +95,12 @@ public class HolderRepository(AppDbContext context) : IUserRepository
     {
         var en = await context.user
             .Where(x => x.user_id.Equals(userid))
-            .OrderBy(x => x.component_id)
+            .OrderBy(x => x.id)
             .FirstOrDefaultAsync();
 
         if(en is null) return 0;
 
-        en.image_path = path;
+        en.SetImage(path);
         context.user.Update(en);
         return await context.SaveChangesAsync();
     }
@@ -107,317 +108,376 @@ public class HolderRepository(AppDbContext context) : IUserRepository
     public async Task<IEnumerable<UserDto>> GetAsync()
     {
 
-        var res = await context.user
+        var data = await context.user
         .AsNoTracking()
         .OrderBy(x => x.created_date)
-        .Select(c => new CardHolderDto
-        {
-            // Base
-            LocationId = c.location_id,
-            IsActive = c.is_active,
-
-            // extend_desc
-            Flag = c.flag,
-            UserId = c.user_id,
-            Title = c.title,
-            FirstName = c.first_name,
-            MiddleName = c.middle_name,
-            LastName = c.last_name,
-            Sex = c.gender,
-            Email = c.email,
-            Phone = c.phone,
-            Company = c.company,
-            Position = c.position,
-            Department = c.department,
-            ImagePath = c.image,
-            Additionals = c.additionals
-            .Where(x => x.user_id == c.user_id)
-            .Select(x => x.additional).ToList(),
-            Credentials = c.credentials
-            .Select(c => new CredentialDto
+        .Select(c => new {
+            c.user_id,
+            c.title,
+            c.first_name,
+            c.middle_name,
+            c.last_name,
+            gender = c.gender,
+            c.email,
+            c.phone,
+            c.company_id,
+            company = c.company.name,
+            c.position_id,
+            position = c.position.name,
+            c.image,
+            c.department_id,
+            department = c.department.name,
+            c.flag,
+            additionals = c.additionals.Select(a => new { a.additional}),
+            creds = c.credentials.Select(c => new CredentialDto(
+                c.bits,
+                c.issue_code,
+                c.fac_code,
+                c.card_no,
+                c.pin,
+                c.active_date,
+                c.deactive_date
+            )),
+            accesslevel = c.user_access_levels.Select(a => new
             {
-                // Base
-                LocationId = c.location_id,
-                IsActive = c.is_active,
-
-                // extend_desc
-                ComponentId = c.component_id,
-                Bits = c.bits,
-                IssueCode = c.issue_code,
-                FacilityCode = c.fac_code,
-                CardNo = c.card_no,
-                Pin = c.pin,
-                ActiveDate = c.active_date,
-                DeactiveDate = c.deactive_date,
-                //card_holder = entity.card_holder is not null ? CardHolderToDto(entity.card_holder) : null,
-
-            }).ToList(),
-            AccessLevels = c.user_access_levels.Select(x => new AccessLevelDto
-            {
-                ComponentId = x.accessLevel.component_id,
-                LocationId = x.accessLevel.location_id,
-                IsActive = x.accessLevel.is_active,
-                Name = x.accessLevel.name,
-                Components = x.accessLevel.components.Select(x => new AccessLevelComponentDto
+                a.accesslevel_id,
+                a.accessLevel.name,
+                components = a.accessLevel.components.Select(c => new
                 {
-                    Mac = x.mac,
-                    DoorId = x.door_id,
-                    AcrId = x.acr_id,
-                    TimezoneId = x.timezone_id,
-                    AlvlId = x.alvl_id
-                }).ToList()
+                    c.driver_id,
+                    c.device_id,
+                    c.door_id,
+                    c.acr_id,
+                    c.timezone_id
+                }),
+                a.accessLevel.location_id,
+                a.accessLevel.is_active
 
-            }).ToList()
-
-        })
+            }),
+            c.location_id,
+            c.is_active
+            })
         .ToArrayAsync();
 
+        var res = data.Select(d => new UserDto(
+            d.user_id,
+            d.title,
+            d.first_name,
+            d.middle_name,
+            d.last_name,
+            (int)d.gender,
+            d.email,
+            d.phone,
+            d.company_id,
+            d.company,
+            d.position_id,
+            d.position,
+            d.image,
+            d.department_id,
+            d.department,
+            d.flag,
+            d.additionals.Select(x => x.additional).ToList(),
+            d.creds.ToList(),
+            d.accesslevel.Select(x => new AccessLevelDto(
+                x.accesslevel_id,
+                x.name,
+                x.components.Select(c => new AccessLevelComponentDto(
+                    c.driver_id,
+                    c.device_id,
+                    c.door_id,
+                    c.acr_id,
+                    c.timezone_id
+                )).ToList(),
+                x.location_id,
+                x.is_active
+            )).ToList(),
+            d.location_id,
+            d.is_active
+        )).ToList();
+
         return res;
     }
 
-    public async Task<UserDto> GetByComponentIdAsync(short componentId)
+    public async Task<UserDto> GetByIdAsync(int Id)
     {
-        var res = await context.user
+        var d = await context.user
        .AsNoTracking()
-       .Where(x => x.component_id == componentId)
+       .Where(x => x.id == Id)
        .OrderBy(x => x.created_date)
-       .Select(c => new CardHolderDto
-       {
-           // Base
-           LocationId = c.location_id,
-           IsActive = c.is_active,
+       .Select(c => new {
+            c.user_id,
+            c.title,
+            c.first_name,
+            c.middle_name,
+            c.last_name,
+            gender = c.gender,
+            c.email,
+            c.phone,
+            c.company_id,
+            company = c.company.name,
+            c.position_id,
+            position = c.position.name,
+            c.image,
+            c.department_id,
+            department = c.department.name,
+            c.flag,
+            additionals = c.additionals.Select(a => new { a.additional}),
+            creds = c.credentials.Select(c => new CredentialDto(
+                c.bits,
+                c.issue_code,
+                c.fac_code,
+                c.card_no,
+                c.pin,
+                c.active_date,
+                c.deactive_date
+            )),
+            accesslevel = c.user_access_levels.Select(a => new
+            {
+                a.accesslevel_id,
+                a.accessLevel.name,
+                components = a.accessLevel.components.Select(c => new
+                {
+                    c.driver_id,
+                    c.device_id,
+                    c.door_id,
+                    c.acr_id,
+                    c.timezone_id
+                }),
+                a.accessLevel.location_id,
+                a.accessLevel.is_active
 
-           // extend_desc
-           Flag = c.flag,
-           UserId = c.user_id,
-           Title = c.title,
-           FirstName = c.first_name,
-           MiddleName = c.middle_name,
-           LastName = c.last_name,
-           Sex = c.sex,
-           Email = c.email,
-           Phone = c.phone,
-           Company = c.company,
-           Position = c.position,
-           Department = c.department,
-           ImagePath = c.image_path,
-           Additionals = c.additionals
-           .Where(x => x.holder_id == c.user_id)
-           .Select(x => x.additional).ToList(),
-           Credentials = c.credentials
-           .Select(c => new CredentialDto
-           {
-               // Base
-               LocationId = c.location_id,
-               IsActive = c.is_active,
-
-               // extend_desc
-               ComponentId = c.component_id,
-               Bits = c.bits,
-               IssueCode = c.issue_code,
-               FacilityCode = c.fac_code,
-               CardNo = c.card_no,
-               Pin = c.pin,
-               ActiveDate = c.active_date,
-               DeactiveDate = c.deactive_date,
-               //card_holder = entity.card_holder is not null ? CardHolderToDto(entity.card_holder) : null,
-
-           }).ToList(),
-           AccessLevels = c.cardholder_access_levels.Select(x => new AccessLevelDto
-           {
-               ComponentId = x.accessLevel.component_id,
-               LocationId = x.accessLevel.location_id,
-               IsActive = x.accessLevel.is_active,
-               Name = x.accessLevel.name,
-               Components = x.accessLevel.components.Select(x => new AccessLevelComponentDto
-               {
-
-                   Mac = x.mac,
-                   DoorId = x.door_id,
-                   AcrId = x.acr_id,
-                   TimezoneId = x.timezone_id,
-                   AlvlId = x.alvl_id
-               }).ToList()
-
-           }).ToList()
-
-       })
+            }),
+            c.location_id,
+            c.is_active
+            })
        .FirstOrDefaultAsync();
 
+        var res = new UserDto(
+            d.user_id,
+            d.title,
+            d.first_name,
+            d.middle_name,
+            d.last_name,
+            (int)d.gender,
+            d.email,
+            d.phone,
+            d.company_id,
+            d.company,
+            d.position_id,
+            d.position,
+            d.image,
+            d.department_id,
+            d.department,
+            d.flag,
+            d.additionals.Select(x => x.additional).ToList(),
+            d.creds.ToList(),
+            d.accesslevel.Select(x => new AccessLevelDto(
+                x.accesslevel_id,
+                x.name,
+                x.components.Select(c => new AccessLevelComponentDto(
+                    c.driver_id,
+                    c.device_id,
+                    c.door_id,
+                    c.acr_id,
+                    c.timezone_id
+                )).ToList(),
+                x.location_id,
+                x.is_active
+            )).ToList(),
+            d.location_id,
+            d.is_active
+        );
+
         return res;
     }
 
-    public async Task<IEnumerable<UserDto>> GetByLocationIdAsync(short locationId)
+    public async Task<IEnumerable<UserDto>> GetByLocationIdAsync(int locationId)
     {
-        var res = await context.user
+        var data = await context.user
        .AsNoTracking()
        .Where(x => x.location_id == locationId || x.location_id == 1)
        .OrderBy(x => x.created_date)
-       .Select(c => new CardHolderDto
-       {
-           // Base
-           LocationId = c.location_id,
-           IsActive = c.is_active,
+       .Select(c => new {
+            c.user_id,
+            c.title,
+            c.first_name,
+            c.middle_name,
+            c.last_name,
+            gender = c.gender,
+            c.email,
+            c.phone,
+            c.company_id,
+            company = c.company.name,
+            c.position_id,
+            position = c.position.name,
+            c.image,
+            c.department_id,
+            department = c.department.name,
+            c.flag,
+            additionals = c.additionals.Select(a => new { a.additional}),
+            creds = c.credentials.Select(c => new CredentialDto(
+                c.bits,
+                c.issue_code,
+                c.fac_code,
+                c.card_no,
+                c.pin,
+                c.active_date,
+                c.deactive_date
+            )),
+            accesslevel = c.user_access_levels.Select(a => new
+            {
+                a.accesslevel_id,
+                a.accessLevel.name,
+                components = a.accessLevel.components.Select(c => new
+                {
+                    c.driver_id,
+                    c.device_id,
+                    c.door_id,
+                    c.acr_id,
+                    c.timezone_id
+                }),
+                a.accessLevel.location_id,
+                a.accessLevel.is_active
 
-           // extend_desc
-           Flag = c.flag,
-           UserId = c.user_id,
-           Title = c.title,
-           FirstName = c.first_name,
-           MiddleName = c.middle_name,
-           LastName = c.last_name,
-           Sex = c.gender,
-           Email = c.email,
-           Phone = c.phone,
-           Company = c.company,
-           Position = c.position,
-           Department = c.department,
-           ImagePath = c.image,
-           Additionals = c.additionals
-           .Where(x => x.user_id == c.user_id)
-           .Select(x => x.additional).ToList(),
-           Credentials = c.credentials
-           .Select(c => new CredentialDto
-           {
-               // Base
-               LocationId = c.location_id,
-               IsActive = c.is_active,
-
-               // extend_desc
-               ComponentId = c.component_id,
-               Bits = c.bits,
-               IssueCode = c.issue_code,
-               FacilityCode = c.fac_code,
-               CardNo = c.card_no,
-               Pin = c.pin,
-               ActiveDate = c.active_date,
-               DeactiveDate = c.deactive_date,
-               //card_holder = entity.card_holder is not null ? CardHolderToDto(entity.card_holder) : null,
-
-           }).ToList(),
-           AccessLevels = c.user_access_levels.Select(x => new AccessLevelDto
-           {
-               ComponentId = x.accessLevel.component_id,
-               LocationId = x.accessLevel.location_id,
-               IsActive = x.accessLevel.is_active,
-               Name = x.accessLevel.name,
-               Components = x.accessLevel.components.Select(x => new AccessLevelComponentDto
-               {
-                   Mac = x.mac,
-
-                   DoorId = x.door_id,
-                   AcrId = x.acr_id,
-                   TimezoneId = x.timezone_id,
-                   AlvlId = x.alvl_id
-               }).ToList()
-
-           }).ToList()
-
-       })
+            }),
+            c.location_id,
+            c.is_active
+            })
        .ToArrayAsync();
+
+       var res = data.Select(d => new UserDto(
+            d.user_id,
+            d.title,
+            d.first_name,
+            d.middle_name,
+            d.last_name,
+            (int)d.gender,
+            d.email,
+            d.phone,
+            d.company_id,
+            d.company,
+            d.position_id,
+            d.position,
+            d.image,
+            d.department_id,
+            d.department,
+            d.flag,
+            d.additionals.Select(x => x.additional).ToList(),
+            d.creds.ToList(),
+            d.accesslevel.Select(x => new AccessLevelDto(
+                x.accesslevel_id,
+                x.name,
+                x.components.Select(c => new AccessLevelComponentDto(
+                    c.driver_id,
+                    c.device_id,
+                    c.door_id,
+                    c.acr_id,
+                    c.timezone_id
+                )).ToList(),
+                x.location_id,
+                x.is_active
+            )).ToList(),
+            d.location_id,
+            d.is_active
+        )).ToList();
 
         return res;
     }
 
     public async Task<UserDto> GetByUserIdAsync(string UserId)
     {
-        var res = await context.user
+        var d = await context.user
        .AsNoTracking()
        .Where(x => x.user_id.Equals(UserId))
        .OrderBy(x => x.created_date)
-       .Select(c => new CardHolderDto
-       {
-           // Base
-           LocationId = c.location_id,
-           IsActive = c.is_active,
+      .Select(c => new {
+            c.user_id,
+            c.title,
+            c.first_name,
+            c.middle_name,
+            c.last_name,
+            gender = c.gender,
+            c.email,
+            c.phone,
+            c.company_id,
+            company = c.company.name,
+            c.position_id,
+            position = c.position.name,
+            c.image,
+            c.department_id,
+            department = c.department.name,
+            c.flag,
+            additionals = c.additionals.Select(a => new { a.additional}),
+            creds = c.credentials.Select(c => new CredentialDto(
+                c.bits,
+                c.issue_code,
+                c.fac_code,
+                c.card_no,
+                c.pin,
+                c.active_date,
+                c.deactive_date
+            )),
+            accesslevel = c.user_access_levels.Select(a => new
+            {
+                a.accesslevel_id,
+                a.accessLevel.name,
+                components = a.accessLevel.components.Select(c => new
+                {
+                    c.driver_id,
+                    c.device_id,
+                    c.door_id,
+                    c.acr_id,
+                    c.timezone_id
+                }),
+                a.accessLevel.location_id,
+                a.accessLevel.is_active
 
-           // extend_desc
-           Flag = c.flag,
-           UserId = c.user_id,
-           Title = c.title,
-           FirstName = c.first_name,
-           MiddleName = c.middle_name,
-           LastName = c.last_name,
-           Sex = c.gender,
-           Email = c.email,
-           Phone = c.phone,
-           Company = c.company,
-           Position = c.position,
-           Department = c.department,
-           ImagePath = c.image,
-           Additionals = c.additionals
-           .Where(x => x.user_id == c.user_id)
-           .Select(x => x.additional).ToList(),
-           Credentials = c.credentials
-           .Select(c => new CredentialDto
-           {
-               // Base
-               LocationId = c.location_id,
-               IsActive = c.is_active,
-
-               // extend_desc
-               ComponentId = c.component_id,
-               Bits = c.bits,
-               IssueCode = c.issue_code,
-               FacilityCode = c.fac_code,
-               CardNo = c.card_no,
-               Pin = c.pin,
-               ActiveDate = c.active_date,
-               DeactiveDate = c.deactive_date,
-               //card_holder = entity.card_holder is not null ? CardHolderToDto(entity.card_holder) : null,
-
-           }).ToList(),
-           AccessLevels = c.user_access_levels.Select(x => new AccessLevelDto
-           {
-               ComponentId = x.accessLevel.component_id,
-               LocationId = x.accessLevel.location_id,
-               IsActive = x.accessLevel.is_active,
-               Name = x.accessLevel.name,
-               Components = x.accessLevel.components.Select(x => new AccessLevelComponentDto
-               {
-                   Mac = x.mac,
-                   DoorId = x.door_id,
-                   AcrId = x.acr_id,
-                   TimezoneId = x.timezone_id,
-                   AlvlId = x.alvl_id
-               }).ToList()
-
-           }).ToList()
-
-       })
+            }),
+            c.location_id,
+            c.is_active
+            })
        .FirstOrDefaultAsync();
+
+        var res = new UserDto(
+            d.user_id,
+            d.title,
+            d.first_name,
+            d.middle_name,
+            d.last_name,
+            (int)d.gender,
+            d.email,
+            d.phone,
+            d.company_id,
+            d.company,
+            d.position_id,
+            d.position,
+            d.image,
+            d.department_id,
+            d.department,
+            d.flag,
+            d.additionals.Select(x => x.additional).ToList(),
+            d.creds.ToList(),
+            d.accesslevel.Select(x => new AccessLevelDto(
+                x.accesslevel_id,
+                x.name,
+                x.components.Select(c => new AccessLevelComponentDto(
+                    c.driver_id,
+                    c.device_id,
+                    c.door_id,
+                    c.acr_id,
+                    c.timezone_id
+                )).ToList(),
+                x.location_id,
+                x.is_active
+            )).ToList(),
+            d.location_id,
+            d.is_active
+        );
 
         return res;
     }
 
-    public async Task<short> GetLowestUnassignedNumberAsync(int max, string mac)
-    {
-        if (max <= 0) return -1;
 
-        var query = context.user
-            .AsNoTracking()
-            .Select(x => x.component_id);
-
-        // Handle empty table case quickly
-        var hasAny = await query.AnyAsync();
-        if (!hasAny)
-            return 1; // start at 1 if table is empty
-
-        // Load all numbers into memory (only the column, so it's lightweight)
-        var numbers = await query.Distinct().OrderBy(x => x).ToListAsync();
-
-        short expected = 1;
-        foreach (var num in numbers)
-        {
-            if (num != expected)
-                return expected; // found the lowest missing number
-            expected++;
-        }
-
-        // If none missing in sequence, return next number
-        if (expected > max) return -1;
-        return expected;
-    }
 
     public async Task<IEnumerable<string>> GetMacsRelateCredentialByUserIdAsync(string UserId)
     {
@@ -426,7 +486,7 @@ public class HolderRepository(AppDbContext context) : IUserRepository
         throw new NotImplementedException();
     }
 
-    public async Task<Pagination<UserDto>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+    public async Task<Pagination<UserDto>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
     {
 
         var query = context.user.AsNoTracking().AsQueryable();
@@ -448,12 +508,12 @@ public class HolderRepository(AppDbContext context) : IUserRepository
                         EF.Functions.ILike(x.first_name, pattern) ||
                         EF.Functions.ILike(x.middle_name, pattern) ||
                         EF.Functions.ILike(x.last_name, pattern) ||
-                        EF.Functions.ILike(x.gender, pattern) ||
+                        EF.Functions.ILike(x.gender.ToString(), pattern) ||
                         EF.Functions.ILike(x.email, pattern) ||
                         EF.Functions.ILike(x.phone, pattern) ||
-                        EF.Functions.ILike(x.company, pattern) ||
-                        EF.Functions.ILike(x.department, pattern) ||
-                        EF.Functions.ILike(x.position, pattern)
+                        EF.Functions.ILike(x.company.name, pattern) ||
+                        EF.Functions.ILike(x.department.name, pattern) ||
+                        EF.Functions.ILike(x.position.name, pattern)
 
                     );
                 }
@@ -465,12 +525,12 @@ public class HolderRepository(AppDbContext context) : IUserRepository
                         x.first_name.Contains(search) ||
                         x.middle_name.Contains(search) ||
                         x.last_name.Contains(search) ||
-                        x.gender.Contains(search) ||
+                        x.gender.ToString().Contains(search) ||
                         x.email.Contains(search) ||
                         x.phone.Contains(search) ||
-                        x.company.Contains(search) ||
-                        x.department.Contains(search) ||
-                        x.position.Contains(search)
+                        x.company.name.Contains(search) ||
+                        x.department.name.Contains(search) ||
+                        x.position.name.Contains(search)
                     );
                 }
             }
@@ -498,72 +558,94 @@ public class HolderRepository(AppDbContext context) : IUserRepository
             .OrderByDescending(t => t.created_date)
             .Skip((param.PageNumber - 1) * param.PageSize)
             .Take(param.PageSize)
-            .Select(c => new CardHolderDto
+            .Select(c => new {
+            c.user_id,
+            c.title,
+            c.first_name,
+            c.middle_name,
+            c.last_name,
+            gender = c.gender,
+            c.email,
+            c.phone,
+            c.company_id,
+            company = c.company.name,
+            c.position_id,
+            position = c.position.name,
+            c.image,
+            c.department_id,
+            department = c.department.name,
+            c.flag,
+            additionals = c.additionals.Select(a => new { a.additional}),
+            creds = c.credentials.Select(c => new CredentialDto(
+                c.bits,
+                c.issue_code,
+                c.fac_code,
+                c.card_no,
+                c.pin,
+                c.active_date,
+                c.deactive_date
+            )),
+            accesslevel = c.user_access_levels.Select(a => new
             {
-                // Base
-                LocationId = c.location_id,
-                IsActive = c.is_active,
-
-                // extend_desc
-                Flag = c.flag,
-                UserId = c.user_id,
-                Title = c.title,
-                FirstName = c.first_name,
-                MiddleName = c.middle_name,
-                LastName = c.last_name,
-                Sex = c.gender,
-                Email = c.email,
-                Phone = c.phone,
-                Company = c.company,
-                Position = c.position,
-                Department = c.department,
-                ImagePath = c.image,
-                Additionals = c.additionals
-                .Where(x => x.user_id == c.user_id)
-                .Select(x => x.additional).ToList(),
-                Credentials = c.credentials
-                .Select(c => new CredentialDto
+                a.accesslevel_id,
+                a.accessLevel.name,
+                components = a.accessLevel.components.Select(c => new
                 {
-                    // Base
-                    LocationId = c.location_id,
-                    IsActive = c.is_active,
+                    c.driver_id,
+                    c.device_id,
+                    c.door_id,
+                    c.acr_id,
+                    c.timezone_id
+                }),
+                a.accessLevel.location_id,
+                a.accessLevel.is_active
 
-                    // extend_desc
-                    ComponentId = c.component_id,
-                    Bits = c.bits,
-                    IssueCode = c.issue_code,
-                    FacilityCode = c.fac_code,
-                    CardNo = c.card_no,
-                    Pin = c.pin,
-                    ActiveDate = c.active_date,
-                    DeactiveDate = c.deactive_date,
-                    //card_holder = entity.card_holder is not null ? CardHolderToDto(entity.card_holder) : null,
-
-                }).ToList(),
-                AccessLevels = c.user_access_levels.Select(x => new AccessLevelDto
-                {
-                    ComponentId = x.accessLevel.component_id,
-                    LocationId = x.accessLevel.location_id,
-                    IsActive = x.accessLevel.is_active,
-                    Name = x.accessLevel.name,
-                    Components = x.accessLevel.components.Select(x => new AccessLevelComponentDto
-                    {
-                        Mac = x.mac,
-                        DoorId = x.door_id,
-                        AcrId = x.acr_id,
-                        TimezoneId = x.timezone_id,
-                        AlvlId = x.alvl_id
-                    }).ToList()
-
-                }).ToList()
-
+            }),
+            c.location_id,
+            c.is_active
             })
             .ToListAsync();
+
+             var res = data.Select(d => new UserDto(
+            d.user_id,
+            d.title,
+            d.first_name,
+            d.middle_name,
+            d.last_name,
+            (int)d.gender,
+            d.email,
+            d.phone,
+            d.company_id,
+            d.company,
+            d.position_id,
+            d.position,
+            d.image,
+            d.department_id,
+            d.department,
+            d.flag,
+            d.additionals.Select(x => x.additional).ToList(),
+            d.creds.ToList(),
+            d.accesslevel.Select(x => new AccessLevelDto(
+                x.accesslevel_id,
+                x.name,
+                x.components.Select(c => new AccessLevelComponentDto(
+                    c.driver_id,
+                    c.device_id,
+                    c.door_id,
+                    c.acr_id,
+                    c.timezone_id
+                )).ToList(),
+                x.location_id,
+                x.is_active
+            )).ToList(),
+            d.location_id,
+            d.is_active
+        )).ToList();
 
 
         return new Pagination<UserDto>
         {
-            Data = data,
+            Data = res,
             Page = new PaginationData
             {
                 TotalCount = count,
@@ -574,7 +656,7 @@ public class HolderRepository(AppDbContext context) : IUserRepository
         };
     }
 
-    public Task<bool> IsAnyByComponentId(short component)
+    public Task<bool> IsAnyByIdAsync(int id)
     {
         throw new NotImplementedException();
     }
@@ -583,4 +665,11 @@ public class HolderRepository(AppDbContext context) : IUserRepository
     {
         return await context.user.AnyAsync(x => x.user_id.Equals(userid));
     }
+
+      
+
+      public async Task<bool> IsAnyByNameAsync(string name)
+      {
+            return await context.user.AsNoTracking().AnyAsync(x => x.first_name.Equals(name) || x.last_name.Equals(name));
+      }
 }

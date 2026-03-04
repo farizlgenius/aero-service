@@ -1,4 +1,4 @@
-﻿
+
 
 
 using Aero.Domain.Interface;
@@ -12,6 +12,9 @@ namespace Aero.Infrastructure.Persistences.Entities
         public string days_detail { get; set; } = string.Empty;
         public string start_time { get; set; } = string.Empty;
         public string end_time { get; set; } = string.Empty;
+
+        public Interval(){}
+
 
         public Interval(Aero.Domain.Entities.DaysInWeek days,string daydetail,string start,string end,int location) : base(location)
         {
@@ -45,3 +48,4 @@ namespace Aero.Infrastructure.Persistences.Entities
 
     }
 }
+

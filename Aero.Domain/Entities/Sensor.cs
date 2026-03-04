@@ -4,9 +4,10 @@ namespace Aero.Domain.Entities;
 
 public sealed class Sensor : BaseDomain
 {
-    public int DeviceId { get; set; }
-    public short ModuleId { get; set; }
-    public short DoorId { get; set; }
+    public short DeviceId { get; set; }
+    public int ModuleId { get; set; }
+    public short ModuleDriverId {get; set;}
+    public int DoorId { get; set; }
     public short InputNo { get; set; }
     public short InputMode { get; set; }
     public short Debounce { get; set; }
@@ -16,9 +17,10 @@ public sealed class Sensor : BaseDomain
     public Sensor() { }
 
     public Sensor(
-        int deviceId,
-        short moduleId,
-        short doorId,
+        short deviceId,
+        int moduleId,
+        short moduleDriverId,
+        int doorId,
         short inputNo,
         short inputMode,
         short debounce,
@@ -29,6 +31,7 @@ public sealed class Sensor : BaseDomain
     {
         DeviceId = deviceId;
         ModuleId = moduleId;
+        ModuleDriverId = moduleDriverId;
         DoorId = doorId;
         InputNo = inputNo;
         InputMode = inputMode;

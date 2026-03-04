@@ -6,12 +6,12 @@ namespace Aero.Domain.Entities;
 public sealed class AccessLevelComponent
 {
     public short DriverId { get; private set; }
-    public int DeviceId {get; private set;} 
+    public short DeviceId {get; private set;} 
     public int DoorId { get; private set; }
     public short AcrId { get; private set; }
     public short TimezoneId { get; private set; }
 
-    public AccessLevelComponent(short driverId,int device,int doorId,short acrId,short timezoneId)
+    public AccessLevelComponent(short driverId,short device,int doorId,short acrId,short timezoneId)
     {
         SetDriverId(driverId);
         SetDeviceId(device);
@@ -26,7 +26,7 @@ public sealed class AccessLevelComponent
         this.DriverId = driverid;
     }
 
-    private void SetDeviceId(int deviceId)
+    private void SetDeviceId(short deviceId)
     {
         if (deviceId <= 0) throw new ArgumentException("Device is invalid.");
         this.DeviceId = deviceId; 

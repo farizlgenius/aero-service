@@ -8,6 +8,7 @@ namespace Aero.Application.Interface;
 
 public interface IDeviceRepository : IBaseRepository<DeviceDto, Device>
 {
+  Task<bool> IsAnyByDriverIdAsync(int Driver);
   Task<DeviceComponent> GetDeviceComponentByModelAsync(short model);
   Task<Device> GetDomainByMacAsync(string mac);
   Task<int> DeleteByMacAsync(string mac);
@@ -35,5 +36,6 @@ public interface IDeviceRepository : IBaseRepository<DeviceDto, Device>
   Task AssignIpAddressAsync(IScpReply message);
   Task<string> GetNameByDriverIdAsync(int device);
 Task<short> GetLowestUnassignedNumberAsync(int max);
+Task<string> GetNameByDeviceIdAsync(int device);
 
 }

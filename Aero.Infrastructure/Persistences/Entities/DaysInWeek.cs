@@ -1,4 +1,4 @@
-﻿
+
 using Aero.Domain.Interface;
 using System.ComponentModel.DataAnnotations;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -17,6 +17,9 @@ namespace Aero.Infrastructure.Persistences.Entities
         public bool thursday { get; set; }
         public bool friday { get; set; }
         public bool saturday { get; set; }
+
+        public DaysInWeek(){}
+
 
         public DaysInWeek(int interval_id,bool sun,bool mon,bool tue,bool wed,bool thur,bool fri,bool sat,int locaion) : base(locaion)
         {
@@ -58,3 +61,4 @@ namespace Aero.Infrastructure.Persistences.Entities
         }
     }
 }
+

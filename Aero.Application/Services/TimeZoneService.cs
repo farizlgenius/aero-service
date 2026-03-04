@@ -13,7 +13,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aero.Application.Services
 {
-    public class TimeZoneService(ITzRepository repo, IDeviceRepository hw, ITzCommand tz, ITzRepository rTz,IRunningNumberRepository run,ISettingRepository setting) : ITimeZoneService
+    public class TimeZoneService(ITzRepository repo, IDeviceRepository hw, ITzCommand tz, ITzRepository rTz,ISettingRepository setting) : ITimeZoneService
     {
         public async Task<ResponseDto<IEnumerable<TimeZoneDto>>> GetAsync()
         {
@@ -131,16 +131,16 @@ namespace Aero.Application.Services
         }
 
 
-        public async Task<ResponseDto<IEnumerable<Mode>>> GetModeAsync(int param)
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param)
         {
             var dtos = await repo.GetModeAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
-        public async Task<ResponseDto<IEnumerable<Mode>>> GetCommandAsync()
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetCommandAsync()
         {
             var dtos = await repo.GetCommandAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
         public async Task<ResponseDto<IEnumerable<TimeZoneDto>>> GetByLocationAsync(short location)

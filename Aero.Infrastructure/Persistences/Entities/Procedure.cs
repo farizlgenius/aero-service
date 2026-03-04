@@ -1,12 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
 
 namespace Aero.Infrastructure.Persistences.Entities
 {
-    public sealed class Procedure : BaseEntity,IDriverId,IDeviceId
+    public sealed class Procedure : BaseEntity,IDeviceId
     {
-        public int device_id { get; set; }
+        public short device_id { get; set; }
         public Device device { get; set; }
 
         public short driver_id { get; set; }
@@ -14,6 +14,9 @@ namespace Aero.Infrastructure.Persistences.Entities
         public int trigger_id {get; set;}
         public Trigger trigger { get; set; }
         public ICollection<Action> actions { get; set; }
+
+        public Procedure(){}
+
 
         public Procedure(Aero.Domain.Entities.Procedure data) : base(data.LocationId)
         {
@@ -34,3 +37,4 @@ namespace Aero.Infrastructure.Persistences.Entities
 
     }
 }
+

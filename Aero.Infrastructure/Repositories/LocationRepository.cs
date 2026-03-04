@@ -53,7 +53,7 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
         List<string> errors = new List<string>();
         // hardware
         if (await context.location
-            .AnyAsync(x => x.id == id && x.hardwares.Count() > 0)
+            .AnyAsync(x => x.id == id && x.device.Count() > 0)
             )
         {
             errors.Add("Found relate hardware");

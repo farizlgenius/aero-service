@@ -1,4 +1,4 @@
-﻿
+
 using Aero.Domain.Entities;
 using Aero.Domain.Interfaces;
 
@@ -6,20 +6,23 @@ namespace Aero.Infrastructure.Persistences.Entities
 {
     public sealed class Strike : BaseEntity,IDeviceId
     {
-        public short module_id { get; set; }
+        public int module_id { get; set; }
         public Module module { get; set; }
         public Door strike_door { get; set; }
-        public short door_id { get; set; }
+        public int door_id { get; set; }
         public short output_no { get; set; }
         public short relay_mode { get; set; }
         public short offline_mode { get; set; }
         public short strike_max { get; set; }
         public short strike_min { get; set; }
         public short strike_mode { get; set; }
-        public int device_id { get; set; }
+        public short device_id { get; set; }
         public Device device { get; set; }
 
-        public Strike(int device,short moduleid,short doorid,short outputno,short relaymode,short offlinemode,short strikmax,short strikemin,short strikemode,int location) : base(location) 
+        public Strike(){}
+
+
+        public Strike(short device,int moduleid,int doorid,short outputno,short relaymode,short offlinemode,short strikmax,short strikemin,short strikemode,int location) : base(location) 
         {
             this.device_id = device;
             this.module_id = moduleid;
@@ -48,3 +51,4 @@ namespace Aero.Infrastructure.Persistences.Entities
 
     }
 }
+
