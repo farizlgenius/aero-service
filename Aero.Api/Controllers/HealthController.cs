@@ -5,7 +5,7 @@ using System.Net;
 
 namespace Aero.Api.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public sealed class HealthController : ControllerBase
     {

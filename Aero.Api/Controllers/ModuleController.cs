@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aero.Api.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ModuleController(IModuleService service) : ControllerBase
     {
@@ -21,7 +21,7 @@ namespace Aero.Api.Controllers
             return Ok(res);
         }
 
-        [HttpGet("/api/v1/{location}/[controller]")]
+        [HttpGet("/api/{location}/[controller]")]
         [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<ModuleDto>>>> GetByLocationAsync(short location)
         {
@@ -29,7 +29,7 @@ namespace Aero.Api.Controllers
             return Ok(res);
         }
 
-        [HttpGet("/api/v1/{location}/[controller]/pagination")]
+        [HttpGet("/api/{location}/[controller]/pagination")]
         [Authorize]
         public async Task<ActionResult<ResponseDto<Pagination<ModuleDto>>>> GetPaginationAsync([FromQuery] PaginationParamsWithFilter param,short location)
         {

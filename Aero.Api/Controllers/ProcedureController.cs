@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aero.Api.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ProcedureController(IProcedureService service) : ControllerBase
     {
@@ -16,14 +16,14 @@ namespace Aero.Api.Controllers
             return Ok(res);
         }
 
-        [HttpGet("/api/v1/{location}/[controller]")]
+        [HttpGet("/api/{location}/[controller]")]
         public async Task<ActionResult<ResponseDto<IEnumerable<ProcedureDto>>>> GetByLocationIdAsync(short location)
         {
             var res = await service.GetByLocationIdAsync(location);
             return Ok(res);
         }
 
-        [HttpGet("/api/v1/{location}/[controller]/pagination")]
+        [HttpGet("/api/{location}/[controller]/pagination")]
         public async Task<ActionResult<ResponseDto<IEnumerable<ProcedureDto>>>> GetPaginationAsync([FromQuery]PaginationParamsWithFilter param,short location)
         {
             var res = await service.GetPaginationAsync(param,location);

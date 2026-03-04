@@ -7,7 +7,7 @@ using Aero.Application.DTOs;
 
 namespace Aero.Api.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class SettingController(ISettingService service ) : ControllerBase
     {

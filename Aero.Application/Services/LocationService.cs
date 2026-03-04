@@ -17,7 +17,7 @@ namespace Aero.Application.Services
 
             if (await repo.IsAnyByLocationNameAsync(dto.Name)) return ResponseHelper.Duplicate<LocationDto>();
 
-            var domain = new Aero.Domain.Entities.Location(dto.Name,dto.Description);
+            var domain = new Aero.Domain.Entities.Location(0,dto.Name,dto.Description);
 
             var status = await repo.AddAsync(domain);
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<LocationDto>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
@@ -98,7 +98,7 @@ namespace Aero.Application.Services
 
             if (en is null) return ResponseHelper.NotFoundBuilder<LocationDto>();
 
-            var domain = new Aero.Domain.Entities.Location(dto.Name,dto.Description);
+            var domain = new Aero.Domain.Entities.Location(dto.Id,dto.Name,dto.Description);
 
              var status = await repo.UpdateAsync(domain);
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<LocationDto>(ResponseMessage.UPDATE_RECORD_UNSUCCESS,[]);

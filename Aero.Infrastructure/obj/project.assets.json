@@ -3665,8 +3665,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "d:\\Aero\\AeroService\\Aero.Application\\Aero.Application.csproj": {
-              "projectPath": "d:\\Aero\\AeroService\\Aero.Application\\Aero.Application.csproj"
+            "D:\\Aero\\AeroService\\Aero.Application\\Aero.Application.csproj": {
+              "projectPath": "D:\\Aero\\AeroService\\Aero.Application\\Aero.Application.csproj"
             },
             "D:\\Aero\\AeroService\\Aero.Domain\\Aero.Domain.csproj": {
               "projectPath": "D:\\Aero\\AeroService\\Aero.Domain\\Aero.Domain.csproj"

@@ -4,18 +4,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aero.Api.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class IdReportController(IdReportService idReportService) : ControllerBase
     {
-        [HttpGet("/api/v1/{location}/[controller]")]
+        [HttpGet("/api/{location}/[controller]")]
         public async Task<ActionResult<ResponseDto<IEnumerable<IdReportDto>>>> GetAsync(short location)
         {
             var res = await idReportService.GetAsync(location);
             return Ok(res);
         }
 
-        [HttpGet("/api/v1/{location}/[controller]/count")]
+        [HttpGet("/api/{location}/[controller]/count")]
         public async Task<ActionResult<ResponseDto<int>>> GetCountAsync(short location)
         {
             var res = await idReportService.GetCount(location);

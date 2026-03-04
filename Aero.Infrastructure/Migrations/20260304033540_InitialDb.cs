@@ -2407,8 +2407,8 @@ namespace Aero.Infrastructure.Migrations
                 columns: new[] { "id", "created_date", "description", "is_active", "name", "updated_date" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2026, 3, 4, 3, 17, 33, 219, DateTimeKind.Utc).AddTicks(2492), "Shared location", true, "Shared", new DateTime(2026, 3, 4, 3, 17, 33, 219, DateTimeKind.Utc).AddTicks(2494) },
-                    { 2, new DateTime(2026, 3, 4, 3, 17, 33, 219, DateTimeKind.Utc).AddTicks(2503), "Main location", true, "Main", new DateTime(2026, 3, 4, 3, 17, 33, 219, DateTimeKind.Utc).AddTicks(2503) }
+                    { 1, new DateTime(2026, 3, 4, 3, 35, 40, 382, DateTimeKind.Utc).AddTicks(4917), "Shared location", true, "Shared", new DateTime(2026, 3, 4, 3, 35, 40, 382, DateTimeKind.Utc).AddTicks(4918) },
+                    { 2, new DateTime(2026, 3, 4, 3, 35, 40, 382, DateTimeKind.Utc).AddTicks(4921), "Main location", true, "Main", new DateTime(2026, 3, 4, 3, 35, 40, 382, DateTimeKind.Utc).AddTicks(4922) }
                 });
 
             migrationBuilder.InsertData(
@@ -2709,19 +2709,19 @@ namespace Aero.Infrastructure.Migrations
                 columns: new[] { "id", "created_date", "is_active", "location_id", "name", "updated_date" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2026, 3, 4, 3, 17, 33, 232, DateTimeKind.Utc).AddTicks(670), true, 1, "No Access", new DateTime(2026, 3, 4, 3, 17, 33, 232, DateTimeKind.Utc).AddTicks(672) },
-                    { 2, new DateTime(2026, 3, 4, 3, 17, 33, 232, DateTimeKind.Utc).AddTicks(675), true, 1, "Full Access", new DateTime(2026, 3, 4, 3, 17, 33, 232, DateTimeKind.Utc).AddTicks(684) }
+                    { 1, new DateTime(2026, 3, 4, 3, 35, 40, 416, DateTimeKind.Utc).AddTicks(4891), true, 1, "No Access", new DateTime(2026, 3, 4, 3, 35, 40, 416, DateTimeKind.Utc).AddTicks(4893) },
+                    { 2, new DateTime(2026, 3, 4, 3, 35, 40, 416, DateTimeKind.Utc).AddTicks(4896), true, 1, "Full Access", new DateTime(2026, 3, 4, 3, 35, 40, 416, DateTimeKind.Utc).AddTicks(4897) }
                 });
 
             migrationBuilder.InsertData(
                 table: "card_format",
                 columns: new[] { "id", "bits", "ch_ln", "ch_loc", "created_date", "driver_id", "facility", "fc_ln", "fc_loc", "flags", "function_id", "ic_ln", "ic_loc", "is_active", "location_id", "name", "offset", "pe_ln", "pe_loc", "po_ln", "po_loc", "updated_date" },
-                values: new object[] { 1, (short)26, (short)16, (short)9, new DateTime(2026, 3, 4, 3, 17, 33, 236, DateTimeKind.Utc).AddTicks(3577), (short)0, (short)-1, (short)0, (short)0, (short)0, (short)1, (short)0, (short)0, true, 1, "26 bits (No Fac)", (short)0, (short)13, (short)0, (short)13, (short)13, new DateTime(2026, 3, 4, 3, 17, 33, 236, DateTimeKind.Utc).AddTicks(3578) });
+                values: new object[] { 1, (short)26, (short)16, (short)9, new DateTime(2026, 3, 4, 3, 35, 40, 422, DateTimeKind.Utc).AddTicks(5940), (short)0, (short)-1, (short)0, (short)0, (short)0, (short)1, (short)0, (short)0, true, 1, "26 bits (No Fac)", (short)0, (short)13, (short)0, (short)13, (short)13, new DateTime(2026, 3, 4, 3, 35, 40, 422, DateTimeKind.Utc).AddTicks(5942) });
 
             migrationBuilder.InsertData(
                 table: "role",
                 columns: new[] { "id", "created_date", "driver_id", "is_active", "location_id", "name", "updated_date" },
-                values: new object[] { 1, new DateTime(2026, 3, 4, 3, 17, 33, 240, DateTimeKind.Utc).AddTicks(7028), (short)0, true, 1, "Administrator", new DateTime(2026, 3, 4, 3, 17, 33, 240, DateTimeKind.Utc).AddTicks(7028) });
+                values: new object[] { 1, new DateTime(2026, 3, 4, 3, 35, 40, 427, DateTimeKind.Utc).AddTicks(2839), (short)0, true, 1, "Administrator", new DateTime(2026, 3, 4, 3, 35, 40, 427, DateTimeKind.Utc).AddTicks(2841) });
 
             migrationBuilder.InsertData(
                 table: "sub_feature",
@@ -2744,7 +2744,7 @@ namespace Aero.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "timezone",
                 columns: new[] { "id", "active_time", "created_date", "deactive_time", "driver_id", "is_active", "location_id", "mode", "name", "updated_date" },
-                values: new object[] { 1, "", new DateTime(2026, 3, 4, 3, 17, 33, 232, DateTimeKind.Utc).AddTicks(7972), "", (short)1, true, 1, (short)1, "Always", new DateTime(2026, 3, 4, 3, 17, 33, 232, DateTimeKind.Utc).AddTicks(7974) });
+                values: new object[] { 1, "", new DateTime(2026, 3, 4, 3, 35, 40, 417, DateTimeKind.Utc).AddTicks(5216), "", (short)1, true, 1, (short)1, "Always", new DateTime(2026, 3, 4, 3, 35, 40, 417, DateTimeKind.Utc).AddTicks(5217) });
 
             migrationBuilder.InsertData(
                 table: "transaction_code",
@@ -2983,30 +2983,30 @@ namespace Aero.Infrastructure.Migrations
                 columns: new[] { "feature_id", "role_id", "id", "is_action", "is_allow", "is_create", "is_delete", "is_modify" },
                 values: new object[,]
                 {
-                    { 1, 1, 0, true, true, true, true, true },
-                    { 2, 1, 0, true, true, true, true, true },
-                    { 3, 1, 0, true, true, true, true, true },
-                    { 4, 1, 0, true, true, true, true, true },
-                    { 5, 1, 0, true, true, true, true, true },
-                    { 6, 1, 0, true, true, true, true, true },
-                    { 7, 1, 0, true, true, true, true, true },
-                    { 8, 1, 0, true, true, true, true, true },
-                    { 9, 1, 0, true, true, true, true, true },
-                    { 10, 1, 0, true, true, true, true, true },
-                    { 11, 1, 0, true, true, true, true, true },
-                    { 12, 1, 0, true, true, true, true, true },
-                    { 13, 1, 0, true, true, true, true, true },
-                    { 14, 1, 0, true, true, true, true, true },
-                    { 15, 1, 0, true, true, true, true, true },
-                    { 16, 1, 0, true, true, true, true, true },
-                    { 17, 1, 0, true, true, true, true, true },
-                    { 18, 1, 0, true, true, true, true, true }
+                    { 1, 1, 1, true, true, true, true, true },
+                    { 2, 1, 2, true, true, true, true, true },
+                    { 3, 1, 3, true, true, true, true, true },
+                    { 4, 1, 4, true, true, true, true, true },
+                    { 5, 1, 5, true, true, true, true, true },
+                    { 6, 1, 6, true, true, true, true, true },
+                    { 7, 1, 7, true, true, true, true, true },
+                    { 8, 1, 8, true, true, true, true, true },
+                    { 9, 1, 9, true, true, true, true, true },
+                    { 10, 1, 10, true, true, true, true, true },
+                    { 11, 1, 11, true, true, true, true, true },
+                    { 12, 1, 12, true, true, true, true, true },
+                    { 13, 1, 13, true, true, true, true, true },
+                    { 14, 1, 14, true, true, true, true, true },
+                    { 15, 1, 15, true, true, true, true, true },
+                    { 16, 1, 16, true, true, true, true, true },
+                    { 17, 1, 17, true, true, true, true, true },
+                    { 18, 1, 18, true, true, true, true, true }
                 });
 
             migrationBuilder.InsertData(
                 table: "operator",
                 columns: new[] { "id", "created_date", "email", "first_name", "image", "is_active", "last_name", "middle_name", "password", "phone", "role_id", "title", "updated_date", "user_id", "user_name" },
-                values: new object[] { 1, new DateTime(2026, 3, 4, 3, 17, 33, 242, DateTimeKind.Utc).AddTicks(89), "support@honorsupplying.com", "Administrator", "", true, "", "", "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY", "", 1, "Mr.", new DateTime(2026, 3, 4, 3, 17, 33, 242, DateTimeKind.Utc).AddTicks(90), "Administrator", "admin" });
+                values: new object[] { 1, new DateTime(2026, 3, 4, 3, 35, 40, 428, DateTimeKind.Utc).AddTicks(6776), "support@honorsupplying.com", "Administrator", "", true, "", "", "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY", "", 1, "Mr.", new DateTime(2026, 3, 4, 3, 35, 40, 428, DateTimeKind.Utc).AddTicks(6777), "Administrator", "admin" });
 
             migrationBuilder.InsertData(
                 table: "operator_location",

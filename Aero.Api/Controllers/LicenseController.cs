@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace Aero.Api.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class LicenseController(ILicenseService service) : ControllerBase
     {

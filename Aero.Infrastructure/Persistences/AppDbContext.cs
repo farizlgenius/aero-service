@@ -1577,24 +1577,24 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         modelBuilder.Entity<FeatureRole>()
             .HasData(
-                new FeatureRole { feature_id = 1, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
-                new FeatureRole { feature_id = 2, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
-                new FeatureRole { feature_id = 3, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
-                new FeatureRole { feature_id = 4, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
-                new FeatureRole { feature_id = 5, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
-                new FeatureRole { feature_id = 6, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
-                new FeatureRole { feature_id = 7, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
-                new FeatureRole { feature_id = 8, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
-                new FeatureRole { feature_id = 9, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
-                new FeatureRole { feature_id = 10, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
-                new FeatureRole { feature_id = 11, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
-                new FeatureRole { feature_id = 12, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
-                new FeatureRole { feature_id = 13, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
-                new FeatureRole { feature_id = 14, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
-                new FeatureRole { feature_id = 15, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
-                new FeatureRole { feature_id = 16, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
-                new FeatureRole { feature_id = 17, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
-                new FeatureRole { feature_id = 18, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true }
+                new FeatureRole { id=1, feature_id = 1, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                new FeatureRole { id=2, feature_id = 2, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                new FeatureRole { id=3, feature_id = 3, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                new FeatureRole { id=4, feature_id = 4, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                new FeatureRole { id=5, feature_id = 5, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                new FeatureRole { id=6, feature_id = 6, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                new FeatureRole { id=7, feature_id = 7, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                new FeatureRole { id=8, feature_id = 8, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                new FeatureRole { id=9, feature_id = 9, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                new FeatureRole { id=10, feature_id = 10, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                new FeatureRole { id=11, feature_id = 11, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                new FeatureRole { id=12, feature_id = 12, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                new FeatureRole { id=13, feature_id = 13, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                new FeatureRole { id=14, feature_id = 14, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                new FeatureRole { id=15, feature_id = 15, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                new FeatureRole { id=16, feature_id = 16, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                new FeatureRole { id=17, feature_id = 17, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true },
+                new FeatureRole { id=18, feature_id = 18, role_id = 1, is_allow = true, is_create = true, is_modify = true, is_delete = true, is_action = true }
             );
 
         #endregion

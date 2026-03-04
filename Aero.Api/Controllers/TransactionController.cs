@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aero.Api.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class TransactionController(ITransactionService transactionService) : ControllerBase
     {
 
-        [HttpGet("/api/v1/{location}/[controller]")]
+        [HttpGet("/api/{location}/[controller]")]
         [Authorize]
         public async Task<ActionResult<ResponseDto<Pagination<TransactionDto>>>> GetPaginationAsync([FromQuery]PaginationParamsWithFilter paginationParams,short location)
         {

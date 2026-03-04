@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aero.Api.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public sealed class TimeZoneController(ITimeZoneService service) : ControllerBase 
     { 
@@ -18,7 +18,7 @@ namespace Aero.Api.Controllers
             return Ok(res);
         }
 
-        [HttpGet("/api/v1/{location}/[controller]")]
+        [HttpGet("/api/{location}/[controller]")]
         [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<TimeZoneDto>>>> GetByLocationAsync(short location) 
         {
@@ -26,7 +26,7 @@ namespace Aero.Api.Controllers
             return Ok(res);
         }
 
-        [HttpGet("/api/v1/{location}/[controller]/pagination")]
+        [HttpGet("/api/{location}/[controller]/pagination")]
         [Authorize]
         public async Task<ActionResult<ResponseDto<IEnumerable<TimeZoneDto>>>> GetPaginationAsync([FromQuery]PaginationParamsWithFilter param,short location)
         {

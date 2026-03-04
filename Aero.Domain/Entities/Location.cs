@@ -9,8 +9,9 @@ public sealed class Location : BaseDomain
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
 
-    public Location(string name,string description)
+    public Location(int Id,string name,string description)
     {
+        this.Id = Id;
         SetName(name);
         this.Description = description;
     }

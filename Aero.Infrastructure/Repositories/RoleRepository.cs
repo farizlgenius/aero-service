@@ -66,6 +66,7 @@ public class RoleRepository(AppDbContext context) : IRoleRepository
             features = r.feature_roles.Select(fr => new
             {
                 fr.feature,
+                sub = fr.feature.sub_feature,
                 fr.is_allow,
                 fr.is_create,
                 fr.is_modify,
@@ -82,7 +83,7 @@ public class RoleRepository(AppDbContext context) : IRoleRepository
             d.id,
             d.driver_id,
             d.name,
-            d.features.Select(fr => new FeatureDto(fr.feature.id,fr.feature.name,fr.feature.path,fr.feature.sub_feature.Select(sf => new SubFeatureDto(sf.name,sf.path)).ToList(),fr.is_allow,fr.is_create,fr.is_modify,fr.is_delete,fr.is_action)).ToList(),
+            d.features.Select(fr => new FeatureDto(fr.feature.id,fr.feature.name,fr.feature.path,fr.sub.Select(sf => new SubFeatureDto(sf.name,sf.path)).ToList(),fr.is_allow,fr.is_create,fr.is_modify,fr.is_delete,fr.is_action)).ToList(),
             d.location_id,
             d.is_active))
             .ToList();
@@ -104,6 +105,7 @@ public class RoleRepository(AppDbContext context) : IRoleRepository
             features = r.feature_roles.Select(fr => new
             {
                 fr.feature,
+                sub = fr.feature.sub_feature,
                 fr.is_allow,
                 fr.is_create,
                 fr.is_modify,
@@ -119,7 +121,7 @@ public class RoleRepository(AppDbContext context) : IRoleRepository
            d.id,
            d.driver_id,
            d.name,
-           d.features.Select(fr => new FeatureDto(fr.feature.id, fr.feature.name, fr.feature.path, fr.feature.sub_feature.Select(sf => new SubFeatureDto(sf.name, sf.path)).ToList(), fr.is_allow, fr.is_create, fr.is_modify, fr.is_delete, fr.is_action)).ToList(),
+           d.features.Select(fr => new FeatureDto(fr.feature.id, fr.feature.name, fr.feature.path, fr.sub.Select(sf => new SubFeatureDto(sf.name, sf.path)).ToList(), fr.is_allow, fr.is_create, fr.is_modify, fr.is_delete, fr.is_action)).ToList(),
            d.location_id,
            d.is_active
            );
@@ -141,12 +143,12 @@ public class RoleRepository(AppDbContext context) : IRoleRepository
             features = r.feature_roles.Select(fr => new
             {
                 fr.feature,
+                sub = fr.feature.sub_feature,
                 fr.is_allow,
                 fr.is_create,
                 fr.is_modify,
                 fr.is_delete,
                 fr.is_action
-
             }),
             r.location_id,
             r.is_active
@@ -156,7 +158,7 @@ public class RoleRepository(AppDbContext context) : IRoleRepository
            d.id,
            d.driver_id,
            d.name,
-           d.features.Select(fr => new FeatureDto(fr.feature.id, fr.feature.name, fr.feature.path, fr.feature.sub_feature.Select(sf => new SubFeatureDto(sf.name, sf.path)).ToList(), fr.is_allow, fr.is_create, fr.is_modify, fr.is_delete, fr.is_action)).ToList(),
+           d.features.Select(fr => new FeatureDto(fr.feature.id, fr.feature.name, fr.feature.path, fr.sub.Select(sf => new SubFeatureDto(sf.name, sf.path)).ToList(), fr.is_allow, fr.is_create, fr.is_modify, fr.is_delete, fr.is_action)).ToList(),
            d.location_id,
            d.is_active
            );
@@ -177,11 +179,12 @@ public class RoleRepository(AppDbContext context) : IRoleRepository
            features = r.feature_roles.Select(fr => new
            {
                fr.feature,
-               fr.is_allow,
-               fr.is_create,
-               fr.is_modify,
-               fr.is_delete,
-               fr.is_action
+                sub = fr.feature.sub_feature,
+                fr.is_allow,
+                fr.is_create,
+                fr.is_modify,
+                fr.is_delete,
+                fr.is_action
 
            }),
            r.location_id,
@@ -193,7 +196,7 @@ public class RoleRepository(AppDbContext context) : IRoleRepository
             d.id,
             d.driver_id,
             d.name,
-            d.features.Select(fr => new FeatureDto(fr.feature.id, fr.feature.name, fr.feature.path, fr.feature.sub_feature.Select(sf => new SubFeatureDto(sf.name, sf.path)).ToList(), fr.is_allow, fr.is_create, fr.is_modify, fr.is_delete, fr.is_action)).ToList(),
+            d.features.Select(fr => new FeatureDto(fr.feature.id, fr.feature.name, fr.feature.path, fr.sub.Select(sf => new SubFeatureDto(sf.name, sf.path)).ToList(), fr.is_allow, fr.is_create, fr.is_modify, fr.is_delete, fr.is_action)).ToList(),
             d.location_id,
             d.is_active))
             .ToList();
@@ -317,11 +320,12 @@ public class RoleRepository(AppDbContext context) : IRoleRepository
                features = r.feature_roles.Select(fr => new
                {
                    fr.feature,
-                   fr.is_allow,
-                   fr.is_create,
-                   fr.is_modify,
-                   fr.is_delete,
-                   fr.is_action
+                sub = fr.feature.sub_feature,
+                fr.is_allow,
+                fr.is_create,
+                fr.is_modify,
+                fr.is_delete,
+                fr.is_action
 
                }),
                r.location_id,
@@ -333,7 +337,7 @@ public class RoleRepository(AppDbContext context) : IRoleRepository
             d.id,
             d.driver_id,
             d.name,
-            d.features.Select(fr => new FeatureDto(fr.feature.id, fr.feature.name, fr.feature.path, fr.feature.sub_feature.Select(sf => new SubFeatureDto(sf.name, sf.path)).ToList(), fr.is_allow, fr.is_create, fr.is_modify, fr.is_delete, fr.is_action)).ToList(),
+            d.features.Select(fr => new FeatureDto(fr.feature.id, fr.feature.name, fr.feature.path, fr.sub.Select(sf => new SubFeatureDto(sf.name, sf.path)).ToList(), fr.is_allow, fr.is_create, fr.is_modify, fr.is_delete, fr.is_action)).ToList(),
             d.location_id,
             d.is_active))
             .ToList();

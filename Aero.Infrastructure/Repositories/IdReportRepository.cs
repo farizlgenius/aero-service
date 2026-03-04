@@ -98,9 +98,24 @@ public class IdReportRepository(AppDbContext context) : IIdReportRepository
         return dtos;
     }
 
-      public Task<IEnumerable<IdReportDto>> GetAsync(short location)
+      public async Task<IEnumerable<IdReportDto>> GetAsync(short location)
       {
-            throw new NotImplementedException();
+            var dtos = await context.id_report
+           .AsNoTracking()
+           .Where(x => x.location_id == location)
+           .Select(x => new IdReportDto(
+             x.scp_id,
+             x.serial_number,
+             x.mac,
+             x.ip,
+              x.port,
+              x.firmware,
+                x.device_id,
+               "AERO"
+           ))
+           .ToArrayAsync();
+
+        return dtos;
       }
 
       public Task<IdReportDto> GetByIdAsync(int id)

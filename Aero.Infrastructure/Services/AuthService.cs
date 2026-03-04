@@ -44,7 +44,7 @@ namespace Aero.Application.Services
 
             if (user is null) return ResponseHelper.NotFoundBuilder<TokenDtoWithRefresh>(["User not found."]);
 
-            var role = await repo.GetByDriverIdAsync(user.Role);
+            var role = await repo.GetByIdAsync(user.Role);
 
             
 
@@ -148,7 +148,7 @@ namespace Aero.Application.Services
             var locations = user.LocationIds;
             var roles = new 
             {
-                RoleNo = role.DriverId,
+                RoleNo = role.Id,
                 RoleName = role.Name,
                 Features = role.Features.Select(x => x.Id).ToList()
             };
