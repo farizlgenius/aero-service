@@ -5,7 +5,7 @@ namespace Aero.Domain.Entities;
 
 public sealed class Module : BaseDomain
 {
-    public short DeviceId { get; set; }
+    public int DeviceId { get; set; }
     public short DriverId { get; set; }
     public short Model { get; set; }
     public string ModelDetail { get; set; } = string.Empty;
@@ -39,7 +39,7 @@ public sealed class Module : BaseDomain
 
     public Module() { }
 
-    public Module(short deviceId, short driverId, short model, string modelDetail, string revision, string serialNumber, int nHardwareId, string nHardwareIdDetail, int nHardwareRev, int nProductId, int nProductVer, short nEncConfig, string nEncConfigDetail, short nEncKeyStatus, string nEncKeyStatusDetail, List<Reader>? readers, List<Sensor>? sensors, List<Strike>? strikes, List<RequestExit>? requestExits, List<MonitorPoint>? monitorPoints, List<ControlPoint>? controlPoints, short address, string addressDetail, short port, short nInput, short nOutput, short nReader, short msp1No, short baudRate, short nProtocol, short nDialect,int location,bool status) : base(location,status)
+    public Module(int deviceId, short driverId, short model, string modelDetail, string revision, string serialNumber, int nHardwareId, string nHardwareIdDetail, int nHardwareRev, int nProductId, int nProductVer, short nEncConfig, string nEncConfigDetail, short nEncKeyStatus, string nEncKeyStatusDetail, List<Reader>? readers, List<Sensor>? sensors, List<Strike>? strikes, List<RequestExit>? requestExits, List<MonitorPoint>? monitorPoints, List<ControlPoint>? controlPoints, short address, string addressDetail, short port, short nInput, short nOutput, short nReader, short msp1No, short baudRate, short nProtocol, short nDialect,int location,bool status) : base(location,status)
     {
         DeviceId = deviceId;
         DriverId = driverId;
@@ -53,9 +53,9 @@ public sealed class Module : BaseDomain
         this.nProductId = nProductId;
         this.nProductVer = nProductVer;
         this.nEncConfig = nEncConfig;
-        this.nEncConfigDetail = ValidateRequiredString(nEncConfigDetail, nameof(nEncConfigDetail));
+        this.nEncConfigDetail = nEncConfigDetail;
         this.nEncKeyStatus = nEncKeyStatus;
-        this.nEncKeyStatusDetail = ValidateRequiredString(nEncKeyStatusDetail, nameof(nEncKeyStatusDetail));
+        this.nEncKeyStatusDetail = nEncKeyStatusDetail;
         Readers = readers;
         Sensors = sensors;
         Strikes = strikes;

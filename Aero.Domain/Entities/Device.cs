@@ -68,11 +68,11 @@ public sealed class Device : BaseDomain
         SetIsReset(isReset);
         SetPortOne(portone);
         SetProtocolOne(protocolone);
-        SetProtocolOneDetail(protocolonedetail);
+       this.ProtocolOneDetail = protocolonedetail;
         SetBaudRateOne(baudrateone);
         SetPortTwo(porttwo);
         SetProtocolTwo(protocoltwo);
-        SetProtocolTwoDetail(protocoltwodetail);
+        this.ProtocolTwoDetail = protocoltwodetail;
         SetBaudRateTwo(baudratetwo);
         SetLastSync(lastsync);
     }

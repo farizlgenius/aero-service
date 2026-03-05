@@ -53,6 +53,7 @@ namespace Aero.Infrastructure.Persistences.Entities
             this.hardware_type_detail = data.HardwareTypeDetail;
             this.mac = data.Mac;
             this.ip = data.Ip;
+            this.modules = data.Modules.Select(m => new Module(m)).ToList();
             this.port = data.Port;
             this.firmware = data.Firmware;
             this.serial_number = data.SerialNumber;

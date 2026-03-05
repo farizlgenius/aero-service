@@ -226,6 +226,7 @@ public sealed class DeviceRepository(AppDbContext context) : IDeviceRepository
             x.firmware,
             x.port,
             x.modules.Select(m => new ModuleDto(
+                m.id,
                 m.device_id,
                 m.driver_id,
                 m.model,
@@ -297,6 +298,7 @@ public sealed class DeviceRepository(AppDbContext context) : IDeviceRepository
             x.firmware,
             x.port,
             x.modules.Select(m => new ModuleDto(
+                m.id,
                 m.device_id,
                 m.driver_id,
                 m.model,
@@ -368,6 +370,7 @@ public sealed class DeviceRepository(AppDbContext context) : IDeviceRepository
             x.firmware,
             x.port,
             x.modules.Select(m => new ModuleDto(
+                m.id,
                 m.device_id,
                 m.driver_id,
                 m.model,
@@ -439,6 +442,7 @@ public sealed class DeviceRepository(AppDbContext context) : IDeviceRepository
             x.firmware,
             x.port,
             x.modules.Select(m => new ModuleDto(
+                m.id,
                 m.device_id,
                 m.driver_id,
                 m.model,
@@ -823,6 +827,7 @@ public sealed class DeviceRepository(AppDbContext context) : IDeviceRepository
             x.firmware,
             x.port,
             x.modules.Select(m => new ModuleDto(
+                m.id,
                 m.device_id,
                 m.driver_id,
                 m.model,

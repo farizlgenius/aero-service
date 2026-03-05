@@ -102,7 +102,7 @@ public class IdReportRepository(AppDbContext context) : IIdReportRepository
       {
             var dtos = await context.id_report
            .AsNoTracking()
-           .Where(x => x.location_id == location)
+           .Where(x => x.location_id == location || x.location_id == 1)
            .Select(x => new IdReportDto(
              x.scp_id,
              x.serial_number,

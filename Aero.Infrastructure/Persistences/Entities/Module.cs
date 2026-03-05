@@ -44,7 +44,7 @@ namespace Aero.Infrastructure.Persistences.Entities
         public Module(Aero.Domain.Entities.Module data) : base(data.LocationId)
         {
             this.driver_id = data.DriverId;
-            this.device_id = data.DeviceId;
+            this.device_id = (short)data.DeviceId;
             this.model = data.Model;
             this.model_detail = data.ModelDetail;
             this.revision = data.Revision;
@@ -73,7 +73,7 @@ namespace Aero.Infrastructure.Persistences.Entities
 
         public void Update(Aero.Domain.Entities.Module data) 
         {
-            this.device_id = data.DeviceId;
+            this.device_id = (short)data.DeviceId;
             this.model = data.Model;
             this.model_detail = data.ModelDetail;
             this.revision = data.Revision;

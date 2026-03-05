@@ -79,6 +79,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
         var res = await context.module
             .AsNoTracking()
             .Select(m => new ModuleDto(
+                m.id,
                 m.device_id,
                 m.driver_id,
                 m.model,
@@ -212,7 +213,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
     {
         var res = await context.module_baudrate
             .AsNoTracking()
-            .Select(x => new ModeDto(x.name,(short)x.value,x.description))
+            .Select(x => new ModeDto(x.name,x.value,x.description))
             .ToArrayAsync();
 
         return res;
@@ -229,6 +230,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
             .AsNoTracking()
             .Where(x => x.location_id == locationId || x.location_id == 1)
            .Select(m => new ModuleDto(
+            m.id,
             m.device_id,
                 m.driver_id,
                 m.model,
@@ -365,6 +367,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
         .Where(x => x.device_id == device)
         .OrderBy(x => x.id)
         .Select(m => new ModuleDto(
+            m.id,
             m.device_id,
                 m.driver_id,
                 m.model,
@@ -592,6 +595,7 @@ public sealed class ModuleRepository(AppDbContext context) : IModuleRepository
             .Skip((param.PageNumber - 1) * param.PageSize)
             .Take(param.PageSize)
              .Select(m => new ModuleDto(
+                m.id,
                 m.device_id,
                 m.driver_id,
                 m.model,

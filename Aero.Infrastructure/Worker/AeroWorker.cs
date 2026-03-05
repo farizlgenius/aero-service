@@ -230,7 +230,7 @@ namespace Aero.Infrastructure.Mapper
                             break;
                         case (int)enSCPReplyType.enSCPReplyTranStatus:
                             TranStatus t = new TranStatus(
-                                await qhw.GetMacFromComponentAsync((short)message.ScpId),
+                                message.ScpId,
                                 message.tran_sts.capacity,
                                 message.tran_sts.oldest,
                                  message.tran_sts.last_loggd,
@@ -241,7 +241,7 @@ namespace Aero.Infrastructure.Mapper
                             await publisher.ScpNotifyTranStatus(t);
                             break;
                         case (int)enSCPReplyType.enSCPReplySrSio:
-                            var siostatus = new SioStatus(await qhw.GetMacFromComponentAsync((short)message.ScpId), message.sts_sio.number, DecodeHelper.TypeSioCommTranCodeDecode(message.sts_sio.com_status), DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_sio.ip_stat[4])), DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_sio.ip_stat[5])), DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_sio.ip_stat[6])));
+                            var siostatus = new SioStatus(message.ScpId, message.sts_sio.number, DecodeHelper.TypeSioCommTranCodeDecode(message.sts_sio.com_status), DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_sio.ip_stat[4])), DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_sio.ip_stat[5])), DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_sio.ip_stat[6])));
                             await publisher.SioNotifyStatus(siostatus);
                             break;
                         case (int)enSCPReplyType.enSCPReplySrMp:

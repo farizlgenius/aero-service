@@ -77,7 +77,7 @@ namespace Aero.Api.Controllers
             return Ok(res);
         }
 
-        [HttpGet("status/{device}/{driver}")]
+        [HttpGet("status/{driver}/{device}")]
         [Authorize]
         public async Task<ActionResult<ResponseDto<bool>>> GetStatusAsync(int device, short driver)
         {
@@ -87,7 +87,7 @@ namespace Aero.Api.Controllers
 
         [HttpGet("baudrate")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IEnumerable<Mode>>>> GetBaudrateAsync()
+        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetBaudrateAsync()
         {
             var res = await service.GetBaudrateAsync();
             return Ok(res);
@@ -95,7 +95,7 @@ namespace Aero.Api.Controllers
 
         [HttpGet("protocol")]
         [Authorize]
-        public async Task<ActionResult<ResponseDto<IEnumerable<Mode>>>> GetProtocolAsync()
+        public async Task<ActionResult<ResponseDto<IEnumerable<ModeDto>>>> GetProtocolAsync()
         {
             var res = await service.GetProtocolAsync();
             return Ok(res);

@@ -80,7 +80,7 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<IEnumerable<ModeDto>>> GetBaudrateAsync()
         {
             var dtos = await moduleRepo.GetBaudrateAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
+            return ResponseHelper.SuccessBuilder(dtos);
         }
 
         public async Task<ResponseDto<IEnumerable<ModeDto>>> GetProtocolAsync()

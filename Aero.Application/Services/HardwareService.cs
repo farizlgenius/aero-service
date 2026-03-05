@@ -176,7 +176,7 @@ namespace Aero.Application.Services
             #region Module Upload
 
             // modules
-            var modules = await moduleRepo.GetByDeviceIdAsync(id);
+            var modules = await moduleRepo.GetByDeviceIdAsync(en.DriverId);
 
 
             foreach (var module in modules)
@@ -627,7 +627,7 @@ namespace Aero.Application.Services
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, errors);
 
-            if (await repo.UpdateSyncStatusByIdAsync(en.DriverId) <= 0)
+            if (await repo.UpdateSyncStatusByIdAsync(en.Id) <= 0)
             {
                 return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.UPLOAD_HW_CONFIG_FAIL, errors);
             }
@@ -779,7 +779,7 @@ namespace Aero.Application.Services
             var DriverId = await repo.GetLowestUnassignedNumberAsync(10);
             if (DriverId == -1) return ResponseHelper.ExceedLimit<DeviceDto>();
 
-            var dev = await repo.GetDeviceComponentByModelAsync((short)dto.HardwareType);
+            var dev = await repo.GetDeviceComponentByModelAsync(196); // Aero
 
             var hardware = new Aero.Domain.Entities.Device(
                 0,
@@ -793,7 +793,7 @@ namespace Aero.Application.Services
                 dto.Port,
                 new List<Module>()
                 {
-                    new Module(
+                    new Aero.Domain.Entities.Module(
                         dto.DriverId,
                         1,
                         196,
@@ -819,7 +819,7 @@ namespace Aero.Application.Services
                         "0",
                         3,
                         (short)dev.nInput,
-                         (short)dev.nOutput,
+                        (short)dev.nOutput,
                          (short)dev.nReader,
                         3,
                         0,
@@ -827,18 +827,18 @@ namespace Aero.Application.Services
                         0,
                         dto.LocationId,
                         dto.IsActive
-                        )
+        )
                 },
                 dto.SerialNumber,
                 false,
                 false,
                 dto.PortOne,
                 dto.ProtocolOne,
-                dto.ProtocolOneDescription,
+                dto.ProtocolOneDetail,
                 dto.BaudRateOne,
                 dto.PortTwo,
                 dto.ProtocolTwo,
-                dto.ProtocolTwoDescription,
+                dto.ProtocolTwoDetail,
                 dto.BaudRateTwo,
                 DateTime.UtcNow
 
@@ -940,7 +940,7 @@ namespace Aero.Application.Services
                 (short)dto.DriverId,
                 dto.Name,
                 dto.HardwareType,
-                dto.HardwareTypeDescription,
+                dto.HardwareTypeDetail,
                 dto.Mac,
                 dto.Ip,
                 dto.Firmware,
@@ -951,11 +951,11 @@ namespace Aero.Application.Services
                 false,
                 dto.PortOne,
                 dto.ProtocolOne,
-                dto.ProtocolOneDescription,
+                dto.ProtocolOneDetail,
                 dto.BaudRateOne,
                 dto.PortTwo,
                 dto.ProtocolTwo,
-                dto.ProtocolTwoDescription,
+                dto.ProtocolTwoDetail,
                 dto.BaudRateTwo,
                 DateTime.UtcNow
 
@@ -974,7 +974,7 @@ namespace Aero.Application.Services
             var en = await repo.GetByIdAsync(Id);
             if (en is null) return ResponseHelper.NotFoundBuilder<DeviceStatusDto>();
             short status = scp.CheckSCPStatus((short)en.DriverId);
-            return ResponseHelper.SuccessBuilder(new DeviceStatusDto(en.Id,status));
+            return ResponseHelper.SuccessBuilder(new DeviceStatusDto(en.DriverId,status));
         }
 
 

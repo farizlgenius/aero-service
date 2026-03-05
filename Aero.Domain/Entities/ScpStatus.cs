@@ -2,4 +2,4 @@ using System;
 
 namespace Aero.Domain.Entities;
 
-public sealed record ScpStatus(string Mac,short Status);
+public sealed record ScpStatus(int DriverId,short Status);
