@@ -6,7 +6,6 @@ namespace Aero.Domain.Entities;
 public sealed class Operator : BaseDomain
 {
         public int Id { get; set; }
-        public string UserId {get; set;} =string.Empty;
         public string Username { get; set; } = string.Empty;
         public string Password { get; set;  }  = string.Empty;
         public string Email { get; set; } = string.Empty;
@@ -19,9 +18,10 @@ public sealed class Operator : BaseDomain
         public short RoleId { get; set; }
         public List<int> LocationIds { get; set; } = new List<int>();
 
-    public Operator(string userid,string username,string pass,string email,string title,string first,string middle,string last,string phone,string image,short role,List<int> locations) : base()
+    public Operator(int Id,string username,string pass,string email,string title,string first,string middle,string last,string phone,string image,short role,List<int> locations) : base()
     {
-        SetUserId(userid);
+        if(Id < 0) throw new ArgumentException("Id invalid.",nameof(Id));
+        this.Id = Id;
         SetUserName(username);
         this.Password = pass;
         SetEmail(email);
@@ -36,28 +36,26 @@ public sealed class Operator : BaseDomain
         this.LocationIds = locations;
     }
 
-    private void SetUserId(string userid)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(userid);
-        if (!RegexHelper.IsValidOnlyCharAndDigit(userid)) throw new ArgumentException("Userid invalid.",nameof(userid));
-    }
 
     private void SetUserName(string user)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(user);
         if (!RegexHelper.IsValidOnlyCharAndDigit(user)) throw new ArgumentException("Username invalid.", nameof(user));
+        this.Username = user;
     }
 
     private void SetEmail(string email)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(email);
         if (!RegexHelper.IsValidEmail(email)) throw new ArgumentException("email invalid.", nameof(email));
+        this.Email = email;
     }
 
     private void SetFirstname(string first)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(first);
         if (!RegexHelper.IsValidName(first)) throw new ArgumentException("Firstname invalid.", nameof(first));
+        this.FirstName = first;
     }
 
 }

@@ -1,5 +1,6 @@
 using Aero.Application.DTOs;
 using Aero.Domain.Entities;
+using Aero.Domain.Helpers;
 using Aero.Domain.Interface;
 using Aero.Infrastructure.Mapper;
 using Aero.Infrastructure.Persistences;
@@ -77,7 +78,6 @@ public class OperatorRepository(AppDbContext context) : IOperatorRepository
            new
            {
                o.id,
-               o.user_id,
                o.user_name,
                o.email,
                o.title,
@@ -88,11 +88,12 @@ public class OperatorRepository(AppDbContext context) : IOperatorRepository
                o.image,
                o.role_id,
                locationd = o.operator_locations.Select(l => l.location_id),
+               features = o.role.feature_roles.Where(x => x.is_allow == true).Select(f => f.feature_id),
                o.is_active
            })
            .ToArrayAsync();
 
-        var res = data.Select(o => new OperatorDto(o.id, o.user_id, o.user_name, o.email, o.title, o.first_name, o.middle_name, o.last_name, o.phone, o.image, o.role_id, o.locationd.ToList(), o.is_active)).ToList();
+        var res = data.Select(o => new OperatorDto(o.id, o.user_name, o.email, o.title, o.first_name, o.middle_name, o.last_name, o.phone, o.image, o.role_id, o.locationd.ToList(),o.features.ToList(), o.is_active)).ToList();
 
         return res;
     }
@@ -106,7 +107,6 @@ public class OperatorRepository(AppDbContext context) : IOperatorRepository
                new
                {
                    o.id,
-                   o.user_id,
                    o.user_name,
                    o.email,
                    o.title,
@@ -117,11 +117,12 @@ public class OperatorRepository(AppDbContext context) : IOperatorRepository
                    o.image,
                    o.role_id,
                    locationd = o.operator_locations.Select(l => l.location_id),
+                   features = o.role.feature_roles.Where(x => x.is_allow == true).Select(f => f.feature_id),
                    o.is_active
                })
              .FirstOrDefaultAsync();
 
-        return new OperatorDto(o.id, o.user_id, o.user_name, o.email, o.title, o.first_name, o.middle_name, o.last_name, o.phone, o.image, o.role_id, o.locationd.ToList(), o.is_active);
+        return new OperatorDto(o.id,  o.user_name, o.email, o.title, o.first_name, o.middle_name, o.last_name, o.phone, o.image, o.role_id, o.locationd.ToList(),o.features.ToList(), o.is_active);
     }
 
     public async Task<IEnumerable<OperatorDto>> GetByLocationIdAsync(int locationId)
@@ -133,7 +134,6 @@ public class OperatorRepository(AppDbContext context) : IOperatorRepository
                new
                {
                    o.id,
-                   o.user_id,
                    o.user_name,
                    o.email,
                    o.title,
@@ -144,11 +144,12 @@ public class OperatorRepository(AppDbContext context) : IOperatorRepository
                    o.image,
                    o.role_id,
                    locationd = o.operator_locations.Select(l => l.location_id),
+                   features = o.role.feature_roles.Where(x => x.is_allow == true).Select(f => f.feature_id),
                    o.is_active
                })
             .ToArrayAsync();
 
-        var res = data.Select(o => new OperatorDto(o.id, o.user_id, o.user_name, o.email, o.title, o.first_name, o.middle_name, o.last_name, o.phone, o.image, o.role_id, o.locationd.ToList(), o.is_active)).ToList();
+        var res = data.Select(o => new OperatorDto(o.id,  o.user_name, o.email, o.title, o.first_name, o.middle_name, o.last_name, o.phone, o.image, o.role_id, o.locationd.ToList(),o.features.ToList(), o.is_active)).ToList();
 
         return res;
     }
@@ -163,7 +164,6 @@ public class OperatorRepository(AppDbContext context) : IOperatorRepository
                new
                {
                    o.id,
-                   o.user_id,
                    o.user_name,
                    o.email,
                    o.title,
@@ -174,11 +174,14 @@ public class OperatorRepository(AppDbContext context) : IOperatorRepository
                    o.image,
                    o.role_id,
                    locationd = o.operator_locations.Select(l => l.location_id),
+                   features = o.role.feature_roles.Where(x => x.is_allow == true).Select(f => f.feature_id),
                    o.is_active
                })
              .FirstOrDefaultAsync();
 
-        return new OperatorDto(o.id, o.user_id, o.user_name, o.email, o.title, o.first_name, o.middle_name, o.last_name, o.phone, o.image, o.role_id, o.locationd.ToList(), o.is_active);
+        if(o is null) return null;
+
+        return new OperatorDto(o.id,o.user_name, o.email, o.title, o.first_name, o.middle_name, o.last_name, o.phone, o.image, o.role_id, o.locationd.ToList(),o.features.ToList(), o.is_active);
 
     }
 
@@ -232,7 +235,6 @@ public class OperatorRepository(AppDbContext context) : IOperatorRepository
                     var pattern = $"%{search}%";
 
                     query = query.Where(x =>
-                        EF.Functions.ILike(x.user_id, pattern) ||
                         EF.Functions.ILike(x.user_name, pattern) ||
                         EF.Functions.ILike(x.email, pattern) ||
                         EF.Functions.ILike(x.title, pattern) ||
@@ -246,7 +248,6 @@ public class OperatorRepository(AppDbContext context) : IOperatorRepository
                 else // SQL Server
                 {
                     query = query.Where(x =>
-                        x.user_id.Contains(search) ||
                         x.user_name.Contains(search) ||
                         x.email.Contains(search) ||
                         x.title.Contains(search) ||
@@ -285,7 +286,6 @@ public class OperatorRepository(AppDbContext context) : IOperatorRepository
                new
                {
                    o.id,
-                   o.user_id,
                    o.user_name,
                    o.email,
                    o.title,
@@ -296,11 +296,12 @@ public class OperatorRepository(AppDbContext context) : IOperatorRepository
                    o.image,
                    o.role_id,
                    locationd = o.operator_locations.Select(l => l.location_id),
+                   features = o.role.feature_roles.Where(x => x.is_allow == true).Select(f => f.feature_id),
                    o.is_active
                })
             .ToListAsync();
 
-        var res = data.Select(o => new OperatorDto(o.id, o.user_id, o.user_name, o.email, o.title, o.first_name, o.middle_name, o.last_name, o.phone, o.image, o.role_id, o.locationd.ToList(), o.is_active)).ToList();
+        var res = data.Select(o => new OperatorDto(o.id,  o.user_name, o.email, o.title, o.first_name, o.middle_name, o.last_name, o.phone, o.image, o.role_id, o.locationd.ToList(),o.features.ToList(),o.is_active)).ToList();
 
 
 

@@ -11,19 +11,13 @@ public sealed class SubFeature
     public SubFeature(string name,string path)
     {
         SetName(name);
-        SetPath(path);
+        this.Path = path;
     }
 
     private void SetName(string name)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
-        if (!RegexHelper.IsValidName(name)) throw new ArgumentException("Name invalid.", nameof(name));
         this.Name = name;
     }
 
-    private void SetPath(string path)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(path);
-        this.Path = path;
-    }
 }

@@ -7,7 +7,6 @@ public sealed class RefreshToken
 {
 
       public string HashedToken { get; set; } = default!; // store hashed token
-      public string UserId { get; set; } = default!;
       public string Username { get; set; } = default!;
       public string Action { get; set; } = default!; // "create", "rotate", "revoke"
       public string? Info { get; set; } // optional JSON for ip/user-agent
@@ -15,10 +14,9 @@ public sealed class RefreshToken
 
       public RefreshToken() { }
 
-      public RefreshToken(string hashedToken, string userId, string username, string action, string? info, DateTime expireDate)
+      public RefreshToken(string hashedToken, string username, string action, string? info, DateTime expireDate)
       {
           HashedToken = ValidateRequiredString(hashedToken, nameof(hashedToken));
-          UserId = ValidateRequiredString(userId, nameof(userId));
           Username = ValidateRequiredString(username, nameof(username));
           Action = ValidateRequiredString(action, nameof(action));
           Info = info;

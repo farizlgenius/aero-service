@@ -13,10 +13,12 @@ public class LocationRepository(AppDbContext context) : ILocationRepository
 {
       public async Task<int> AddAsync(Aero.Domain.Entities.Location data)
       {
-        var en = new Aero.Infrastructure.Persistences.Entities.Location(data);
+            var en = new Aero.Infrastructure.Persistences.Entities.Location(data);
             await context.location.AddAsync(en);
             var rec = await context.SaveChangesAsync();
             if (rec <= 0) return -1;
+            await context.operator_location.AddAsync(new Aero.Infrastructure.Persistences.Entities.OperatorLocation(en.id,1));
+            await context.SaveChangesAsync();
             return en.id;
       }
 

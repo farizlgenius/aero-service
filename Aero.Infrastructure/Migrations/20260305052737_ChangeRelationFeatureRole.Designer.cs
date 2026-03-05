@@ -3,6 +3,7 @@ using System;
 using Aero.Infrastructure.Persistences;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Aero.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260305052737_ChangeRelationFeatureRole")]
+    partial class ChangeRelationFeatureRole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -190,20 +193,20 @@ namespace Aero.Infrastructure.Migrations
                         new
                         {
                             id = 1,
-                            created_date = new DateTime(2026, 3, 5, 7, 25, 37, 525, DateTimeKind.Utc).AddTicks(5938),
+                            created_date = new DateTime(2026, 3, 5, 5, 27, 35, 586, DateTimeKind.Utc).AddTicks(8830),
                             is_active = true,
                             location_id = 1,
                             name = "No Access",
-                            updated_date = new DateTime(2026, 3, 5, 7, 25, 37, 525, DateTimeKind.Utc).AddTicks(5940)
+                            updated_date = new DateTime(2026, 3, 5, 5, 27, 35, 586, DateTimeKind.Utc).AddTicks(8832)
                         },
                         new
                         {
                             id = 2,
-                            created_date = new DateTime(2026, 3, 5, 7, 25, 37, 525, DateTimeKind.Utc).AddTicks(5943),
+                            created_date = new DateTime(2026, 3, 5, 5, 27, 35, 586, DateTimeKind.Utc).AddTicks(8837),
                             is_active = true,
                             location_id = 1,
                             name = "Full Access",
-                            updated_date = new DateTime(2026, 3, 5, 7, 25, 37, 525, DateTimeKind.Utc).AddTicks(5944)
+                            updated_date = new DateTime(2026, 3, 5, 5, 27, 35, 586, DateTimeKind.Utc).AddTicks(8837)
                         });
                 });
 
@@ -668,7 +671,7 @@ namespace Aero.Infrastructure.Migrations
                             bits = (short)26,
                             ch_ln = (short)16,
                             ch_loc = (short)9,
-                            created_date = new DateTime(2026, 3, 5, 7, 25, 37, 532, DateTimeKind.Utc).AddTicks(1263),
+                            created_date = new DateTime(2026, 3, 5, 5, 27, 35, 595, DateTimeKind.Utc).AddTicks(9806),
                             driver_id = (short)0,
                             facility = (short)-1,
                             fc_ln = (short)0,
@@ -685,7 +688,7 @@ namespace Aero.Infrastructure.Migrations
                             pe_loc = (short)0,
                             po_ln = (short)13,
                             po_loc = (short)13,
-                            updated_date = new DateTime(2026, 3, 5, 7, 25, 37, 532, DateTimeKind.Utc).AddTicks(1265)
+                            updated_date = new DateTime(2026, 3, 5, 5, 27, 35, 595, DateTimeKind.Utc).AddTicks(9808)
                         });
                 });
 
@@ -2486,20 +2489,20 @@ namespace Aero.Infrastructure.Migrations
                         new
                         {
                             id = 1,
-                            created_date = new DateTime(2026, 3, 5, 7, 25, 37, 505, DateTimeKind.Utc).AddTicks(801),
+                            created_date = new DateTime(2026, 3, 5, 5, 27, 35, 569, DateTimeKind.Utc).AddTicks(1345),
                             description = "Shared location",
                             is_active = true,
                             name = "Shared",
-                            updated_date = new DateTime(2026, 3, 5, 7, 25, 37, 505, DateTimeKind.Utc).AddTicks(804)
+                            updated_date = new DateTime(2026, 3, 5, 5, 27, 35, 569, DateTimeKind.Utc).AddTicks(1353)
                         },
                         new
                         {
                             id = 2,
-                            created_date = new DateTime(2026, 3, 5, 7, 25, 37, 505, DateTimeKind.Utc).AddTicks(807),
+                            created_date = new DateTime(2026, 3, 5, 5, 27, 35, 569, DateTimeKind.Utc).AddTicks(1356),
                             description = "Main location",
                             is_active = true,
                             name = "Main",
-                            updated_date = new DateTime(2026, 3, 5, 7, 25, 37, 505, DateTimeKind.Utc).AddTicks(807)
+                            updated_date = new DateTime(2026, 3, 5, 5, 27, 35, 569, DateTimeKind.Utc).AddTicks(1356)
                         });
                 });
 
@@ -3202,6 +3205,10 @@ namespace Aero.Infrastructure.Migrations
                     b.Property<DateTime>("updated_date")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("user_id")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("user_name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -3216,7 +3223,7 @@ namespace Aero.Infrastructure.Migrations
                         new
                         {
                             id = 1,
-                            created_date = new DateTime(2026, 3, 5, 7, 25, 37, 540, DateTimeKind.Utc).AddTicks(1707),
+                            created_date = new DateTime(2026, 3, 5, 5, 27, 35, 608, DateTimeKind.Utc).AddTicks(4379),
                             email = "support@honorsupplying.com",
                             first_name = "Administrator",
                             image = "",
@@ -3227,7 +3234,8 @@ namespace Aero.Infrastructure.Migrations
                             phone = "",
                             role_id = 1,
                             title = "Mr.",
-                            updated_date = new DateTime(2026, 3, 5, 7, 25, 37, 540, DateTimeKind.Utc).AddTicks(1710),
+                            updated_date = new DateTime(2026, 3, 5, 5, 27, 35, 608, DateTimeKind.Utc).AddTicks(4380),
+                            user_id = "Administrator",
                             user_name = "admin"
                         });
                 });
@@ -3240,6 +3248,9 @@ namespace Aero.Infrastructure.Migrations
                     b.Property<int>("operator_id")
                         .HasColumnType("integer");
 
+                    b.Property<int>("id")
+                        .HasColumnType("integer");
+
                     b.HasKey("location_id", "operator_id");
 
                     b.HasIndex("operator_id");
@@ -3249,8 +3260,9 @@ namespace Aero.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            location_id = 2,
-                            operator_id = 1
+                            location_id = 1,
+                            operator_id = 1,
+                            id = 1
                         });
                 });
 
@@ -3787,6 +3799,10 @@ namespace Aero.Infrastructure.Migrations
                     b.Property<DateTime>("updated_date")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("user_id")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("user_name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -3980,12 +3996,12 @@ namespace Aero.Infrastructure.Migrations
                         new
                         {
                             id = 1,
-                            created_date = new DateTime(2026, 3, 5, 7, 25, 37, 538, DateTimeKind.Utc).AddTicks(7183),
+                            created_date = new DateTime(2026, 3, 5, 5, 27, 35, 607, DateTimeKind.Utc).AddTicks(304),
                             driver_id = (short)0,
                             is_active = true,
                             location_id = 1,
                             name = "Administrator",
-                            updated_date = new DateTime(2026, 3, 5, 7, 25, 37, 538, DateTimeKind.Utc).AddTicks(7186)
+                            updated_date = new DateTime(2026, 3, 5, 5, 27, 35, 607, DateTimeKind.Utc).AddTicks(307)
                         });
                 });
 
@@ -4438,14 +4454,14 @@ namespace Aero.Infrastructure.Migrations
                         {
                             id = 1,
                             active_time = "",
-                            created_date = new DateTime(2026, 3, 5, 7, 25, 37, 526, DateTimeKind.Utc).AddTicks(6048),
+                            created_date = new DateTime(2026, 3, 5, 5, 27, 35, 589, DateTimeKind.Utc).AddTicks(746),
                             deactive_time = "",
                             driver_id = (short)1,
                             is_active = true,
                             location_id = 1,
                             mode = (short)1,
                             name = "Always",
-                            updated_date = new DateTime(2026, 3, 5, 7, 25, 37, 526, DateTimeKind.Utc).AddTicks(6050)
+                            updated_date = new DateTime(2026, 3, 5, 5, 27, 35, 589, DateTimeKind.Utc).AddTicks(748)
                         });
                 });
 

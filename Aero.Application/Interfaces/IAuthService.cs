@@ -13,9 +13,9 @@ namespace Aero.Application.Interface
         ResponseDto<TokenDetail> Me(ClaimsPrincipal User);
         bool ValidateLogin(string hashed,string Password);
          public string CreateAccessToken(OperatorDto user,RoleDto role);
-         Task StoreTokenAsync(string rawToken, string userId,string username, TimeSpan ttl, string? info = null);
+         Task StoreTokenAsync(string rawToken, string username, TimeSpan ttl, string? info = null);
         Task<RefreshTokenRecord> GetByRawTokenAsync(string rawToken);
-        Task RotateTokenAtomicAsync(string oldRawToken, string newRawToken, string userId,string username, TimeSpan ttl, string? info = null);
+        Task RotateTokenAtomicAsync(string oldRawToken, string newRawToken, string username, TimeSpan ttl, string? info = null);
         Task RevokeTokenAsync(string rawToken);
 
     }

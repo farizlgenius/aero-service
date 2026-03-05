@@ -23,7 +23,7 @@ namespace Aero.Application.Services
 
             var DriverId = await repo.GetLowestUnassignedNumberAsync();
 
-            var domain = new Domain.Entities.Role(DriverId,dto.Name,dto.Features.Select(x => new Feature(0,x.Name,x.Path,x.SubItem.Select(s => new SubFeature(s.Name,x.Path)).ToList(),x.IsAllow,x.IsCreate,x.IsModify,x.IsDelete,x.IsAction)).ToList());
+            var domain = new Domain.Entities.Role(0,DriverId,dto.Name,dto.Features.Select(x => new Feature(x.Id,x.Name,x.Path,x.SubItem.Select(s => new SubFeature(s.Name,x.Path)).ToList(),x.IsAllow,x.IsCreate,x.IsModify,x.IsDelete,x.IsAction)).ToList());
 
             var status = await repo.AddAsync(domain);
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<RoleDto>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
@@ -95,7 +95,7 @@ namespace Aero.Application.Services
         {
             if(!await repo.IsAnyByIdAsync(dto.Id)) return ResponseHelper.NotFoundBuilder<RoleDto>();
 
-            var domain = new Domain.Entities.Role(dto.DriverId,dto.Name,dto.Features.Select(f => 
+            var domain = new Domain.Entities.Role(dto.Id,dto.DriverId,dto.Name,dto.Features.Select(f => 
             new Feature(
                 f.Id,
                 f.Name,

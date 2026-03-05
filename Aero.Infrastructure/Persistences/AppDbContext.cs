@@ -1535,38 +1535,38 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
         modelBuilder.Entity<Feature>()
             .HasData(
                 new Feature { id = 1, name = "Dashboard", path = "/" },
-                new Feature { id = 2, name = "transaction", path = "/event" },
-                new Feature { id = 3, name = "location", path = "/location" },
+                new Feature { id = 2, name = "Events", path = "/event" },
+                new Feature { id = 3, name = "Location", path = "/location" },
                 new Feature { id = 4, name = "Alerts", path = "/alert" },
-                new Feature { id = 5, name = "operator" },
+                new Feature { id = 5, name = "Operator" },
                 new Feature { id = 6, name = "Devices" },
                 new Feature { id = 7, name = "door", path = "/door" },
                 new Feature { id = 8, name = "Card Holder", path = "/cardholder" },
                 new Feature { id = 9, name = "Access Level", path = "/level" },
                 new Feature { id = 10, name = "Access Area", path = "/area" },
-                new Feature { id = 11, name = "time" },
-                new Feature { id = 12, name = "trigger & procedure" },
+                new Feature { id = 11, name = "Time" },
+                new Feature { id = 12, name = "Trigger & procedure" },
                 new Feature { id = 13, name = "Reports" },
                 new Feature { id = 14, name = "Settings", path = "/setting" },
                 new Feature { id = 15, name = "Maps", path = "/map" },
                 new Feature { id = 16, name = "ControlPoint", path = "/control" },
                 new Feature { id = 17, name = "MonitorPoint", path = "/monitor" },
-                new Feature { id = 18, name = "monitor_group", path = "/monitorgroup" }
+                new Feature { id = 18, name = "MonitorGroup", path = "/monitorgroup" }
 
             );
 
         modelBuilder.Entity<SubFeature>()
             .HasData(
-            new SubFeature { id = 1, name = "operator", path = "/operator", feature_id = 5 },
-            new SubFeature { id = 2, name = "role", path = "/role", feature_id = 5 },
-            new SubFeature { id = 3, name = "hardware", path = "/hardware", feature_id = 6 },
-            new SubFeature { id = 4, name = "modules", path = "/modules", feature_id = 6 },
+            new SubFeature { id = 1, name = "Operator", path = "/operator", feature_id = 5 },
+            new SubFeature { id = 2, name = "Role", path = "/role", feature_id = 5 },
+            new SubFeature { id = 3, name = "Device", path = "/device", feature_id = 6 },
+            new SubFeature { id = 4, name = "Modules", path = "/modules", feature_id = 6 },
             new SubFeature { id = 5, name = "Timezone", path = "/timezone", feature_id = 11 },
-            new SubFeature { id = 6, name = "holiday", path = "/holiday", feature_id = 11 },
-            new SubFeature { id = 7, name = "interval", path = "/interval", feature_id = 11 },
-            new SubFeature { id = 8, name = "trigger", path = "/trigger", feature_id = 12 },
-            new SubFeature { id = 9, name = "procedure", path = "/action", feature_id = 12 },
-            new SubFeature { id = 10, name = "transaction", path = "/transaction", feature_id = 13 },
+            new SubFeature { id = 6, name = "Holiday", path = "/holiday", feature_id = 11 },
+            new SubFeature { id = 7, name = "Interval", path = "/interval", feature_id = 11 },
+            new SubFeature { id = 8, name = "Trigger", path = "/trigger", feature_id = 12 },
+            new SubFeature { id = 9, name = "Procedure", path = "/action", feature_id = 12 },
+            new SubFeature { id = 10, name = "Transaction", path = "/transaction", feature_id = 13 },
             new SubFeature { id = 11, name = "Audit Trail", path = "/audit", feature_id = 13 }
 
 
@@ -1648,9 +1648,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             .OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<FeatureRole>()
-            .HasKey(e => new { e.role_id, e.feature_id });
-
-        modelBuilder.Entity<FeatureRole>()
             .HasOne(e => e.role)
             .WithMany(e => e.feature_roles)
             .HasForeignKey(e => e.role_id);
@@ -1675,12 +1672,12 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
         modelBuilder.Entity<Operator>()
             .HasData(
-                new Operator { id = 1, user_id = "Administrator", user_name = "admin", password = "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY", email = "support@honorsupplying.com", title = "Mr.", first_name = "Administrator", middle_name = "", last_name = "", phone = "", image = "", role_id = 1 }
+                new Operator { id = 1, user_name = "admin", password = "2439iBIqejYGcodz6j0vGvyeI25eOrjMX3QtIhgVyo0M4YYmWbS+NmGwo0LLByUY", email = "support@honorsupplying.com", title = "Mr.", first_name = "Administrator", middle_name = "", last_name = "", phone = "", image = "", role_id = 1 }
             );
 
         modelBuilder.Entity<OperatorLocation>()
         .HasData(
-            new OperatorLocation { id = 1, location_id = 1, operator_id = 1 }
+            new OperatorLocation {  location_id = 2, operator_id = 1 }
         );
 
         #endregion

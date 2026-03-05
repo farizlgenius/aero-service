@@ -4,8 +4,6 @@ namespace Aero.Infrastructure.Persistences.Entities
 {
     public sealed class OperatorLocation
     {
-        [Key]
-        public int id { get; set; } 
         public int location_id { get; set; }
         public Location location { get; set; }
         public int operator_id { get; set; }

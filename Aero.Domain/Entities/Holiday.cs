@@ -16,7 +16,7 @@ public sealed class Holiday : BaseDomain
 
     public Holiday(int Id,short driver,string name,short year, short month, short day, short extend, short typemask,int location,bool status) : base(location,status)
     {
-         if (Id <= 0) throw new ArgumentException("Id invalid.",nameof(driver));
+         if (Id < 0) throw new ArgumentException("Id invalid.",nameof(Id));
          this.Id = Id;
         if (driver <= 0) throw new ArgumentException("Driver id invalid.",nameof(driver));
         this.DriverId = driver;

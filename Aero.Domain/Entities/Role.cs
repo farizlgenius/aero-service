@@ -10,8 +10,10 @@ public sealed class Role : BaseDomain
     public string Name { get; set; } = string.Empty;
    public List<Feature> Features { get; set; } = new List<Feature>();
 
-    public Role(short DriverId,string Name,List<Feature> Features)
+    public Role(int Id,short DriverId,string Name,List<Feature> Features)
     {
+        if(Id < 0) throw new ArgumentException("Id invalid.",nameof(Id));
+        this.Id = Id;
         SetDriverId(DriverId);
         SetName(Name);
         this.Features = Features;

@@ -9,7 +9,6 @@ namespace Aero.Infrastructure.Persistences.Entities
     {
         [Key]
         public int id { get; set; }
-        public string user_id { get; set; }
         public string user_name { get; set; }
         public string password { get; set; } 
         public string email { get; set; } = string.Empty;
@@ -30,8 +29,8 @@ namespace Aero.Infrastructure.Persistences.Entities
 
         public Operator(Aero.Domain.Entities.Operator data) 
         {
-            this.user_id = data.UserId;
             this.user_name = data.Username;
+            this.password = data.Password;
             this.email = data.Email;
             this.title = data.Title;
             this.first_name = data.FirstName;

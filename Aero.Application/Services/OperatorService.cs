@@ -25,8 +25,7 @@ namespace Aero.Application.Services
 
             //var ComponentId = await repo.GetLowestUnassignedNumberAsync(10,"");
             //if (ComponentId == -1) return ResponseHelper.ExceedLimit<OperatorDto>();
-
-            var domain = new Operator(dto.UserId,dto.Username,dto.Password,dto.Email,dto.title,dto.Firstname,dto.Middlename,dto.Lastname,dto.Phone,dto.Image,dto.Role,dto.LocationIds);
+            var domain = new Operator(0,dto.Username,EncryptHelper.HashPassword(dto.Password),dto.Email,dto.title,dto.Firstname,dto.Middlename,dto.Lastname,dto.Phone,dto.Image,dto.Role,dto.LocationIds);
 
             var status = await repo.AddAsync(domain);
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<OperatorDto>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
@@ -97,7 +96,7 @@ namespace Aero.Application.Services
         {
             if(!await repo.IsAnyByUsernameAsync(dto.Username)) return ResponseHelper.NotFoundBuilder<OperatorDto>();
 
-            var domain = new Operator(dto.UserId, dto.Username, dto.Password, dto.Email, dto.title, dto.Firstname, dto.Middlename, dto.Lastname, dto.Phone, dto.Image, dto.Role, dto.LocationIds);
+            var domain = new Operator(dto.Id, dto.Username, dto.Password, dto.Email, dto.title, dto.Firstname, dto.Middlename, dto.Lastname, dto.Phone, dto.Image, dto.Role, dto.LocationIds);
 
             var status = await repo.UpdateAsync(domain);
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<OperatorDto>(ResponseMessage.UPDATE_RECORD_UNSUCCESS,[]);

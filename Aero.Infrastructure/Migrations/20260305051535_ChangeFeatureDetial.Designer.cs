@@ -3,6 +3,7 @@ using System;
 using Aero.Infrastructure.Persistences;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Aero.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260305051535_ChangeFeatureDetial")]
+    partial class ChangeFeatureDetial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -190,20 +193,20 @@ namespace Aero.Infrastructure.Migrations
                         new
                         {
                             id = 1,
-                            created_date = new DateTime(2026, 3, 5, 7, 25, 37, 525, DateTimeKind.Utc).AddTicks(5938),
+                            created_date = new DateTime(2026, 3, 5, 5, 15, 31, 456, DateTimeKind.Utc).AddTicks(9856),
                             is_active = true,
                             location_id = 1,
                             name = "No Access",
-                            updated_date = new DateTime(2026, 3, 5, 7, 25, 37, 525, DateTimeKind.Utc).AddTicks(5940)
+                            updated_date = new DateTime(2026, 3, 5, 5, 15, 31, 456, DateTimeKind.Utc).AddTicks(9858)
                         },
                         new
                         {
                             id = 2,
-                            created_date = new DateTime(2026, 3, 5, 7, 25, 37, 525, DateTimeKind.Utc).AddTicks(5943),
+                            created_date = new DateTime(2026, 3, 5, 5, 15, 31, 456, DateTimeKind.Utc).AddTicks(9864),
                             is_active = true,
                             location_id = 1,
                             name = "Full Access",
-                            updated_date = new DateTime(2026, 3, 5, 7, 25, 37, 525, DateTimeKind.Utc).AddTicks(5944)
+                            updated_date = new DateTime(2026, 3, 5, 5, 15, 31, 456, DateTimeKind.Utc).AddTicks(9876)
                         });
                 });
 
@@ -668,7 +671,7 @@ namespace Aero.Infrastructure.Migrations
                             bits = (short)26,
                             ch_ln = (short)16,
                             ch_loc = (short)9,
-                            created_date = new DateTime(2026, 3, 5, 7, 25, 37, 532, DateTimeKind.Utc).AddTicks(1263),
+                            created_date = new DateTime(2026, 3, 5, 5, 15, 31, 464, DateTimeKind.Utc).AddTicks(5809),
                             driver_id = (short)0,
                             facility = (short)-1,
                             fc_ln = (short)0,
@@ -685,7 +688,7 @@ namespace Aero.Infrastructure.Migrations
                             pe_loc = (short)0,
                             po_ln = (short)13,
                             po_loc = (short)13,
-                            updated_date = new DateTime(2026, 3, 5, 7, 25, 37, 532, DateTimeKind.Utc).AddTicks(1265)
+                            updated_date = new DateTime(2026, 3, 5, 5, 15, 31, 464, DateTimeKind.Utc).AddTicks(5812)
                         });
                 });
 
@@ -1869,13 +1872,13 @@ namespace Aero.Infrastructure.Migrations
 
             modelBuilder.Entity("Aero.Infrastructure.Persistences.Entities.FeatureRole", b =>
                 {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("role_id")
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
                     b.Property<int>("feature_id")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("id")
                         .HasColumnType("integer");
 
                     b.Property<bool>("is_action")
@@ -1893,215 +1896,210 @@ namespace Aero.Infrastructure.Migrations
                     b.Property<bool>("is_modify")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("role_id")
-                        .HasColumnType("integer");
-
-                    b.HasKey("id");
+                    b.HasKey("role_id", "feature_id");
 
                     b.HasIndex("feature_id");
-
-                    b.HasIndex("role_id");
 
                     b.ToTable("feature_role");
 
                     b.HasData(
                         new
                         {
-                            id = 1,
+                            role_id = 1,
                             feature_id = 1,
+                            id = 1,
                             is_action = true,
                             is_allow = true,
                             is_create = true,
                             is_delete = true,
-                            is_modify = true,
-                            role_id = 1
+                            is_modify = true
                         },
                         new
                         {
-                            id = 2,
+                            role_id = 1,
                             feature_id = 2,
+                            id = 2,
                             is_action = true,
                             is_allow = true,
                             is_create = true,
                             is_delete = true,
-                            is_modify = true,
-                            role_id = 1
+                            is_modify = true
                         },
                         new
                         {
-                            id = 3,
+                            role_id = 1,
                             feature_id = 3,
+                            id = 3,
                             is_action = true,
                             is_allow = true,
                             is_create = true,
                             is_delete = true,
-                            is_modify = true,
-                            role_id = 1
+                            is_modify = true
                         },
                         new
                         {
-                            id = 4,
+                            role_id = 1,
                             feature_id = 4,
+                            id = 4,
                             is_action = true,
                             is_allow = true,
                             is_create = true,
                             is_delete = true,
-                            is_modify = true,
-                            role_id = 1
+                            is_modify = true
                         },
                         new
                         {
-                            id = 5,
+                            role_id = 1,
                             feature_id = 5,
+                            id = 5,
                             is_action = true,
                             is_allow = true,
                             is_create = true,
                             is_delete = true,
-                            is_modify = true,
-                            role_id = 1
+                            is_modify = true
                         },
                         new
                         {
-                            id = 6,
+                            role_id = 1,
                             feature_id = 6,
+                            id = 6,
                             is_action = true,
                             is_allow = true,
                             is_create = true,
                             is_delete = true,
-                            is_modify = true,
-                            role_id = 1
+                            is_modify = true
                         },
                         new
                         {
-                            id = 7,
+                            role_id = 1,
                             feature_id = 7,
+                            id = 7,
                             is_action = true,
                             is_allow = true,
                             is_create = true,
                             is_delete = true,
-                            is_modify = true,
-                            role_id = 1
+                            is_modify = true
                         },
                         new
                         {
-                            id = 8,
+                            role_id = 1,
                             feature_id = 8,
+                            id = 8,
                             is_action = true,
                             is_allow = true,
                             is_create = true,
                             is_delete = true,
-                            is_modify = true,
-                            role_id = 1
+                            is_modify = true
                         },
                         new
                         {
-                            id = 9,
+                            role_id = 1,
                             feature_id = 9,
+                            id = 9,
                             is_action = true,
                             is_allow = true,
                             is_create = true,
                             is_delete = true,
-                            is_modify = true,
-                            role_id = 1
+                            is_modify = true
                         },
                         new
                         {
-                            id = 10,
+                            role_id = 1,
                             feature_id = 10,
+                            id = 10,
                             is_action = true,
                             is_allow = true,
                             is_create = true,
                             is_delete = true,
-                            is_modify = true,
-                            role_id = 1
+                            is_modify = true
                         },
                         new
                         {
-                            id = 11,
+                            role_id = 1,
                             feature_id = 11,
+                            id = 11,
                             is_action = true,
                             is_allow = true,
                             is_create = true,
                             is_delete = true,
-                            is_modify = true,
-                            role_id = 1
+                            is_modify = true
                         },
                         new
                         {
-                            id = 12,
+                            role_id = 1,
                             feature_id = 12,
+                            id = 12,
                             is_action = true,
                             is_allow = true,
                             is_create = true,
                             is_delete = true,
-                            is_modify = true,
-                            role_id = 1
+                            is_modify = true
                         },
                         new
                         {
-                            id = 13,
+                            role_id = 1,
                             feature_id = 13,
+                            id = 13,
                             is_action = true,
                             is_allow = true,
                             is_create = true,
                             is_delete = true,
-                            is_modify = true,
-                            role_id = 1
+                            is_modify = true
                         },
                         new
                         {
-                            id = 14,
+                            role_id = 1,
                             feature_id = 14,
+                            id = 14,
                             is_action = true,
                             is_allow = true,
                             is_create = true,
                             is_delete = true,
-                            is_modify = true,
-                            role_id = 1
+                            is_modify = true
                         },
                         new
                         {
-                            id = 15,
+                            role_id = 1,
                             feature_id = 15,
+                            id = 15,
                             is_action = true,
                             is_allow = true,
                             is_create = true,
                             is_delete = true,
-                            is_modify = true,
-                            role_id = 1
+                            is_modify = true
                         },
                         new
                         {
-                            id = 16,
+                            role_id = 1,
                             feature_id = 16,
+                            id = 16,
                             is_action = true,
                             is_allow = true,
                             is_create = true,
                             is_delete = true,
-                            is_modify = true,
-                            role_id = 1
+                            is_modify = true
                         },
                         new
                         {
-                            id = 17,
+                            role_id = 1,
                             feature_id = 17,
+                            id = 17,
                             is_action = true,
                             is_allow = true,
                             is_create = true,
                             is_delete = true,
-                            is_modify = true,
-                            role_id = 1
+                            is_modify = true
                         },
                         new
                         {
-                            id = 18,
+                            role_id = 1,
                             feature_id = 18,
+                            id = 18,
                             is_action = true,
                             is_allow = true,
                             is_create = true,
                             is_delete = true,
-                            is_modify = true,
-                            role_id = 1
+                            is_modify = true
                         });
                 });
 
@@ -2486,20 +2484,20 @@ namespace Aero.Infrastructure.Migrations
                         new
                         {
                             id = 1,
-                            created_date = new DateTime(2026, 3, 5, 7, 25, 37, 505, DateTimeKind.Utc).AddTicks(801),
+                            created_date = new DateTime(2026, 3, 5, 5, 15, 31, 433, DateTimeKind.Utc).AddTicks(1342),
                             description = "Shared location",
                             is_active = true,
                             name = "Shared",
-                            updated_date = new DateTime(2026, 3, 5, 7, 25, 37, 505, DateTimeKind.Utc).AddTicks(804)
+                            updated_date = new DateTime(2026, 3, 5, 5, 15, 31, 433, DateTimeKind.Utc).AddTicks(1346)
                         },
                         new
                         {
                             id = 2,
-                            created_date = new DateTime(2026, 3, 5, 7, 25, 37, 505, DateTimeKind.Utc).AddTicks(807),
+                            created_date = new DateTime(2026, 3, 5, 5, 15, 31, 433, DateTimeKind.Utc).AddTicks(1350),
                             description = "Main location",
                             is_active = true,
                             name = "Main",
-                            updated_date = new DateTime(2026, 3, 5, 7, 25, 37, 505, DateTimeKind.Utc).AddTicks(807)
+                            updated_date = new DateTime(2026, 3, 5, 5, 15, 31, 433, DateTimeKind.Utc).AddTicks(1350)
                         });
                 });
 
@@ -3202,6 +3200,10 @@ namespace Aero.Infrastructure.Migrations
                     b.Property<DateTime>("updated_date")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("user_id")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("user_name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -3216,7 +3218,7 @@ namespace Aero.Infrastructure.Migrations
                         new
                         {
                             id = 1,
-                            created_date = new DateTime(2026, 3, 5, 7, 25, 37, 540, DateTimeKind.Utc).AddTicks(1707),
+                            created_date = new DateTime(2026, 3, 5, 5, 15, 31, 474, DateTimeKind.Utc).AddTicks(1693),
                             email = "support@honorsupplying.com",
                             first_name = "Administrator",
                             image = "",
@@ -3227,7 +3229,8 @@ namespace Aero.Infrastructure.Migrations
                             phone = "",
                             role_id = 1,
                             title = "Mr.",
-                            updated_date = new DateTime(2026, 3, 5, 7, 25, 37, 540, DateTimeKind.Utc).AddTicks(1710),
+                            updated_date = new DateTime(2026, 3, 5, 5, 15, 31, 474, DateTimeKind.Utc).AddTicks(1695),
+                            user_id = "Administrator",
                             user_name = "admin"
                         });
                 });
@@ -3240,6 +3243,9 @@ namespace Aero.Infrastructure.Migrations
                     b.Property<int>("operator_id")
                         .HasColumnType("integer");
 
+                    b.Property<int>("id")
+                        .HasColumnType("integer");
+
                     b.HasKey("location_id", "operator_id");
 
                     b.HasIndex("operator_id");
@@ -3249,8 +3255,9 @@ namespace Aero.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            location_id = 2,
-                            operator_id = 1
+                            location_id = 1,
+                            operator_id = 1,
+                            id = 1
                         });
                 });
 
@@ -3787,6 +3794,10 @@ namespace Aero.Infrastructure.Migrations
                     b.Property<DateTime>("updated_date")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("user_id")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("user_name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -3980,12 +3991,12 @@ namespace Aero.Infrastructure.Migrations
                         new
                         {
                             id = 1,
-                            created_date = new DateTime(2026, 3, 5, 7, 25, 37, 538, DateTimeKind.Utc).AddTicks(7183),
+                            created_date = new DateTime(2026, 3, 5, 5, 15, 31, 471, DateTimeKind.Utc).AddTicks(8162),
                             driver_id = (short)0,
                             is_active = true,
                             location_id = 1,
                             name = "Administrator",
-                            updated_date = new DateTime(2026, 3, 5, 7, 25, 37, 538, DateTimeKind.Utc).AddTicks(7186)
+                            updated_date = new DateTime(2026, 3, 5, 5, 15, 31, 471, DateTimeKind.Utc).AddTicks(8165)
                         });
                 });
 
@@ -4438,14 +4449,14 @@ namespace Aero.Infrastructure.Migrations
                         {
                             id = 1,
                             active_time = "",
-                            created_date = new DateTime(2026, 3, 5, 7, 25, 37, 526, DateTimeKind.Utc).AddTicks(6048),
+                            created_date = new DateTime(2026, 3, 5, 5, 15, 31, 458, DateTimeKind.Utc).AddTicks(3834),
                             deactive_time = "",
                             driver_id = (short)1,
                             is_active = true,
                             location_id = 1,
                             mode = (short)1,
                             name = "Always",
-                            updated_date = new DateTime(2026, 3, 5, 7, 25, 37, 526, DateTimeKind.Utc).AddTicks(6050)
+                            updated_date = new DateTime(2026, 3, 5, 5, 15, 31, 458, DateTimeKind.Utc).AddTicks(3836)
                         });
                 });
 

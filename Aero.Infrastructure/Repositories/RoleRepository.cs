@@ -48,7 +48,7 @@ public class RoleRepository(AppDbContext context) : IRoleRepository
 
             context.feature_role.RemoveRange(en.feature_roles);
 
-        en.Update(data);
+            en.Update(data);
 
             context.role.Update(en);
             return await context.SaveChangesAsync();

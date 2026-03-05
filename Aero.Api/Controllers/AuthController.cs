@@ -26,7 +26,7 @@ namespace Aero.Api.Controllers
                     HttpOnly = true,
                     Secure = true,
                     SameSite = SameSiteMode.Strict,
-                    Path = "/api/v1/Auth",
+                    Path = "/api/Auth",
                     Expires = DateTimeOffset.UtcNow.Add(_cookieExpiry)
                 });
             }
@@ -48,7 +48,7 @@ namespace Aero.Api.Controllers
                     HttpOnly = true,
                     Secure = true,
                     SameSite = SameSiteMode.Strict,
-                    Path = "/api/v1/Auth",
+                    Path = "/api/Auth",
                     Expires = DateTimeOffset.UtcNow.Add(_cookieExpiry)
                 });
             }
@@ -69,7 +69,7 @@ namespace Aero.Api.Controllers
                     HttpOnly = true,
                     Secure = true,
                     SameSite = SameSiteMode.Strict,
-                    Path = "/api/v1/Auth",
+                    Path = "/api/Auth",
                 });
                 return Ok(res);
             }
@@ -81,7 +81,7 @@ namespace Aero.Api.Controllers
         [HttpGet("me")]
         public IActionResult Me()
         {
-            var userId = User.FindFirst("sub")?.Value ?? User.Identity?.Name ?? "unknown";
+            // var userId = User.FindFirst("sub")?.Value ?? User.Identity?.Name ?? "unknown";
             var name = User.Identity?.Name;
 
             var userJson = User.FindFirst("user")?.Value ?? "";
@@ -99,7 +99,6 @@ namespace Aero.Api.Controllers
                     Auth = true,
                     User = new
                     {
-                        Id = userId,
                         name,
                         Info = user,
                         Location = loc,

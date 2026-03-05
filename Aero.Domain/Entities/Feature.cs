@@ -23,7 +23,7 @@ public sealed class Feature
 
         SetId(id);
         SetName(name);
-        SetPath(path);
+        this.Path = path;
         this.SubItems = dub;
         this.IsAllow = allow;
         this.IsCreate = create;
@@ -35,21 +35,15 @@ public sealed class Feature
 
     private void SetId(int id)
     {
-        if (id <= 0) throw new ArgumentException("Id invalid.");
+        if (id < 0) throw new ArgumentException("Id invalid.");
         this.Id = id;
     }
 
     private void SetName(string name)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
-        if (!RegexHelper.IsValidName(name)) throw new ArgumentException("Name invalid.",nameof(name));
         this.Name = name;
     }
 
-    private void SetPath(string path)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(path);
-        this.Path = path;
-    }
 
 }
