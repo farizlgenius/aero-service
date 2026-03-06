@@ -39,25 +39,29 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<TokenDtoWithRefresh>> LoginAsync(LoginDto model,string ip)
         {
 
-            var user = await oper.GetByUsernameAsync(model.Username);
+            var user = await oper.IsAnyByNameAsync(model.Username);
 
-            if (user is null) return ResponseHelper.NotFoundBuilder<TokenDtoWithRefresh>(["User not found."]);
+            if (user) return ResponseHelper.NotFoundBuilder<TokenDtoWithRefresh>(["User not found."]);
 
             var hash = await oper.GetPasswordByUsername(model.Username);
 
+            if(string.IsNullOrWhiteSpace(hash)) return ResponseHelper.NotFoundBuilder<TokenDtoWithRefresh>(["Password not found."]);
 
-            var role = await repo.GetByIdAsync(user.Role);  
+            var data = await oper.GetTokenDataByUsername(model.Username);
+
 
             // TODO: Replace with real user validation (DB, hashed passwords)
             if (!ValidateLogin(hash, model.Password))
-                return ResponseHelper.Unauthorize<TokenDtoWithRefresh>(["password incorrect."]);
+                return ResponseHelper.Unauthorize<TokenDtoWithRefresh>(["Password incorrect."]);
 
-            var accessToken = CreateAccessToken(user,role);
+            // var accessToken = CreateAccessToken(user,role);
+
+            var accessToken = CreateAccessToken(data);
 
             // create random refresh token and store hashed in redis + audit in DB
             var rawRefresh = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
-            await StoreTokenAsync(rawRefresh, user.Username, _refreshTtl,info:ip);
+            await StoreTokenAsync(rawRefresh, data.User.Username, _refreshTtl,info:ip);
 
             var dto = new TokenDtoWithRefresh(DateTime.UtcNow,accessToken,rawRefresh,(int)_refreshTtl.TotalMinutes);
 
@@ -79,12 +83,11 @@ namespace Aero.Application.Services
                 return ResponseHelper.Unauthorize<TokenDtoWithRefresh>(["Invalid refresh token"]);
             }
 
-            var user = await oper.GetByUsernameAsync(rec.Username);
-            var role = await repo.GetByDriverIdAsync(user.Role);
+            var user = await oper.GetTokenDataByUsername(rec.Username);
 
             if (user is null) return ResponseHelper.NotFoundBuilder<TokenDtoWithRefresh>(["User not found."]);
 
-            if (String.IsNullOrEmpty(user.Username)) return ResponseHelper.NotFoundBuilder<TokenDtoWithRefresh>(["Can not automatic create token username with specific userid not found"]);
+            if (String.IsNullOrEmpty(user.User.Username)) return ResponseHelper.NotFoundBuilder<TokenDtoWithRefresh>(["Can not automatic create token username with specific userid not found"]);
 
             // rotate token automatically: create new raw token and swap in redis
             var newRaw = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
@@ -92,7 +95,7 @@ namespace Aero.Application.Services
             {
                 await RotateTokenAtomicAsync(oldRaw, newRaw, rec.Username, _refreshTtl, ip);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
                 return ResponseHelper.Unauthorize<TokenDtoWithRefresh>(["Token reuse detected"]);
             }
@@ -100,7 +103,7 @@ namespace Aero.Application.Services
 
 
             // issue new access token
-            var accessToken = CreateAccessToken(user,role);
+            var accessToken = CreateAccessToken(user);
 
 
             var dto = new TokenDtoWithRefresh(DateTime.UtcNow,accessToken,newRaw,(int)_refreshTtl.TotalMinutes);
@@ -130,6 +133,53 @@ namespace Aero.Application.Services
             //var info = new TokenInfo(user, loc, rol);
             //var dto = new TokenDetail(true, info);
             return ResponseHelper.SuccessBuilder<TokenDetail>(null);
+        }
+
+        public string CreateAccessToken(TokenDataDto data)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secret));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var now = DateTime.UtcNow;
+            // var users = new
+            // {
+            //     Username = data
+            //     Title = data.User.Title ?? "",
+            //     Firstname = data.User.Firstname ?? "",
+            //     Middlename = data.User.Middlename ?? "",
+            //     Lastname = data.User.Lastname ?? "",
+            //     Email = data.User.Email ?? "",
+            // };
+            // var locations = user.LocationIds;
+            // var roles = new 
+            // {
+            //     Id = role.Id,
+            //     Name = role.Name,
+            //     Features = user.Features
+            // };
+
+
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub,data.User.Username),
+                new Claim(ClaimTypes.Name,data.User.Username),
+                new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
+
+                // Custom Claims
+                new Claim("user",JsonSerializer.Serialize(data.User)),
+                new Claim("location",JsonSerializer.Serialize(data.Locations)),
+                new Claim("rol",JsonSerializer.Serialize(data.Role))
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: _issuer,
+                audience: _audience,
+                claims: claims,
+                notBefore: now,
+                expires: now.AddMinutes(_minutes),
+                signingCredentials: creds
+                );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         public string CreateAccessToken(OperatorDto user,RoleDto role)

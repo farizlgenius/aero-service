@@ -12,4 +12,5 @@ public interface IOperatorRepository : IBaseRepository<OperatorDto,Operator>
     Task<bool> IsAnyByUsernameAsync(string name);
     Task<OperatorDto> GetByUsernameAsync(string username);
     Task<string> GetPasswordByUsername(string username);
+    Task<TokenDataDto> GetTokenDataByUsername(string username);
 }

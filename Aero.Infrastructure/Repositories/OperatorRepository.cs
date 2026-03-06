@@ -332,4 +332,45 @@ public class OperatorRepository(AppDbContext context) : IOperatorRepository
     {
         return await context.@operator.AnyAsync(x => x.first_name.Equals(name));
     }
+
+      public async Task<TokenDataDto> GetTokenDataByUsername(string username)
+      {
+            var data =await context.@operator
+            .AsNoTracking()
+            .Where(x => x.user_name.Equals(username))
+            .Select(x => new {
+                user = new {
+                    x.user_name,
+                    x.title,
+                    x.first_name,
+                    x.middle_name,
+                    x.last_name
+                },
+                locations = x.operator_locations.Select(l => l.location_id),
+                roles = new {
+                    x.role_id,
+                    x.role.name,
+                    features = x.role.feature_roles.Select(f => f.feature_id)
+                }
+                })
+            .FirstOrDefaultAsync();
+
+            if(data is null) return null;
+
+            return new TokenDataDto(
+                new TokenUserDataDto(
+                    data.user.user_name,
+                    data.user.title,
+                    data.user.first_name,
+                    data.user.middle_name,
+                    data.user.last_name
+                    ),
+                data.locations.ToList(),
+                new TokenRoleData(
+                    data.roles.role_id,
+                    data.roles.name,
+                    data.roles.features.ToList()
+                    )
+            );
+      }
 }

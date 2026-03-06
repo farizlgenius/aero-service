@@ -11634,3 +11634,62 @@ Begin - SCP Driver DLL (64-bit) version 4.7.1.43
 35376.753 Command Status: Scp-1.0, (tag-27-ok)
 35385.359 Shutting down debug Thread...
 File closed Fri Mar  6 01:29:45 2026
+Debug file SCPDEBUG.txt <SCPDEBUGc.txt> <SCPDEBUG.TXT> opened Fri Mar  6 09:37:58 2026
+Begin - SCP Driver DLL (64-bit) version 4.7.1.43
+64678.930 WSAStartup ok
+64678.936 RNG_X931A24 Initialized
+64678.936 1, enCcSystem: 011 1 1024 0 0 1
+64678.937 1, enCcCreateChannel: 0012 1 7 3333 0 3000 0 "" 0
+64678.943 listen(lsock) created socket=1868 on port 3333
+64678.943 Listen Successful, port: 3333
+67853.582 Shutting down debug Thread...
+File closed Fri Mar  6 10:30:53 2026
+Debug file SCPDEBUG.txt <SCPDEBUGc.txt> <SCPDEBUG.TXT> opened Fri Mar  6 10:31:12 2026
+Begin - SCP Driver DLL (64-bit) version 4.7.1.43
+67872.220 WSAStartup ok
+67872.223 RNG_X931A24 Initialized
+67872.223 1, enCcSystem: 011 1 1024 0 0 1
+67872.223 1, enCcCreateChannel: 0012 1 7 3333 0 3000 0 "" 0
+67872.229 listen(lsock) created socket=1868 on port 3333
+67872.229 Listen Successful, port: 3333
+69983.480 0(0), enCcTranSrq: 0402 1
+69986.110 0(0), enCcTranSrq: 0402 1
+69989.539 0(0), enCcTranSrq: 0402 1
+69993.708 0(0), enCcTranSrq: 0402 1
+70010.847 0(0), enCcTranSrq: 0402 1
+70029.022 0(0), enCcTranSrq: 0402 1
+70035.202 0(0), enCcTranSrq: 0402 1
+70177.849 0(0), enCcTranSrq: 0402 1
+70384.582 0(0), enCcTranSrq: 0402 1
+70416.276 0(0), enCcTranSrq: 0402 1
+70419.603 0(0), enCcTranSrq: 0402 1
+70459.234 0(0), enCcTranSrq: 0402 1
+70469.054 0(0), enCcTranSrq: 0402 1
+70474.976 0(0), enCcTranSrq: 0402 1
+Debug file SCPDEBUG.txt <SCPDEBUGc.txt> <SCPDEBUG.TXT> opened Fri Mar  6 16:04:19 2026
+Begin - SCP Driver DLL (64-bit) version 4.7.1.43
+87859.479 WSAStartup ok
+87859.489 RNG_X931A24 Initialized
+87859.489 1, enCcSystem: 011 1 1024 0 0 1
+87859.494 1, enCcCreateChannel: 0012 1 7 3333 0 3000 0 "" 0
+87859.508 listen(lsock) created socket=1900 on port 3333
+87859.508 Listen Successful, port: 3333
+87886.537 0(0), enCcTranSrq: 0402 1
+87902.290 0(0), enCcTranSrq: 0402 1
+87904.548 0(0), enCcTranSrq: 0402 1
+88307.491 0(0), enCcTranSrq: 0402 1
+88311.213 0(0), enCcTranSrq: 0402 1
+88313.873 0(0), enCcSioSrq: 0404 1 1 1
+88318.805 0(0), enCcTranSrq: 0402 1
+88319.453 0(0), enCcSioSrq: 0404 1 1 1
+88321.671 0(0), enCcTranSrq: 0402 1
+88361.418 0(0), enCcSioSrq: 0404 1 1 1
+88361.835 0(0), enCcTranSrq: 0402 1
+88396.510 0(0), enCcTranSrq: 0402 1
+88397.021 0(0), enCcSioSrq: 0404 1 1 1
+88399.662 0(0), enCcSioSrq: 0404 1 1 1
+88400.985 0(0), enCcTranSrq: 0402 1
+89263.986 0(0), enCcSioSrq: 0404 1 1 1
+89305.022 0(0), enCcTranSrq: 0402 1
+89345.495 0(0), enCcTranSrq: 0402 1
+89348.535 0(0), enCcSioSrq: 0404 1 1 1
