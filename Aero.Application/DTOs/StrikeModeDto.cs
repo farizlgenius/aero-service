@@ -1,9 +1,3 @@
-﻿namespace Aero.Application.DTOs
-{
-    public sealed class StrikeModeDto
-    {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public short Value { get; set; }
-    }
-}
+namespace Aero.Application.DTOs;
+
+public sealed record StrikeModeDto(string Name, string Description, short Value);

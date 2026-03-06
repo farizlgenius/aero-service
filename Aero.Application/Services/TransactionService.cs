@@ -10,16 +10,16 @@ using Aero.Domain.Interfaces;
 
 namespace Aero.Application.Services
 {
-    public sealed class TransactionService(IQTransactionRepository qTran,ITransactionRepository rTran, IScpCommand scp, IQHwRepository qHw) : ITransactionService
+    public sealed class TransactionService(ITransactionRepository repo, IScpCommand scp, IDeviceRepository hw) : ITransactionService
     {
         public async Task<ResponseDto<Pagination<TransactionDto>>> GetPageTransactionWithCountAsync(PaginationParams param)
         {
-            var dto = await qTran.GetPageTransactionWithCountAsync(param);
+            var dto = await repo.GetPageTransactionWithCountAsync(param);
             return ResponseHelper.SuccessBuilder<Pagination<TransactionDto>>(dto);
         }
         public async Task<ResponseDto<Pagination<TransactionDto>>> GetPageTransactionWithCountAndDateAndSearchAsync(PaginationParamsWithFilter param,short location)
         {
-            var dto = await qTran.GetPageTransactionWithCountAndDateAndSearchAsync(param,location);
+            var dto = await repo.GetPageTransactionWithCountAndDateAndSearchAsync(param,location);
             return ResponseHelper.SuccessBuilder<Pagination<TransactionDto>>(dto);
         }
 
@@ -27,7 +27,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<bool>> SetTranIndexAsync(string mac)
         {
-            var id = await qHw.GetComponentIdFromMacAsync(mac);
+            var id = await hw.GetComponentIdFromMacAsync(mac);
             if (id == 0) return ResponseHelper.NotFoundBuilder<bool>();
             if (!scp.SetTransactionLogIndex(id, true))
             {
@@ -41,11 +41,11 @@ namespace Aero.Application.Services
         {
             try
             {
-                if (!await qHw.IsAnyByComponentId((short)message.ScpId)) return;
-                var tran = await rTran.HandleTransactionAsync(message);
+                if (!await hw.IsAnyByDriverIdAsync((short)message.ScpId)) return;
+                var tran = await repo.HandleTransactionAsync(message);
                 
 
-                await rTran.AddAsync(tran);
+                await repo.AddAsync(tran);
             
 
             }
@@ -59,13 +59,13 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<IEnumerable<Mode>>> GetSourceAsync()
         {
-            var res = qTran.GetSourceAsync();
+            var res = repo.GetSourceAsync();
             return ResponseHelper.SuccessBuilder(res);
         }
 
         public async Task<ResponseDto<IEnumerable<Mode>>> GetDeviceAsync(int source)
         {
-            var res = await qTran.GetDeviceAsync(source);
+            var res = await repo.GetDeviceAsync(source);
             return ResponseHelper.SuccessBuilder(res);
         }
     }

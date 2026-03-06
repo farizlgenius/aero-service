@@ -1,0 +1,114 @@
+﻿
+
+using System.Text.Json;
+using Aero.Application.DTOs;
+using Aero.Application.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Aero.Api.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AuthController(IAuthService service) : ControllerBase
+    {
+        private readonly TimeSpan _cookieExpiry = TimeSpan.FromHours(3);
+
+        [HttpPost("login")]
+        public async Task<ActionResult<ResponseDto<TokenDto>>> Login([FromBody] LoginDto model)
+        {
+            var res = await service.LoginAsync(model, Request.HttpContext.Connection.RemoteIpAddress is null ? "" : Request.HttpContext.Connection.RemoteIpAddress.ToString());
+            // set HttpOnly cookies (path limited to auth endpoint)
+            if(res.data is not null)
+            {
+                Response.Cookies.Append("refresh_token", res.data.RefreshToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Path = "/api/Auth",
+                    Expires = DateTimeOffset.UtcNow.Add(_cookieExpiry)
+                });
+            }
+            
+            return Ok(res);
+        }
+
+        [HttpPost("refresh")]
+        public async Task<ActionResult<ResponseDto<TokenDto>>> Refresh()
+        {
+            if (!Request.Cookies.TryGetValue("refresh_token", out var oldRaw)) return Unauthorized();
+            // HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown"
+            var res = await service.RefreshAsync(oldRaw,Request.HttpContext.Connection.RemoteIpAddress is null ? "" : Request.HttpContext.Connection.RemoteIpAddress.ToString());
+             // set HttpOnly cookies (path limited to auth endpoint)
+             if(res.data is not null)
+            {
+                Response.Cookies.Append("refresh_token", res.data.RefreshToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Path = "/api/Auth",
+                    Expires = DateTimeOffset.UtcNow.Add(_cookieExpiry)
+                });
+            }
+            
+            return Ok(res);
+
+        }
+
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<bool>>> Revoke()
+        {
+            if (Request.Cookies.TryGetValue("refresh_token", out var raw))
+            {
+                var res = await service.RevokeAsync(raw);
+                Response.Cookies.Delete("refresh_token", new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Path = "/api/Auth",
+                });
+                return Ok(res);
+            }
+
+            return Unauthorized();
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpGet("me")]
+        public IActionResult Me()
+        {
+            // var userId = User.FindFirst("sub")?.Value ?? User.Identity?.Name ?? "unknown";
+            var name = User.Identity?.Name;
+
+            var userJson = User.FindFirst("user")?.Value ?? "";
+            var user = string.IsNullOrEmpty(userJson) ? new TokenUserDataDto("","","","","") : JsonSerializer.Deserialize<TokenUserDataDto>(userJson);
+
+            var locJson = User.FindFirst("location")?.Value ?? "";
+            var loc = string.IsNullOrEmpty(locJson) ? [] : JsonSerializer.Deserialize<List<int>>(locJson);
+            var roleJson = User.FindFirst("rol")?.Value ?? "";
+            var rol = string.IsNullOrEmpty(roleJson) ? new TokenRoleData(0,"",[]) : JsonSerializer.Deserialize<TokenRoleData>(roleJson);
+            var info = new TokenDataDto(user,loc,rol);
+            // var dto = new TokenDetail(true,info);
+            return Ok(
+                new
+                {
+                    Auth = true,
+                    User = new
+                    {
+                        name,
+                        Info = user,
+                        Location = loc,
+                        Role = rol
+                    }
+                }
+                );
+        }
+
+
+    }
+}
+

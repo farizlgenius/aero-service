@@ -1,12 +1,5 @@
-﻿
 using Aero.Domain.Entities;
 
-namespace Aero.Application.DTOs
-{
-    public sealed class MonitorGroupDto : BaseEntity
-    {
-        public string Name { get; set; } = string.Empty;
-        public short nMpCount { get; set; }
-        public List<MonitorGroupListDto> nMpList { get; set; } = new List<MonitorGroupListDto>();
-    }
-}
+namespace Aero.Application.DTOs;
+
+public sealed record MonitorGroupDto(int Id,short DeviceId,short DriverId,string Name, short nMpCount, List<MonitorGroupListDto> nMpList,int LocationId,bool IsActive) : BaseDto(LocationId,IsActive);

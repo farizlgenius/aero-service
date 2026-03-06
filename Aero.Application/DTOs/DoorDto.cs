@@ -4,52 +4,58 @@ using Aero.Domain.Entities;
 
 namespace Aero.Application.DTOs
 {
-    public sealed class DoorDto : BaseEntity
-    {
-        public short AcrId {get; set;}
-        public string Name { get; set; } = string.Empty;
-        public short AccessConfig { get; set; }
-        public short PairDoorNo { get; set; }
-        // Reader setting for Reader In
-        public List<ReaderDto> Readers { get; set; }
-        public short ReaderOutConfiguration { get; set; }
+   public sealed record DoorDto(
+    int Id,
+    short DeviceId,
+    short DriverId,
+    string Name,
+    short AccessConfig,
+    short PairDoorNo,
+    int Direction,
 
-        // Strike setting for strike
-        public StrikeDto? Strk { get; set; }
+    List<ReaderDto> Readers,
+    short ReaderOutConfiguration,
 
-        //sensor setting for sensor
-        public SensorDto? Sensor { get; set; }
-        public List<RequestExitDto>? RequestExits { get; set; }
-        public short CardFormat { get; set; }
-        public short AntiPassbackMode { get; set; }
-        public short AntiPassBackIn { get; set; }
-        public short AreaInId {get; set;}
-        public short AntiPassBackOut { get; set; }
-        public short AreaOutId {get; set;}
-        public short SpareTags { get; set; }
-        public short AccessControlFlags { get; set; }
-        public short Mode { get; set; }
-        public string ModeDesc { get; set; } = string.Empty;
-        public short OfflineMode { get; set; }
-        public string OfflineModeDesc { get; set; } = string.Empty;
-        public short DefaultMode { get; set; }
-        public string DefaultModeDesc { get; set; } = string.Empty;
-        public short DefaultLEDMode { get; set; }
-        public short PreAlarm { get; set; }
-        public short AntiPassbackDelay { get; set; }
-        public short StrkT2 { get; set; }
-        public short DcHeld2 { get; set; }
-        public short StrkFollowPulse { get; set; }
-        public short StrkFollowDelay { get; set; }
-        public short nExtFeatureType { get; set; }
-        public short IlPBSio { get; set; }
-        public short IlPBNumber { get; set; }
-        public short IlPBLongPress { get; set; }
-        public short IlPBOutSio { get; set; }
-        public short IlPBOutNum { get; set; }
-        public short DfOfFilterTime { get; set; }
-        public bool MaskHeldOpen { get; set; } = false;
-        public bool MaskForceOpen { get; set; } = false;
+    StrikeDto? Strk,
+    SensorDto? Sensor,
+    List<RequestExitDto>? RequestExits,
 
-    }
+    short CardFormat,
+    short AntiPassbackMode,
+    short AntiPassBackIn,
+    short AreaInId,
+    short AntiPassBackOut,
+    short AreaOutId,
+    short SpareTags,
+    short AccessControlFlags,
+
+    short Mode,
+    string ModeDesc,
+    short OfflineMode,
+    string OfflineModeDesc,
+    short DefaultMode,
+    string DefaultModeDesc,
+
+    short DefaultLEDMode,
+    short PreAlarm,
+    short AntiPassbackDelay,
+    short StrkT2,
+    short DcHeld2,
+    short StrkFollowPulse,
+    short StrkFollowDelay,
+
+    short nExtFeatureType,
+    short IlPBSio,
+    short IlPBNumber,
+    short IlPBLongPress,
+    short IlPBOutSio,
+    short IlPBOutNum,
+    short DfOfFilterTime,
+
+    bool MaskHeldOpen,
+    bool MaskForceOpen,
+
+    int LocationId,
+    bool IsActive
+) : BaseDto(LocationId,IsActive);
 }

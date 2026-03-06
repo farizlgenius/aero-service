@@ -1,0 +1,40 @@
+using System.ComponentModel.DataAnnotations;
+using Aero.Domain.Interface;
+using Aero.Domain.Interfaces;
+
+namespace Aero.Infrastructure.Persistences.Entities
+{
+    public sealed class Procedure : BaseEntity,IDeviceId
+    {
+        public short device_id { get; set; }
+        public Device device { get; set; }
+
+        public short driver_id { get; set; }
+        public string name { get; set; } = string.Empty;
+        public int trigger_id {get; set;}
+        public Trigger trigger { get; set; }
+        public ICollection<Action> actions { get; set; }
+
+        public Procedure(){}
+
+
+        public Procedure(Aero.Domain.Entities.Procedure data) : base(data.LocationId)
+        {
+            this.device_id = data.DeviceId;
+            this.driver_id = data.DriverId;
+            this.name = data.Name;
+            this.trigger_id = data.TriggerId;
+        }
+
+        public void Update(Aero.Domain.Entities.Procedure data) 
+        {
+            this.name = data.Name;
+            this.trigger_id = data.TriggerId;
+            this.updated_date = DateTime.UtcNow;
+        }
+
+
+
+    }
+}
+

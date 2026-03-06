@@ -6,13 +6,13 @@ using Aero.Application.Interfaces;
 
 namespace Aero.Application.Services
 {
-    public class IdReportService(IQIdReportRepository qReport,IScpCommand scp) 
+    public class IdReportService(IIdReportRepository repo,IScpCommand scp) 
     {
 
         public async Task<ResponseDto<IEnumerable<IdReportDto>>> GetAsync(short location)
         {
 
-            var dtos = await qReport.GetAsync();
+            var dtos = await repo.GetAsync(location);
             return ResponseHelper.SuccessBuilder<IEnumerable<IdReportDto>>(dtos);
         }
 
@@ -29,7 +29,7 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<int>> GetCount(short location)
         {
-            int count = await qReport.GetCountAsync(location);
+            int count = await repo.GetCountAsync(location);
             return ResponseHelper.SuccessBuilder(count);
 
         }

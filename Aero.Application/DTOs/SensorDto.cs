@@ -1,14 +1,5 @@
-﻿using Aero.Domain.Entities;
+using Aero.Domain.Entities;
 
-namespace Aero.Application.DTOs
-{
-    public sealed class SensorDto : BaseEntity
-    {
-        public short ModuleId { get; set; }
-        public short InputNo { get; set; }
-        public short InputMode { get; set; }
-        public short Debounce { get; set; }
-        public short HoldTime { get; set; }
-        public short DcHeld { get; set; }
-    }
-}
+namespace Aero.Application.DTOs;
+
+public sealed record SensorDto(short DeviceId,int ModuleId,short ModuleDriverId,int DoorId,short InputNo, short InputMode, short Debounce, short HoldTime, short DcHeld,int LocationId,bool IsActive) : BaseDto(LocationId,IsActive);

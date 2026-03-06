@@ -1,11 +1,37 @@
+using Aero.Domain.Helpers;
 using System;
 
 namespace Aero.Domain.Entities;
 
-public sealed class Role
+public sealed class Role : BaseDomain
 {
-      public short ComponentId { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public List<Feature> Features { get; set; } = new List<Feature>();
+    public int Id { get; set; } 
+    public short DriverId { get; set; }
+    public string Name { get; set; } = string.Empty;
+   public List<Feature> Features { get; set; } = new List<Feature>();
+
+    public Role(int Id,short DriverId,string Name,List<Feature> Features)
+    {
+        if(Id < 0) throw new ArgumentException("Id invalid.",nameof(Id));
+        this.Id = Id;
+        SetDriverId(DriverId);
+        SetName(Name);
+        this.Features = Features;
+    }
+
+    private void SetDriverId(short driver)
+    {
+        if (driver <= 0) throw new ArgumentException("Invalid driver id.",nameof(driver));
+        this.DriverId = driver;
+    }
+
+    private void SetName(string name)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        if (!RegexHelper.IsValidName(name)) throw new ArgumentException("Invalid name.");
+        Name = name;
+    }
+
+
 
 }

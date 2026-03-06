@@ -10,20 +10,22 @@ namespace Aero.Infrastructure.Services;
 
 public sealed class TzCommandService : BaseAeroCommand, ITzCommand
 {
-  public bool ExtendedTimeZoneActSpecification(short ScpId, Timezone dto, List<Interval> intervals, int activeTime, int deactiveTime)
+  public bool ExtendedTimeZoneActSpecification(short ScpId, Domain.Entities.TimeZone domain)
   {
-    CC_SCP_TZEX_ACT cc = new CC_SCP_TZEX_ACT();
+        long active = UtilitiesHelper.DateTimeToElapeSecond(domain.ActiveTime);
+        long deactive = UtilitiesHelper.DateTimeToElapeSecond(domain.DeactiveTime);
+        CC_SCP_TZEX_ACT cc = new CC_SCP_TZEX_ACT();
     cc.lastModified = 0;
     cc.nScpID = ScpId;
-    cc.number = dto.ComponentId;
-    cc.mode = dto.Mode;
-    cc.actTime = activeTime;
-    cc.deactTime = deactiveTime;
-    cc.intervals = (short)intervals.Count;
-    if (intervals.Count > 0)
+    cc.number = domain.DriverId;
+    cc.mode = domain.Mode;
+    cc.actTime = (int)active;
+    cc.deactTime = (int)deactive;
+    cc.intervals = (short)domain.Intervals.Count;
+    if (domain.Intervals.Count > 0)
     {
       int i = 0;
-      foreach (var interval in intervals)
+      foreach (var interval in domain.Intervals)
       {
         cc.i[i].i_days = (short)UtilitiesHelper.ConvertDayToBinary(interval.Days);
         cc.i[i].i_start = (short)UtilitiesHelper.ConvertTimeToEndMinute(interval.StartTime);

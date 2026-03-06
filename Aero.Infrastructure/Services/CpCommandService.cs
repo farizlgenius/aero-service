@@ -52,11 +52,12 @@ public sealed class CpCommandService : BaseAeroCommand, ICpCommand
 
       }
 
-      public bool GetCpStatus(short ScpId, short CpNo, short Count)
+
+      public bool GetCpStatus(short ScpId, int DriverId, short Count)
       {
             CC_CPSRQ cc = new CC_CPSRQ();
             cc.scp_number = ScpId;
-            cc.first = CpNo;
+            cc.first = (short)DriverId;
             cc.count = Count;
 
             bool flag = Send((short)enCfgCmnd.enCcCpSrq, cc);

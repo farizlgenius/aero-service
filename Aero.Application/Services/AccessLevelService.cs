@@ -4,102 +4,109 @@ using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
-using Aero.Application.Mapper;
 using Aero.Domain.Entities;
+using Aero.Domain.Helpers;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
 using System.Security.Cryptography;
 
 namespace Aero.Application.Services
 {
-    public sealed class AccessLevelService(IQAlvlRepository qAlvl,IQHwRepository qHw,IAlvlCommand alvl,IAlvlRepository rAlvl) : IAccessLevelService
+    public sealed class AccessLevelService(IAlvlRepository repo,IDeviceRepository hw,IAlvlCommand alvl,ISettingRepository setting) : IAccessLevelService
     {
-        public async Task<ResponseDto<IEnumerable<AccessLevelDto>>> GetByLocationIdAsync(short location)
+        public async Task<ResponseDto<IEnumerable<AccessLevelDto>>> GetByLocationIdAsync(int location)
         {
-            var dtos = await qAlvl.GetByLocationIdAsync(location);       
+            var dtos = await repo.GetByLocationIdAsync(location);       
             return ResponseHelper.SuccessBuilder<IEnumerable<AccessLevelDto>>(dtos);
         }
 
 
 
-        public async Task<ResponseDto<AccessLevelDto>> GetByComponentIdAsync(short component)
+        public async Task<ResponseDto<AccessLevelDto>> GetByIdAsync(int id)
         {
-            var dtos = await qAlvl.GetByComponentIdAsync(component);      
+            var dtos = await repo.GetByIdAsync(id);      
             return ResponseHelper.SuccessBuilder<AccessLevelDto>(dtos);
         }
 
 
 
-        public async Task<ResponseDto<bool>> CreateAsync(AccessLevelDto dto)
+        public async Task<ResponseDto<AccessLevelDto>> CreateAsync(CreateAccessLevelDto dto)
         {
+            // Check value in license here 
+            // ....to be implement
+
+            if(await repo.IsAnyByNameAsync(dto.Name.Trim())) return ResponseHelper.BadRequestName<AccessLevelDto>();
+
+            var ScpSetting = await setting.GetScpSettingAsync();
+
+
             List<string> errors = new List<string>();
-            var ComponentId = await qAlvl.GetLowestUnassignedNumberAsync(10,"");
-            
-            if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
 
-            
-            var domain = AccessLevelMapper.ToDomain(dto);
-            domain.ComponentId = ComponentId;
+            var domain = new AccessLevel(
+                0,
+                dto.Name,
+                dto.Components.Select(x => new AccessLevelComponent(x.DriverId,x.DeviceId,x.DoorId,x.AcrId,x.TimeZoneId)).ToList(),
+                dto.LocationId,
+                dto.IsActive
+                );
 
-            var macs = domain.Components.Select(x => x.Mac).Distinct();
+            var ids = domain.Components.Select(x => x.DeviceId).Distinct();
 
-            for(int i = 0;i < macs.Count(); i++)
+            for(int i = 0;i < ids.Count(); i++)
             {
-                var AlvlId = await qAlvl.GetLowestUnassignedNumberAsync(10, macs.ElementAt(i));
-                domain.Components.ElementAt(i).AlvlId = AlvlId; 
-                if (!await alvl.AccessLevelConfigurationExtended(await qHw.GetComponentIdFromMacAsync(macs.ElementAt(i)),AlvlId, domain))
+                var DriverId = await repo.GetLowestUnassignedNumberAsync(ScpSetting.nAlvl,ids.ElementAt(i));
+                domain.Components.ElementAt(i).SetDriverId(DriverId); 
+                if (!await alvl.AccessLevelConfigurationExtended((short)ids.ElementAt(i), DriverId, domain))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(macs.ElementAt(i), Command.ALVL_CONFIG));
+                    errors.Add(MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync((short)ids.ElementAt(i)), Command.ALVL_CONFIG));
 
                 }
             }
 
 
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<AccessLevelDto>(ResponseMessage.COMMAND_UNSUCCESS, errors);
 
-            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS, errors);
-
-            var status = await rAlvl.AddCreateAsync(domain);
-            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,errors);
-            return ResponseHelper.SuccessBuilder(true);
+            var status = await repo.AddAsync(domain);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<AccessLevelDto>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,errors);
+            return ResponseHelper.SuccessBuilder(await repo.GetByIdAsync(status));
         }
 
-        public async Task<ResponseDto<bool>> DeleteAsync(short ComponentId)
+        public async Task<ResponseDto<AccessLevelDto>> DeleteAsync(int id)
         {
             List<string> errors = new List<string>();
-            if (!await qAlvl.IsAnyByComponentId(ComponentId)) return ResponseHelper.NotFoundBuilder<bool>();
+            if (!await repo.IsAnyByIdAsync(id)) return ResponseHelper.NotFoundBuilder<AccessLevelDto>();
 
-            var domain = await qAlvl.GetByComponentIdAsync(ComponentId);
+            var domain = await repo.GetByIdAsync(id);
 
             foreach (var component in domain.Components)
             {
-                var ScpId = await qHw.GetComponentIdFromMacAsync(component.Mac);
-                if (!await alvl.AccessLevelConfigurationExtended(ScpId,ComponentId, 0))
+                if (!await alvl.AccessLevelConfigurationExtended((short)component.DeviceId,component.DriverId, 0))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(component.Mac, Command.ALVL_CONFIG));
+                    errors.Add(MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync((short)component.DeviceId), Command.ALVL_CONFIG));
                 }
             }
-            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
-            var status = await rAlvl.DeleteByComponentIdAsync(ComponentId);
-            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,errors);
-            return ResponseHelper.SuccessBuilder(true);
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<AccessLevelDto>(ResponseMessage.COMMAND_UNSUCCESS,errors);
+            var status = await repo.DeleteByIdAsync(id);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<AccessLevelDto>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,errors);
+            return ResponseHelper.SuccessBuilder(domain);
         }
 
         public async Task<ResponseDto<AccessLevelDto>> UpdateAsync(AccessLevelDto dto)
         {
 
             List<string> errors = new List<string>();
-            if (!await qAlvl.IsAnyByComponentId(dto.ComponentId)) return ResponseHelper.NotFoundBuilder<AccessLevelDto>();
+            if (!await repo.IsAnyByIdAsync(dto.Id)) return ResponseHelper.NotFoundBuilder<AccessLevelDto>();
 
-            var domain = AccessLevelMapper.ToDomain(dto);
-            var macs = domain.Components.Select(x => x.Mac).Distinct();
+            var domain = new AccessLevel(dto.Id,dto.Name,dto.Components.Select(c => new AccessLevelComponent(c.DriverId,c.DeviceId,c.DoorId,c.AcrId,c.TimeZoneId)).ToList(),dto.LocationId,dto.IsActive);
+            var ids = domain.Components.Select(x => x.DeviceId).Distinct();
 
-            for (int i = 0; i < macs.Count(); i++)
+            for (int i = 0; i < ids.Count(); i++)
             {
                 //var AlvlId = await qAlvl.GetLowestUnassignedNumberAsync(10, macs.ElementAt(i));
                 //domain.Components.ElementAt(i).AlvlId = AlvlId;
-                if (!await alvl.AccessLevelConfigurationExtended(await qHw.GetComponentIdFromMacAsync(macs.ElementAt(i)),domain.Components.Where(x => x.Mac.Equals(macs.ElementAt(i))).Select(x => x.AlvlId).FirstOrDefault(),domain))
+                if (!await alvl.AccessLevelConfigurationExtended((short)ids.ElementAt(i),domain.Components.Where(x => x.DeviceId == ids.ElementAt(i)).Select(x => x.DriverId).FirstOrDefault(),domain))
                 {
-                    errors.Add(MessageBuilder.Unsuccess(macs.ElementAt(i), Command.ALVL_CONFIG));
+                    errors.Add(MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync((short)ids.ElementAt(i)), Command.ALVL_CONFIG));
 
                 }
             }
@@ -124,33 +131,33 @@ namespace Aero.Application.Services
 
             if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<AccessLevelDto>(ResponseMessage.COMMAND_UNSUCCESS, errors);
             
-            var status = await rAlvl.UpdateCreateAsync(domain);
+            var status = await repo.UpdateAsync(domain);
 
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<AccessLevelDto>(ResponseMessage.UPDATE_RECORD_UNSUCCESS,errors);
 
-            return ResponseHelper.SuccessBuilder(await qAlvl.GetByComponentIdAsync(dto.ComponentId));
+            return ResponseHelper.SuccessBuilder(await repo.GetByIdAsync(dto.Id));
         }
 
 
-        public async Task<string> GetAcrName(string mac, short component)
+        public async Task<string> GetAcrName(int  device, int component)
         {
-            return await qAlvl.GetACRNameByComponentIdAndMacAsync(component,mac) ?? "";
+            return await repo.GetAcrNameByIdAndDeviceIdAsync(component,device) ?? "";
         }
 
-        public async Task<string> GetTzName(short component)
+        public async Task<string> GetTzName(int component)
         {
-            return await qAlvl.GetTimezoneNameByComponentIdAsync(component);
+            return await repo.GetTimezoneNameByIdAsync(component);
         }
 
             public async Task<ResponseDto<IEnumerable<AccessLevelDto>>> GetAsync()
             {
-                  var res = await qAlvl.GetAsync();
+                  var res = await repo.GetAsync();
                   return ResponseHelper.SuccessBuilder(res);
             }
 
-        public async Task<ResponseDto<Pagination<AccessLevelDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        public async Task<ResponseDto<Pagination<AccessLevelDto>>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
         {
-            var res = await qAlvl.GetPaginationAsync(param,location);
+            var res = await repo.GetPaginationAsync(param,location);
             return ResponseHelper.SuccessBuilder(res);
         }
     }

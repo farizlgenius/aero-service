@@ -5,157 +5,174 @@ using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
-using Aero.Application.Mapper;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
 using System.Net;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aero.Application.Services
 {
-    public class TimeZoneService(IQTzRepository qTz,IQHwRepository qHw,ITzCommand tz,ITzRepository rTz) : ITimeZoneService
+    public class TimeZoneService(ITzRepository repo, IDeviceRepository hw, ITzCommand tz, ITzRepository rTz,ISettingRepository setting) : ITimeZoneService
     {
         public async Task<ResponseDto<IEnumerable<TimeZoneDto>>> GetAsync()
         {
-            var dtos = await qTz.GetAsync();
+            var dtos = await repo.GetAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<TimeZoneDto>>(dtos);
         }
 
-        public async Task<ResponseDto<TimeZoneDto>> GetByComponentIdAsync(short component)
+        public async Task<ResponseDto<TimeZoneDto>> GetByIdAsync(int id)
         {
-            var dto = await qTz.GetByComponentIdAsync(component);
+            var dto = await repo.GetByIdAsync(id);
 
             if (dto is null) return ResponseHelper.NotFoundBuilder<TimeZoneDto>();
             return ResponseHelper.SuccessBuilder<TimeZoneDto>(dto);
         }
 
-        public async Task<ResponseDto<bool>> CreateAsync(TimeZoneDto dto)
+        public async Task<ResponseDto<TimeZoneDto>> CreateAsync(CreateTimeZoneDto dto)
         {
+            // Check value in license here 
+            // ....to be implement
+
+            if (await repo.IsAnyByNameAsync(dto.Name.Trim())) return ResponseHelper.BadRequestName<TimeZoneDto>();
+
+            var ScpSetting = await setting.GetScpSettingAsync();
+
+
             List<string> errors = new List<string>();
-            var ComponentId = await qTz.GetLowestUnassignedNumberAsync(10,"");
-            var TimezoneId = await qTz.GetLowestUnassignedNumberAsync(10,"");
-            if (ComponentId == -1) return ResponseHelper.ExceedLimit<bool>();
+            var DriverId = await repo.GetLowestUnassignedNumberAsync(ScpSetting.nTz);
+            if (DriverId == -1) return ResponseHelper.ExceedLimit<TimeZoneDto>();
+
+            var domain = new Aero.Domain.Entities.TimeZone(0,DriverId,dto.Name,dto.Mode,dto.Active,dto.Deactive,
+            dto.Intervals.Select(i => new Interval(
+                i.Id,
+                new DaysInWeek(i.Days.Sunday,i.Days.Monday,i.Days.Tuesday,i.Days.Wednesday,i.Days.Thursday,i.Days.Friday,i.Days.Saturday)
+                ,i.DaysDetail,i.Start,i.End,i.LocationId,i.IsActive)).ToList(),
+            dto.LocationId,dto.IsActive);
 
 
-            var timezone = TimezoneMapper.ToDomain(dto);
-            timezone.ComponentId = ComponentId;
-            timezone.TimezoneId = TimezoneId;
-
-            
-            var ids = await qHw.GetComponentIdByLocationIdAsync(dto.LocationId);
+            var ids = await hw.GetDriverIdByLocationIdAsync(domain.LocationId);
 
             foreach (var id in ids)
             {
-                long active = UtilitiesHelper.DateTimeToElapeSecond(dto.ActiveTime);
-                long deactive = UtilitiesHelper.DateTimeToElapeSecond(dto.DeactiveTime);
-                if (!tz.ExtendedTimeZoneActSpecification(id, timezone,timezone.Intervals is null ? [] : timezone.Intervals , (int)active, (int)deactive))
+                if (!tz.ExtendedTimeZoneActSpecification(id, domain))
                 {
-                   errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id), Command.TIMEZONE_SPEC));
+                    errors.Add(MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync(id), Command.TIMEZONE_SPEC));
                 }
             }
-            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<TimeZoneDto>(ResponseMessage.COMMAND_UNSUCCESS, errors);
 
 
-            var status = await rTz.AddAsync(timezone);
+            var record = await rTz.AddAsync(domain);
 
-            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,errors);
+            if (record <= 0) return ResponseHelper.UnsuccessBuilder<TimeZoneDto>(ResponseMessage.SAVE_DATABASE_UNSUCCESS, errors);
 
-            return ResponseHelper.SuccessBuilder(true);
+            return ResponseHelper.SuccessBuilder(await repo.GetByIdAsync(record));
         }
 
-        public async Task<ResponseDto<bool>> DeleteAsync(short component)
+        public async Task<ResponseDto<TimeZoneDto>> DeleteByIdAsync(int ids)
         {
             List<string> errors = new List<string>();
-            
-            if(!await qTz.IsAnyByComponentId(component)) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var hw = await qHw.GetComponentIdsAsync();
-            foreach(var id in hw)
+            var data = await repo.GetByIdAsync(ids);
+
+            if(data is null) return ResponseHelper.NotFoundBuilder<TimeZoneDto>();
+
+            var hws = await hw.GetDriverIdsAsync();
+            foreach (var id in hws)
             {
-                if (!tz.TimeZoneControl(id,component,3))
+                if (!tz.TimeZoneControl(id, id, 3))
                 {
-                   errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id),Command.TZ_CONTROL));
+                    errors.Add(MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync(id), Command.TZ_CONTROL));
                 }
             }
 
-            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.COMMAND_UNSUCCESS,errors);
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<TimeZoneDto>(ResponseMessage.COMMAND_UNSUCCESS, errors);
 
-            var status = await rTz.DeleteByComponentIdAsync(component);
+            var status = await rTz.DeleteByIdAsync(ids);
 
-            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,errors);
+            if (status <= 0) return ResponseHelper.UnsuccessBuilder<TimeZoneDto>(ResponseMessage.DELETE_DATABASE_UNSUCCESS, errors);
 
-            return ResponseHelper.SuccessBuilder<bool>(true);
+            return ResponseHelper.SuccessBuilder<TimeZoneDto>(data);
         }
 
         public async Task<ResponseDto<TimeZoneDto>> UpdateAsync(TimeZoneDto dto)
         {
             List<string> errors = new List<string>();
 
-            if (!await qTz.IsAnyByComponentId(dto.ComponentId)) return ResponseHelper.NotFoundBuilder<TimeZoneDto>();
+            if (!await repo.IsAnyByIdAsync(dto.Id)) return ResponseHelper.NotFoundBuilder<TimeZoneDto>();
 
-            var domain = TimezoneMapper.ToDomain(dto);
+            var domain = new Aero.Domain.Entities.TimeZone(dto.Id,dto.DriverId,dto.Name,dto.Mode,dto.Active,dto.Deactive,
+            dto.Intervals.Select(i => new Interval(
+                i.Id,
+                new DaysInWeek(i.Days.Sunday,i.Days.Monday,i.Days.Tuesday,i.Days.Wednesday,i.Days.Thursday,i.Days.Friday,i.Days.Saturday)
+                ,i.DaysDetail,i.Start,i.End,i.LocationId,i.IsActive)).ToList(),
+            dto.LocationId,dto.IsActive);
 
-            var ids = await qHw.GetComponentIdsAsync();
+            var ids = await hw.GetDriverIdsAsync();
             foreach (var id in ids)
             {
-                long active = UtilitiesHelper.DateTimeToElapeSecond(dto.ActiveTime);
-                long deactive = UtilitiesHelper.DateTimeToElapeSecond(dto.DeactiveTime);
-                if (!tz.ExtendedTimeZoneActSpecification(id, domain, domain.Intervals.ToList(), (int)active, (int)deactive))
+                if (!tz.ExtendedTimeZoneActSpecification(id, domain))
                 {
-                   errors.Add(MessageBuilder.Unsuccess(await qHw.GetMacFromComponentAsync(id), Command.TIMEZONE_SPEC));
+                    errors.Add(MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync(id), Command.TIMEZONE_SPEC));
                 }
             }
-            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<TimeZoneDto>(ResponseMessage.COMMAND_UNSUCCESS,errors);
+            if (errors.Count > 0) return ResponseHelper.UnsuccessBuilder<TimeZoneDto>(ResponseMessage.COMMAND_UNSUCCESS, errors);
 
-            var data = TimezoneMapper.ToDomain(dto);
+            var data = new Aero.Domain.Entities.TimeZone(dto.Id,dto.DriverId,dto.Name,dto.Mode,dto.Active,dto.Deactive,
+            dto.Intervals.Select(i => new Interval(
+                i.Id,
+                new DaysInWeek(i.Days.Sunday,i.Days.Monday,i.Days.Tuesday,i.Days.Wednesday,i.Days.Thursday,i.Days.Friday,i.Days.Saturday)
+                ,i.DaysDetail,i.Start,i.End,i.LocationId,i.IsActive)).ToList(),
+            dto.LocationId,dto.IsActive);
 
             var status = await rTz.UpdateAsync(data);
 
-            if(status <= 0) return ResponseHelper.UnsuccessBuilder<TimeZoneDto>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,errors);
+            if (status <= 0) return ResponseHelper.UnsuccessBuilder<TimeZoneDto>(ResponseMessage.DELETE_DATABASE_UNSUCCESS, errors);
 
-            return ResponseHelper.SuccessBuilder(dto);
+            return ResponseHelper.SuccessBuilder(await repo.GetByIdAsync(domain.Id));
         }
 
 
-        public async Task<ResponseDto<IEnumerable<Mode>>> GetModeAsync(int param)
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param)
         {
-            var dtos = await qTz.GetModeAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
+            var dtos = await repo.GetModeAsync();
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
-        public async Task<ResponseDto<IEnumerable<Mode>>> GetCommandAsync()
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetCommandAsync()
         {
-            var dtos = await qTz.GetCommandAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
+            var dtos = await repo.GetCommandAsync();
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
         public async Task<ResponseDto<IEnumerable<TimeZoneDto>>> GetByLocationAsync(short location)
         {
-            var dtos = await qTz.GetByLocationIdAsync(location);
+            var dtos = await repo.GetByLocationIdAsync(location);
             return ResponseHelper.SuccessBuilder<IEnumerable<TimeZoneDto>>(dtos);
         }
 
-        public async Task<ResponseDto<IEnumerable<ResponseDto<bool>>>> DeleteRangeAsync(List<short> components)
+        public async Task<ResponseDto<IEnumerable<TimeZoneDto>>> DeleteRangeAsync(List<short> components)
         {
             bool flag = true;
-            List<ResponseDto<bool>> data = new List<ResponseDto<bool>>();
+            List<TimeZoneDto> data = new List<TimeZoneDto>();
             foreach (var dto in components)
             {
-                var re = await DeleteAsync(dto);
+                var re = await DeleteByIdAsync(dto);
                 if (re.code != HttpStatusCode.OK) flag = false;
-                data.Add(re);
+                if(re.data is not null) data.Add(re.data);
             }
 
-            if (!flag) return ResponseHelper.UnsuccessBuilder<IEnumerable<ResponseDto<bool>>>(data);
+            if (!flag) return ResponseHelper.UnsuccessBuilder<IEnumerable<TimeZoneDto>>(data);
 
-            var res = ResponseHelper.SuccessBuilder<IEnumerable<ResponseDto<bool>>>(data);
+            var res = ResponseHelper.SuccessBuilder<IEnumerable<TimeZoneDto>>(data);
 
             return res;
         }
 
-        public async Task<ResponseDto<Pagination<TimeZoneDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        public async Task<ResponseDto<Pagination<TimeZoneDto>>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
         {
-            var res = await qTz.GetPaginationAsync(param,location);
+            var res = await repo.GetPaginationAsync(param, location);
             return ResponseHelper.SuccessBuilder(res);
         }
     }

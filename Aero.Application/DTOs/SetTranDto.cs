@@ -1,8 +1,3 @@
-﻿namespace Aero.Application.DTOs
-{
-    public sealed class SetTranDto
-    {
-        public string MacAddress { get; set; } = string.Empty;
-        public short Param { get; set; }
-    }
-}
+namespace Aero.Application.DTOs;
+
+public sealed record SetTranDto(string MacAddress, short Param);

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Aero.Application.DTOs
 {
-    public sealed class CommandDto
-    {
-        public string Command { get; set; } = string.Empty;
-    }
+
+    public sealed record CommandDto(
+        string Command
+        );
 }

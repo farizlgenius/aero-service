@@ -17,7 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Aero.Application.Services
 {
-    public class AuthService(IOptions<JwtSettings> settings, IQOperatorRepository qOper,IQRoleRepository qRole,IAuthRepository auth) : IAuthService
+    public class AuthService(IOptions<JwtSettings> settings, IOperatorRepository oper,IRoleRepository repo,IAuthRepository auth) : IAuthService
     {
         private readonly string _secret = settings.Value.Secret;
         private readonly string _issuer = settings.Value.Issuer;
@@ -39,33 +39,31 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<TokenDtoWithRefresh>> LoginAsync(LoginDto model,string ip)
         {
 
-            var user = await qOper.GetByUsernameAsync(model.Username);
-            var hash = await qOper.GetPasswordByUsername(model.Username);
+            var user = await oper.IsAnyByNameAsync(model.Username);
 
-            if (user is null) return ResponseHelper.NotFoundBuilder<TokenDtoWithRefresh>(["User not found."]);
+            if (user) return ResponseHelper.NotFoundBuilder<TokenDtoWithRefresh>(["User not found."]);
 
-            var role = await qRole.GetByComponentIdAsync(user.RoleId);
+            var hash = await oper.GetPasswordByUsername(model.Username);
 
-            
+            if(string.IsNullOrWhiteSpace(hash)) return ResponseHelper.NotFoundBuilder<TokenDtoWithRefresh>(["Password not found."]);
+
+            var data = await oper.GetTokenDataByUsername(model.Username);
+
 
             // TODO: Replace with real user validation (DB, hashed passwords)
             if (!ValidateLogin(hash, model.Password))
-                return ResponseHelper.Unauthorize<TokenDtoWithRefresh>(["password incorrect."]);
+                return ResponseHelper.Unauthorize<TokenDtoWithRefresh>(["Password incorrect."]);
 
-            var accessToken = CreateAccessToken(user,role);
+            // var accessToken = CreateAccessToken(user,role);
+
+            var accessToken = CreateAccessToken(data);
 
             // create random refresh token and store hashed in redis + audit in DB
             var rawRefresh = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
-            await StoreTokenAsync(rawRefresh, user.UserId, user.Username, _refreshTtl,info:ip);
+            await StoreTokenAsync(rawRefresh, data.User.Username, _refreshTtl,info:ip);
 
-            var dto = new TokenDtoWithRefresh
-            {
-                TimeStamp = DateTime.UtcNow,
-                AccessToken = accessToken,
-                RefreshToken = rawRefresh,
-                ExpireInMinute = (int)_refreshTtl.TotalMinutes
-            };
+            var dto = new TokenDtoWithRefresh(DateTime.UtcNow,accessToken,rawRefresh,(int)_refreshTtl.TotalMinutes);
 
             return ResponseHelper.SuccessBuilder<TokenDtoWithRefresh>(dto);
         }
@@ -85,20 +83,19 @@ namespace Aero.Application.Services
                 return ResponseHelper.Unauthorize<TokenDtoWithRefresh>(["Invalid refresh token"]);
             }
 
-            var user = await qOper.GetByUsernameAsync(rec.Username);
-            var role = await qRole.GetByComponentIdAsync(user.RoleId);
+            var user = await oper.GetTokenDataByUsername(rec.Username);
 
             if (user is null) return ResponseHelper.NotFoundBuilder<TokenDtoWithRefresh>(["User not found."]);
 
-            if (String.IsNullOrEmpty(user.Username)) return ResponseHelper.NotFoundBuilder<TokenDtoWithRefresh>(["Can not automatic create token username with specific userid not found"]);
+            if (String.IsNullOrEmpty(user.User.Username)) return ResponseHelper.NotFoundBuilder<TokenDtoWithRefresh>(["Can not automatic create token username with specific userid not found"]);
 
             // rotate token automatically: create new raw token and swap in redis
             var newRaw = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
             try
             {
-                await RotateTokenAtomicAsync(oldRaw, newRaw, rec.UserId, rec.Username, _refreshTtl, ip);
+                await RotateTokenAtomicAsync(oldRaw, newRaw, rec.Username, _refreshTtl, ip);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
                 return ResponseHelper.Unauthorize<TokenDtoWithRefresh>(["Token reuse detected"]);
             }
@@ -106,16 +103,10 @@ namespace Aero.Application.Services
 
 
             // issue new access token
-            var accessToken = CreateAccessToken(user,role);
+            var accessToken = CreateAccessToken(user);
 
 
-            var dto = new TokenDtoWithRefresh
-            {
-                AccessToken = accessToken,
-                TimeStamp = DateTime.UtcNow,
-                RefreshToken = newRaw,
-                ExpireInMinute = (int)_refreshTtl.TotalMinutes
-            };
+            var dto = new TokenDtoWithRefresh(DateTime.UtcNow,accessToken,newRaw,(int)_refreshTtl.TotalMinutes);
             return ResponseHelper.SuccessBuilder<TokenDtoWithRefresh>(dto);
 
         }
@@ -144,6 +135,53 @@ namespace Aero.Application.Services
             return ResponseHelper.SuccessBuilder<TokenDetail>(null);
         }
 
+        public string CreateAccessToken(TokenDataDto data)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secret));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var now = DateTime.UtcNow;
+            // var users = new
+            // {
+            //     Username = data
+            //     Title = data.User.Title ?? "",
+            //     Firstname = data.User.Firstname ?? "",
+            //     Middlename = data.User.Middlename ?? "",
+            //     Lastname = data.User.Lastname ?? "",
+            //     Email = data.User.Email ?? "",
+            // };
+            // var locations = user.LocationIds;
+            // var roles = new 
+            // {
+            //     Id = role.Id,
+            //     Name = role.Name,
+            //     Features = user.Features
+            // };
+
+
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub,data.User.Username),
+                new Claim(ClaimTypes.Name,data.User.Username),
+                new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
+
+                // Custom Claims
+                new Claim("user",JsonSerializer.Serialize(data.User)),
+                new Claim("location",JsonSerializer.Serialize(data.Locations)),
+                new Claim("rol",JsonSerializer.Serialize(data.Role))
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: _issuer,
+                audience: _audience,
+                claims: claims,
+                notBefore: now,
+                expires: now.AddMinutes(_minutes),
+                signingCredentials: creds
+                );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
         public string CreateAccessToken(OperatorDto user,RoleDto role)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secret));
@@ -152,23 +190,23 @@ namespace Aero.Application.Services
             var users = new
             {
                 Title = user.Title ?? "",
-                Firstname = user.FirstName ?? "",
-                Middlename = user.MiddleName ?? "",
-                Lastname = user.LastName ?? "",
+                Firstname = user.Firstname ?? "",
+                Middlename = user.Middlename ?? "",
+                Lastname = user.Lastname ?? "",
                 Email = user.Email ?? "",
             };
             var locations = user.LocationIds;
             var roles = new 
             {
-                RoleNo = role.ComponentId,
-                RoleName = role.Name,
-                Features = role.Features.Select(x => x.ComponentId).ToList()
+                Id = role.Id,
+                Name = role.Name,
+                Features = user.Features
             };
 
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub,user.UserId),
+                new Claim(JwtRegisteredClaimNames.Sub,user.Id.ToString()),
                 new Claim(ClaimTypes.Name,user.Username),
                 new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
 
@@ -190,12 +228,12 @@ namespace Aero.Application.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public async Task StoreTokenAsync(string rawToken,string userId,string username, TimeSpan ttl, string? info = null)
+        public async Task StoreTokenAsync(string rawToken,string username, TimeSpan ttl, string? info = null)
         {
             var hashed = EncryptHelper.Hash(rawToken);
 
             // write audit row
-            var status = await auth.AddRefreshTokenAsync(hashed,userId,username,"",ttl);
+            var status = await auth.AddRefreshTokenAsync(hashed,username,"",ttl);
             if(status <= 0) throw new Exception("Can't Save new refresh token to database.");
         }
 
@@ -207,19 +245,18 @@ namespace Aero.Application.Services
             if (refresh is null) return null;
             if (refresh.Action.Equals("revoke")) return null;
 
-            var userId = refresh.UserId;
             var userName = refresh.Username;
             var expiresAt = refresh.ExpireDate;
-            return new RefreshTokenRecord(hashed, userId, userName, expiresAt);
+            return new RefreshTokenRecord(hashed, userName, expiresAt);
 
         }
 
-        public async Task RotateTokenAtomicAsync(string oldRawToken, string newRawToken, string userId,string username, TimeSpan ttl, string? info = null)
+        public async Task RotateTokenAtomicAsync(string oldRawToken, string newRawToken, string username, TimeSpan ttl, string? info = null)
         {
             var newHashed = EncryptHelper.Hash(newRawToken);
 
             // audit rotation in DB
-            var status = await auth.RotateRefreshTokenAsync(newHashed,userId,username,"",ttl);
+            var status = await auth.RotateRefreshTokenAsync(newHashed,username,"",ttl);
             if(status <= 0) throw new Exception("Save new refresh token to database unsucccess.");
         }
 

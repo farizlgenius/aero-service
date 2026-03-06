@@ -1,10 +1,10 @@
 ﻿namespace Aero.Application.DTOs
 {
-    public sealed class ChangeDoorModeDto
-    {
-        public string Mac { get; set; } = string.Empty;
-        public short ComponentId { get; set; }
-        public short AcrId {get; set;}
-        public short Mode { get; set; }
-    }
+
+
+    public sealed record ChangeDoorModeDto(
+        int DeviceId,
+        int DriverId,
+        short Mode
+        );
 }

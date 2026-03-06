@@ -5,7 +5,7 @@ using HID.Aero.ScpdNet.Wrapper;
 
 namespace Aero.Infrastructure.Services;
 
-public sealed class HolderCommandService : BaseAeroCommand, IHolderCommand
+public sealed class HolderCommandService : BaseAeroCommand, IUserCommand
 {
 
       public bool AccessDatabaseCardRecord(short ScpId, short Flags, long CardNumber, int IssueCode, string Pin, List<short> AccessLevel, int Active, int Deactive = 2085970000)
@@ -35,6 +35,8 @@ public sealed class HolderCommandService : BaseAeroCommand, IHolderCommand
             return flag;
 
       }
+
+
 
       public bool CardDelete(short ScpId, long CardNo)
       {

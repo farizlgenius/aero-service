@@ -5,32 +5,31 @@ using Aero.Application.DTOs;
 using Aero.Application.Helpers;
 using Aero.Application.Interface;
 using Aero.Application.Interfaces;
-using Aero.Application.Mapper;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 
 namespace Aero.Application.Services
 {
-    public sealed class MonitorPointService(IQMpRepository qMp,IMpCommand mp,IQHwRepository qHw,IMpRepository rMp) : IMonitorPointService
+    public sealed class MonitorPointService(IMpRepository repo,IMpCommand mp,IDeviceRepository hw,ISettingRepository setting) : IMonitorPointService
     {
 
         public async Task<ResponseDto<IEnumerable<MonitorPointDto>>> GetAsync()
         {
-            var dtos = await qMp.GetAsync();
+            var dtos = await repo.GetAsync();
             return ResponseHelper.SuccessBuilder<IEnumerable<MonitorPointDto>>(dtos);
         }
 
 
-        public async Task<ResponseDto<IEnumerable<MonitorPointDto>>> GetByLocationAsync(short location)
+        public async Task<ResponseDto<IEnumerable<MonitorPointDto>>> GetByLocationAsync(int location)
         {
-            var dtos = await qMp.GetByLocationIdAsync(location);
+            var dtos = await repo.GetByLocationIdAsync(location);
             return ResponseHelper.SuccessBuilder<IEnumerable<MonitorPointDto>>(dtos);
         }
 
 
-        public async Task<ResponseDto<IEnumerable<short>>> GetAvailableIp(string mac, short sio)
+        public async Task<ResponseDto<IEnumerable<short>>> GetAvailableIp(int id)
         {
-            var res = await qMp.GetAvailableIpAsync(mac,sio);
+            var res = await repo.GetAvailableIpAsync(id);
             return ResponseHelper.SuccessBuilder<IEnumerable<short>>(res);
         }
 
@@ -39,119 +38,155 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<bool>> MaskAsync(MonitorPointDto dto, bool IsMask)
         {
+            var en = await repo.GetByIdAsync(dto.Id);
 
-            if (!await qMp.IsAnyByComponentId(dto.ComponentId)) return ResponseHelper.NotFoundBuilder<bool>();
+            if (en is null) return ResponseHelper.NotFoundBuilder<bool>();
 
-            var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
 
-            if (!mp.MonitorPointMask(ScpId,dto.ComponentId, IsMask ? 1 : 0))
+            if (!mp.MonitorPointMask((short)en.DeviceId,dto.DriverId, IsMask ? 1 : 0))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.SET_MASK));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync((short)en.DeviceId), Command.SET_MASK));
             }
 
-            var status = await rMp.SetMaskAsync(dto.Mac,dto.MpId,IsMask);
+            var status = await repo.SetMaskByIdAsync(dto.Id,IsMask);
 
             if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.UPDATE_RECORD_UNSUCCESS,[]);
             return ResponseHelper.SuccessBuilder(true);
         }
 
 
-        public async Task<ResponseDto<bool>> CreateAsync(MonitorPointDto dto)
+        public async Task<ResponseDto<MonitorPointDto>> CreateAsync(MonitorPointDto dto)
         {
-            
-            var componentId = await qMp.GetLowestUnassignedNumberAsync(10,"");
-            if (componentId == -1) return ResponseHelper.ExceedLimit<bool>();
+            // Check value in license here 
+            // ....to be implement
 
-            var mpid = await qMp.GetLowestUnassignedNumberAsync(10,dto.Mac);
+            if(await repo.IsAnyByNameAsync(dto.Name.Trim())) return ResponseHelper.BadRequestName<MonitorPointDto>();
 
-            var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
+            var ScpSetting = await setting.GetScpSettingAsync();
 
-            var domain = MonitorPointMapper.ToDomain(dto);
-            domain.MpId = mpid;
-            domain.ComponentId = componentId;
+            var DriverId = await repo.GetLowestUnassignedNumberAsync(ScpSetting.nMp,dto.DeviceId);
+            if (DriverId == -1) return ResponseHelper.ExceedLimit<MonitorPointDto>();
 
-            if (!mp.InputPointSpecification(ScpId, dto.ModuleId, dto.InputNo, dto.InputMode, dto.Debounce, dto.HoldTime))
+
+             var domain = new MonitorPoint(
+                dto.Id,
+                dto.DeviceId,
+                DriverId,
+                dto.Name,
+                dto.ModuleId,
+                dto.ModuleDescription,
+                dto.InputNo,
+                dto.InputMode,
+                dto.InputModeDescription,
+                dto.Debounce,
+                dto.HoldTime,
+                dto.LogFunction,
+                dto.LogFunctionDescription,
+                dto.MonitorPointMode,
+                dto.MonitorPointModeDescription,
+                dto.DelayEntry,
+                dto.DelayExit,
+                dto.IsMask
+                );
+
+
+            if (!mp.InputPointSpecification((short)domain.DeviceId, dto.ModuleId, dto.InputNo, dto.InputMode, dto.Debounce, dto.HoldTime))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.INPUT_SPEC));
+                return ResponseHelper.UnsuccessBuilderWithString<MonitorPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync((short)domain.DeviceId), Command.INPUT_SPEC));
             }
 
 
-            if (!mp.MonitorPointConfiguration(ScpId, dto.ModuleId, dto.InputNo, dto.LogFunction, dto.MonitorPointMode, dto.DelayEntry, dto.DelayExit, mpid))
+            if (!mp.MonitorPointConfiguration((short)domain.DeviceId, dto.ModuleId, dto.InputNo, dto.LogFunction, dto.MonitorPointMode, dto.DelayEntry, dto.DelayExit, DriverId))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(dto.Mac, Command.MONITOR_CONFIG));
+                return ResponseHelper.UnsuccessBuilderWithString<MonitorPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync((short)domain.DeviceId), Command.MONITOR_CONFIG));
             }
 
-            var status = await rMp.AddAsync(domain);
-            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
-            return ResponseHelper.SuccessBuilder(true);
+            var status = await repo.AddAsync(domain);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<MonitorPointDto>(ResponseMessage.SAVE_DATABASE_UNSUCCESS,[]);
+            return ResponseHelper.SuccessBuilder(await repo.GetByIdAsync(status));
         }
 
 
-        public async Task<ResponseDto<bool>> DeleteAsync(short ComponentId)
+        public async Task<ResponseDto<MonitorPointDto>> DeleteAsync(int Id)
         {
-            if (!await qMp.IsAnyByComponentId(ComponentId)) return ResponseHelper.NotFoundBuilder<bool>();
+            var en = await repo.GetByIdAsync(Id);
+            if (en is null) return ResponseHelper.NotFoundBuilder<MonitorPointDto>();
 
-            var data = await qMp.GetByComponentIdAsync(ComponentId);
-            var ScpId = await qHw.GetComponentIdFromMacAsync(data.Mac);
-
-            if (!mp.MonitorPointConfiguration(ScpId,-1, data.InputNo, data.LogFunction, data.MonitorPointMode, data.DelayEntry, data.DelayExit, ComponentId))
+            if (!mp.MonitorPointConfiguration((short)en.DeviceId,-1, en.InputNo, en.LogFunction, en.MonitorPointMode, en.DelayEntry, en.DelayExit, en.DriverId))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(data.Mac, Command.MONITOR_CONFIG));
+                return ResponseHelper.UnsuccessBuilderWithString<MonitorPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync((short)en.DeviceId), Command.MONITOR_CONFIG));
             }
 
-            var status = await rMp.DeleteByComponentIdAsync(ComponentId);
-            if(status <= 0) return ResponseHelper.UnsuccessBuilder<bool>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,[]);
+            var status = await repo.DeleteByIdAsync(Id);
+            if(status <= 0) return ResponseHelper.UnsuccessBuilder<MonitorPointDto>(ResponseMessage.DELETE_DATABASE_UNSUCCESS,[]);
             
-            return ResponseHelper.SuccessBuilder(true);
+            return ResponseHelper.SuccessBuilder(en);
         }
 
         public async Task<ResponseDto<MonitorPointDto>> UpdateAsync(MonitorPointDto dto)
         {
+            var en = await repo.GetByIdAsync(dto.Id);
+            if (en is null) return ResponseHelper.NotFoundBuilder<MonitorPointDto>();
 
-            if (!await qMp.IsAnyByComponentId(dto.ComponentId)) return ResponseHelper.NotFoundBuilder<MonitorPointDto>();
 
-            var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
+            var domain = new MonitorPoint(
+                dto.Id,
+                dto.DeviceId,
+                dto.DriverId,
+                dto.Name,
+                dto.ModuleId,
+                dto.ModuleDescription,
+                dto.InputNo,
+                dto.InputMode,
+                dto.InputModeDescription,
+                dto.Debounce,
+                dto.HoldTime,
+                dto.LogFunction,
+                dto.LogFunctionDescription,
+                dto.MonitorPointMode,
+                dto.MonitorPointModeDescription,
+                dto.DelayEntry,
+                dto.DelayExit,
+                dto.IsMask
+                );
 
-            var domain = MonitorPointMapper.ToDomain(dto);
-
-            if (!mp.InputPointSpecification(ScpId, domain.ModuleId, domain.InputNo, domain.InputMode, domain.Debounce, domain.HoldTime))
+            if (!mp.InputPointSpecification((short)domain.DeviceId, domain.ModuleId, domain.InputNo, domain.InputMode, domain.Debounce, domain.HoldTime))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<MonitorPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.INPUT_SPEC));
+                return ResponseHelper.UnsuccessBuilderWithString<MonitorPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync((short)domain.DeviceId), Command.INPUT_SPEC));
             }
 
-            if (!mp.MonitorPointConfiguration(ScpId, domain.ModuleId, domain.InputNo, domain.LogFunction, domain.MonitorPointMode, domain.DelayEntry, domain.DelayExit, domain.MpId))
+            if (!mp.MonitorPointConfiguration((short)domain.DeviceId, domain.ModuleId, domain.InputNo, domain.LogFunction, domain.MonitorPointMode, domain.DelayEntry, domain.DelayExit, domain.DriverId))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<MonitorPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(domain.Mac, Command.MONITOR_CONFIG));
+                return ResponseHelper.UnsuccessBuilderWithString<MonitorPointDto>(ResponseMessage.COMMAND_UNSUCCESS, MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync((short)domain.DeviceId), Command.MONITOR_CONFIG));
             }
 
-            var status = await rMp.UpdateAsync(domain);
+            var status = await repo.UpdateAsync(domain);
             return ResponseHelper.SuccessBuilder<MonitorPointDto>(dto);
         }
 
-        public async Task<ResponseDto<bool>> GetStatusByComponentIdAsync(short component)
+        public async Task<ResponseDto<bool>> GetStatusByIdAsync(int id)
         {
-            var mac = await qMp.GetMacFromComponentIdAsync(component);
-            var ScpId = await qHw.GetComponentIdFromMacAsync(mac);
-            if(ScpId == 0) return ResponseHelper.NotFoundBuilder<bool>();
-            if (!mp.GetMpStatus(ScpId, component, 1))
+            var en = await repo.GetByIdAsync(id);
+            if(en is null) return ResponseHelper.NotFoundBuilder<bool>();
+            if (!mp.GetMpStatus((short)en.DeviceId, en.DriverId, 1))
             {
-                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(mac,Command.MP_STATUS));
+                return ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS,MessageBuilder.Unsuccess(await hw.GetMacFromComponentAsync((short)en.DeviceId),Command.MP_STATUS));
             }
             return ResponseHelper.SuccessBuilder<bool>(true);
         }
 
-        public async Task<ResponseDto<IEnumerable<Mode>>> GetModeAsync(int param)
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetModeAsync(int param)
         {
             switch (param)
             {
                 case 0:
-                    var dtos = await qMp.GetInputModeAsync();
-                    return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
+                    var dtos = await repo.GetInputModeAsync();
+                    return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
                 case 1:
-                    var d = await qMp.GetMonitorPointModeAsync();
-                    return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(d);
+                    var d = await repo.GetMonitorPointModeAsync();
+                    return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(d);
                 default:
-                    return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>([]);
+                    return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>([]);
 
             }
 
@@ -159,46 +194,46 @@ namespace Aero.Application.Services
 
 
 
-        public async Task<ResponseDto<IEnumerable<ResponseDto<bool>>>> DeleteRangeAsync(List<short> components)
+        public async Task<ResponseDto<IEnumerable<MonitorPointDto>>> DeleteRangeAsync(List<int> ids)
         {
             bool flag = true;
-            List<ResponseDto<bool>> data = new List<ResponseDto<bool>>();
-            foreach (var dto in components)
+            List<MonitorPointDto> data = new List<MonitorPointDto>();
+            foreach (var dto in ids)
             {
                 var re = await DeleteAsync(dto);
                 if (re.code != HttpStatusCode.OK) flag = false;
-                data.Add(re);
+                if(re.data is not null) data.Add(re.data);
             }
 
-            if (!flag) return ResponseHelper.UnsuccessBuilder<IEnumerable<ResponseDto<bool>>>(data);
+            if (!flag) return ResponseHelper.UnsuccessBuilder<IEnumerable<MonitorPointDto>>(data);
 
-            var res = ResponseHelper.SuccessBuilder<IEnumerable<ResponseDto<bool>>>(data);
+            var res = ResponseHelper.SuccessBuilder<IEnumerable<MonitorPointDto>>(data);
 
             return res;
         }
 
-        public async Task<ResponseDto<IEnumerable<Mode>>> GetLogFunctionAsync()
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetLogFunctionAsync()
         {
             
-            var dtos = await qMp.GetLogFunctionAsync();
-            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
+            var dtos = await repo.GetLogFunctionAsync();
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
 
-            public async Task<ResponseDto<IEnumerable<MonitorPointDto>>> GetByMacAsync(string mac)
+            public async Task<ResponseDto<IEnumerable<MonitorPointDto>>> GetByDviceIdAsync(int id)
             {
-                var dtos = await qMp.GetByMacAsync(mac);
+                var dtos = await repo.GetByDeviceIdAsync(id);
                   return ResponseHelper.SuccessBuilder<IEnumerable<MonitorPointDto>>(dtos);
             }
 
-            public async Task<ResponseDto<MonitorPointDto>> GetByComponentIdAsync(short component)
+            public async Task<ResponseDto<MonitorPointDto>> GetByIdAsync(int id)
             {
-                  var dtos = await qMp.GetByComponentIdAsync(component);
+                  var dtos = await repo.GetByIdAsync(id);
                   return ResponseHelper.SuccessBuilder<MonitorPointDto>(dtos);
             }
 
-        public async Task<ResponseDto<Pagination<MonitorPointDto>>> GetPaginationAsync(PaginationParamsWithFilter param, short location)
+        public async Task<ResponseDto<Pagination<MonitorPointDto>>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
         {
-            var res = await qMp.GetPaginationAsync(param, location);
+            var res = await repo.GetPaginationAsync(param, location);
             return ResponseHelper.SuccessBuilder(res);
         }
     }

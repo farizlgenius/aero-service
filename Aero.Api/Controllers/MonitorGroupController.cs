@@ -1,0 +1,85 @@
+﻿using Aero.Application.DTOs;
+using Aero.Application.Interface;
+using Aero.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Aero.Api.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class MonitorGroupController(IMonitorGroupService service) : ControllerBase
+    {
+        [HttpGet]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<IEnumerable<MonitorGroupDto>>>> GetAsync()
+        {
+            var res = await service.GetAsync();
+            return Ok(res);
+        }
+
+        [HttpGet("/api/{location}/[controller]")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<IEnumerable<MonitorGroupDto>>>> GetByLocationIdAsync(short location)
+        {
+            var res = await service.GetByLocationAsync(location);
+            return Ok(res);
+        }
+
+        [HttpGet("/api/{location}/[controller]/pagination")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<Pagination<MonitorGroupDto>>>> GetPaginationAsync([FromQuery]PaginationParamsWithFilter param,short location)
+        {
+            var res = await service.GetPaginationAsync(param,location);
+            return Ok(res);
+        }
+
+        [HttpGet("command")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<Mode>>> CommandAsync()
+        {
+            var res = await service.GetCommandAsync();
+            return Ok(res);
+        }
+
+        [HttpGet("type")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<IEnumerable<Mode>>>> GetTypeAsync()
+        {
+            var res = await service.GetTypeAsync();
+            return Ok(res);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<MonitorGroupDto>>> CreateAsync([FromBody] MonitorGroupDto dto)
+        {
+            var res = await service.CreateAsync(dto);
+            return Ok(res);
+        }
+
+        [HttpPost("command")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<bool>>> MonitorGroupCommand([FromBody] MonitorGroupCommandDto dto )
+        {
+            var res = await service.MonitorGroupCommandAsync(dto);
+            return Ok(res);
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<MonitorGroupDto>>> DeleteAsync(int id)
+        {
+            var res = await service.DeleteAsync(id);
+            return Ok(res);
+        }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<MonitorGroupDto>>> UpdateAsync(MonitorGroupDto dto)
+        {
+            var res =  await service.UpdateAsync(dto);
+            return Ok(res);
+        }
+    }
+}
