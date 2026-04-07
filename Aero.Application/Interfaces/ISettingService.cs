@@ -8,5 +8,8 @@ namespace Aero.Application.Interface
     {
         Task<ResponseDto<PasswordRuleDto>> GetPasswordRuleAsync();
         Task<ResponseDto<PasswordRuleDto>> UpdatePasswordRuleAsync(PasswordRuleDto dto);
+        Task<ResponseDto<IEnumerable<LedDto>>> GetLedSettingAsync();
+        Task<ResponseDto<LedDto>> GetLedSettingByIdAsync(int Id);
+        Task<ResponseDto<LedDto>> UpdateLedSettingAsync(LedDto dto);
     }
 }

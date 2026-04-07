@@ -20,7 +20,7 @@
         public static string MOMENT_UNLOCK = "command 311: Momentary Unlock";
         public static string READER_SPEC = "command 112: Reader Specification";
         public static string ACR_CONFIG = "command 115: Access Control Reader Configuration";
-        public static string C407 = "command 407: enCcAcrSrq";
+        public static string ACR_STATUS = "command 407: ACR STATUS";
         public static string ACR_MODE = "command 308: ACR mode";
         public static string C401 = "command 401: enCcIDRequest";
         public static string CARD_RECORD = "command 8304: Access Database Card Records";
@@ -41,7 +41,8 @@
         public static string C1105 = "command 1105: Access Database Specification";
         public static string DELETE_SCP = "command 015: Delete SCP";
         public static string C412 = "command 412: enCcAreaSrq";
-        public static string C302 = "command 302: time Set";
+        public static string TIME_SET = "command 302: time Set";
+        public static string RLED_SPEC = "command 122: Reader LED/Buzzer Function Specs" ;
         public enum CommandFlags
         {
             enCcMpSrq = 405, // Request sensor status

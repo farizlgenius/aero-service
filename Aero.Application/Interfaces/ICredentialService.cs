@@ -12,6 +12,6 @@ namespace Aero.Application.Interface
         Task<bool> ScanCardTrigger(ScanCardDto dto);
 
         Task<ResponseDto<bool>> DeleteCardAsync(DeleteCardDto dto);
-        Task<ResponseDto<IEnumerable<Mode>>> GetCredentialFlagAsync();
+        Task<ResponseDto<IEnumerable<ModeDto>>> GetCredentialFlagAsync();
     }
 }

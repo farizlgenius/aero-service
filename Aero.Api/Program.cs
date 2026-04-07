@@ -11,7 +11,7 @@ using Aero.Application.Services;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
-using Aero.Infrastructure.Data;
+using Aero.Infrastructure.Persistences;
 using Aero.Infrastructure.Helpers;
 using Aero.Infrastructure.Listenser;
 using Aero.Infrastructure.Mapper;
@@ -29,6 +29,14 @@ using Serilog;
 using StackExchange.Redis;
 using System.Text;
 using System.Threading.Channels;
+using Aero.Infrastructure.Adapter.Amico;
+using Aero.Infrastructure.Adapter.Aero;
+using Aero.Application.Settings;
+using Aero.Application.Commands.Interfaces;
+using Aero.Api.Middlewares;
+using Microsoft.AspNetCore.Authorization;
+using Aero.Api.Authorization;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace AeroService
 {
@@ -88,6 +96,7 @@ namespace AeroService
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
+            
             // Add Authentication
             builder.Services.AddAuthentication(options =>
             {
@@ -179,79 +188,47 @@ namespace AeroService
             builder.Services.AddSingleton<IRedisSettings,RedisSettings>();
 
             // DI for Command
-            builder.Services.AddScoped<IAeroDriverCommand,AeroDriverCommandService>();
-            builder.Services.AddScoped<IAlvlCommand,AlvlCommandService>();
-            builder.Services.AddScoped<IAreaCommand,AreaCommandService>();
             builder.Services.AddScoped<IAuthService,AuthService>();
             builder.Services.AddSingleton<BaseAeroCommand>();
-            builder.Services.AddScoped<ICfmtCommand,CfmtCommandService>();
-            builder.Services.AddScoped<ICpCommand,CpCommandService>();
-            builder.Services.AddScoped<IDoorCommand,DoorCommandService>();
-            builder.Services.AddScoped<IHolCommand,HolCommandService>();
-            builder.Services.AddScoped<IHolderCommand,HolderCommandService>();
-            builder.Services.AddScoped<IMpCommand,MpCommandService>();
-            builder.Services.AddScoped<IMpgCommand,MpgCommandService>();
-            builder.Services.AddScoped<IProcCommand,ProcCommandService>();
-            builder.Services.AddScoped<IScpCommand,ScpCommandService>();
-            builder.Services.AddScoped<ISioCommand,SioCommandService>();
-            builder.Services.AddScoped<ITrigCommand,TriggerCommandService>();
-            builder.Services.AddScoped<ITzCommand,TzCommandService>();
             
 
             // DI for Repository
             builder.Services.AddScoped<IAlvlRepository,AlvlRepository>();
-            builder.Services.AddScoped<IQAlvlRepository,QAlvlRepository>();
             builder.Services.AddScoped<IAreaRepository,AreaRepository>();
-            builder.Services.AddScoped<IQAreaRepository,QAreaRepository>();
             builder.Services.AddScoped<IAuthRepository,AuthRepository>();
             builder.Services.AddScoped<ICfmtRepository,CfmtRepository>();
-            builder.Services.AddScoped<IQCfmtRepository,QCfmtRepository>();
             builder.Services.AddScoped<ICpRepository,CpRepository>();
-            builder.Services.AddScoped<IQCpRepository,QControlPointRepository>();
             builder.Services.AddScoped<ICredRepository,CredRepository>();
-            builder.Services.AddScoped<IQCredRepository,QCredRepository>();
             builder.Services.AddScoped<IDoorRepository,DoorRepository>();
-            builder.Services.AddScoped<IQDoorRepository,QDoorRepository>();
-            builder.Services.AddScoped<IHolderRepository,HolderRepository>();
-            builder.Services.AddScoped<IQHolderRepository,QHolderRepository>();
+            builder.Services.AddScoped<IUserRepository,UserRepository>();
             builder.Services.AddScoped<IHttpRepository,HttpRepository>();
-            builder.Services.AddScoped<IHwRepository,HwRepository>();
-            builder.Services.AddScoped<IQHwRepository,QHwRepository>();
+            builder.Services.AddScoped<IDeviceRepository,DeviceRepository>();
             builder.Services.AddScoped<IIntervalRepository,IntervalRepository>();
-            builder.Services.AddScoped<IQIntervalRepository,QIntervalRepository>();
             builder.Services.AddScoped<ILocationRepository,LocationRepository>();
-            builder.Services.AddScoped<IQLocationRespository,QLocationRepository>();
-            builder.Services.AddScoped<IQModuleRepository,QModuleRepository>();
+            builder.Services.AddScoped<IModuleRepository,ModuleRepository>();
             builder.Services.AddScoped<IMpgRepository,MpgRepository>();
-            builder.Services.AddScoped<IQMpgRepository,QMpgRepository>();
             builder.Services.AddScoped<IMpRepository,MpRepository>();
-            builder.Services.AddScoped<IQMpRepository,QMpRepository>();
             builder.Services.AddScoped<IOperatorRepository,OperatorRepository>();
-            builder.Services.AddScoped<IQOperatorRepository,QOperatorRepository>();
-            builder.Services.AddScoped<IProcedureRepository,ProcedureRepository>();
-            builder.Services.AddScoped<IQProcRepository,QProcRepository>();
+            builder.Services.AddScoped<IProcedureRepository,ProcRepository>();
             builder.Services.AddScoped<ITriggerRepository,TriggerRepository>();
-            builder.Services.AddScoped<IQTrigRepository,QTrigRepository>();
             builder.Services.AddScoped<IRedisRepository,RedisRepository>();
             builder.Services.AddScoped<IRoleRepository,RoleRepository>();
-            builder.Services.AddScoped<IQRoleRepository,QRoleRepository>();
             builder.Services.AddScoped<ISettingRepository,SettingRepository>();
-            builder.Services.AddScoped<IQSettingRepository,QSettingRepository>();
-            builder.Services.AddScoped<ITransactionRepository,TransactionRepository>();
-            builder.Services.AddScoped<IQTransactionRepository,QTransactionRepository>();
+            builder.Services.AddScoped<ITransactionRepository, TranRepository>();
             builder.Services.AddScoped<ITzRepository,TzRepository>();
-            builder.Services.AddScoped<IQTzRepository,QTzRepository>();
-            builder.Services.AddScoped<IQFeatureRepository, QFeatureRepository>();
-            builder.Services.AddScoped<IQHolRepository, QHolRepository>();
             builder.Services.AddScoped<IHolRepository, HolRepository>();
-            builder.Services.AddScoped<IQIdReportRepository, QIdReportRepository>();
-            builder.Services.AddScoped<IQActionRepository, QActionRepository>();
             builder.Services.AddScoped<IDiagRepository, DiagRepository>();
             builder.Services.AddScoped<ICmndRepository, CmndRepository>();
-
+            builder.Services.AddScoped<IActionRepository, ActionRepository>();
+            builder.Services.AddScoped<IIdReportRepository, IdReportRepository>();
+            builder.Services.AddScoped<ICompanyRepository,CompanyRepository>();
+            builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>();
+            builder.Services.AddScoped<IPositionRepository,PositionRepository>();
+            builder.Services.AddScoped<IAuditRepository,AuditRepository>();
+            builder.Services.AddScoped<IPermissionRepository,PermissionRepository>();
 
             // DI for Service
-            builder.Services.AddScoped<IHardwareService,HardwareService>();
+            builder.Services.AddScoped<IDeviceService,DeviceService>();
             builder.Services.AddScoped<ITimeZoneService,TimeZoneService>();
             builder.Services.AddScoped<IAccessLevelService, AccessLevelService>();
             builder.Services.AddScoped<ICardFormatService, CardFormatService>();
@@ -262,35 +239,43 @@ namespace AeroService
             builder.Services.AddScoped<IIntervalService, IntervalService>();
             builder.Services.AddScoped<IMonitorPointService, MonitorPointService>();
             builder.Services.AddScoped<IModuleService, ModuleService>();
-            builder.Services.AddScoped<IAeroCommandService, AeroCommandService>();
             builder.Services.AddScoped<ICredentialService, CredentialService>();
-            builder.Services.AddScoped<ICardHolderService, CardHolderService>();
+            builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IControlPointService, ControlPointService>();
             builder.Services.AddScoped<ILicenseService, LicenseService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IOperatorService, OperatorService>();
             builder.Services.AddScoped<ILocationService,LocationService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
-            builder.Services.AddScoped<IFeatureService, FeatureService>();
             builder.Services.AddScoped<ITransactionService, TransactionService>();
             builder.Services.AddScoped<IProcedureService, ProcedureService>();
             builder.Services.AddScoped<ITriggerService, TriggerService>();
             builder.Services.AddScoped<IMonitorGroupService, MonitorGroupService>();
             builder.Services.AddScoped<ISettingService, SettingService>();
-            builder.Services.AddScoped<IFeatureService, FeatureService>();
             builder.Services.AddScoped<ILicenseService,LicenseService>();
             builder.Services.AddScoped<IMachineFingerprint,MachineFingerprint>();
             builder.Services.AddScoped<INotificationPublisher, ScpNotificationPublisher>();
             builder.Services.AddScoped<IDiagnosticService, DiagnosticService>();
+            builder.Services.AddScoped<ICompanyService,CompanyService>();
+            builder.Services.AddScoped<IDepartmentService,DepartmentService>();
+            builder.Services.AddScoped<IPositionService,PositionService>();
+            builder.Services.AddScoped<IAuditService,AuditService>();
+            builder.Services.AddScoped<Aero.Application.Interfaces.IPermissionService, PermissionService>();
 
             builder.Services.AddSignalR();
             builder.Services.AddScoped<IdReportService>();
             builder.Services.AddTransient<ExceptionHandlingMiddleware>();
+            builder.Services.AddTransient<AuditTrailMiddleware>();
             builder.Services.AddHostedService<StartupTask>();
 
             // Utility
             builder.Services.AddSingleton<IFilePathProvider, FilePathProvider>();
             builder.Services.AddScoped<IFileStorage, FileStorage>();
+
+            // Command DI
+            builder.Services.AddScoped<IAeroAdapter, AmicoAdapter>();
+            builder.Services.AddScoped<IAeroAdapter, AeroAdapter>();
+
 
             // Register AeroDriver
             builder.Services.AddSingleton<AeroMessageListener>();
@@ -310,6 +295,8 @@ namespace AeroService
             //builder.Services.AddHostedService<AeroWorker>();
             builder.Services.AddSingleton<AeroWorker>();
             builder.Services.AddHostedService(provider => provider.GetRequiredService<AeroWorker>());
+            builder.Services.AddScoped<IAuthorizationHandler, ScopeHandler>();
+            builder.Services.AddSingleton<IAuthorizationPolicyProvider, ScopePolicyProvider>();
 
 
 
@@ -354,7 +341,9 @@ namespace AeroService
             using (var scope = app.Services.CreateScope())
             {
                 var scopedServices = scope.ServiceProvider;
-                var sys = scopedServices.GetRequiredService<IAeroDriverCommand>();
+                var sys = scopedServices.GetRequiredService<IAeroAdapter>();
+                var db = scopedServices.GetRequiredService<AppDbContext>();
+
 
                 // Now you can safely use sys here
                 if(!sys.SystemLevelSpecification())
@@ -370,6 +359,9 @@ namespace AeroService
                     app.Lifetime.StopApplication(); // graceful shutdown
                 }
             }
+
+
+
 
             // Adding Exception Middlewre
             app.UseMiddleware<ExceptionHandlingMiddleware>();
@@ -410,6 +402,10 @@ namespace AeroService
             app.UseHttpsRedirection();
             // This logs every HTTP request automatically
             app.UseSerilogRequestLogging();
+
+            app.UseRouting(); 
+
+            app.UseMiddleware<AuditTrailMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();

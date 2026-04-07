@@ -6,6 +6,7 @@ using Aero.Application.Interface;
 using Aero.Application.Interfaces;
 using Aero.Domain.Interfaces;
 using Aero.Infrastructure.Adapter;
+using Aero.Infrastructure.Adapter.AeroEvent;
 using HID.Aero.ScpdNet.Wrapper;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

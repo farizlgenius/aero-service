@@ -1,4 +1,4 @@
-﻿using Aero.Domain.Interface;
+﻿using Aero.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Aero.Domain.Entities
 {
-    public sealed class LicenseComponent : ILicenseComponent
+    public sealed class LicenseComponent 
     {
         public short Location { get; set; }
         public short Operator { get; set; }

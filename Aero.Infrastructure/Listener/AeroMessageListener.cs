@@ -5,7 +5,7 @@ using Aero.Application.Entities;
 using Aero.Application.Interfaces;
 using Aero.Domain.Interfaces;
 using Aero.Infrastructure.Adapter;
-using Aero.Infrastructure.Data;
+using Aero.Infrastructure.Persistences;
 using Aero.Infrastructure.Helpers;
 using HID.Aero.ScpdNet.Wrapper;
 
@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using static Aero.Infrastructure.Helpers.DescriptionHelper;
+using Aero.Infrastructure.Adapter.AeroEvent;
 
 namespace Aero.Infrastructure.Listenser;
 

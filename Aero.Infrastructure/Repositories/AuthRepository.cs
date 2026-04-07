@@ -1,22 +1,22 @@
 using System;
+using Aero.Application.Interface;
 using Aero.Domain.Entities;
 using Aero.Domain.Helpers;
 using Aero.Domain.Interface;
-using Aero.Infrastructure.Data;
-using Aero.Infrastructure.Data.Entities;
+using Aero.Infrastructure.Persistences;
+using Aero.Infrastructure.Persistences.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aero.Infrastructure.Repositories;
 
 public class AuthRepository(AppDbContext context) : IAuthRepository
 {
-      public async Task<int> AddRefreshTokenAsync(string hashed, string userId, string username, string info, TimeSpan ttl)
+      public async Task<int> AddRefreshTokenAsync(string hashed, string username, string info, TimeSpan ttl)
       {
             // write audit row
-            var audit = new Aero.Infrastructure.Data.Entities.RefreshToken
+            var audit = new Aero.Infrastructure.Persistences.Entities.RefreshToken
             {
                 hashed_token = hashed,
-                user_id = userId,
                 user_name = username,
                 action = "create",
                 info = info,
@@ -40,7 +40,6 @@ public class AuthRepository(AppDbContext context) : IAuthRepository
             return new Domain.Entities.RefreshToken
             {
                   HashedToken = refresh.hashed_token,
-                  UserId = refresh.user_id,
                   Username = refresh.user_name,
                   Action = refresh.action,
                   Info = refresh.info,
@@ -50,10 +49,9 @@ public class AuthRepository(AppDbContext context) : IAuthRepository
 
       public async Task<int> RevokeTokenAsync(string hashed)
       {
-            var data = new Aero.Infrastructure.Data.Entities.RefreshToken
+            var data = new Aero.Infrastructure.Persistences.Entities.RefreshToken
             {
                   hashed_token = hashed,
-                    user_id = "unknown",
                     user_name = "unknown",
                     action = "revoke",
                     created_date= DateTime.UtcNow,
@@ -63,12 +61,11 @@ public class AuthRepository(AppDbContext context) : IAuthRepository
             return await context.SaveChangesAsync();
       }
 
-      public async Task<int> RotateRefreshTokenAsync(string hashed, string userId, string username, string info, TimeSpan ttl)
+      public async Task<int> RotateRefreshTokenAsync(string hashed,  string username, string info, TimeSpan ttl)
       {
-            var data =new Aero.Infrastructure.Data.Entities.RefreshToken
+            var data =new Aero.Infrastructure.Persistences.Entities.RefreshToken
             {
                   hashed_token = hashed,
-                  user_id = userId,
                   user_name = username,
                   action = "rotate",
                   info = info,

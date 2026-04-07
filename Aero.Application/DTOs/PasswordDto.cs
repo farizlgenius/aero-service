@@ -1,10 +1,3 @@
-﻿namespace Aero.Application.DTOs
-{
-    public sealed class PasswordDto
-    {
-        public string Username { get; set; } = string.Empty;
-        public string Old { get; set; } = string.Empty;
-        public string New { get; set; } = string.Empty;
-        public string Con { get; set; } = string.Empty;
-    }
-}
+namespace Aero.Application.DTOs;
+
+public sealed record PasswordDto(string Username, string Old, string New, string Con);

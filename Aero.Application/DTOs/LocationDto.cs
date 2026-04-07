@@ -2,11 +2,6 @@
 
 namespace Aero.Application.DTOs
 {
-    public sealed class LocationDto 
-    {
-        public short ComponentId { get; set; }
-        public string LocationName { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public bool IsActive { get; set; } = true;
-    }
+
+    public sealed record LocationDto(int Id, string Name, string Description, bool IsActive);
 }

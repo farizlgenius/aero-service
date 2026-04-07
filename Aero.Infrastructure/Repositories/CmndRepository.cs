@@ -1,7 +1,7 @@
 ﻿using Aero.Application.DTOs;
 using Aero.Domain.Entities;
 using Aero.Domain.Interface;
-using Aero.Infrastructure.Data;
+using Aero.Infrastructure.Persistences;
 using Aero.Infrastructure.Mapper;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Aero.Application.Interfaces;
 
 namespace Aero.Infrastructure.Repositories
 {
@@ -16,17 +17,32 @@ namespace Aero.Infrastructure.Repositories
     {
         public async Task<int> AddAsync(CommandAudit data)
         {
-            var en = CmndMapper.ToEf(data);
+            var en = new Aero.Infrastructure.Persistences.Entities.CommandAudit(data);
             await context.AddAsync(en);
             return await context.SaveChangesAsync();
         }
 
-        public Task<int> DeleteByComponentIdAsync(short component)
+        public Task<int> DeleteByIdAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<Pagination<CommandAudit>> GetCommandStatusAsync(PaginationParamsWithFilter pagination, short location)
+            public Task<IEnumerable<CommandAudit>> GetAsync()
+            {
+                  throw new NotImplementedException();
+            }
+
+            public Task<CommandAudit> GetByIdAsync(int id)
+            {
+                  throw new NotImplementedException();
+            }
+
+            public Task<IEnumerable<CommandAudit>> GetByLocationIdAsync(int locationId)
+            {
+                  throw new NotImplementedException();
+            }
+
+            public async Task<Pagination<CommandAudit>> GetCommandStatusAsync(PaginationParamsWithFilter pagination, int location)
         {
             var query = context.commnad_audit.AsNoTracking().AsQueryable();
 
@@ -88,7 +104,7 @@ namespace Aero.Infrastructure.Repositories
                 {
                     // Base 
                     TagNo = en.tag_no,
-                    ScpId = en.scp_id,
+                    ScpId = en.device_id,
                     Mac = en.mac,
                     Command = en.command,
                     IsSuccess = en.is_success,
@@ -114,16 +130,32 @@ namespace Aero.Infrastructure.Repositories
             };
         }
 
-        public async Task<int> UpdateAsync(CommandAudit newData)
+
+            public Task<Pagination<CommandAudit>> GetPaginationAsync(PaginationParamsWithFilter param, int location)
+            {
+                  throw new NotImplementedException();
+            }
+
+            public Task<bool> IsAnyByIdAsync(int id)
+            {
+                  throw new NotImplementedException();
+            }
+
+            public Task<bool> IsAnyByNameAsync(string name)
+            {
+                  throw new NotImplementedException();
+            }
+
+            public async Task<int> UpdateAsync(CommandAudit data)
         {
             var en = await context.commnad_audit
-                .Where(x => x.tag_no == newData.TagNo && x.mac == newData.Mac && x.scp_id == newData.ScpId && x.is_pending == true)
+                .Where(x => x.tag_no == data.TagNo && x.mac == data.Mac && x.device_id == data.ScpId && x.is_pending == true)
                 .OrderBy(x => x.id)
                 .FirstOrDefaultAsync();
 
             if (en is null) return 0;
 
-            CmndMapper.Update(newData,en);
+            en.Update(data);
 
             context.Update(en);
             return await context.SaveChangesAsync();

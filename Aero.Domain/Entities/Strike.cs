@@ -2,13 +2,44 @@ using System;
 
 namespace Aero.Domain.Entities;
 
-public sealed class Strike : BaseEntity
+public sealed class Strike : BaseDomain
 {
-       public short ModuleId { get; set; }
-        public short OutputNo { get; set; }
-        public short RelayMode { get; set; }
-        public short OfflineMode { get; set; }
-        public short StrkMax { get; set; }
-        public short StrkMin { get; set; }
-        public short StrkMode { get; set; }
+    public int ScpId { get; set; }
+    public int ModuleId { get; set; }
+    public short ModuleDriverId {get; set;}
+    public int DoorId { get; set; }
+    public short OutputNo { get; set; }
+    public short RelayMode { get; set; }
+    public short OfflineMode { get; set; }
+    public short StrkMax { get; set; }
+    public short StrkMin { get; set; }
+    public short StrkMode { get; set; }
+
+    public Strike() { }
+
+    public Strike(
+        int scpId,
+        int moduleId,
+        short moduleDriverId,
+        int doorId,
+        short outputNo,
+        short relayMode,
+        short offlineMode,
+        short strkMax,
+        short strkMin,
+        short strkMode,
+        int locationId,
+        bool isActive = true) : base(locationId, isActive)
+    {
+        ScpId = scpId;
+        ModuleId = moduleId;
+        ModuleDriverId = moduleDriverId;
+        DoorId = doorId;
+        OutputNo = outputNo;
+        RelayMode = relayMode;
+        OfflineMode = offlineMode;
+        StrkMax = strkMax;
+        StrkMin = strkMin;
+        StrkMode = strkMode;
+    }
 }

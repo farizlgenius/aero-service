@@ -1,14 +1,5 @@
-﻿using System.Net;
+using System.Net;
 
-namespace Aero.Application.DTOs
-{
+namespace Aero.Application.DTOs;
 
-    public sealed class ResponseDto<T>
-    {
-        public DateTime timestamp { get; set; } = DateTime.UtcNow;
-        public HttpStatusCode code { get; set; }
-        public new T? data { get; set; } 
-        public string message { get; set; } = string.Empty;
-        public IEnumerable<string>? details { get; set; }
-    }
-}
+public sealed record ResponseDto<T>(HttpStatusCode code,DateTime timestamp,string message,IEnumerable<string>? details,T? data );

@@ -27,6 +27,7 @@ namespace Aero.Api.Constants
         public static string INTERNAL_ERROR = "Internal Error";
         public static string REQUEST_TIMEOUT = "Request Timeout";
         public static string UNAUTHORIZED = "Unauthorized";
+        public static string BAD_REQUEST = "Bad request";
 
         // System
         public static string NO_SYSTEM_CONFIG_IN_DB = "No System Configuration In Database.";

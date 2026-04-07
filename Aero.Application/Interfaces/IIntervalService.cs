@@ -8,12 +8,12 @@ namespace Aero.Application.Interface
     public interface IIntervalService
     {
         Task<ResponseDto<IEnumerable<IntervalDto>>> GetAsync();
-        Task<ResponseDto<IEnumerable<IntervalDto>>> GetByLocationAsync(short location);
-        Task<ResponseDto<Pagination<IntervalDto>>> GetPaginationAsync(PaginationParamsWithFilter param,short location);
-        Task<ResponseDto<IntervalDto>> GetByIdAsync(short component);
-        Task<ResponseDto<bool>> CreateAsync(IntervalDto dto);
+        Task<ResponseDto<IEnumerable<IntervalDto>>> GetByLocationAsync(int location);
+        Task<ResponseDto<Pagination<IntervalDto>>> GetPaginationAsync(PaginationParamsWithFilter param,int location);
+        Task<ResponseDto<IntervalDto>> GetByIdAsync(int compidonent);
+        Task<ResponseDto<IntervalDto>> CreateAsync(CreateIntervalDto dto);
         Task<ResponseDto<IntervalDto>> UpdateAsync(IntervalDto dto);
-        Task<ResponseDto<bool>> DeleteAsync(short component);
-        Task<ResponseDto<IEnumerable<ResponseDto<bool>>>> DeleteRangeAsync(List<short> components);
+        Task<ResponseDto<IntervalDto>> DeleteAsync(int id);
+        Task<ResponseDto<IEnumerable<IntervalDto>>> DeleteRangeAsync(List<int> ids);
     }
 }

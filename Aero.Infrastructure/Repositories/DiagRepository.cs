@@ -1,4 +1,6 @@
-﻿using Aero.Domain.Interface;
+﻿using Aero.Application.Interface;
+using Aero.Domain.Interface;
+using Aero.Infrastructure.Adapter.Aero;
 using Aero.Infrastructure.Services;
 using System;
 using System.Collections.Generic;

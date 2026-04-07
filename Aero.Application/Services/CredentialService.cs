@@ -1,5 +1,6 @@
 ﻿
 using Aero.Api.Constants;
+using Aero.Application.Commands.Interfaces;
 using Aero.Application.Constants;
 using Aero.Application.DTOs;
 using Aero.Application.Helpers;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aero.Application.Services
 {
-    public class CredentialService(IQCredRepository qCred,ICredRepository rCred,IQHwRepository qHw,IHolderCommand holder, IServiceScopeFactory scopeFactory) : ICredentialService
+    public class CredentialService(ICredRepository repo,IAeroAdapter holder) : ICredentialService
     {
        
 
@@ -21,7 +22,7 @@ namespace Aero.Application.Services
             //read.isWaitingCardScan = true;
             //read.ScanScpId = ScpId;
             //read.ScanAcrNo = dto.DoorId;
-            await rCred.ToggleScanCardAsync(dto);
+            await repo.ToggleScanCardAsync(dto);
             return true;
         }
 
@@ -30,7 +31,7 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<IEnumerable<CredentialDto>>> GetAsync()
         {
 
-            var dtos = await qCred.GetAsync();
+            var dtos = await repo.GetAsync();
 
             return ResponseHelper.SuccessBuilder<IEnumerable<CredentialDto>>(dtos);
         }
@@ -38,7 +39,7 @@ namespace Aero.Application.Services
         public async Task<ResponseDto<IEnumerable<CredentialDto>>> GetByUserId(string UserId)
         {
 
-            var dtos = await qCred.GetByUserIdAsync(UserId);
+            var dtos = await repo.GetByUserIdAsync(UserId);
 
             return ResponseHelper.SuccessBuilder<IEnumerable<CredentialDto>>(dtos);
         }
@@ -77,19 +78,18 @@ namespace Aero.Application.Services
 
         public async Task<ResponseDto<bool>> DeleteCardAsync(DeleteCardDto dto)
         {
-            var ScpId = await qHw.GetComponentIdFromMacAsync(dto.Mac);
-            if(!holder.CardDelete(ScpId,dto.CardNo))
+            if(!holder.CardDelete((short)dto.DeviceId,dto.CardNo))
             {
                 ResponseHelper.UnsuccessBuilderWithString<bool>(ResponseMessage.COMMAND_UNSUCCESS, Command.DELETE_CARD);
             }
             return ResponseHelper.SuccessBuilder<bool>(true);
         }
 
-        public async Task<ResponseDto<IEnumerable<Mode>>> GetCredentialFlagAsync()
+        public async Task<ResponseDto<IEnumerable<ModeDto>>> GetCredentialFlagAsync()
         {
-            var dtos = await qCred.GetCredentialFlagAsync();
+            var dtos = await repo.GetCredentialFlagAsync();
 
-            return ResponseHelper.SuccessBuilder<IEnumerable<Mode>>(dtos);
+            return ResponseHelper.SuccessBuilder<IEnumerable<ModeDto>>(dtos);
         }
     }
 }

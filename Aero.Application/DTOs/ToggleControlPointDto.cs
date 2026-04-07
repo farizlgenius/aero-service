@@ -1,9 +1,3 @@
-﻿namespace Aero.Application.DTOs
-{
-    public sealed class ToggleControlPointDto
-    {
-        public string Mac { get; set; } = string.Empty;
-        public short ComponentId { get; set; }
-        public short Command { get; set; }
-    }
-}
+namespace Aero.Application.DTOs;
+
+public sealed record ToggleControlPointDto(int DeviceId, short DriverId, short Command);

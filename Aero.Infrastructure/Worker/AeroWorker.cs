@@ -8,7 +8,7 @@ using Aero.Domain.Entities;
 using Aero.Domain.Interface;
 using Aero.Domain.Interfaces;
 using Aero.Infrastructure.Adapter;
-using Aero.Infrastructure.Data;
+using Aero.Infrastructure.Persistences;
 using Aero.Infrastructure.Helpers;
 using Aero.Infrastructure.Services;
 using HID.Aero.ScpdNet.Wrapper;
@@ -16,10 +16,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Net.NetworkInformation;
 using System.Threading.Channels;
+using Aero.Application.Commands.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Aero.Infrastructure.Mapper
 {
-    public sealed class AeroWorker(Channel<IScpReply> queue, IServiceScopeFactory scopeFactory) : BackgroundService
+    public sealed class AeroWorker(Channel<IScpReply> queue, IServiceScopeFactory scopeFactory,ILogger<AeroWorker> logger) : BackgroundService
     {
         public bool isWaitingCardScan { private get; set; }
         public short ScanScpId { private get; set; }
@@ -27,13 +29,16 @@ namespace Aero.Infrastructure.Mapper
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            Console.WriteLine("AeroWorker started");
 
             await foreach (var message in queue.Reader.ReadAllAsync(stoppingToken))
             {
+                Console.WriteLine("Message received");
+
                 using var scope = scopeFactory.CreateScope();
-                var qhw = scope.ServiceProvider.GetRequiredService<IQHwRepository>();
-                var rhw = scope.ServiceProvider.GetRequiredService<IHwRepository>();
-                var hw = scope.ServiceProvider.GetRequiredService<IHardwareService>();
+                var qhw = scope.ServiceProvider.GetRequiredService<IDeviceRepository>();
+                var rhw = scope.ServiceProvider.GetRequiredService<IDeviceRepository>();
+                var hw = scope.ServiceProvider.GetRequiredService<IDeviceService>();
                 var tran = scope.ServiceProvider.GetRequiredService<ITransactionService>();
                 var publisher = scope.ServiceProvider.GetRequiredService<INotificationPublisher>();
                 var cmnd = scope.ServiceProvider.GetRequiredService<ICmndRepository>();
@@ -142,11 +147,11 @@ namespace Aero.Infrastructure.Mapper
                                             // publisher
                                             break;
                                         case (short)tranSrc.tranSrcMP:
-                                            var mp = new MpStatus(await qhw.GetMacFromComponentAsync((short)message.ScpId), message.tran.source_number, DecodeHelper.TypeCosStatusDecode(message.tran.cos.status));
+                                            var mp = new MpStatus(message.ScpId, message.tran.source_number, DecodeHelper.TypeCosStatusDecode(message.tran.cos.status));
                                             await publisher.MpNotifyStatus(mp);
                                             break;
                                         case (short)tranSrc.tranSrcCP:
-                                            var cp = new CpStatus(await qhw.GetMacFromComponentAsync((short)message.ScpId), message.tran.source_number, DecodeHelper.TypeCosStatusDecode(message.tran.cos.status));
+                                            var cp = new CpStatus(message.ScpId, message.tran.source_number, DecodeHelper.TypeCosStatusDecode(message.tran.cos.status));
                                             await publisher.CpNotifyStatus(cp);
                                             break;
                                         default:
@@ -157,7 +162,7 @@ namespace Aero.Infrastructure.Mapper
       
                                     break;
                                 case (short)tranType.tranTypeCoSDoor:
-                                    var doorstatus = new AcrStatus(await qhw.GetMacFromComponentAsync((short)message.ScpId),message.tran.source_number,"",DescriptionHelper.GetAccessPointStatusFlagResult(message.tran.door.ap_status));
+                                    var doorstatus = new AcrStatus((short)message.ScpId,message.tran.source_number,"",DescriptionHelper.GetAccessPointStatusFlagResult(message.tran.door.ap_status));
                                     await publisher.AcrNotifyStatus(doorstatus);
                                     break;
                                 case (short)tranType.tranTypeProcedure:
@@ -170,7 +175,7 @@ namespace Aero.Infrastructure.Mapper
    
                                     break;
                                 case (short)tranType.tranTypeAcr:
-                                    var modestatus = new AcrStatus(await qhw.GetMacFromComponentAsync((short)message.ScpId),message.tran.source_number,DescriptionHelper.GetAcrModeForStatus(message.tran.tran_code),"");
+                                    var modestatus = new AcrStatus((short)message.ScpId,message.tran.source_number,DescriptionHelper.GetAcrModeForStatus(message.tran.tran_code),"");
                                     await publisher.AcrNotifyStatus(modestatus);
                                     break;
                                 case (short)tranType.tranTypeMpg:
@@ -218,9 +223,9 @@ namespace Aero.Infrastructure.Mapper
                             await hw.HandleFoundHardware(message);
                             break;
                         case (int)enSCPReplyType.enSCPReplyCommStatus:
-                            hw = scope.ServiceProvider.GetRequiredService<IHardwareService>();
-                            var scp = scope.ServiceProvider.GetRequiredService<IScpCommand>();
-                            var qId = scope.ServiceProvider.GetRequiredService<IQIdReportRepository>();
+                            hw = scope.ServiceProvider.GetRequiredService<IDeviceService>();
+                            var scp = scope.ServiceProvider.GetRequiredService<IAeroAdapter>();
+                            var qId = scope.ServiceProvider.GetRequiredService<IIdReportRepository>();
                             if (message.comm.status != 2)
                             {
                                 var reports = await qId.DeletePendingRecordAsync((short)message.ScpId);
@@ -229,33 +234,31 @@ namespace Aero.Infrastructure.Mapper
                             }                            
                             break;
                         case (int)enSCPReplyType.enSCPReplyTranStatus:
-                            TranStatus t = new TranStatus
-                            {
-                                MacAddress = await qhw.GetMacFromComponentAsync((short)message.ScpId),
-                                Capacity = message.tran_sts.capacity,
-                                Oldest = message.tran_sts.oldest,
-                                LastLog = message.tran_sts.last_loggd,
-                                LastReport = message.tran_sts.last_rprtd,
-                                Disabled = message.tran_sts.disabled,
-                                Status = message.tran_sts.disabled == 0 ? "Enable" : "Disable"
-
-                            };
+                            TranStatus t = new TranStatus(
+                                message.ScpId,
+                                message.tran_sts.capacity,
+                                message.tran_sts.oldest,
+                                 message.tran_sts.last_loggd,
+                                 message.tran_sts.last_rprtd,
+                                 message.tran_sts.disabled,
+                                 message.tran_sts.disabled == 0 ? "Enable" : "Disable"
+                                );
                             await publisher.ScpNotifyTranStatus(t);
                             break;
                         case (int)enSCPReplyType.enSCPReplySrSio:
-                            var siostatus = new SioStatus(await qhw.GetMacFromComponentAsync((short)message.ScpId), message.sts_sio.number, DecodeHelper.TypeSioCommTranCodeDecode(message.sts_sio.com_status), DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_sio.ip_stat[4])), DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_sio.ip_stat[5])), DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_sio.ip_stat[6])));
+                            var siostatus = new SioStatus(message.ScpId, message.sts_sio.number, DecodeHelper.TypeSioCommTranCodeDecode(message.sts_sio.com_status), DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_sio.ip_stat[4])), DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_sio.ip_stat[5])), DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_sio.ip_stat[6])));
                             await publisher.SioNotifyStatus(siostatus);
                             break;
                         case (int)enSCPReplyType.enSCPReplySrMp:
-                            var mpstatus = new MpStatus(await qhw.GetMacFromComponentAsync((short)message.ScpId), message.sts_mp.first, DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_mp.status[0])));
+                            var mpstatus = new MpStatus(message.ScpId, message.sts_mp.first, DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_mp.status[0])));
                             await publisher.MpNotifyStatus(mpstatus);
                             break;
                         case (int)enSCPReplyType.enSCPReplySrCp:
-                            var cpstatus = new CpStatus(await qhw.GetMacFromComponentAsync((short)message.ScpId), message.sts_cp.first, DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_cp.status[0])));
+                            var cpstatus = new CpStatus(message.ScpId, message.sts_cp.first, DecodeHelper.TypeCosStatusDecode(Convert.ToByte(message.sts_cp.status[0])));
                             await publisher.CpNotifyStatus(cpstatus);
                             break;
                         case (int)enSCPReplyType.enSCPReplySrAcr:
-                            var acrstatus = new AcrStatus(await qhw.GetMacFromComponentAsync((short)message.ScpId), message.sts_acr.number, DescriptionHelper.GetAcrModeForStatus(message.sts_acr.door_status), DescriptionHelper.GetAccessPointStatusFlagResult((byte)message.sts_acr.ap_status));
+                            var acrstatus = new AcrStatus((short)message.ScpId, message.sts_acr.number, DescriptionHelper.GetAcrModeForStatus(message.sts_acr.door_status), DescriptionHelper.GetAccessPointStatusFlagResult((byte)message.sts_acr.ap_status));
                             await publisher.AcrNotifyStatus(acrstatus);
                             break;
                         case (int)enSCPReplyType.enSCPReplySrTz:
@@ -314,7 +317,7 @@ namespace Aero.Infrastructure.Mapper
                 }
                 catch (Exception ex)
                 {
-
+                    logger.LogError(ex.Message);
                 }
 
 

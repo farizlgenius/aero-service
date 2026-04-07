@@ -7,5 +7,5 @@ namespace Aero.Domain.Enums;
             AcrMode = 2,
             ApbMode = 3,
             ReaderOut = 4,
-            SpareFlag,AccessControlFlag
+            SpareFlag,AccessControlFlag,DoorType
         }

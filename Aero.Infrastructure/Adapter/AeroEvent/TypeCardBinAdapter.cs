@@ -1,0 +1,13 @@
+using System;
+using Aero.Application.Interfaces;
+using Aero.Domain.Interfaces;
+using HID.Aero.ScpdNet.Wrapper;
+
+namespace Aero.Infrastructure.Adapter.AeroEvent;
+
+public sealed class TypeCardBinAdapter(SCPReplyMessage.SCPReplyTransaction tran) : ITypeCardBin
+{
+      public short bit_count => tran.c_bin.bit_count;
+
+      public byte[] bit_array => tran.c_bin.bit_array;
+}

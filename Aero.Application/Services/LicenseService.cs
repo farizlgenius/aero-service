@@ -18,10 +18,7 @@ namespace Aero.Application.Services
     {
         public async Task<ResponseDto<MachineFingerPrintDto>> GetMachineIdAsync()
         {
-            var dto = new MachineFingerPrintDto
-            {
-                FingerPrint = machine.Get()
-            };
+            var dto = new MachineFingerPrintDto( machine.Get());
             return ResponseHelper.SuccessBuilder(dto);
         }
 

@@ -1,4 +1,4 @@
 ﻿namespace Aero.Application.DTOs
 {
-    public record LocationRangeDto(short[] locationIds);
+    public record LocationRangeDto(int[] locationIds);
 }
