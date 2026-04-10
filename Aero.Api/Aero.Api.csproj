@@ -44,6 +44,7 @@
 
   <ItemGroup>
     <Folder Include="Authorization\" />
+    <Folder Include="Exceptions\" />
     <Folder Include="logs\" />
     <Folder Include="Worker\" />
   </ItemGroup>

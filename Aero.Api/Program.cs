@@ -1,6 +1,5 @@
 using Aero.Api.Configuration;
 using Aero.Api.Constants;
-using Aero.Api.Exceptions.Middleware;
 using Aero.Api.Hubs;
 using Aero.Api.Logging;
 using Aero.Api.Publisher;
@@ -37,6 +36,7 @@ using Aero.Api.Middlewares;
 using Microsoft.AspNetCore.Authorization;
 using Aero.Api.Authorization;
 using System.IdentityModel.Tokens.Jwt;
+using Aero.Api.Exceptions;
 
 namespace AeroService
 {
@@ -261,10 +261,11 @@ namespace AeroService
             builder.Services.AddScoped<IPositionService,PositionService>();
             builder.Services.AddScoped<IAuditService,AuditService>();
             builder.Services.AddScoped<Aero.Application.Interfaces.IPermissionService, PermissionService>();
+            builder.Services.AddScoped<IAuditService, AuditService>();
 
             builder.Services.AddSignalR();
             builder.Services.AddScoped<IdReportService>();
-            builder.Services.AddTransient<ExceptionHandlingMiddleware>();
+            builder.Services.AddTransient<GlobalExceptionMiddleware>();
             builder.Services.AddTransient<AuditTrailMiddleware>();
             builder.Services.AddHostedService<StartupTask>();
 
@@ -364,7 +365,7 @@ namespace AeroService
 
 
             // Adding Exception Middlewre
-            app.UseMiddleware<ExceptionHandlingMiddleware>();
+            app.UseMiddleware<GlobalExceptionMiddleware>();
 
             var threadListener = new Thread(readDriver.GetTransactionUntilShutDown);
             threadListener.Start();

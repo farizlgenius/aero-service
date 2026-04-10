@@ -92829,3 +92829,77 @@ WebConfigNetwork: SCP-1, Method2 = 0, IP Address2: 0.0.0.0, Subnet Mask2: 0.0.0.
 53611.834 Found SCP-1 to be deleted on detach, calling scpDeleteScp
 53611.834 SCP detach: this SCP is already detached - nothing to do, SCP-1, Chnl-0
 53611.834 Did not find any SCPs to delete on detach, clear pending delete flag
+Debug file SCPDEBUG.txt <SCPDEBUGc.txt> <SCPDEBUG.TXT> opened Wed Apr  8 11:11:05 2026
+Begin - SCP Driver DLL (64-bit) version 4.7.1.43
+21466.490 WSAStartup ok
+21466.492 RNG_X931A24 Initialized
+21466.492 1, enCcSystem: 011 1 1024 0 0 1
+21466.493 1, enCcCreateChannel: 0012 1 7 3333 0 3000 0 "" 0
+21466.495 listen(lsock) created socket=1940 on port 3333
+21466.495 Listen Successful, port: 3333
+32764.226 0(0), enCcTranSrq: 0402 1
+32764.844 0(0), enCcSioSrq: 0404 1 1 1
+32765.503 0(0), enCcTranSrq: 0402 1
+32768.340 0(0), enCcTranSrq: 0402 1
+32770.320 0(0), enCcSioSrq: 0404 1 1 1
+Debug file SCPDEBUG.txt <SCPDEBUGc.txt> <SCPDEBUG.TXT> opened Thu Apr  9 09:09:35 2026
+Begin - SCP Driver DLL (64-bit) version 4.7.1.43
+00577.766 WSAStartup ok
+00577.776 RNG_X931A24 Initialized
+00577.776 1, enCcSystem: 011 1 1024 0 0 1
+00577.776 1, enCcCreateChannel: 0012 1 7 3333 0 3000 0 "" 0
+00577.787 listen(lsock) created socket=1940 on port 3333
+00577.787 Listen Successful, port: 3333
+00612.004 0(0), enCcTranSrq: 0402 1
+00613.947 0(0), enCcSioSrq: 0404 1 1 1
+00623.052 0(0), enCcTranSrq: 0402 1
+00624.536 0(0), enCcSioSrq: 0404 1 1 1
+00628.195 0(0), enCcAcrSrq: 0407 1 1 1
+00688.940 0(0), enCcTranSrq: 0402 1
+00692.659 0(0), enCcTranSrq: 0402 1
+00700.877 0(0), enCcTranSrq: 0402 1
+00720.854 0(0), enCcSioSrq: 0404 1 1 1
+00730.371 0(0), enCcAcrSrq: 0407 1 1 1
+Debug file SCPDEBUG.txt <SCPDEBUGc.txt> <SCPDEBUG.TXT> opened Thu Apr  9 10:11:36 2026
+Begin - SCP Driver DLL (64-bit) version 4.7.1.43
+04298.926 WSAStartup ok
+04298.934 RNG_X931A24 Initialized
+04298.934 1, enCcSystem: 011 1 1024 0 0 1
+04298.937 1, enCcCreateChannel: 0012 1 7 3333 0 3000 0 "" 0
+04298.937 listen(lsock) created socket=1944 on port 3333
+04298.937 Listen Successful, port: 3333
+Debug file SCPDEBUG.txt <SCPDEBUGc.txt> <SCPDEBUG.TXT> opened Fri Apr 10 08:47:45 2026
+Begin - SCP Driver DLL (64-bit) version 4.7.1.43
+85666.778 WSAStartup ok
+85666.782 RNG_X931A24 Initialized
+85666.782 1, enCcSystem: 011 1 1024 0 0 1
+85666.783 1, enCcCreateChannel: 0012 1 7 3333 0 3000 0 "" 0
+85666.789 listen(lsock) created socket=1940 on port 3333
+85666.789 Listen Successful, port: 3333
+86534.053 0(0), enCcTranSrq: 0402 1
+86535.655 0(0), enCcSioSrq: 0404 1 1 1
+86543.103 0(0), enCcAcrSrq: 0407 1 1 1
+86645.717 0(0), enCcScpHoliday: 1104 0 1 -1 2026 4 13 0 1
+86759.226 Shutting down debug Thread...
+File closed Fri Apr 10 09:05:59 2026
+Debug file SCPDEBUG.txt <SCPDEBUGc.txt> <SCPDEBUG.TXT> opened Fri Apr 10 09:35:22 2026
+Begin - SCP Driver DLL (64-bit) version 4.7.1.43
+88523.038 WSAStartup ok
+88523.038 RNG_X931A24 Initialized
+88523.038 1, enCcSystem: 011 1 1024 0 0 1
+88523.038 1, enCcCreateChannel: 0012 1 7 3333 0 3000 0 "" 0
+88523.038 listen(lsock) created socket=1928 on port 3333
+88523.038 Listen Successful, port: 3333
+88833.043 Shutting down debug Thread...
+File closed Fri Apr 10 09:40:33 2026
+Debug file SCPDEBUG.txt <SCPDEBUGc.txt> <SCPDEBUG.TXT> opened Fri Apr 10 11:07:03 2026
+Begin - SCP Driver DLL (64-bit) version 4.7.1.43
+94024.038 WSAStartup ok
+94024.040 RNG_X931A24 Initialized
+94024.040 1, enCcSystem: 011 1 1024 0 0 1
+94024.041 1, enCcCreateChannel: 0012 1 7 3333 0 3000 0 "" 0
+94024.045 listen(lsock) created socket=1936 on port 3333
+94024.045 Listen Successful, port: 3333
+94375.443 0(0), enCcTranSrq: 0402 1
+94451.308 Shutting down debug Thread...
+File closed Fri Apr 10 11:14:11 2026

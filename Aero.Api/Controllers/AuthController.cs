@@ -16,7 +16,7 @@ namespace Aero.Api.Controllers
         private readonly TimeSpan _cookieExpiry = TimeSpan.FromHours(3);
 
         [HttpPost("login")]
-        public async Task<ActionResult<ResponseDto<TokenDto>>> Login([FromForm] LoginDto model)
+        public async Task<IActionResult> Login([FromForm] LoginDto model)
         {
             var res = await auth.LoginAsync(model, Request.HttpContext.Connection.RemoteIpAddress is null ? "" : Request.HttpContext.Connection.RemoteIpAddress.ToString());
             // set HttpOnly cookies (path limited to auth endpoint)
@@ -36,7 +36,7 @@ namespace Aero.Api.Controllers
         }
 
         [HttpPost("refresh")]
-        public async Task<ActionResult<ResponseDto<TokenDto>>> Refresh()
+        public async Task<IActionResult> Refresh()
         {
             if (!Request.Cookies.TryGetValue("refresh_token", out var oldRaw)) return Unauthorized();
             // HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown"
